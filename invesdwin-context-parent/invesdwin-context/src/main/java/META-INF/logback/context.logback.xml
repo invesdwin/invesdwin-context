@@ -1,0 +1,58 @@
+<configuration>
+
+	<!-- see http://www.slf4j.org/legacy.html#jul-to-slf4j -->
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator" />
+	<jmxConfigurator />
+
+	<appender name="stdout" class="de.invesdwin.context.log.logback.ConfiguredConsoleAppender">
+		<Target>System.out</Target>
+		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+			<evaluator>
+				<expression>level &lt;= INFO</expression>
+				factory
+			</evaluator>
+			<OnMatch>ACCEPT</OnMatch>
+			<OnMismatch>DENY</OnMismatch>
+		</filter>
+	</appender>
+	<appender name="stderr" class="de.invesdwin.context.log.logback.ConfiguredConsoleAppender">
+		<Target>System.err</Target>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+	</appender>
+	<appender name="error" class="de.invesdwin.context.log.logback.ConfiguredFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>WARN</level>
+		</filter>
+	</appender>
+	<appender name="common" class="de.invesdwin.context.log.logback.ConfiguredFileAppender" />
+
+	<!-- ERROR only gets logged on console shortened -->
+	<logger name="de.invesdwin.ERROR" additivity="false" level="WARN">
+		<appender-ref ref="stderr" />
+		<appender-ref ref="common" />
+	</logger>
+	<!-- ERROR_DETAIL only gets logged into file -->
+	<logger name="de.invesdwin.ERROR_DETAIL" additivity="false" level="WARN">
+		<level value="WARN" />
+		<appender-ref ref="error" />
+	</logger>
+	<logger name="de.invesdwin" additivity="false" level="INFO">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="stderr" />
+		<appender-ref ref="common" />
+		<appender-ref ref="error" />
+	</logger>
+
+	<!-- not interesting if aspectj fails to identify some interface or so; unit tests should show if something is wrong anyway -->
+	<logger name="AspectJ Weaver" additivity="false" level="OFF" />
+
+	<root level="WARN">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="stderr" />
+		<appender-ref ref="common" />
+		<appender-ref ref="error" />
+	</root>
+
+</configuration>

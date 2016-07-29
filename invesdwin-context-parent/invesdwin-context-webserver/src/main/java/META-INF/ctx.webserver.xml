@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- http://coffeaelectronica.com/blog/2008/08/embedding-jetty-6-in-spring/ -->
+
+	<bean id="webserverProperties"
+		class="de.invesdwin.context.system.properties.SystemPropertiesDefinition" />
+
+	<bean id="webServer" class="org.eclipse.jetty.server.Server"
+		init-method="start" destroy-method="stop">
+		<constructor-arg>
+			<bean id="ThreadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+				<property name="minThreads" value="1" />
+				<property name="maxThreads" value="50" />
+			</bean>
+		</constructor-arg>
+		<property name="connectors">
+			<list>
+				<bean id="connector" class="org.eclipse.jetty.server.ServerConnector">
+					<constructor-arg ref="webServer" />
+					<property name="port"
+						value="#{T(de.invesdwin.context.integration.IntegrationProperties).WEBSERVER_BIND_URI.getPort()}" />
+				</bean>
+			</list>
+		</property>
+		<property name="handler">
+			<bean
+				class="de.invesdwin.context.webserver.internal.BlacklistedWebAppContext">
+				<property name="contextPath" value="/" />
+				<property name="resourceBase"
+					value="#{webFragmentConfigurationMerger.getContextPath()}" />
+			</bean>
+		</property>
+		<property name="stopAtShutdown" value="true" />
+	</bean>
+
+	<bean id="webFragmentConfigurationMerger"
+		class="de.invesdwin.context.webserver.internal.WebFragmentConfigurationMerger" />
+
+</beans>
