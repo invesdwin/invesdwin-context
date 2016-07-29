@@ -42,7 +42,6 @@
 		<version.launch4j-maven-plugin>1.7.8</version.launch4j-maven-plugin>
 		<version.maven-resources-plugin>2.6</version.maven-resources-plugin>
 		<version.maven-checkstyle-plugin>2.10</version.maven-checkstyle-plugin>
-		<version.sonar-maven-plugin>5.1</version.sonar-maven-plugin>
 		<version.maven-assembly-plugin>2.4</version.maven-assembly-plugin>
 		<version.appassembler-maven-plugin>1.5</version.appassembler-maven-plugin>
 		<version.maven-antrun-plugin>1.7</version.maven-antrun-plugin>
@@ -668,11 +667,6 @@
 					<groupId>com.akathist.maven.plugins.launch4j</groupId>
 					<artifactId>launch4j-maven-plugin</artifactId>
 					<version>${version.launch4j-maven-plugin}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>sonar-maven-plugin</artifactId>
-					<version>${version.sonar-maven-plugin}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
