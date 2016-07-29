@@ -42,7 +42,6 @@
 		<version.launch4j-maven-plugin>1.7.8</version.launch4j-maven-plugin>
 		<version.maven-resources-plugin>2.6</version.maven-resources-plugin>
 		<version.maven-checkstyle-plugin>2.10</version.maven-checkstyle-plugin>
-		<version.findbugs-maven-plugin>3.0.3</version.findbugs-maven-plugin>
 		<version.sonar-maven-plugin>5.1</version.sonar-maven-plugin>
 		<version.maven-assembly-plugin>2.4</version.maven-assembly-plugin>
 		<version.appassembler-maven-plugin>1.5</version.appassembler-maven-plugin>
@@ -698,11 +697,6 @@
 					</dependencies>
 				</plugin>
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>${version.findbugs-maven-plugin}</version>
-				</plugin>
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${version.maven-assembly-plugin}</version>
@@ -1088,11 +1082,6 @@
 					<configLocation>${basedir}/.settings/checkstyle.config.xml</configLocation>
 					<propertiesLocation>${basedir}/.settings/checkstyle.config.properties</propertiesLocation>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>${version.findbugs-maven-plugin}</version>
 			</plugin>
 		</plugins>
 	</reporting>
