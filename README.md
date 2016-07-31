@@ -26,6 +26,20 @@ Dependency declaration:
 </dependency>
 ```
 
+## Parent Pom
+
+When setting up modules or distributions it is recommended to make invesdwin-context-parent the parent pom of the specific module/distribution pom.xml. This provides the following benefits respectively. This enables:
+- common configurations for quality assurancy plugins in maven and eclipse
+- handles the eclipse project settings and git ignores automatically using the invesdwin-maven-plugin (which is required to make the JAXB-Generator work properly or else the invesdwin.xjb is missing)
+- automatically fixes umlauts in properties files
+- allows to put resource files into src/main/java instead of src/main/resources (which helps with wicket html/page files to not requiring your to manage two equal package trees which can get hairy with refactorings)
+- provides a robust maven-shade-plugin config that allows you to create fat-jars inside of your distributions
+
+If you setup a product (being a collection of modules and distributions) it is recommended to create an intermediate parent pom so you can define your own additional dependency management and plugin overrides.
+Though you are free to roll your own parent pom where you just cherry-pick the parts that you like from the parent pom, or do everything on your own. If you are just interested in the dependency management you can import this pom as a [bill of materials](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html). 
+
+In order to fully benefit from the module system, you should follow the best practice of modules always having the package type `jar`. Only distributions should repackage modules into other package types like `war`, `ear`, `zip` and so on. This allows the highest flexibility in module reuse between different products and various distributions for different customers and target environments.
+
 ## Base Classes
 
 - **AMain**: this class can be used to implement your own main function that deals with running the application bootstrap and custom console arguments (using [args4j](http://args4j.kohsuke.org/)). It also processes `-Dparams=value` and sets them as system parameters to override existing defaults.
