@@ -2,7 +2,7 @@
 
 This is the core of the module system for the invesdwin software product line platform. It allows to configure an application on a per module basis. On application startup the bootstrap process collects the configuration snippets and creates a full application context. It also handles the lifecycle of the application (providing hooks for modules) for running and testing it. Tests also benefit from the flexibility of replacing bean instances with stubs, choosing different spring-xmls to be loaded depending on the circumstances, enabling embedded servers (e.g. webserver=jetty, database=h2, registry=juddi) on a per test basis via annotations. These embedded servers are themselves modules which are available in separate projects and can be even packaged into distributions for use in production environments where appropriate.
 
-This platform shares some of the goals of [spring-boot](http://projects.spring.io/spring-boot/). In comparison this platform provides the following advantages (despite it having been created long before spring-boot was thought of, even though only recently having gone open source):
+This platform shares some of the goals of [spring-boot](http://projects.spring.io/spring-boot/). In comparison this platform provides the following advantages:
 - per module configuration instead of per application
 - explicitly separate technology modules from domain modules and allow combining those per target environment into distributions
 - customized Spring ApplicationContext per testcase without having to write one spring-xml per case, instead reusing and just selecting which spring-xml-snippets to use (essentially solving spring-xml-Hell)
