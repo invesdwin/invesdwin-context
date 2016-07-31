@@ -28,7 +28,7 @@ Dependency declaration:
 
 ## Parent Pom
 
-When setting up modules or distributions it is recommended to make invesdwin-context-parent the parent pom of the specific module/distribution pom.xml. This provides the following benefits respectively. This enables:
+When setting up modules or distributions it is recommended to make invesdwin-context-parent the parent pom of your specific module/distribution pom.xml. This provides the following benefits respectively. This enables:
 - common configurations for quality assurancy plugins in maven and eclipse
 - handles the eclipse project settings and git ignores automatically using the invesdwin-maven-plugin (which is required to make the JAXB-Generator work properly or else the invesdwin.xjb is missing)
 - automatically fixes umlauts in properties files
