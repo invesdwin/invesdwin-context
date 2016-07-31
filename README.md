@@ -8,7 +8,7 @@ In comparison to [spring-boot](http://projects.spring.io/spring-boot/), this pla
 - customized Spring ApplicationContext per testcase without having to write one spring-xml per case, instead reusing and just selecting which spring-xml-snippets to use
 - automatically merge individual logback.xmls, ehcache.xmls, properties files, spring-xmls, jaxb.xsds, web-fragment.xmls, aop.xmls or create jpa persistence.xmls during bootstrap from isolated snippets and classpath information
 
-For more information on the concept and ideas behind this platform you can have a look at [this presentation](https://github.com/subes/invesdwin-context/raw/master/invesdwin-context-parent/invesdwin-context/doc/concept/invesdwin-concept.pdf) that was made for an earlier version of this platform where Ant+Ivy+Groovy was used for configuration management. Today most of these concept got adapted into a new and improved maven implementation that provides many benefits over the older design while still keeping the same features as before. It was just the case that maven was not where it is today when this platform first came to life.
+For more information on the concept and ideas behind this platform you can have a look at [this presentation](https://github.com/subes/invesdwin-context/blob/master/invesdwin-context-parent/invesdwin-context/doc/concept/invesdwin-concept.pdf) that was made for an earlier version of this platform where Ant+Ivy+Groovy was used for configuration management. Today most of these concept got adapted into a new and improved maven implementation that provides many benefits over the older design while still keeping the same features as before. It was just the case that maven was not where it is today when this platform first came to life.
 
 ## Maven
 
