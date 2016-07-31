@@ -72,7 +72,7 @@ public class SystemProperties extends AProperties {
     }
 
     /**
-     * Should only be used bei infrastructure classes.
+     * Should only be used by infrastructure classes.
      */
     public static void setSystemProperties(final Resource propsResource, final boolean overwrite) {
         try {
@@ -85,7 +85,7 @@ public class SystemProperties extends AProperties {
     }
 
     /**
-     * Should only be used bei infrastructure classes.
+     * Should only be used by infrastructure classes.
      */
     public static void setSystemProperties(final Properties props, final boolean overwrite) {
         final Map<String, String> systemProperties = new HashMap<String, String>();
@@ -98,7 +98,7 @@ public class SystemProperties extends AProperties {
     }
 
     /**
-     * Should only be used bei infrastructure classes.
+     * Should only be used by infrastructure classes.
      */
     public static void setSystemProperties(final Map<String, String> systemProperties, final boolean overwrite) {
         final SystemProperties sysprops = new SystemProperties();
