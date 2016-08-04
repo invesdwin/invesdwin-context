@@ -93,6 +93,7 @@ The following lifecycle hooks are available, which can either just be added to a
 - **NativeLibrary**: to allow packaging of native libraries for various target architectures inside your modules (e.g. used by a portscanner module to integrate [jpcapng](https://sourceforge.net/projects/jpcapng/))
 - **SerializingSoftReference**: a soft reference that instead of discarding the reference, serializes it to disk instead of evicting it in order to spare some memory until the reference is accessed again and thus retrieved again
 - **BeanValidator**: to conveniently verify the consistency of your value object where ever you might need to do so using the [BeanValidation Annotations](http://beanvalidation.org/)
+- **SystemPropertiesDefinition**: when defining this bean inside of your spring-xml, you are able to reference the system properties via the `${PROPERTYNAME}` notation. This bean also allows you to set additional context dependant system properties from inside your spring-xml (which can be loaded depending on some logic via `IContextLocation`).
 
 ## Integration Module
 
