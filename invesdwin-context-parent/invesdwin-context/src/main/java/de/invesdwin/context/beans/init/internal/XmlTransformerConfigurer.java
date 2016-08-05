@@ -2,8 +2,6 @@ package de.invesdwin.context.beans.init.internal;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.system.properties.SystemProperties;
-
 @Immutable
 public final class XmlTransformerConfigurer {
 
@@ -11,8 +9,10 @@ public final class XmlTransformerConfigurer {
 
     static {
         //as long as xalan does not support jaxp 1.4 the sun impl must be used
-        new SystemProperties().setString("javax.xml.transform.TransformerFactory",
+        //CHECKSTYLE:OFF do not use SystemProperties class to not cause static intializers from firing too early
+        System.setProperty("javax.xml.transform.TransformerFactory",
                 "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+        //CHECKSTYLE:ON
         INITIALIZED = true;
     }
 

@@ -7,9 +7,9 @@ import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
@@ -29,8 +29,8 @@ public final class SystemPropertiesLoader {
      */
     public static void loadSystemProperties() {
         try {
-            final Resource[] properties = PreMergedContext.getInstance().getResources(
-                    "classpath*:" + META_INF + "*.properties");
+            final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            final Resource[] properties = resolver.getResources("classpath*:" + META_INF + "*.properties");
             logPropertiesBeingLoaded(properties);
             for (final Resource p : properties) {
                 SystemProperties.setSystemProperties(p, false);
@@ -41,8 +41,8 @@ public final class SystemPropertiesLoader {
             } else {
                 overridePropertiesName = "distribution.properties";
             }
-            final Resource[] overrideProperties = PreMergedContext.getInstance().getResources(
-                    "classpath*:" + META_INF_ENV + overridePropertiesName);
+            final Resource[] overrideProperties = resolver
+                    .getResources("classpath*:" + META_INF_ENV + overridePropertiesName);
             logOverridePropertiesBeingLoaded(overridePropertiesName, overrideProperties);
             for (final Resource p : overrideProperties) {
                 SystemProperties.setSystemProperties(p, true);
@@ -54,7 +54,8 @@ public final class SystemPropertiesLoader {
 
     private static void logPropertiesBeingLoaded(final Resource[] properties) {
         if (LOG.isInfoEnabled() && properties.length > 0) {
-            final List<String> propertyFilesForLog = Resources.extractMetaInfResourceLocations(Arrays.asList(properties));
+            final List<String> propertyFilesForLog = Resources
+                    .extractMetaInfResourceLocations(Arrays.asList(properties));
             String filesSingularPlural = "file";
             if (properties.length != 1) {
                 filesSingularPlural += "s";

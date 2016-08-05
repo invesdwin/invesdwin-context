@@ -9,12 +9,12 @@ import javax.annotation.concurrent.Immutable;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
-import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.Resources;
@@ -31,16 +31,18 @@ public final class LogbackConfigurationLoader {
         final org.slf4j.ILoggerFactory lf = org.slf4j.LoggerFactory.getILoggerFactory();
         if (lf instanceof LoggerContext) {
             try {
+                final List<Resource> orderedConfigs = new ArrayList<Resource>();
+                final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+                orderedConfigs.addAll(
+                        Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback.xml")));
+                orderedConfigs.addAll(
+                        Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-test.xml")));
+
                 final LoggerContext lc = (LoggerContext) lf;
                 final JoranConfigurator configurator = new JoranConfigurator();
                 configurator.setContext(lc);
                 lc.reset();
 
-                final List<Resource> orderedConfigs = new ArrayList<Resource>();
-                orderedConfigs.addAll(Arrays.asList(PreMergedContext.getInstance().getResources(
-                        "classpath*:" + META_INF_LOGBACK + "*logback.xml")));
-                orderedConfigs.addAll(Arrays.asList(PreMergedContext.getInstance().getResources(
-                        "classpath*:" + META_INF_LOGBACK + "*logback-test.xml")));
                 configurator.doConfigure(new LogbackConfigurationMerger(orderedConfigs).getInputStream());
                 //http://stackoverflow.com/questions/2533227/how-can-i-disable-the-default-console-handler-while-using-the-java-logging-api
                 java.util.logging.LogManager.getLogManager().reset();

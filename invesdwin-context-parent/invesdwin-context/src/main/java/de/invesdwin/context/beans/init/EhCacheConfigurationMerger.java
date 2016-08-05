@@ -25,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
@@ -73,8 +74,8 @@ public class EhCacheConfigurationMerger {
     }
 
     private String generateNewXmlContent() throws IOException, TransformerException, XMLStreamException {
-        final Resource[] xmls = PreMergedContext.getInstance().getResources(
-                "classpath*:" + EHCACHE_PATH + "*.ehcache.xml");
+        final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        final Resource[] xmls = resolver.getResources("classpath*:" + EHCACHE_PATH + "*.ehcache.xml");
 
         logXmlsBeingLoaded(xmls);
 

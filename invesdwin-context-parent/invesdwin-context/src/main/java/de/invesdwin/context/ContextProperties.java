@@ -216,7 +216,7 @@ public final class ContextProperties {
                     basePackageSingularPlural += "s";
                 }
 
-                log.info("Loading %s %s in classpath %s", basePackages.size(), basePackageSingularPlural, basePackages);
+                log.info("Loading %s %s %s", basePackages.size(), basePackageSingularPlural, basePackages);
             }
         }
         return basePackages;

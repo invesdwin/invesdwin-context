@@ -8,27 +8,22 @@ import java.util.Map.Entry;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.core.type.filter.AssignableTypeFilter;
-import org.springframework.instrument.InstrumentationSavingAgent;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.beans.hook.IInstrumentationHook;
 import de.invesdwin.context.beans.init.internal.FileEncodingChecker;
+import de.invesdwin.context.beans.init.internal.InstrumentationHookLoader;
 import de.invesdwin.context.beans.init.internal.protocols.ProtocolRegistration;
 import de.invesdwin.context.beans.init.locations.IContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.classpath.ClassPathScanner;
-import de.invesdwin.util.lang.Reflections;
 
 /**
  * This should only be used by infrastructure classes.
@@ -44,8 +39,8 @@ public final class PreMergedContext extends ADelegateContext {
             try {
                 DynamicInstrumentationLoader.waitForInitialized();
                 Assertions.assertThat(DynamicInstrumentationLoader.initLoadTimeWeavingContext()).isNotNull();
+                InstrumentationHookLoader.runInstrumentationHooks();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
-                runInstrumentationHooks();
                 Assertions.assertThat(Err.UNCAUGHT_EXCEPTION_HANDLER).isNotNull();
                 Assertions.assertThat(ProtocolRegistration.INITAILIZED).isTrue();
                 Assertions.assertThat(DefaultTimeZoneConfigurer.INITIALIZED).isTrue();
@@ -61,23 +56,6 @@ public final class PreMergedContext extends ADelegateContext {
 
     private PreMergedContext(final GenericApplicationContext delegate) {
         super(delegate);
-    }
-
-    private static void runInstrumentationHooks() {
-        final ClassPathScanner scanner = new ClassPathScanner();
-        scanner.addIncludeFilter(new AssignableTypeFilter(IInstrumentationHook.class));
-        for (final String basePackage : ContextProperties.getBasePackages()) {
-            for (final BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
-                final Class<? extends IInstrumentationHook> instrumentationHookClass = Reflections
-                        .classForName(bd.getBeanClassName());
-                try {
-                    final IInstrumentationHook instrumentationHook = instrumentationHookClass.newInstance();
-                    instrumentationHook.instrument(InstrumentationSavingAgent.getInstrumentation());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw Err.process(e);
-                }
-            }
-        }
     }
 
     @Override
