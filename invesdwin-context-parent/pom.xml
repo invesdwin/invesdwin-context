@@ -22,6 +22,8 @@
 	</licenses>
 
 	<properties>
+		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
+	
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.compiler>1.8</version.compiler>
@@ -95,23 +97,23 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context</artifactId>
-				<version>${project.version}</version>
+				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context</artifactId>
-				<version>${project.version}</version>
+				<version>${version.invesdwin-context}</version>
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-integration</artifactId>
-				<version>${project.version}</version>
+				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-webserver</artifactId>
-				<version>${project.version}</version>
+				<version>${version.invesdwin-context}</version>
 			</dependency>
 
 			<dependency>
