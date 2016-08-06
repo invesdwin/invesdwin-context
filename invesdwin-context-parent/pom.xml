@@ -67,7 +67,7 @@
 		<version.cglib>2.2.2</version.cglib>
 
 		<version.ehcache-jcache>1.0.0</version.ehcache-jcache>
-		<version.ehcache>2.8.5</version.ehcache>
+		<version.ehcache>2.9.0</version.ehcache>
 		<version.jcache>1.0.0</version.jcache>
 		<version.jboss-transaction-api_1.1_spec>1.0.1.Final</version.jboss-transaction-api_1.1_spec>
 
