@@ -23,6 +23,7 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.ProtocolResolver;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
@@ -384,6 +385,11 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     @Override
     public void publishEvent(final Object event) {
         delegate.publishEvent(event);
+    }
+
+    @Override
+    public void addProtocolResolver(final ProtocolResolver resolver) {
+        delegate.addProtocolResolver(resolver);
     }
 
 }

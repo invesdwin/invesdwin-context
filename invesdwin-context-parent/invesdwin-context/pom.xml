@@ -67,7 +67,7 @@
 			<artifactId>juel-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mysema.querydsl</groupId>
+			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-collections</artifactId>
 		</dependency>
 		<dependency>

@@ -8,10 +8,10 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Test;
 
-import com.mysema.query.alias.Alias;
-import com.mysema.query.collections.CollQuery;
-import com.mysema.query.types.path.ComparablePath;
-import com.mysema.query.types.path.EntityPathBase;
+import com.querydsl.collections.CollQuery;
+import com.querydsl.core.alias.Alias;
+import com.querydsl.core.types.dsl.ComparablePath;
+import com.querydsl.core.types.dsl.EntityPathBase;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
@@ -35,7 +35,7 @@ public class QueryDslCollectionsTest extends ATest {
         Assertions.assertThat(fromVo).isNotNull();
         query.from(fromVo, vos);
         query.where(Alias.$(vo.getOtherValue()).eq(1));
-        final List<CloneableClass> result = query.list(Alias.$(vo));
+        final List<CloneableClass> result = query.select(Alias.$(vo)).fetch();
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.size()).isEqualTo(1);
@@ -57,7 +57,7 @@ public class QueryDslCollectionsTest extends ATest {
         Assertions.assertThat(fromVo).as("https://bugs.launchpad.net/querydsl/+bug/785935").isNotNull();
         query.from(fromVo, vos);
         query.where(Alias.$(vo.getValue()).eq(1));
-        final List<CloneableVO> result = query.list(Alias.$(vo));
+        final List<CloneableVO> result = query.select(Alias.$(vo)).fetch();
 
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.size()).isEqualTo(1);

@@ -26,7 +26,7 @@
 	<properties>
 		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
 		<version.invesdwin-bom>1.0.0-SNAPSHOT</version.invesdwin-bom>
-	
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.compiler>1.8</version.compiler>
@@ -40,10 +40,9 @@
 		<!-- maven-jar-plugin 2.4 causes errors in eclipse: https://github.com/tesla/m2eclipse-extras/issues/10 -->
 		<version.maven-jar-plugin>2.3.2</version.maven-jar-plugin>
 		<version.maven-war-plugin>2.4</version.maven-war-plugin>
-		<version.maven-bundle-plugin>2.4.0</version.maven-bundle-plugin>
 		<version.maven-surefire-plugin>2.16</version.maven-surefire-plugin>
 		<version.jaxb2-maven-plugin>1.5</version.jaxb2-maven-plugin>
-		<version.maven-shade-plugin>2.1</version.maven-shade-plugin>
+		<version.maven-shade-plugin>2.4.3</version.maven-shade-plugin>
 		<version.launch4j-maven-plugin>1.7.8</version.launch4j-maven-plugin>
 		<version.maven-resources-plugin>2.6</version.maven-resources-plugin>
 		<version.maven-checkstyle-plugin>2.10</version.maven-checkstyle-plugin>
@@ -63,7 +62,7 @@
 
 		<version.jetty>9.0.6.v20130930</version.jetty>
 
-		<version.querydsl>3.6.1</version.querydsl>
+		<version.querydsl>4.1.3</version.querydsl>
 		<!-- querydsl-collections is still on 2.x -->
 		<version.cglib>2.2.2</version.cglib>
 
@@ -76,17 +75,17 @@
 		<version.commons-pool2>2.3</version.commons-pool2>
 		<version.commons-compress>1.5</version.commons-compress>
 
-		<version.spring-batch>3.0.5.RELEASE</version.spring-batch>
-		<version.spring-retry>1.1.2.RELEASE</version.spring-retry>
-		<version.spring-integration>4.2.3.RELEASE</version.spring-integration>
-		<version.spring-ws>2.2.3.RELEASE</version.spring-ws>
+		<version.spring-batch>3.0.7.RELEASE</version.spring-batch>
+		<version.spring-retry>1.1.3.RELEASE</version.spring-retry>
+		<version.spring-integration>4.3.1.RELEASE</version.spring-integration>
+		<version.spring-ws>2.3.0.RELEASE</version.spring-ws>
 
-		<version.logback>1.1.3</version.logback>
+		<version.logback>1.1.7</version.logback>
 		<version.janino>2.7.8</version.janino>
-		
-		<version.apacheds>2.0.0-M20</version.apacheds>
-		<version.spring-security-kerberos>1.0.0.RELEASE</version.spring-security-kerberos>
-		
+
+		<version.apacheds>2.0.0-M23</version.apacheds>
+		<version.spring-security-kerberos>1.0.1.RELEASE</version.spring-security-kerberos>
+
 		<version.h2>1.3.173</version.h2>
 		<version.mysql-connector-java>5.1.31</version.mysql-connector-java>
 		<version.postgresql>9.3-1102-jdbc41</version.postgresql>
@@ -151,7 +150,7 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.mysema.querydsl</groupId>
+				<groupId>com.querydsl</groupId>
 				<artifactId>querydsl-collections</artifactId>
 				<version>${version.querydsl}</version>
 				<exclusions>
@@ -359,7 +358,7 @@
 				<artifactId>invesdwin-checkstyle-plugin</artifactId>
 				<version>${version.invesdwin-checkstyle-plugin}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
@@ -375,7 +374,7 @@
 				<artifactId>postgresql</artifactId>
 				<version>${version.postgresql}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.directory.server</groupId>
 				<artifactId>apacheds-kerberos-codec</artifactId>
@@ -391,6 +390,12 @@
 				<groupId>org.springframework.security.kerberos</groupId>
 				<artifactId>spring-security-kerberos-client</artifactId>
 				<version>${version.spring-security-kerberos}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -415,7 +420,7 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- jpa drivers are required for running tests, but are not needed for 
 			src/main/java compilation. Thus these dependencies are in scope test for 
 			all submodules per default. The distribution will choose which driver to 
@@ -573,7 +578,7 @@
 					<configuration>
 						<archive>
 							<index>true</index>
-							<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+							<!-- <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile> -->
 						</archive>
 					</configuration>
 				</plugin>
@@ -581,33 +586,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${version.maven-war-plugin}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<version>${version.maven-bundle-plugin}</version>
-					<extensions>true</extensions>
-					<executions>
-						<execution>
-							<id>bundle-manifest</id>
-							<phase>process-classes</phase>
-							<goals>
-								<goal>manifest</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<supportedProjectTypes>
-							<supportedProjectType>jar</supportedProjectType>
-							<supportedProjectType>bundle</supportedProjectType>
-							<supportedProjectType>war</supportedProjectType>
-						</supportedProjectTypes>
-						<instructions>
-							<Private-Package>.*.internal.*</Private-Package>
-							<Export-Package>!.*.internal.*, *</Export-Package>
-							<Import-Package>*</Import-Package>
-						</instructions>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1123,10 +1101,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
