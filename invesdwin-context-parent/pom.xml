@@ -939,8 +939,9 @@
 							<!-- bsd license -->
 							<param>org\.postgresql.*</param>
 							<param>org\.codehaus\.janino.*</param>
-							<param>org.jquantlib.*</param>
+							<param>org\.jquantlib.*</param>
 							<param>ta-lib:ta-lib.*</param>
+							<param>org\.ow2\.asm.*</param>
 							<!-- epl license -->
 							<param>com\.h2database.*</param>
 							<!-- LGPL license -->
