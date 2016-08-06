@@ -4,35 +4,18 @@
 
 	<appender name="stdout" class="de.invesdwin.context.log.logback.ConfiguredConsoleAppender">
 		<Target>System.out</Target>
-		<filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-			<evaluator>
-				<expression>level &lt;= INFO</expression>
-				factory
-			</evaluator>
-			<OnMatch>ACCEPT</OnMatch>
-			<OnMismatch>DENY</OnMismatch>
-		</filter>
-	</appender>
-	<appender name="stderr" class="de.invesdwin.context.log.logback.ConfiguredConsoleAppender">
-		<Target>System.err</Target>
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>WARN</level>
-		</filter>
 	</appender>
 
 	<logger name="AspectJ Weaver" additivity="false" level="ERROR">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="stderr" />
 	</logger>
 	
 	<logger name="de.invesdwin" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="stderr" />
 	</logger>
 
 	<root level="WARN">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="stderr" />
 	</root>
 
 </configuration>
