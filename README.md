@@ -105,7 +105,7 @@ For applications that also rely on IO (Input/Output of files and streams) and IP
 - **Marshallers**: convert to/from [XML](https://en.wikipedia.org/wiki/XML)/[JSON](https://en.wikipedia.org/wiki/JSON) with [JAXB](https://en.wikipedia.org/wiki/Java_Architecture_for_XML_Binding)/[Jackson](https://github.com/FasterXML/jackson-databind). Initially [gson](https://github.com/google/gson) was used for JSON processing, but jackson was found to be faster by a magnitude and to provide better configurability even though it is a bit less easy or intuitive to use. 
 - **CSV**: the `ABeanCsvReader`, `ABeanCsvWriter` and other classes provide some utilities to easily read/write CSV files. This utilizes the popular [spring-batch](http://projects.spring.io/spring-batch/) `FlatFileItemReader` and Mapper functionality. Though a complete spring-batch integration is found in a different invesdwin integration module.
 
-## Security Module
+## Security Modules
 
 The `invesdwin-context-security` module configures the [spring-security](http://projects.spring.io/spring-security/)  annotations for method level authorization. Other security modules reference this module to provide actual authorization rules to be used. Please note that the `DefaultRolePrefixRemover` changes spring-security configurations so that the `ROLE_` prefix can be ommitted (which can be unintuitive when it has or has not to be used). So to make things easier, just put role names as they are (coming from a database, ldap, manual configuration and so on) inside your autorization expressions, without adding any prefixes. The kerberos module provides some utilities to generate krb5.conf and keytab files while also defining some kerberos client configuration.
 
