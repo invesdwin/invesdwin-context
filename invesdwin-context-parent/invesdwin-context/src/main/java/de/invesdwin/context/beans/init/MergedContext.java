@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -124,8 +124,8 @@ public final class MergedContext extends ADelegateContext {
             try {
                 final TransactionAspectSupport transactionAspectSupport = prevInstance
                         .getBean(TransactionAspectSupport.class);
-                final ConcurrentHashMap<?, ?> transactionManagerCache = Reflections.field("transactionManagerCache")
-                        .ofType(ConcurrentHashMap.class)
+                final ConcurrentMap<?, ?> transactionManagerCache = Reflections.field("transactionManagerCache")
+                        .ofType(ConcurrentMap.class)
                         .in(transactionAspectSupport)
                         .get();
                 transactionManagerCache.clear();

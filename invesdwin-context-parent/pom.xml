@@ -40,6 +40,7 @@
 		<!-- maven-jar-plugin 2.4 causes errors in eclipse: https://github.com/tesla/m2eclipse-extras/issues/10 -->
 		<version.maven-jar-plugin>2.3.2</version.maven-jar-plugin>
 		<version.maven-war-plugin>2.4</version.maven-war-plugin>
+		<version.maven-bundle-plugin>2.4.0</version.maven-bundle-plugin>
 		<version.maven-surefire-plugin>2.16</version.maven-surefire-plugin>
 		<version.jaxb2-maven-plugin>1.5</version.jaxb2-maven-plugin>
 		<version.maven-shade-plugin>2.4.3</version.maven-shade-plugin>
@@ -578,7 +579,8 @@
 					<configuration>
 						<archive>
 							<index>true</index>
-							<!-- <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile> -->
+							<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+							<forced>true</forced>
 						</archive>
 					</configuration>
 				</plugin>
@@ -586,6 +588,33 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${version.maven-war-plugin}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>${version.maven-bundle-plugin}</version>
+					<extensions>true</extensions>
+					<executions>
+						<execution>
+							<id>bundle-manifest</id>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>manifest</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<supportedProjectTypes>
+							<supportedProjectType>jar</supportedProjectType>
+							<supportedProjectType>bundle</supportedProjectType>
+							<supportedProjectType>war</supportedProjectType>
+						</supportedProjectTypes>
+						<instructions>
+							<Private-Package>.*.internal.*</Private-Package>
+							<Export-Package>!.*.internal.*, *</Export-Package>
+							<Import-Package>*</Import-Package>
+						</instructions>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -773,6 +802,41 @@
 							<version>${version.ant-nodeps}</version>
 						</dependency>
 					</dependencies>
+					<executions>
+						<execution>
+							<!-- create manifest if maven-bundle-plugin is not used, so that maven-jar-plugin 
+								does not crash with an exception because of missing manifest file -->
+							<id>create-manifest-if-missing</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<target>
+									<ac:if xmlns:ac="antlib:net.sf.antcontrib">
+										<and>
+											<available file="${project.build.outputDirectory}"
+												type="dir" />
+											<not>
+												<available
+													file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
+											</not>
+										</and>
+										<then>
+											<mkdir dir="${project.build.outputDirectory}/META-INF/" />
+											<manifest
+												file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
+												<attribute name="Built-By" value="${user.name}" />
+												<attribute name="Specification-Title" value="${project.name}" />
+												<attribute name="Specification-Version" value="${project.version}" />
+												<attribute name="Specification-Vendor-Id" value="${project.groupId}" />
+											</manifest>
+										</then>
+									</ac:if>
+								</target>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1110,6 +1174,10 @@
 			<plugin>
 				<groupId>org.complykit</groupId>
 				<artifactId>license-check-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
