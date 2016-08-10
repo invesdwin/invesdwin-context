@@ -42,7 +42,7 @@ public class LoggingRetryHook implements IRetryHook {
             sb.append(retryCount);
             sb.append(". retry a new error occured. ");
         }
-        sb.append("+ Call of ");
+        sb.append("(+) Call of ");
         sb.append(originator);
         sb.append(
                 " will be retried until success or another decision has been made. Maybe a destination is down or another transient exception occured.");
@@ -52,7 +52,7 @@ public class LoggingRetryHook implements IRetryHook {
     public static String createSuccessMessage(final RetryOriginator originator, final int retryCount) {
         Assertions.assertThat(retryCount).isGreaterThan(0);
         final StringBuilder sb = new StringBuilder();
-        sb.append("- Call of ");
+        sb.append("(-) Call of ");
         sb.append(originator);
         sb.append(" succeeded after ");
         sb.append(retryCount);
