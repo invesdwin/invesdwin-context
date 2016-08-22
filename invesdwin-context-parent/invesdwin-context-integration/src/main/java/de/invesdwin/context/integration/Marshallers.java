@@ -14,7 +14,6 @@ import org.springframework.xml.transform.StringSource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
@@ -54,11 +53,6 @@ public final class Marshallers implements ApplicationContextAware {
             public void setupModule(final SetupContext context) {
                 if (Reflections.classExists("org.hibernate.proxy.HibernateProxy")) {
                     super.setupModule(context);
-                } else {
-                    final AnnotationIntrospector ai = annotationIntrospector();
-                    if (ai != null) {
-                        context.appendAnnotationIntrospector(ai);
-                    }
                 }
             }
         });
