@@ -48,14 +48,9 @@ public final class Marshallers implements ApplicationContextAware {
 
     private ObjectMapper newObjectMapper(final boolean multiline) {
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new Hibernate4Module() {
-            @Override
-            public void setupModule(final SetupContext context) {
-                if (Reflections.classExists("org.hibernate.proxy.HibernateProxy")) {
-                    super.setupModule(context);
-                }
-            }
-        });
+        if (Reflections.classExists("org.hibernate.proxy.HibernateProxy")) {
+            mapper.registerModule(new Hibernate4Module());
+        }
         if (multiline) {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         }
