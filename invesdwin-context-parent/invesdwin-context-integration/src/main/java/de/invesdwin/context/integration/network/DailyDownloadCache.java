@@ -37,7 +37,7 @@ public class DailyDownloadCache {
     }
 
     private static File newFile(final String name) {
-        return new File(FOLDER, name + ".txt");
+        return new File(FOLDER, name.replace(":", "_") + ".txt");
     }
 
     public static void delete(final String name) {
