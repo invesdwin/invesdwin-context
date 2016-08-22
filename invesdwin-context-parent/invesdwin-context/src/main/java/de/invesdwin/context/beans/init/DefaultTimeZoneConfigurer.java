@@ -19,18 +19,19 @@ public final class DefaultTimeZoneConfigurer {
     public static final boolean INITIALIZED;
     private static final String USER_TIMEZONE_PARAM = "user.timezone";
     private static final String KEEP_USER_TIMEZONE_PARAM = "keep.user.timezone";
+    private static final String ORIGINAL_TIMEZONE;
 
     static {
         final SystemProperties systemProperties = new SystemProperties();
-        final String curTimeZone = systemProperties.getString(USER_TIMEZONE_PARAM);
+        ORIGINAL_TIMEZONE = systemProperties.getString(USER_TIMEZONE_PARAM);
         final TimeZone newTimeZone = TimeZones.getTimeZone("UTC");
         final Log log = new Log(DefaultTimeZoneConfigurer.class);
         if (!getKeepDefaultTimezone()) {
-            if (!curTimeZone.equals(newTimeZone.getID())) {
-                log.warn("Changing JVM default " + TimeZone.class.getSimpleName() + " from [" + curTimeZone + "] to ["
-                        + newTimeZone.getID() + "] in order to have commonality between systems:" + "\n- Use -D"
-                        + KEEP_USER_TIMEZONE_PARAM + "=true to keep the system default." + " Additionally using -D"
-                        + USER_TIMEZONE_PARAM + "=<" + TimeZone.class.getSimpleName()
+            if (!ORIGINAL_TIMEZONE.equals(newTimeZone.getID())) {
+                log.warn("Changing JVM default " + TimeZone.class.getSimpleName() + " from [" + ORIGINAL_TIMEZONE
+                        + "] to [" + newTimeZone.getID() + "] in order to have commonality between systems:"
+                        + "\n- Use -D" + KEEP_USER_TIMEZONE_PARAM + "=true to keep the system default."
+                        + " Additionally using -D" + USER_TIMEZONE_PARAM + "=<" + TimeZone.class.getSimpleName()
                         + "ID> allows to change the default of the JVM." + "\n- Hide this warning by using -D"
                         + USER_TIMEZONE_PARAM + "=" + newTimeZone.getID()
                         + " to specifiy the default to match the convention.");
@@ -38,7 +39,7 @@ public final class DefaultTimeZoneConfigurer {
                 setDefaultTimeZone(newTimeZone);
             }
         } else {
-            setDefaultTimeZone(TimeZones.getTimeZone(curTimeZone));
+            setDefaultTimeZone(TimeZones.getTimeZone(ORIGINAL_TIMEZONE));
         }
         log.info("Using " + USER_TIMEZONE_PARAM + "=%s", TimeZone.getDefault().getID());
         INITIALIZED = true;
@@ -76,6 +77,10 @@ public final class DefaultTimeZoneConfigurer {
         } catch (final NoSuchElementException e) {
             return false;
         }
+    }
+
+    public static String getOriginalTimezone() {
+        return ORIGINAL_TIMEZONE;
     }
 
 }
