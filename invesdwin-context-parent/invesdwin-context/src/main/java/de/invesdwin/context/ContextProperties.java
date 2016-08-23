@@ -20,18 +20,14 @@ import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
-import de.invesdwin.context.beans.init.internal.LogbackConfigurationLoader;
-import de.invesdwin.context.beans.init.internal.SystemPropertiesLoader;
-import de.invesdwin.context.beans.init.internal.XmlTransformerConfigurer;
+import de.invesdwin.context.beans.init.InvesdwinJvmModifier;
 import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.OperatingSystem;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
-import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.norva.marker.ISerializableValueObject;
-import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.Reflections;
@@ -72,14 +68,13 @@ public final class ContextProperties {
 
         if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
             try {
-                DynamicInstrumentationReflections.addPathToSystemClassLoader(TEMP_CLASSPATH_DIRECTORY);
-                Assertions.assertThat(XmlTransformerConfigurer.INITIALIZED).isTrue();
-                LogbackConfigurationLoader.loadLogbackConfiguration();
-                SystemPropertiesLoader.loadSystemProperties();
+                final InvesdwinJvmModifier jvm = InvesdwinInitializationProperties.getInvesdwinJvmModifier();
+                jvm.initTempClasspathDirectoryInSystemClassLoader(TEMP_CLASSPATH_DIRECTORY);
+                jvm.initXmlTransformerConfigurer();
+                jvm.initLogbackConfigurationLoader();
+                jvm.initSystemPropertiesLoader();
 
-                final SystemProperties systemProperties = new SystemProperties();
-                systemProperties.setString("ehcache.disk.store.dir", EHCACHE_DISK_STORE_DIRECTORY.getAbsolutePath());
-                systemProperties.setString("net.sf.ehcache.enableShutdownHook", "true");
+                jvm.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
             } catch (final Throwable t) {
                 InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
             }
@@ -233,9 +228,8 @@ public final class ContextProperties {
         } else {
             duration = systemProperties.getDuration(key);
             //So that Spring-WS also respects the timeouts...
-            final SystemProperties sysProps = new SystemProperties();
-            sysProps.setInteger("sun.net.client.defaultConnectTimeout", duration.intValue(FTimeUnit.MILLISECONDS));
-            sysProps.setInteger("sun.net.client.defaultReadTimeout", duration.intValue(FTimeUnit.MILLISECONDS));
+            InvesdwinInitializationProperties.getInvesdwinJvmModifier()
+                    .initDefaultTimeoutSystemProperties(duration);
         }
         return duration;
     }

@@ -16,14 +16,16 @@ import de.invesdwin.util.time.fdate.FDate;
 @Immutable
 public final class DefaultTimeZoneConfigurer {
 
-    public static final boolean INITIALIZED;
     private static final String USER_TIMEZONE_PARAM = "user.timezone";
     private static final String KEEP_USER_TIMEZONE_PARAM = "keep.user.timezone";
-    private static final String ORIGINAL_TIMEZONE;
+    //CHECKSTYLE:OFF
+    private static final String ORIGINAL_TIMEZONE = System.getProperty(USER_TIMEZONE_PARAM);
+    //CHECKSTYLE:ON
 
-    static {
+    private DefaultTimeZoneConfigurer() {}
+
+    public static void configure() {
         final SystemProperties systemProperties = new SystemProperties();
-        ORIGINAL_TIMEZONE = systemProperties.getString(USER_TIMEZONE_PARAM);
         final TimeZone newTimeZone = TimeZones.getTimeZone("UTC");
         final Log log = new Log(DefaultTimeZoneConfigurer.class);
         if (!getKeepDefaultTimezone()) {
@@ -42,10 +44,7 @@ public final class DefaultTimeZoneConfigurer {
             setDefaultTimeZone(TimeZones.getTimeZone(ORIGINAL_TIMEZONE));
         }
         log.info("Using " + USER_TIMEZONE_PARAM + "=%s", TimeZone.getDefault().getID());
-        INITIALIZED = true;
     }
-
-    private DefaultTimeZoneConfigurer() {}
 
     public static void setDefaultTimeZone(final TimeZone newTimeZone) {
         TimeZone.setDefault(newTimeZone);

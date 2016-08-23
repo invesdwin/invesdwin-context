@@ -19,6 +19,8 @@ public final class InvesdwinInitializationProperties {
 
     public static final String INVESDWIN_INITIALIZATION_ALLOWED = "invesdwin.initialization.allowed";
 
+    private static InvesdwinJvmModifier invesdwinJvmModifier = new InvesdwinJvmModifier();
+
     private InvesdwinInitializationProperties() {}
 
     public static synchronized boolean isInvesdwinInitializationAllowed() {
@@ -52,9 +54,21 @@ public final class InvesdwinInitializationProperties {
             //CHECKSTYLE:OFF ignore if not in standalone environment
             new RuntimeException(
                     "invesdwin initialization failed, ignoring for now since this might be a restricted environment in which partial operation is possible. Please set system property "
-                            + INVESDWIN_INITIALIZATION_ALLOWED + "=false to prevent initialization entirely.", t).printStackTrace();
+                            + INVESDWIN_INITIALIZATION_ALLOWED + "=false to prevent initialization entirely.",
+                    t).printStackTrace();
             //CHECKSTYLE:ON
         }
+    }
+
+    public static InvesdwinJvmModifier getInvesdwinJvmModifier() {
+        return invesdwinJvmModifier;
+    }
+
+    public static void setInvesdwinJvmModifier(final InvesdwinJvmModifier invesdwinJvmModifier) {
+        if (invesdwinJvmModifier == null) {
+            throw new NullPointerException("invesdwinJvmModifier should not be null!");
+        }
+        InvesdwinInitializationProperties.invesdwinJvmModifier = invesdwinJvmModifier;
     }
 
 }

@@ -7,9 +7,9 @@ import de.invesdwin.context.system.properties.SystemProperties;
 @Immutable
 public final class ProtocolRegistration {
 
-    public static final boolean INITAILIZED;
+    private ProtocolRegistration() {}
 
-    static {
+    public static void register() {
         final SystemProperties systemProperties = new SystemProperties();
         final String key = "java.protocol.handler.pkgs";
         String newValue = ProtocolRegistration.class.getPackage().getName();
@@ -18,9 +18,6 @@ public final class ProtocolRegistration {
             newValue += "|" + previousValue;
         }
         systemProperties.setString(key, newValue);
-        INITAILIZED = true;
     }
-
-    private ProtocolRegistration() {}
 
 }

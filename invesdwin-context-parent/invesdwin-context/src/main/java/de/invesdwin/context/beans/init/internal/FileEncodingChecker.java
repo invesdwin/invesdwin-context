@@ -10,9 +10,9 @@ import de.invesdwin.context.system.properties.SystemProperties;
 @Immutable
 public final class FileEncodingChecker {
 
-    public static final boolean INITIALIZED;
+    private FileEncodingChecker() {}
 
-    static {
+    public static void check() {
         final String expectedCharset = "UTF-8";
         final String fileEncodingKey = "file.encoding";
         final SystemProperties systemProperties = new SystemProperties();
@@ -37,16 +37,13 @@ public final class FileEncodingChecker {
         }
 
         if (warning.length() > 0) {
-            warning.append("If you encounter any problems with characters not displayed correctly, please start the JVM with the parameter -D");
+            warning.append(
+                    "If you encounter any problems with characters not displayed correctly, please start the JVM with the parameter -D");
             warning.append(fileEncodingKey);
             warning.append("=");
             warning.append(expectedCharset);
             new Log(FileEncodingChecker.class).warn(warning.toString());
         }
-
-        INITIALIZED = true;
     }
-
-    private FileEncodingChecker() {}
 
 }

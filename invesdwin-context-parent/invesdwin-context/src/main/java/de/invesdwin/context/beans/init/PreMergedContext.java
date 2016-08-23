@@ -16,13 +16,9 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.beans.init.internal.FileEncodingChecker;
-import de.invesdwin.context.beans.init.internal.InstrumentationHookLoader;
-import de.invesdwin.context.beans.init.internal.protocols.ProtocolRegistration;
 import de.invesdwin.context.beans.init.locations.IContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.log.error.Err;
-import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.util.assertions.Assertions;
 
 /**
@@ -37,17 +33,17 @@ public final class PreMergedContext extends ADelegateContext {
     static {
         if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
             try {
-                DynamicInstrumentationLoader.waitForInitialized();
-                Assertions.assertThat(DynamicInstrumentationLoader.initLoadTimeWeavingContext()).isNotNull();
-                InstrumentationHookLoader.runInstrumentationHooks();
+                final InvesdwinJvmModifier jvm = InvesdwinInitializationProperties
+                        .getInvesdwinJvmModifier();
+                jvm.initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
                 Assertions.assertThat(Err.UNCAUGHT_EXCEPTION_HANDLER).isNotNull();
-                Assertions.assertThat(ProtocolRegistration.INITAILIZED).isTrue();
-                Assertions.assertThat(DefaultTimeZoneConfigurer.INITIALIZED).isTrue();
+                jvm.initProtocolRegistration();
+                jvm.initDefaultTimezoneConfigurer();
                 /*
                  * this must happen after properties have been loaded so that an overwritten property gets detected
                  */
-                Assertions.assertThat(FileEncodingChecker.INITIALIZED).isTrue();
+                jvm.initFileEncodingChecker();
             } catch (final Throwable t) {
                 InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
             }
