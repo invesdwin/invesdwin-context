@@ -228,8 +228,7 @@ public final class ContextProperties {
         } else {
             duration = systemProperties.getDuration(key);
             //So that Spring-WS also respects the timeouts...
-            InvesdwinInitializationProperties.getInvesdwinJvmModifier()
-                    .initDefaultTimeoutSystemProperties(duration);
+            InvesdwinInitializationProperties.getInvesdwinJvmModifier().initDefaultTimeoutSystemProperties(duration);
         }
         return duration;
     }
@@ -265,6 +264,10 @@ public final class ContextProperties {
         defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*(Test|Stub)")));
         defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*\\.test\\..*")));
         ClassPathScanner.setDefaultExcludeFilters(defaultExcludeFilters);
+    }
+
+    public static String getProcessId() {
+        return DynamicInstrumentationProperties.getProcessId();
     }
 
 }
