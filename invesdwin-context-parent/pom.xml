@@ -995,6 +995,7 @@
 							<param>joda-time.*</param>
 							<param>javax\.jdo.*</param>
 							<param>org\.jasig\.cas.*</param>
+							<param>io\.mappedbus:mappedbus.*</param>
 							<!-- MIT license -->
 							<param>org\.slf4j.*</param>
 							<param>org\.bouncycastle.*</param>
