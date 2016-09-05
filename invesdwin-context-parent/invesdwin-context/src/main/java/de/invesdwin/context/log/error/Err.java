@@ -33,7 +33,7 @@ public final class Err {
             }
         };
         if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
-            InvesdwinInitializationProperties.getInvesdwinJvmModifier().initDefaultUncaughtExceptionHandler(handler);
+            InvesdwinInitializationProperties.getInvesdwinInitializers().initDefaultUncaughtExceptionHandler(handler);
         }
         UNCAUGHT_EXCEPTION_HANDLER = handler;
     }

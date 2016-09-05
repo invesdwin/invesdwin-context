@@ -33,17 +33,17 @@ public final class PreMergedContext extends ADelegateContext {
     static {
         if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
             try {
-                final InvesdwinJvmModifier jvm = InvesdwinInitializationProperties
-                        .getInvesdwinJvmModifier();
-                jvm.initInstrumentation();
+                final InvesdwinInitializers initializers = InvesdwinInitializationProperties
+                        .getInvesdwinInitializers();
+                initializers.initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
                 Assertions.assertThat(Err.UNCAUGHT_EXCEPTION_HANDLER).isNotNull();
-                jvm.initProtocolRegistration();
-                jvm.initDefaultTimezoneConfigurer();
+                initializers.initProtocolRegistration();
+                initializers.initDefaultTimezoneConfigurer();
                 /*
                  * this must happen after properties have been loaded so that an overwritten property gets detected
                  */
-                jvm.initFileEncodingChecker();
+                initializers.initFileEncodingChecker();
             } catch (final Throwable t) {
                 InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
             }

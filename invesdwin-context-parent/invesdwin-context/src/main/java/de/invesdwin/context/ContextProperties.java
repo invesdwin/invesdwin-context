@@ -1,8 +1,6 @@
 package de.invesdwin.context;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -13,14 +11,13 @@ import java.util.regex.Pattern;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
-import de.invesdwin.context.beans.init.InvesdwinJvmModifier;
+import de.invesdwin.context.beans.init.InvesdwinInitializers;
 import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
@@ -60,21 +57,20 @@ public final class ContextProperties {
     private static Set<String> basePackages;
 
     static {
-        IS_TEST_ENVIRONMENT = determineTestEnvironment();
+        final InvesdwinInitializers initializers = InvesdwinInitializationProperties.getInvesdwinInitializers();
+        IS_TEST_ENVIRONMENT = initializers.initIsTestEnvironment();
 
-        TEMP_DIRECTORY = DynamicInstrumentationProperties.TEMP_DIRECTORY;
-        TEMP_CLASSPATH_DIRECTORY = getTempClasspathDirectory();
+        TEMP_DIRECTORY = initializers.initTempDirectory();
+        TEMP_CLASSPATH_DIRECTORY = initializers.initTempClasspathDirectory(TEMP_DIRECTORY);
         EHCACHE_DISK_STORE_DIRECTORY = new File(TEMP_DIRECTORY, "ehcache");
 
         if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
             try {
-                final InvesdwinJvmModifier jvm = InvesdwinInitializationProperties.getInvesdwinJvmModifier();
-                jvm.initTempClasspathDirectoryInSystemClassLoader(TEMP_CLASSPATH_DIRECTORY);
-                jvm.initXmlTransformerConfigurer();
-                jvm.initLogbackConfigurationLoader();
-                jvm.initSystemPropertiesLoader();
+                initializers.initXmlTransformerConfigurer();
+                initializers.initLogbackConfigurationLoader();
+                initializers.initSystemPropertiesLoader();
 
-                jvm.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
+                initializers.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
             } catch (final Throwable t) {
                 InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
             }
@@ -90,14 +86,6 @@ public final class ContextProperties {
 
     private ContextProperties() {}
 
-    private static boolean determineTestEnvironment() {
-        //since java classes are packaged in src/main/java, we check if the test directory exists and if it actually contains any tests
-        final File srcTestJavaDir = new File("src/test/java");
-        final boolean testClassesExist = srcTestJavaDir.exists() && srcTestJavaDir.isDirectory()
-                && srcTestJavaDir.list().length > 0;
-        return testClassesExist;
-    }
-
     /**
      * Invesdwin specific home dir that gets shared between multiple processes.
      * 
@@ -105,13 +93,8 @@ public final class ContextProperties {
      */
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
-            String home = getSystemHomeDirectory();
-            if (IS_TEST_ENVIRONMENT) {
-                home = ".";
-            }
-            final File homeDir = new File(home, ".invesdwin");
-            createDirectory(homeDir);
-            homeDirectory = homeDir;
+            homeDirectory = InvesdwinInitializationProperties.getInvesdwinInitializers()
+                    .initHomeDirectory(getSystemHomeDirectory(), IS_TEST_ENVIRONMENT);
         }
         return homeDirectory;
     }
@@ -144,36 +127,10 @@ public final class ContextProperties {
 
     public static synchronized File getLogDirectory() {
         if (logDirectory == null) {
-            String logDirSr = "log";
-            if (!ContextProperties.IS_TEST_ENVIRONMENT) {
-                //Productive logs should not mix each other between processes
-                logDirSr += "/";
-                logDirSr += InvesdwinInitializationProperties.START_OF_APPLICATION_CLOCK_TIME
-                        .toString("yyyyMMddHHmmss");
-                logDirSr += "_";
-                logDirSr += ManagementFactory.getRuntimeMXBean().getName();
-            }
-            final File logDir = new File(logDirSr);
-            createDirectory(logDir);
-            logDirectory = logDir;
+            logDirectory = InvesdwinInitializationProperties.getInvesdwinInitializers()
+                    .initLogDirectory(IS_TEST_ENVIRONMENT);
         }
         return logDirectory;
-    }
-
-    private static File getTempClasspathDirectory() {
-        final File tempClasspathDir = new File(TEMP_DIRECTORY, "cp");
-        createDirectory(tempClasspathDir);
-        return tempClasspathDir;
-    }
-
-    private static void createDirectory(final File dir) {
-        if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
-            try {
-                FileUtils.forceMkdir(dir);
-            } catch (final IOException e) {
-                throw Err.process(e);
-            }
-        }
     }
 
     /**
@@ -181,9 +138,7 @@ public final class ContextProperties {
      */
     public static synchronized File getCacheDirectory() {
         if (cacheDirectory == null) {
-            final File cacheDir = new File("cache");
-            createDirectory(cacheDir);
-            cacheDirectory = cacheDir;
+            cacheDirectory = InvesdwinInitializationProperties.getInvesdwinInitializers().initCacheDirectory();
         }
         return cacheDirectory;
     }
@@ -228,7 +183,7 @@ public final class ContextProperties {
         } else {
             duration = systemProperties.getDuration(key);
             //So that Spring-WS also respects the timeouts...
-            InvesdwinInitializationProperties.getInvesdwinJvmModifier().initDefaultTimeoutSystemProperties(duration);
+            InvesdwinInitializationProperties.getInvesdwinInitializers().initDefaultTimeoutSystemProperties(duration);
         }
         return duration;
     }

@@ -19,7 +19,7 @@ public final class InvesdwinInitializationProperties {
 
     public static final String INVESDWIN_INITIALIZATION_ALLOWED = "invesdwin.initialization.allowed";
 
-    private static InvesdwinJvmModifier invesdwinJvmModifier = new InvesdwinJvmModifier();
+    private static InvesdwinInitializers invesdwinInitializers = new InvesdwinInitializers();
 
     private InvesdwinInitializationProperties() {}
 
@@ -60,15 +60,15 @@ public final class InvesdwinInitializationProperties {
         }
     }
 
-    public static InvesdwinJvmModifier getInvesdwinJvmModifier() {
-        return invesdwinJvmModifier;
+    public static InvesdwinInitializers getInvesdwinInitializers() {
+        return invesdwinInitializers;
     }
 
-    public static void setInvesdwinJvmModifier(final InvesdwinJvmModifier invesdwinJvmModifier) {
-        if (invesdwinJvmModifier == null) {
+    public static void setInvesdwinInitializers(final InvesdwinInitializers invesdwinInitializers) {
+        if (invesdwinInitializers == null) {
             throw new NullPointerException("invesdwinJvmModifier should not be null!");
         }
-        InvesdwinInitializationProperties.invesdwinJvmModifier = invesdwinJvmModifier;
+        InvesdwinInitializationProperties.invesdwinInitializers = invesdwinInitializers;
     }
 
 }
