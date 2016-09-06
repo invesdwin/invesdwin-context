@@ -125,7 +125,7 @@ Also note that with this module generally resources are served from the classpat
 This module bundles a tools and utilities for creating reports of various types:
 
 - **PDF**: create PDF files using [DynamicReports](http://www.dynamicreports.org/) which is a pure Java API frontend for [JasperReports](http://community.jaspersoft.com/project/jasperreports-library) so you don't have to fiddle around with JRXML files.
-- **Excel**: sometimes tabular data is favourable since it allows easy editing of the raw data, this is handled by [Apache POI]( https://poi.apache.org/).
+- **Excel**: sometimes tabular data is favorable since it allows easy editing of the raw data, this is handled by [Apache POI]( https://poi.apache.org/).
 - **Charts**: you might want to include charts in your reports, this can be handled by [JFreeChart](http://www.jfree.org/jfreechart/). Notable utilties provided for this are:
 	- `Aggragating(Ohlc)PointsCollection`: generating charts from large datasets is very slow and memory intensive without having any visual benefit, thus it makes sense to prefilter the data by aggregating points into to-be-pixels. This is handled by this special collection for XY-Points and OHLC-Bars spectively. You normally don't need more than around 10.000 datapoints for a XY-Chart or more than 1.000 datapoints for a OHLC-Chart to look good.
 	- `AJFreeChartVisitor`: allows visit and modify chart elements to apply some common modifications on charts. The included `JFreeChartLocaleChanger` and `JFreeChartWeekendGapRemover` are two examples for such cases, what they do should be obvious from their names.
