@@ -122,7 +122,7 @@ Also note that with this module generally resources are served from the classpat
 
 ## Report Module
 
-This module bundles a tools and utilities for creating reports of various types:
+This module bundles tools and utilities for creating reports of various types:
 
 - **PDF**: create PDF files using [DynamicReports](http://www.dynamicreports.org/) which is a pure Java API frontend for [JasperReports](http://community.jaspersoft.com/project/jasperreports-library) so you don't have to fiddle around with JRXML files.
 - **Excel**: sometimes tabular data is favorable since it allows easy editing of the raw data, this is handled by [Apache POI]( https://poi.apache.org/).
