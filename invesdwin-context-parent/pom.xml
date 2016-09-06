@@ -14,6 +14,7 @@
 		<module>invesdwin-context-security</module>
 		<module>invesdwin-context-security-kerberos</module>
 		<module>invesdwin-context-webserver</module>
+		<module>invesdwin-context-report</module>
 	</modules>
 
 	<licenses>
@@ -75,6 +76,8 @@
 		<version.commons-configuration>1.9</version.commons-configuration>
 		<version.commons-pool2>2.3</version.commons-pool2>
 		<version.commons-compress>1.5</version.commons-compress>
+		<version.commons-lang3>3.3.2</version.commons-lang3>
+		<version.commons-beanutils>1.9.2</version.commons-beanutils>
 
 		<version.spring-batch>3.0.7.RELEASE</version.spring-batch>
 		<version.spring-retry>1.1.3.RELEASE</version.spring-retry>
@@ -86,6 +89,16 @@
 
 		<version.apacheds>2.0.0-M23</version.apacheds>
 		<version.spring-security-kerberos>1.0.1.RELEASE</version.spring-security-kerberos>
+		
+		<!-- reports -->
+		<version.jfreechart>1.0.19</version.jfreechart>
+		<version.dynamicreports>4.1.1</version.dynamicreports>
+		<version.jasperreports>6.3.0</version.jasperreports>
+		<version.batik>1.8</version.batik>
+		<version.xml-apis>1.4.01</version.xml-apis>
+		<version.itext>2.1.7.js5</version.itext>
+		<version.bcprov>1.46</version.bcprov>
+		<version.poi>3.14</version.poi>
 
 		<version.h2>1.3.173</version.h2>
 		<version.mysql-connector-java>5.1.31</version.mysql-connector-java>
@@ -131,6 +144,11 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-webserver</artifactId>
+				<version>${version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-report</artifactId>
 				<version>${version.invesdwin-context}</version>
 			</dependency>
 
@@ -222,6 +240,22 @@
 					<exclusion>
 						<artifactId>xz</artifactId>
 						<groupId>org.tukaani</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${version.commons-lang3}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>${version.commons-beanutils}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -397,6 +431,167 @@
 						<artifactId>commons-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			
+			<!-- reports -->
+			<dependency>
+				<groupId>org.jfree</groupId>
+				<artifactId>jfreechart</artifactId>
+				<version>${version.jfreechart}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.jasperreports</groupId>
+				<artifactId>jasperreports</artifactId>
+				<version>${version.jasperreports}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>jcommon</artifactId>
+						<groupId>jfree</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jfreechart</artifactId>
+						<groupId>jfree</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>xml-apis</artifactId>
+						<groupId>xml-apis</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jdtcore</artifactId>
+						<groupId>eclipse</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>castor</artifactId>
+						<groupId>org.codehaus.castor</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>olap4j</artifactId>
+						<groupId>org.olap4j</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>castor-xml</artifactId>
+						<groupId>org.codehaus.castor</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jackson-core</artifactId>
+						<groupId>com.fasterxml.jackson.core</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jackson-databind</artifactId>
+						<groupId>com.fasterxml.jackson.core</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jackson-annotations</artifactId>
+						<groupId>com.fasterxml.jackson.core</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>lucene-core</artifactId>
+						<groupId>org.apache.lucene</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>lucene-analyzers-common</artifactId>
+						<groupId>org.apache.lucene</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>lucene-queryparser</artifactId>
+						<groupId>org.apache.lucene</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>ecj</artifactId>
+						<groupId>org.eclipse.jdt.core.compiler</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>core</artifactId>
+						<groupId>com.google.zxing</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.sourceforge.dynamicreports</groupId>
+				<artifactId>dynamicreports-core</artifactId>
+				<version>${version.dynamicreports}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jdtcore</artifactId>
+						<groupId>eclipse</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>castor</artifactId>
+						<groupId>org.codehaus.castor</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>barcode4j</artifactId>
+						<groupId>net.sf.barcode4j</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bcprov-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15</artifactId>
+				<version>${version.bcprov}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-svggen</artifactId>
+				<version>${version.batik}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>batik-bridge</artifactId>
+				<version>${version.batik}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>xalan</artifactId>
+						<groupId>xalan</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.lowagie</groupId>
+				<artifactId>itext</artifactId>
+				<version>${version.itext}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>bcmail-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bcprov-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bctsp-jdk14</artifactId>
+						<groupId>org.bouncycastle</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId>
+				<version>${version.xml-apis}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${version.poi}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
