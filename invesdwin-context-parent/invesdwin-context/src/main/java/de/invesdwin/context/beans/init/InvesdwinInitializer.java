@@ -31,7 +31,7 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
  *
  */
 @NotThreadSafe
-public class InvesdwinInitializers {
+public class InvesdwinInitializer {
 
     public void initInstrumentation() {
         DynamicInstrumentationLoader.waitForInitialized();

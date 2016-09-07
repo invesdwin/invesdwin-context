@@ -17,7 +17,7 @@ import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
-import de.invesdwin.context.beans.init.InvesdwinInitializers;
+import de.invesdwin.context.beans.init.InvesdwinInitializer;
 import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
@@ -57,20 +57,20 @@ public final class ContextProperties {
     private static Set<String> basePackages;
 
     static {
-        final InvesdwinInitializers initializers = InvesdwinInitializationProperties.getInvesdwinInitializers();
-        IS_TEST_ENVIRONMENT = initializers.initIsTestEnvironment();
+        final InvesdwinInitializer initializer = InvesdwinInitializationProperties.getInitializer();
+        IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
 
-        TEMP_DIRECTORY = initializers.initTempDirectory();
-        TEMP_CLASSPATH_DIRECTORY = initializers.initTempClasspathDirectory(TEMP_DIRECTORY);
+        TEMP_DIRECTORY = initializer.initTempDirectory();
+        TEMP_CLASSPATH_DIRECTORY = initializer.initTempClasspathDirectory(TEMP_DIRECTORY);
         EHCACHE_DISK_STORE_DIRECTORY = new File(TEMP_DIRECTORY, "ehcache");
 
         if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
             try {
-                initializers.initXmlTransformerConfigurer();
-                initializers.initLogbackConfigurationLoader();
-                initializers.initSystemPropertiesLoader();
+                initializer.initXmlTransformerConfigurer();
+                initializer.initLogbackConfigurationLoader();
+                initializer.initSystemPropertiesLoader();
 
-                initializers.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
+                initializer.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
             } catch (final Throwable t) {
                 InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
             }
@@ -93,7 +93,7 @@ public final class ContextProperties {
      */
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
-            homeDirectory = InvesdwinInitializationProperties.getInvesdwinInitializers()
+            homeDirectory = InvesdwinInitializationProperties.getInitializer()
                     .initHomeDirectory(getSystemHomeDirectory(), IS_TEST_ENVIRONMENT);
         }
         return homeDirectory;
@@ -127,7 +127,7 @@ public final class ContextProperties {
 
     public static synchronized File getLogDirectory() {
         if (logDirectory == null) {
-            logDirectory = InvesdwinInitializationProperties.getInvesdwinInitializers()
+            logDirectory = InvesdwinInitializationProperties.getInitializer()
                     .initLogDirectory(IS_TEST_ENVIRONMENT);
         }
         return logDirectory;
@@ -138,7 +138,7 @@ public final class ContextProperties {
      */
     public static synchronized File getCacheDirectory() {
         if (cacheDirectory == null) {
-            cacheDirectory = InvesdwinInitializationProperties.getInvesdwinInitializers().initCacheDirectory();
+            cacheDirectory = InvesdwinInitializationProperties.getInitializer().initCacheDirectory();
         }
         return cacheDirectory;
     }
@@ -183,7 +183,7 @@ public final class ContextProperties {
         } else {
             duration = systemProperties.getDuration(key);
             //So that Spring-WS also respects the timeouts...
-            InvesdwinInitializationProperties.getInvesdwinInitializers().initDefaultTimeoutSystemProperties(duration);
+            InvesdwinInitializationProperties.getInitializer().initDefaultTimeoutSystemProperties(duration);
         }
         return duration;
     }
