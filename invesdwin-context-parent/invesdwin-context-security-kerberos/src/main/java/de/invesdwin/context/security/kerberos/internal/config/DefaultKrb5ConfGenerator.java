@@ -2,6 +2,7 @@ package de.invesdwin.context.security.kerberos.internal.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +59,9 @@ public class DefaultKrb5ConfGenerator {
 
     private String getTemplate() throws IOException {
         final ClassPathResource templateResource = new ClassPathResource("META-INF/template.krb5.conf");
-        final String template = IOUtils.toString(templateResource.getInputStream());
+        final InputStream in = templateResource.getInputStream();
+        final String template = IOUtils.toString(in);
+        in.close();
         return template;
     }
 

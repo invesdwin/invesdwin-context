@@ -2,6 +2,7 @@ package de.invesdwin.context.beans.init;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Arrays;
@@ -69,7 +70,9 @@ public class EhCacheConfigurationMerger {
 
     private String getXmlTemplate() throws IOException {
         final ClassPathResource templateResource = new ClassPathResource("META-INF/template.ehcache.xml");
-        final String template = IOUtils.toString(templateResource.getInputStream());
+        final InputStream in = templateResource.getInputStream();
+        final String template = IOUtils.toString(in);
+        in.close();
         return template;
     }
 
@@ -83,7 +86,8 @@ public class EhCacheConfigurationMerger {
 
         for (final Resource resource : xmls) {
             final XMLInputFactory xif = XMLInputFactory.newInstance();
-            final XMLStreamReader xsr = xif.createXMLStreamReader(resource.getInputStream());
+            final InputStream in = resource.getInputStream();
+            final XMLStreamReader xsr = xif.createXMLStreamReader(in);
             xsr.nextTag(); //ehcache tag skipped
 
             while (xsr.nextTag() == XMLStreamConstants.START_ELEMENT) {
@@ -95,6 +99,8 @@ public class EhCacheConfigurationMerger {
                 sb.append(element);
                 sb.append("\n");
             }
+            xsr.close();
+            in.close();
         }
         return sb.toString();
     }

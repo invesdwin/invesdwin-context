@@ -1,6 +1,7 @@
 package de.invesdwin.context.test;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.test.context.ContextLoader;
 import org.springframework.test.context.support.GenericXmlContextLoader;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.beans.hook.PreStartupHookManager;
 import de.invesdwin.context.beans.hook.StartupHookManager;
 import de.invesdwin.context.beans.init.ComponentScanConfigurer;
 import de.invesdwin.context.beans.init.MergedContext;
@@ -37,6 +39,7 @@ public class TestContextLoader implements ContextLoader {
 
     public static final String CTX_DUMMY = "CTX_DUMMY";
     private static final AtomicBoolean FIRST_INITIALIZATION = new AtomicBoolean(true);
+    private static final AtomicBoolean PRESTARTUP_HOOKS_STARTED = new AtomicBoolean(false);
 
     private static volatile ATest currentTest;
 
@@ -102,6 +105,10 @@ public class TestContextLoader implements ContextLoader {
     @Override
     public ApplicationContext loadContext(final String... locations) throws Exception {
         try {
+            if (!PRESTARTUP_HOOKS_STARTED.getAndSet(true)) {
+                PreMergedContext.getInstance().getBean(PreStartupHookManager.class).start();
+            }
+
             final List<PositionedResource> newLocations = new ArrayList<PositionedResource>();
             for (final String location : removeLocationsUUID(locations)) {
                 if (!location.trim().endsWith(CTX_DUMMY)) {
@@ -114,9 +121,11 @@ public class TestContextLoader implements ContextLoader {
 
             for (final Entry<String, Resource> e : new ComponentScanConfigurer().getApplicationContextXmlConfigs(false)
                     .entrySet()) {
-                final File xmlFile = new File(ContextProperties.TEMP_DIRECTORY, "ctx.component.scan_" + e.getKey()
-                        + ".xml");
-                FileUtils.write(xmlFile, IOUtils.toString(e.getValue().getInputStream()));
+                final File xmlFile = new File(ContextProperties.TEMP_DIRECTORY,
+                        "ctx.component.scan_" + e.getKey() + ".xml");
+                final InputStream in = e.getValue().getInputStream();
+                FileUtils.write(xmlFile, IOUtils.toString(in));
+                in.close();
                 final FileSystemResource fsResource = new FileSystemResource(xmlFile);
                 newLocations.add(PositionedResource.of(fsResource, null));
                 xmlFile.deleteOnExit();

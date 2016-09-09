@@ -56,10 +56,11 @@ public class LogbackConfigurationMerger {
         }
     }
 
-    private void extractComponents(final Resource resource) throws XMLStreamException, IOException,
-    TransformerException {
+    private void extractComponents(final Resource resource)
+            throws XMLStreamException, IOException, TransformerException {
         final XMLInputFactory xif = XMLInputFactory.newInstance();
-        final XMLStreamReader xsr = xif.createXMLStreamReader(resource.getInputStream());
+        final InputStream in = resource.getInputStream();
+        final XMLStreamReader xsr = xif.createXMLStreamReader(in);
         xsr.nextTag(); //configuration tag skipped
 
         while (xsr.nextTag() == XMLStreamConstants.START_ELEMENT) {
@@ -76,6 +77,8 @@ public class LogbackConfigurationMerger {
                 miscs.add(element);
             }
         }
+        xsr.close();
+        in.close();
     }
 
     public InputStream getInputStream() {

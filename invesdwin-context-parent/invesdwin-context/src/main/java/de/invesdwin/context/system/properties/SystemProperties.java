@@ -1,6 +1,7 @@
 package de.invesdwin.context.system.properties;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,7 +78,9 @@ public class SystemProperties extends AProperties {
     public static void setSystemProperties(final Resource propsResource, final boolean overwrite) {
         try {
             final Properties props = new Properties();
-            props.load(propsResource.getInputStream());
+            final InputStream in = propsResource.getInputStream();
+            props.load(in);
+            in.close();
             setSystemProperties(props, overwrite);
         } catch (final IOException e) {
             throw Err.process(e);
