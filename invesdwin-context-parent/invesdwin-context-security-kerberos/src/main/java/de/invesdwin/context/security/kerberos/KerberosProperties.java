@@ -16,6 +16,7 @@ import org.springframework.security.kerberos.authentication.sun.GlobalSunJaasKer
 import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.security.kerberos.internal.config.DefaultKrb5ConfGenerator;
 import de.invesdwin.context.security.kerberos.internal.config.DefaultKrb5KeytabGenerator;
+import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 
@@ -60,7 +61,8 @@ public final class KerberosProperties {
             //read passphrase
             final String kerberosServicePassphraseKey = "KERBEROS_SERVICE_PASSPHRASE";
             if (systemProperties.containsValue(kerberosServicePassphraseKey)) {
-                KERBEROS_SERVICE_PASSPHRASE = systemProperties.getString(kerberosServicePassphraseKey);
+                KERBEROS_SERVICE_PASSPHRASE = systemProperties.getStringWithSecurityWarning(kerberosServicePassphraseKey,
+                        IProperties.INVESDWIN_DEFAULT_PASSWORD);
             } else {
                 KERBEROS_SERVICE_PASSPHRASE = null;
             }

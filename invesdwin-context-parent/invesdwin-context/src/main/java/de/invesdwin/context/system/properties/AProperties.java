@@ -17,6 +17,8 @@ import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.AbstractFileConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 
+import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.uri.Addresses;
@@ -28,6 +30,8 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @ThreadSafe
 public abstract class AProperties implements IProperties {
+
+    private final Log log = new Log(this);
 
     @GuardedBy("this")
     private AbstractConfiguration delegate;
@@ -147,6 +151,21 @@ public abstract class AProperties implements IProperties {
     public synchronized String getString(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
+    }
+
+    @Override
+    public synchronized String getStringWithSecurityWarning(final String key, final String defaultPasswordWarning) {
+        final String keyPath = prefix(key);
+        final String password = maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
+        if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultPasswordWarning != null
+                && defaultPasswordWarning.equals(password)) {
+            log.warn(
+                    "Property [%s] is currently set to the default value [%s] in a production environment, "
+                            + "please override this value because otherwise you might expose yourself to a security risk. "
+                            + "See the invesdwin-context documentation for details on how to do this.",
+                    keyPath, defaultPasswordWarning);
+        }
+        return password;
     }
 
     @Override

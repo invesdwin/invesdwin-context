@@ -3,6 +3,7 @@ package de.invesdwin.context.beans.init;
 import javax.annotation.concurrent.Immutable;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
 @Immutable
 public final class ApplicationContexts {
@@ -19,6 +20,11 @@ public final class ApplicationContexts {
                 parent = newParent;
             }
         }
+    }
+
+    public static boolean beanExists(final GenericApplicationContext ctx, final Class<?> beanType) {
+        final String[] beans = ctx.getBeanFactory().getBeanNamesForType(beanType, false, false);
+        return beans.length != 0;
     }
 
 }

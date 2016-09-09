@@ -193,6 +193,16 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public String getStringWithSecurityWarning(final String key, final String defaultPasswordWarning) {
+        return get(key, new Callable<String>() {
+            @Override
+            public String call() {
+                return delegate.getStringWithSecurityWarning(key, defaultPasswordWarning);
+            }
+        });
+    }
+
+    @Override
     public <T extends Enum<T>> T getEnum(final Class<T> enumType, final String key) {
         return get(key, new Callable<T>() {
             @Override

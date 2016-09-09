@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import org.springframework.context.support.GenericApplicationContext;
 
+import de.invesdwin.context.beans.init.ApplicationContexts;
+
 /**
  * With this you can use the bootstrap process to check which beans are configured and load the appropriate spring
  * config for it. This will scan for beans that have the @Named annotation. Beans that get instantiated after the
@@ -36,12 +38,15 @@ public abstract class ABeanDependantContextLocation implements IContextLocation 
     @Override
     public List<PositionedResource> getContextResources() {
         final Class<?> beanType = getDependantBeanType();
-        final String[] beans = ctx.getBeanFactory().getBeanNamesForType(beanType, false, false);
-        if (beans.length != 0) {
+        if (beanExists(beanType)) {
             return getContextResourcesIfBeanExists();
         } else {
             return getContextResourcesIfBeanNotExists();
         }
+    }
+
+    protected boolean beanExists(final Class<?> beanType) {
+        return ApplicationContexts.beanExists(ctx, beanType);
     }
 
 }

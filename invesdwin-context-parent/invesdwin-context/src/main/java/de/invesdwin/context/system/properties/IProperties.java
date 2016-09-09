@@ -15,6 +15,8 @@ import de.invesdwin.util.time.fdate.FDate;
 
 public interface IProperties {
 
+    String INVESDWIN_DEFAULT_PASSWORD = "invesdwin";
+
     boolean containsKey(String key);
 
     boolean containsValue(String key);
@@ -72,5 +74,7 @@ public interface IProperties {
     String getErrorMessage(String key, Object value, Class<?> expectedType, String message);
 
     void setEnum(String key, Enum<?> value);
+
+    String getStringWithSecurityWarning(String key, String defaultValueWarning);
 
 }
