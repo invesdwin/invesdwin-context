@@ -89,6 +89,12 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public void setBoolean(final String key, final Boolean value) {
+        final String keyPath = prefix(key);
+        setProperty(keyPath, Strings.asString(value));
+    }
+
+    @Override
     public synchronized Byte getByte(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getByte(keyPath, null));
@@ -115,7 +121,7 @@ public abstract class AProperties implements IProperties {
     @Override
     public synchronized void setInteger(final String key, final Integer value) {
         final String keyPath = prefix(key);
-        setProperty(keyPath, String.valueOf(value));
+        setProperty(keyPath, Strings.asString(value));
     }
 
     @Override
@@ -209,18 +215,26 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public synchronized <T> List<T> getList(final String key) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public synchronized List<String> getList(final String key) {
         final String keyPath = prefix(key);
-        //provoke exception if something is not set
-        Assertions.assertThat(getDelegate().getString(keyPath)).isNotNull();
+        if (getString(keyPath) == null) {
+            return null;
+        }
         final boolean delimiterParsinDisabledPreviously = getDelegate().isDelimiterParsingDisabled();
         try {
             updateDelimiterParsingDisabled(false);
-            return (List<T>) getDelegate().getList(keyPath);
+            return (List) getDelegate().getList(keyPath);
         } finally {
             updateDelimiterParsingDisabled(delimiterParsinDisabledPreviously);
         }
+    }
+
+    @Override
+    public void setList(final String key, final List<String> value) {
+        final String keyPath = prefix(key);
+        final String valueStr = Strings.asString(value, String.valueOf(getDelegate().getListDelimiter()));
+        getDelegate().setProperty(keyPath, valueStr);
     }
 
     private String prefix(final String key) {

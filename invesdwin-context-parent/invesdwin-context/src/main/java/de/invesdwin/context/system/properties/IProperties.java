@@ -23,6 +23,8 @@ public interface IProperties {
 
     Boolean getBoolean(String key);
 
+    void setBoolean(String key, Boolean value);
+
     Byte getByte(String key);
 
     Double getDouble(String key);
@@ -51,7 +53,9 @@ public interface IProperties {
 
     String[] getStringArray(String key);
 
-    <T> List<T> getList(String key);
+    List<String> getList(String key);
+
+    void setList(String key, List<String> value);
 
     FDate getDate(String key);
 

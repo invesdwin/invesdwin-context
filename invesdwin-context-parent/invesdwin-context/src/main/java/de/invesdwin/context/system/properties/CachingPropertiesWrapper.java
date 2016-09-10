@@ -243,11 +243,21 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
-    public <T> List<T> getList(final String key) {
-        return get(key, new Callable<List<T>>() {
+    public List<String> getList(final String key) {
+        return get(key, new Callable<List<String>>() {
             @Override
-            public List<T> call() {
+            public List<String> call() {
                 return delegate.getList(key);
+            }
+        });
+    }
+
+    @Override
+    public void setList(final String key, final List<String> value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setList(key, value);
             }
         });
     }
@@ -341,6 +351,16 @@ public final class CachingPropertiesWrapper implements IProperties {
     public String getErrorMessage(final String key, final Object value, final Class<?> expectedType,
             final String message) {
         return delegate.getErrorMessage(key, value, expectedType, message);
+    }
+
+    @Override
+    public void setBoolean(final String key, final Boolean value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setBoolean(key, value);
+            }
+        });
     }
 
 }
