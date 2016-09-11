@@ -28,7 +28,7 @@ public final class PlatformInitializerProperties {
     private static DefaultPlatformInitializer initializer = new DefaultPlatformInitializer();
 
     static {
-        final String expectedPropertiesPrefix = PlatformInitializerProperties.class.getSimpleName();
+        final String expectedPropertiesPrefix = PlatformInitializerProperties.class.getName();
         if (!expectedPropertiesPrefix.equals(PROPERTIES_PREFIX)) {
             throw new IllegalStateException("PROPERTIES_PREFIX [" + PROPERTIES_PREFIX + "] does not equal expected ["
                     + expectedPropertiesPrefix + "]. Maybe you moved the class but did not update the constant?");
