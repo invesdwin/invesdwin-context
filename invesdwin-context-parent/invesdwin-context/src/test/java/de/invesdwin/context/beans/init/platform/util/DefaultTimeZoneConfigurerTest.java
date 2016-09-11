@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init;
+package de.invesdwin.context.beans.init.platform.util;
 
 import java.util.TimeZone;
 

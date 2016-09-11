@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init.internal.protocols;
+package de.invesdwin.context.beans.init.platform.util.internal.protocols;
 
 import javax.annotation.concurrent.Immutable;
 

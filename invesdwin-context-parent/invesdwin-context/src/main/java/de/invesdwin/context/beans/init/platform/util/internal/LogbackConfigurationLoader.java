@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init.internal;
+package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +65,8 @@ public final class LogbackConfigurationLoader {
             }
 
             final List<String> configStrings = Resources.extractMetaInfResourceLocations(configs);
-            LOG.info("Loading " + configs.size() + " logback " + configSingularPlural + " " + configStrings);
+            LOG.info("Loading " + configs.size() + " logback " + configSingularPlural + " from classpath "
+                    + configStrings);
         }
     }
 

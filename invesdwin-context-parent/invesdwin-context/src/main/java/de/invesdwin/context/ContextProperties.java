@@ -16,9 +16,8 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
-import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
-import de.invesdwin.context.beans.init.InvesdwinInitializer;
 import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
+import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.OperatingSystem;
@@ -57,14 +56,14 @@ public final class ContextProperties {
     private static Set<String> basePackages;
 
     static {
-        final InvesdwinInitializer initializer = InvesdwinInitializationProperties.getInitializer();
+        final DefaultPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
         IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
 
         TEMP_DIRECTORY = initializer.initTempDirectory();
         TEMP_CLASSPATH_DIRECTORY = initializer.initTempClasspathDirectory(TEMP_DIRECTORY);
         EHCACHE_DISK_STORE_DIRECTORY = new File(TEMP_DIRECTORY, "ehcache");
 
-        if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
+        if (PlatformInitializerProperties.isAllowed()) {
             try {
                 initializer.initXmlTransformerConfigurer();
                 initializer.initLogbackConfigurationLoader();
@@ -72,7 +71,7 @@ public final class ContextProperties {
 
                 initializer.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
             } catch (final Throwable t) {
-                InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
         }
 
@@ -93,8 +92,8 @@ public final class ContextProperties {
      */
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
-            homeDirectory = InvesdwinInitializationProperties.getInitializer()
-                    .initHomeDirectory(getSystemHomeDirectory(), IS_TEST_ENVIRONMENT);
+            homeDirectory = PlatformInitializerProperties.getInitializer().initHomeDirectory(getSystemHomeDirectory(),
+                    IS_TEST_ENVIRONMENT && !PlatformInitializerProperties.isKeepSystemHomeDuringTests());
         }
         return homeDirectory;
     }
@@ -127,8 +126,7 @@ public final class ContextProperties {
 
     public static synchronized File getLogDirectory() {
         if (logDirectory == null) {
-            logDirectory = InvesdwinInitializationProperties.getInitializer()
-                    .initLogDirectory(IS_TEST_ENVIRONMENT);
+            logDirectory = PlatformInitializerProperties.getInitializer().initLogDirectory(IS_TEST_ENVIRONMENT);
         }
         return logDirectory;
     }
@@ -138,7 +136,7 @@ public final class ContextProperties {
      */
     public static synchronized File getCacheDirectory() {
         if (cacheDirectory == null) {
-            cacheDirectory = InvesdwinInitializationProperties.getInitializer().initCacheDirectory();
+            cacheDirectory = PlatformInitializerProperties.getInitializer().initCacheDirectory();
         }
         return cacheDirectory;
     }
@@ -176,14 +174,13 @@ public final class ContextProperties {
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String key = "DEFAULT_NETWORK_TIMEOUT";
         final Duration duration;
-        if (!systemProperties.containsKey(key)
-                && !InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
+        if (!systemProperties.containsKey(key) && !PlatformInitializerProperties.isAllowed()) {
             //default to 30 seconds if for some reason the properties were not loaded
             duration = new Duration(30, FTimeUnit.SECONDS);
         } else {
             duration = systemProperties.getDuration(key);
             //So that Spring-WS also respects the timeouts...
-            InvesdwinInitializationProperties.getInitializer().initDefaultTimeoutSystemProperties(duration);
+            PlatformInitializerProperties.getInitializer().initDefaultTimeoutSystemProperties(duration);
         }
         return duration;
     }

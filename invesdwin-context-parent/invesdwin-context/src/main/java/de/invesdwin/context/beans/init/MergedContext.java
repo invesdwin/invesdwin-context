@@ -20,12 +20,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.hook.PreStartupHookManager;
 import de.invesdwin.context.beans.hook.StartupHookManager;
 import de.invesdwin.context.beans.init.autowirestrategies.DirectChildContext;
 import de.invesdwin.context.beans.init.autowirestrategies.ParentContext;
 import de.invesdwin.context.beans.init.locations.IContextLocationValidator;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
+import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Reflections;
@@ -180,7 +182,7 @@ public final class MergedContext extends ADelegateContext {
 
     public static void logBootstrapFinished() {
         LOG.info("Bootstrap finished after: %s",
-                new Duration(InvesdwinInitializationProperties.START_OF_APPLICATION_CPU_TIME));
+                new Duration(PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME));
         bootstrapFinished = true;
         instance.getBean(StartupHookManager.class).start();
     }
@@ -206,12 +208,12 @@ public final class MergedContext extends ADelegateContext {
             }
             final List<String> locationStrings = Resources.extractMetaInfResourceLocations(contexts);
             LOG.info("Loading " + locationStrings.size() + " spring " + contexteSingularPlural + " in " + config
-                    + " config " + locationStrings);
+                    + " config from classpath " + locationStrings);
         }
     }
 
     private static synchronized void bootstrap() {
-        InvesdwinInitializationProperties.assertInitializationNotSkipped();
+        PlatformInitializerProperties.assertInitializationNotSkipped();
         Assertions.assertThat(instance).as("Bootstrap can only run once!").isNull();
         Assertions.assertThat(ContextProperties.getBasePackages())
                 .as("Did not detect any base packages, thus cannot bootstrap!")

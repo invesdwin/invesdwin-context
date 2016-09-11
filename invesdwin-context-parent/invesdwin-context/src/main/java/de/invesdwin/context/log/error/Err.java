@@ -4,7 +4,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.hook.ErrHookManager;
 import de.invesdwin.util.error.Throwables;
@@ -32,8 +32,8 @@ public final class Err {
                 process(e, true);
             }
         };
-        if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
-            InvesdwinInitializationProperties.getInitializer().initDefaultUncaughtExceptionHandler(handler);
+        if (PlatformInitializerProperties.isAllowed()) {
+            PlatformInitializerProperties.getInitializer().initDefaultUncaughtExceptionHandler(handler);
         }
         UNCAUGHT_EXCEPTION_HANDLER = handler;
     }

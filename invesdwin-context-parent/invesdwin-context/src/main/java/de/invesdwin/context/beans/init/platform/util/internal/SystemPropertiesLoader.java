@@ -1,6 +1,7 @@
-package de.invesdwin.context.beans.init.internal;
+package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
@@ -35,15 +37,27 @@ public final class SystemPropertiesLoader {
             for (final Resource p : properties) {
                 SystemProperties.setSystemProperties(p, false);
             }
-            final String overridePropertiesName;
-            if (ContextProperties.IS_TEST_ENVIRONMENT) {
-                overridePropertiesName = new SystemProperties().getString("user.name") + ".properties";
-            } else {
-                overridePropertiesName = "distribution.properties";
+            final List<Resource> overrideProperties = new ArrayList<Resource>();
+            final List<String> overridePropertiesNames = new ArrayList<String>();
+            final Resource systemPropertiesResource = PlatformInitializerProperties.getInitializer()
+                    .initSystemPropertiesResource();
+            if (systemPropertiesResource != null && systemPropertiesResource.exists()) {
+                overrideProperties.add(systemPropertiesResource);
             }
-            final Resource[] overrideProperties = resolver
-                    .getResources("classpath*:" + META_INF_ENV + overridePropertiesName);
-            logOverridePropertiesBeingLoaded(overridePropertiesName, overrideProperties);
+            overridePropertiesNames.add(Resources.resourceToPatternString(systemPropertiesResource) + "("
+                    + overrideProperties.size() + ")");
+            final String distributionPropertiesName;
+            if (ContextProperties.IS_TEST_ENVIRONMENT) {
+                distributionPropertiesName = new SystemProperties().getString("user.name") + ".properties";
+            } else {
+                distributionPropertiesName = "distribution.properties";
+            }
+            final String distributionPropertiesPattern = "classpath*:" + META_INF_ENV + distributionPropertiesName;
+            final List<Resource> distributionProperties = Arrays
+                    .asList(resolver.getResources(distributionPropertiesPattern));
+            overridePropertiesNames.add(distributionPropertiesPattern + "(" + distributionProperties.size() + ")");
+            overrideProperties.addAll(distributionProperties);
+            logOverridePropertiesBeingLoaded(overrideProperties, overridePropertiesNames);
             for (final Resource p : overrideProperties) {
                 SystemProperties.setSystemProperties(p, true);
             }
@@ -60,20 +74,20 @@ public final class SystemPropertiesLoader {
             if (properties.length != 1) {
                 filesSingularPlural += "s";
             }
-            LOG.info("Loading " + properties.length + " properties " + filesSingularPlural + " "
+            LOG.info("Loading " + properties.length + " properties " + filesSingularPlural + " from classpath "
                     + propertyFilesForLog.toString());
         }
     }
 
-    private static void logOverridePropertiesBeingLoaded(final String overridePropertiesName,
-            final Resource[] overrideProperties) {
+    private static void logOverridePropertiesBeingLoaded(final List<Resource> overrideProperties,
+            final List<String> overridePropertiesNames) {
         if (LOG.isInfoEnabled()) {
             String filesSingularPlural = "file";
-            if (overrideProperties.length != 1) {
+            if (overrideProperties.size() != 1) {
                 filesSingularPlural += "s";
             }
-            LOG.info("Loading " + overrideProperties.length + " override properties " + filesSingularPlural + " ["
-                    + META_INF_ENV + overridePropertiesName + "]");
+            LOG.info("Loading " + overrideProperties.size() + " override properties " + filesSingularPlural + " from "
+                    + overridePropertiesNames);
         }
     }
 

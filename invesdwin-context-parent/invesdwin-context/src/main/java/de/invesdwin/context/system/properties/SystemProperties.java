@@ -13,7 +13,7 @@ import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.MapConfiguration;
 import org.springframework.core.io.Resource;
 
-import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
@@ -31,12 +31,12 @@ public class SystemProperties extends AProperties {
     private final String prefix;
 
     static {
-        if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
+        if (PlatformInitializerProperties.isAllowed()) {
             try {
                 //Load properties if not done so yet
                 Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
             } catch (final Throwable t) {
-                InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
         }
     }

@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init;
+package de.invesdwin.context.beans.init.platform.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +112,8 @@ public class EhCacheConfigurationMerger {
             if (xmls.length != 1) {
                 filesSingularPlural += "s";
             }
-            log.info("Loading " + xmls.length + " ehcache " + filesSingularPlural + " " + xmlsForLog.toString());
+            log.info("Loading " + xmls.length + " ehcache " + filesSingularPlural + " from classpath "
+                    + xmlsForLog.toString());
         }
     }
 

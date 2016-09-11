@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init.internal.protocols.classpath;
+package de.invesdwin.context.beans.init.platform.util.internal.protocols.classpath;
 
 import java.io.IOException;
 import java.net.URL;

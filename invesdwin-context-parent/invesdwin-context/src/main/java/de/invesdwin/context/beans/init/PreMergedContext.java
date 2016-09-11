@@ -16,8 +16,11 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.locations.IContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
+import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
+import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 
@@ -31,9 +34,9 @@ public final class PreMergedContext extends ADelegateContext {
     private static PreMergedContext instance;
 
     static {
-        if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
+        if (PlatformInitializerProperties.isAllowed()) {
             try {
-                final InvesdwinInitializer initializer = InvesdwinInitializationProperties
+                final DefaultPlatformInitializer initializer = PlatformInitializerProperties
                         .getInitializer();
                 initializer.initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
@@ -45,7 +48,7 @@ public final class PreMergedContext extends ADelegateContext {
                  */
                 initializer.initFileEncodingChecker();
             } catch (final Throwable t) {
-                InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
         }
     }
@@ -65,7 +68,7 @@ public final class PreMergedContext extends ADelegateContext {
 
     public static synchronized PreMergedContext getInstance(final boolean reset) {
         if ((instance == null || reset)) {
-            InvesdwinInitializationProperties.assertInitializationNotSkipped();
+            PlatformInitializerProperties.assertInitializationNotSkipped();
             final GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
             ctx.registerShutdownHook();
             final PreMergedContext newInstance = new PreMergedContext(ctx);

@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init.internal;
+package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.util.ArrayList;
 import java.util.HashSet;

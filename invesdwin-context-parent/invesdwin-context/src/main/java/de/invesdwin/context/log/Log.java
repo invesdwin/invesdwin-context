@@ -6,7 +6,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Marker;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.beans.init.InvesdwinInitializationProperties;
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
 
@@ -29,11 +29,11 @@ import de.invesdwin.util.lang.Strings;
 public final class Log extends org.slf4j.ext.XLogger {
 
     static {
-        if (InvesdwinInitializationProperties.isInvesdwinInitializationAllowed()) {
+        if (PlatformInitializerProperties.isAllowed()) {
             try {
                 Assertions.assertThat(ContextProperties.getLogDirectory()).isNotNull();
             } catch (final Throwable t) {
-                InvesdwinInitializationProperties.logInitializationFailedIsIgnored(t);
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
         }
     }
