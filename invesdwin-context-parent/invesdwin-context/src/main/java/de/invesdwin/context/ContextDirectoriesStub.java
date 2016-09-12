@@ -8,6 +8,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Named;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.context.test.TestContext;
@@ -18,7 +19,7 @@ import de.invesdwin.util.assertions.Assertions;
 @NotThreadSafe
 public class ContextDirectoriesStub extends StubSupport {
 
-    private static final Set<File> PROTECTED_DIRECTORIES = new HashSet<File>();
+    private static final Set<String> PROTECTED_DIRECTORIES = new HashSet<String>();
 
     static {
         addProtectedDirectory(ContextProperties.TEMP_CLASSPATH_DIRECTORY);
@@ -31,23 +32,22 @@ public class ContextDirectoriesStub extends StubSupport {
             if (dir != null && dir.exists()) {
                 for (final File f : dir.listFiles()) {
                     boolean isProtectedDir = false;
-                    for (final File protectedDir : PROTECTED_DIRECTORIES) {
-                        if (f.getAbsolutePath().startsWith(protectedDir.getAbsolutePath())) {
+                    for (final String protectedDir : PROTECTED_DIRECTORIES) {
+                        if (FilenameUtils.normalize(f.getAbsolutePath()).startsWith(protectedDir)) {
                             isProtectedDir = true;
                             break;
                         }
                     }
                     if (!isProtectedDir) {
-                        FileUtils.deleteQuietly(f);
+                        Assertions.checkTrue(FileUtils.deleteQuietly(f));
                     }
                 }
-                Assertions.assertThat(dir.exists());
             }
         }
     }
 
     public static void addProtectedDirectory(final File protectedDirectory) {
-        PROTECTED_DIRECTORIES.add(protectedDirectory);
+        PROTECTED_DIRECTORIES.add(FilenameUtils.normalize(protectedDirectory.getAbsolutePath()));
     }
 
 }
