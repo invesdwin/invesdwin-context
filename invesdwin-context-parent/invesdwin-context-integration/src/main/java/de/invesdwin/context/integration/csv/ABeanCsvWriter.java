@@ -8,16 +8,18 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.collections.iterable.ICloseableIterable;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
 import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
 public abstract class ABeanCsvWriter<E> implements Closeable {
 
     private final CsvWriter csvWriter;
+    private boolean headerWritten = false;
 
     public ABeanCsvWriter(final OutputStream out) throws IOException {
         this.csvWriter = newCsvWriter(out);
-        writeHeaderLine();
     }
 
     protected CsvWriter newCsvWriter(final OutputStream out) throws IOException {
@@ -31,6 +33,14 @@ public abstract class ABeanCsvWriter<E> implements Closeable {
         this.csvWriter.line(headers);
     }
 
+    public final void write(final ICloseableIterable<? extends E> iterable) throws IOException {
+        try (ICloseableIterator<? extends E> iterator = iterable.iterator()) {
+            while (iterator.hasNext()) {
+                write(iterator.next());
+            }
+        }
+    }
+
     public final void write(final Iterable<? extends E> iterable) throws IOException {
         for (final E e : iterable) {
             write(e);
@@ -38,6 +48,10 @@ public abstract class ABeanCsvWriter<E> implements Closeable {
     }
 
     public final void write(final E e) throws IOException {
+        if (!headerWritten) {
+            writeHeaderLine();
+            headerWritten = true;
+        }
         final List<?> element = getElement(e);
         final List<String> str = new ArrayList<String>(element.size());
         for (final Object obj : element) {
