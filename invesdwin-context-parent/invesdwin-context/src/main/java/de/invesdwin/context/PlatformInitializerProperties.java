@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.lang3.BooleanUtils;
 
 import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
+import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.fdate.FDate;
@@ -25,7 +26,7 @@ public final class PlatformInitializerProperties {
     public static final String KEY_ALLOWED = PROPERTIES_PREFIX + ".ALLOWED";
     public static final String KEY_KEEP_SYSTEM_HOME_DURING_TESTS = PROPERTIES_PREFIX + ".KEEP_SYSTEM_HOME_DURING_TESTS";
 
-    private static DefaultPlatformInitializer initializer = new DefaultPlatformInitializer();
+    private static IPlatformInitializer initializer = new DefaultPlatformInitializer();
 
     static {
         final String expectedPropertiesPrefix = PlatformInitializerProperties.class.getName();
@@ -91,11 +92,11 @@ public final class PlatformInitializerProperties {
         }
     }
 
-    public static DefaultPlatformInitializer getInitializer() {
+    public static IPlatformInitializer getInitializer() {
         return initializer;
     }
 
-    public static void setInitializer(final DefaultPlatformInitializer initializer) {
+    public static void setInitializer(final IPlatformInitializer initializer) {
         if (initializer == null) {
             throw new NullPointerException("initializer should not be null!");
         }

@@ -17,7 +17,7 @@ import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
-import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
+import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.OperatingSystem;
@@ -56,7 +56,7 @@ public final class ContextProperties {
     private static Set<String> basePackages;
 
     static {
-        final DefaultPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
+        final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
         IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
 
         TEMP_DIRECTORY = initializer.initTempDirectory();

@@ -19,7 +19,7 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.locations.IContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
-import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
+import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
@@ -36,8 +36,7 @@ public final class PreMergedContext extends ADelegateContext {
     static {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
-                final DefaultPlatformInitializer initializer = PlatformInitializerProperties
-                        .getInitializer();
+                final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
                 initializer.initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
                 Assertions.assertThat(Err.UNCAUGHT_EXCEPTION_HANDLER).isNotNull();
