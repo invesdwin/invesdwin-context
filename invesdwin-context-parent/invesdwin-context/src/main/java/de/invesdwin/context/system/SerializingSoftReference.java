@@ -102,7 +102,7 @@ public class SerializingSoftReference<T extends Serializable> extends SoftRefere
             OutputStream out = null;
             try {
                 out = new GZIPOutputStream(new FileOutputStream(file));
-                out.write(Objects.serialize(referent));
+                out.write(serialize(referent));
                 delegate = null;
             } catch (final FileNotFoundException e) {
                 throw Err.process(e);
@@ -114,12 +114,19 @@ public class SerializingSoftReference<T extends Serializable> extends SoftRefere
         }
     }
 
-    @SuppressWarnings("unchecked")
+    protected byte[] serialize(final T referent) {
+        return Objects.serialize(referent);
+    }
+
+    protected T deserialize(final InputStream in) {
+        return Objects.deserialize(in);
+    }
+
     private void readReferent() {
         InputStream in = null;
         try {
             in = new GZIPInputStream(new FileInputStream(file));
-            final T referent = (T) Objects.deserialize(in);
+            final T referent = deserialize(in);
             delegate = new DelegateSoftReference<T>(this, referent);
         } catch (final FileNotFoundException e) {
             throw Err.process(e);
