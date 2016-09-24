@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.util.assertions.Assertions;
@@ -49,7 +49,7 @@ public final class Marshallers implements ApplicationContextAware {
     private ObjectMapper newObjectMapper(final boolean multiline) {
         final ObjectMapper mapper = new ObjectMapper();
         if (Reflections.classExists("org.hibernate.proxy.HibernateProxy")) {
-            mapper.registerModule(new Hibernate4Module());
+            mapper.registerModule(new Hibernate5Module());
         }
         if (multiline) {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
