@@ -57,7 +57,11 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>com.fasterxml</groupId>
+			<artifactId>classmate</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>de.odysseus.juel</groupId>
 			<artifactId>juel-impl</artifactId>
