@@ -44,7 +44,7 @@ public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMer
     }
 
     public String getContextPath() throws IOException {
-        if (alreadyGenerated == null) {
+        if (alreadyGenerated == null || !alreadyGenerated.exists()) {
             final File webappDirectory = new File(ContextProperties.TEMP_DIRECTORY, "webapp");
             final File webinfDirectory = new File(webappDirectory, "WEB-INF");
             final File webFragmentFile = new File(webinfDirectory, "web.xml");
