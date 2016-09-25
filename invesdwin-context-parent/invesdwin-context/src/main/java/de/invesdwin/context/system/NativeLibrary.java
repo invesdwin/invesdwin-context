@@ -93,7 +93,7 @@ public final class NativeLibrary {
         final String libname = System.mapLibraryName(this.libname);
         final String arch = System.getProperty("os.arch");
         final String name = System.getProperty("os.name");
-        String resourceName = getNativeLibraryResourcePath(OperatingSystem.getAktuellesBetriebssystem(), arch, name)
+        String resourceName = getNativeLibraryResourcePath(OperatingSystem.getCurrent(), arch, name)
                 + "/" + libname;
         URL url = classFromSameJar.getResource(resourceName);
 

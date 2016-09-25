@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.integration.network.NetworkUtil;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
@@ -19,12 +20,14 @@ public final class IntegrationProperties {
 
     public static final List<URI> INTERNET_CHECK_URIS;
     public static final URI WEBSERVER_BIND_URI;
+    public static final String HOSTNAME;
     private static volatile boolean webserverTest;
 
     private static final SystemProperties SYSTEM_PROPERTIES;
 
     static {
         SYSTEM_PROPERTIES = new SystemProperties(IntegrationProperties.class);
+        HOSTNAME = determineHostname();
 
         INTERNET_CHECK_URIS = readInternetCheckUris();
         WEBSERVER_BIND_URI = readWebserverBindUri();
@@ -82,6 +85,17 @@ public final class IntegrationProperties {
             return new Proxy(Type.HTTP, Addresses.asAddress(httpProxyHost, httpProxyPort));
         } else {
             return null;
+        }
+    }
+
+    private static String determineHostname() {
+        final String key = "HOSTNAME";
+        if (SYSTEM_PROPERTIES.containsValue(key)) {
+            return SYSTEM_PROPERTIES.getString(key);
+        } else {
+            final String hostname = NetworkUtil.getHostname();
+            SYSTEM_PROPERTIES.setString(key, hostname);
+            return hostname;
         }
     }
 

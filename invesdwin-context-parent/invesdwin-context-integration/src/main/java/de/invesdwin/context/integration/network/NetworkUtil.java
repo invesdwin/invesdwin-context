@@ -1,12 +1,18 @@
 package de.invesdwin.context.integration.network;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -14,6 +20,7 @@ import org.springframework.util.SocketUtils;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @Immutable
@@ -119,6 +126,71 @@ public final class NetworkUtil extends SocketUtils {
      */
     public static boolean waitIfInternetNotAvailable(final boolean allowCache) throws InterruptedException {
         return InternetCheckHelper.waitIfInternetNotAvailable(allowCache);
+    }
+
+    /**
+     * http://stackoverflow.com/questions/7348711/recommended-way-to-get-hostname-in-java
+     */
+    public static String getHostname() {
+        return Strings.trim(determineHostname());
+    }
+
+    private static String determineHostname() {
+        String hostname = System.getenv("COMPUTERNAME");
+        if (Strings.isNotBlank(hostname)) {
+            return hostname;
+        }
+        hostname = System.getenv("HOSTNAME");
+        if (Strings.isNotBlank(hostname)) {
+            return hostname;
+        }
+        hostname = readHostnameExec("hostname");
+        if (Strings.isNotBlank(hostname)) {
+            return hostname;
+        }
+        final File file = new File("/etc/hostname");
+        hostname = readHostnameFile(file);
+        if (Strings.isNotBlank(hostname)) {
+            return hostname;
+        }
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (final UnknownHostException e) {
+            //worst case fallback
+            hostname = "localhost";
+        }
+        return hostname;
+    }
+
+    private static String readHostnameFile(final File file) {
+        if (file.exists()) {
+            try (final InputStream in = new FileInputStream(file)) {
+                return readHostnameStream(in);
+            } catch (final FileNotFoundException e) {
+                return null;
+            } catch (final IOException e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private static String readHostnameExec(final String execCommand) {
+        try {
+            final Process proc = Runtime.getRuntime().exec(execCommand);
+            try (InputStream stream = proc.getInputStream()) {
+                return readHostnameStream(stream);
+            }
+        } catch (final IOException e) {
+            return null;
+        }
+    }
+
+    private static String readHostnameStream(final InputStream stream) {
+        try (@SuppressWarnings("resource")
+        Scanner s = new Scanner(stream).useDelimiter("\\A")) {
+            return s.hasNext() ? s.next() : "";
+        }
     }
 
 }

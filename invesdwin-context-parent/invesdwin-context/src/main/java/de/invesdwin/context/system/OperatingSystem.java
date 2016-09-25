@@ -43,7 +43,7 @@ public enum OperatingSystem {
 
     OperatingSystem() {}
 
-    public static OperatingSystem getAktuellesBetriebssystem() {
+    public static OperatingSystem getCurrent() {
         return OS;
     }
 
