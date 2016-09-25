@@ -47,13 +47,13 @@ public final class IntegrationProperties {
         final URL url = SYSTEM_PROPERTIES.getURL(key, true);
         final int port = url.getPort();
         if (!Addresses.isPort(port)) {
-            throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null, "Port [" + port
-                    + "] is incorrect. " + expectedFormat));
+            throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null,
+                    "Port [" + port + "] is incorrect. " + expectedFormat));
         }
         final String protocol = url.getProtocol();
         if (!("http".equals(protocol) || "https".equals(protocol))) {
-            throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null, "Protocol ["
-                    + protocol + "] is incorrect. " + expectedFormat));
+            throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null,
+                    "Protocol [" + protocol + "] is incorrect. " + expectedFormat));
         }
         return URIs.asUri(url);
     }

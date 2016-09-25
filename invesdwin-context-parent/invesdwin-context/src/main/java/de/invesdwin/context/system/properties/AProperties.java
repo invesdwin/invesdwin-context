@@ -16,6 +16,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.AbstractFileConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.springframework.util.SocketUtils;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
@@ -304,9 +305,17 @@ public abstract class AProperties implements IProperties {
                     .as("Unable to get host from URI (maybe you forgot to add <protocol>:// or so?): " + uri)
                     .isNotNull();
             if (validatePort) {
-                Assertions.assertThat(uri.getPort())
-                        .as("Unable to get port from URI (maybe you forgot to add <protocol>:// or so?): " + uri)
-                        .isGreaterThanOrEqualTo(0);
+                final int port = uri.getPort();
+                if (port == 0) {
+                    final int randomPort = SocketUtils.findAvailableTcpPort();
+                    //override property
+                    uri = URIs.setPort(uri, randomPort);
+                    setProperty(key, uri.toString());
+                } else {
+                    Assertions.assertThat(port)
+                            .as("Unable to get port from URI (maybe you forgot to add <protocol>:// or so?): " + uri)
+                            .isGreaterThan(0);
+                }
             }
             return uri;
         } catch (final Throwable t) {

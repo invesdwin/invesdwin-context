@@ -10,12 +10,14 @@ import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.springframework.util.SocketUtils;
+
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @Immutable
-public final class NetworkUtil {
+public final class NetworkUtil extends SocketUtils {
 
     private NetworkUtil() {}
 
@@ -118,4 +120,5 @@ public final class NetworkUtil {
     public static boolean waitIfInternetNotAvailable(final boolean allowCache) throws InterruptedException {
         return InternetCheckHelper.waitIfInternetNotAvailable(allowCache);
     }
+
 }
