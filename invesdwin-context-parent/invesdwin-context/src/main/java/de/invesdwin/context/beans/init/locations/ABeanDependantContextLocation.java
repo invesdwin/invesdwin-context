@@ -21,7 +21,7 @@ import de.invesdwin.context.beans.init.ApplicationContexts;
 public abstract class ABeanDependantContextLocation implements IContextLocation {
 
     @Inject
-    private GenericApplicationContext ctx;
+    protected GenericApplicationContext ctx;
 
     /**
      * Only gets called is the dependant bean does not exist.
