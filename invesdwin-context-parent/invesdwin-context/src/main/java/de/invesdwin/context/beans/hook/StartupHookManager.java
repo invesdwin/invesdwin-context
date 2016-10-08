@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -16,6 +17,7 @@ import org.springframework.context.ApplicationContextAware;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
+import de.invesdwin.util.concurrent.Futures;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 
 /**
@@ -93,9 +95,11 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
     public static void register(final IStartupHook hook) {
         synchronized (INSTANCE) {
             Assertions.assertThat(alreadyStarted)
-            .as("%s cannot be registered after application start!", IStartupHook.class.getSimpleName())
-            .isFalse();
-            Assertions.assertThat(REGISTERED_HOOKS.add(hook)).as("Hook [%s] has already been registered!", hook).isTrue();
+                    .as("%s cannot be registered after application start!", IStartupHook.class.getSimpleName())
+                    .isFalse();
+            Assertions.assertThat(REGISTERED_HOOKS.add(hook))
+                    .as("Hook [%s] has already been registered!", hook)
+                    .isTrue();
         }
     }
 
@@ -113,13 +117,14 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
     public void start() {
         synchronized (INSTANCE) {
             Assertions.assertThat(alreadyStarted)
-            .as("%s may only be started once initially!", IStartupHook.class.getSimpleName())
-            .isFalse();
+                    .as("%s may only be started once initially!", IStartupHook.class.getSimpleName())
+                    .isFalse();
             alreadyStarted = true;
             final WrappedExecutorService executor = Executors.newFixedThreadPool(getClass().getSimpleName(),
                     Math.max(10, Executors.getCpuThreadPoolCount() * 2));
+            final List<Future<?>> blockingHooks = new ArrayList<Future<?>>();
             for (final IStartupHook hook : REGISTERED_HOOKS) {
-                executor.execute(new Runnable() {
+                final Runnable task = new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -128,9 +133,19 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
                             Err.process(e);
                         }
                     };
-                });
+                };
+                if (hook instanceof IBlockingStartupHook) {
+                    blockingHooks.add(executor.submit(task));
+                } else {
+                    executor.execute(task);
+                }
             }
             executor.shutdown();
+            try {
+                Futures.wait(blockingHooks);
+            } catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

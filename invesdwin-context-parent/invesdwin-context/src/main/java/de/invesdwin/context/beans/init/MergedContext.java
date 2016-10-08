@@ -181,10 +181,10 @@ public final class MergedContext extends ADelegateContext {
     }
 
     public static void logBootstrapFinished() {
+        instance.getBean(StartupHookManager.class).start();
         LOG.info("Bootstrap finished after: %s",
                 new Duration(PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME));
         bootstrapFinished = true;
-        instance.getBean(StartupHookManager.class).start();
     }
 
     public static void logContextsBeingLoaded(final List<PositionedResource> contexts) {

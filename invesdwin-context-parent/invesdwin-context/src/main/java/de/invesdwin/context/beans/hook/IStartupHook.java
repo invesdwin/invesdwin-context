@@ -6,6 +6,8 @@ package de.invesdwin.context.beans.hook;
  * Spring beans with this annotation are automatically registered. Else for normal classes StartupHookManager.register()
  * must be called manually.
  * 
+ * This hook is non-blocking and can run endlessly.
+ * 
  * @author subes
  * 
  */
