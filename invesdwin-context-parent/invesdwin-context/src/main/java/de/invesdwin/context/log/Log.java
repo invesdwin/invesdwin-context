@@ -1,6 +1,5 @@
 package de.invesdwin.context.log;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.slf4j.Marker;
@@ -38,15 +37,15 @@ public final class Log extends org.slf4j.ext.XLogger {
         }
     }
 
-    public Log(@Nonnull final String name) {
+    public Log(final String name) {
         super(org.slf4j.LoggerFactory.getLogger(name));
     }
 
-    public Log(@Nonnull final Class<?> clazz) {
+    public Log(final Class<?> clazz) {
         this(clazz.getName());
     }
 
-    public Log(@Nonnull final Object obj) {
+    public Log(final Object obj) {
         this(obj.getClass());
     }
 
