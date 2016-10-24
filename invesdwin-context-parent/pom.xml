@@ -94,7 +94,7 @@
 		<version.xml-apis>1.4.01</version.xml-apis>
 		<version.itext>2.1.7.js5</version.itext>
 		<version.bcprov>1.46</version.bcprov>
-		<version.poi>3.14</version.poi>
+		<version.poi>3.15</version.poi>
 
 		<version.h2>1.4.192</version.h2>
 		<!-- 6.0.4 still has this error: http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue -->
@@ -571,6 +571,11 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
+				<version>${version.poi}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
 				<version>${version.poi}</version>
 			</dependency>
 		</dependencies>
