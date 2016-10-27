@@ -7,8 +7,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -232,10 +235,20 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public void setList(final String key, final List<String> value) {
+    public synchronized void setList(final String key, final List<String> value) {
         final String keyPath = prefix(key);
         final String valueStr = Strings.asString(value, String.valueOf(getDelegate().getListDelimiter()));
         getDelegate().setProperty(keyPath, valueStr);
+    }
+
+    @Override
+    public synchronized Set<String> getSet(final String key) {
+        return new LinkedHashSet<String>(getList(key));
+    }
+
+    @Override
+    public synchronized void setSet(final String key, final Set<String> value) {
+        setList(key, new ArrayList<String>(value));
     }
 
     private String prefix(final String key) {

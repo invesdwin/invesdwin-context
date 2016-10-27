@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -258,6 +259,26 @@ public final class CachingPropertiesWrapper implements IProperties {
             @Override
             public void run() {
                 delegate.setList(key, value);
+            }
+        });
+    }
+
+    @Override
+    public Set<String> getSet(final String key) {
+        return get(key, new Callable<Set<String>>() {
+            @Override
+            public Set<String> call() {
+                return delegate.getSet(key);
+            }
+        });
+    }
+
+    @Override
+    public void setSet(final String key, final Set<String> value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setSet(key, value);
             }
         });
     }

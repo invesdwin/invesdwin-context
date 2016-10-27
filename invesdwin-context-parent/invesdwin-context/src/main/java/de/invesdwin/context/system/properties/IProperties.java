@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.duration.Duration;
@@ -56,6 +57,10 @@ public interface IProperties {
     List<String> getList(String key);
 
     void setList(String key, List<String> value);
+
+    Set<String> getSet(String key);
+
+    void setSet(String key, Set<String> value);
 
     FDate getDate(String key);
 
