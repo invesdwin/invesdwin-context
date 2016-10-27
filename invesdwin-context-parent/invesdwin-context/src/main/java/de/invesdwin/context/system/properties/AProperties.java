@@ -243,12 +243,21 @@ public abstract class AProperties implements IProperties {
 
     @Override
     public synchronized Set<String> getSet(final String key) {
-        return new LinkedHashSet<String>(getList(key));
+        final List<String> list = getList(key);
+        if (list == null) {
+            return null;
+        } else {
+            return new LinkedHashSet<String>(list);
+        }
     }
 
     @Override
     public synchronized void setSet(final String key, final Set<String> value) {
-        setList(key, new ArrayList<String>(value));
+        if (value == null) {
+            setList(key, null);
+        } else {
+            setList(key, new ArrayList<String>(value));
+        }
     }
 
     private String prefix(final String key) {
