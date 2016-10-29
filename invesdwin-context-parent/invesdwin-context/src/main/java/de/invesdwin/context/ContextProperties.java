@@ -25,6 +25,7 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.classpath.ClassPathScanner;
+import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.lang.Strings;
@@ -46,6 +47,7 @@ public final class ContextProperties {
     public static final File TEMP_CLASSPATH_DIRECTORY;
     public static final File EHCACHE_DISK_STORE_DIRECTORY;
     public static final Duration DEFAULT_NETWORK_TIMEOUT;
+    public static final int CPU_THREAD_POOL_COUNT;
     @GuardedBy("this.class")
     private static File cacheDirectory;
     @GuardedBy("this.class")
@@ -70,6 +72,7 @@ public final class ContextProperties {
                 initializer.initSystemPropertiesLoader();
 
                 initializer.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
+
             } catch (final Throwable t) {
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
@@ -77,6 +80,8 @@ public final class ContextProperties {
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
+        CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
+        Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
 
         //needs to happen after properties have been loaded
         initClassPathScanner();
@@ -186,6 +191,21 @@ public final class ContextProperties {
             PlatformInitializerProperties.getInitializer().initDefaultTimeoutSystemProperties(duration);
         }
         return duration;
+    }
+
+    private static int readCpuThreadPoolCount() {
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "CPU_THREAD_POOL_COUNT";
+        Integer cpuThreadPoolCount;
+        if (!systemProperties.containsKey(key) && !PlatformInitializerProperties.isAllowed()) {
+            cpuThreadPoolCount = null;
+        } else {
+            cpuThreadPoolCount = systemProperties.getInteger(key);
+        }
+        if (cpuThreadPoolCount == null || cpuThreadPoolCount <= 0) {
+            cpuThreadPoolCount = Runtime.getRuntime().availableProcessors();
+        }
+        return cpuThreadPoolCount;
     }
 
     private static void registerTypesForSerialization() {
