@@ -197,7 +197,7 @@ public final class ContextProperties {
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String key = "CPU_THREAD_POOL_COUNT";
         Integer cpuThreadPoolCount;
-        if (!systemProperties.containsKey(key) && !PlatformInitializerProperties.isAllowed()) {
+        if (!systemProperties.containsValue(key) || !PlatformInitializerProperties.isAllowed()) {
             cpuThreadPoolCount = null;
         } else {
             cpuThreadPoolCount = systemProperties.getInteger(key);
