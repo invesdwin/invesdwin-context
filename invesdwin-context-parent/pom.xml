@@ -85,7 +85,7 @@
 
 		<version.apacheds>2.0.0-M23</version.apacheds>
 		<version.spring-security-kerberos>1.0.1.RELEASE</version.spring-security-kerberos>
-		
+
 		<!-- reports -->
 		<version.jfreechart>1.0.19</version.jfreechart>
 		<version.dynamicreports>4.1.1</version.dynamicreports>
@@ -412,7 +412,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<!-- reports -->
 			<dependency>
 				<groupId>org.jfree</groupId>
@@ -1185,6 +1185,7 @@
 							<param>org\.jquantlib.*</param>
 							<param>ta-lib:ta-lib.*</param>
 							<param>org\.ow2\.asm.*</param>
+							<param>com\.github\.virtuald:curvesapi.*</param>
 							<!-- epl license -->
 							<param>com\.h2database.*</param>
 							<!-- LGPL license -->
