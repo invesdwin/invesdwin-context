@@ -1,17 +1,14 @@
 package de.invesdwin.context.report.jfreechart;
 
-import java.lang.reflect.Field;
-
 import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.data.general.Series;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
-import org.springframework.util.ReflectionUtils.FieldCallback;
-
-import de.invesdwin.util.lang.Reflections;
 
 @Immutable
 public final class JFreeCharts {
@@ -29,17 +26,10 @@ public final class JFreeCharts {
         return series;
     }
 
-    public static void fireSeriesChangedOn(final Object seriesHolder) {
-        Reflections.doWithFields(seriesHolder.getClass(), new FieldCallback() {
-            @Override
-            public void doWith(final Field field) throws IllegalAccessException {
-                if (YIntervalSeries.class.isAssignableFrom(field.getType())) {
-                    Reflections.makeAccessible(field);
-                    final YIntervalSeries series = (YIntervalSeries) field.get(seriesHolder);
-                    fireSeriesChanged(series);
-                }
-            }
-        });
+    public static void fireSeriesChangedOn(final XYSeriesCollection dataset) {
+        for (int i = 0; i < dataset.getSeriesCount(); i++) {
+            fireSeriesChanged(dataset.getSeries(i));
+        }
     }
 
     public static void fireSeriesChangedOn(final YIntervalSeriesCollection dataset) {
@@ -48,13 +38,13 @@ public final class JFreeCharts {
         }
     }
 
-    public static void fireSeriesChanged(final YIntervalSeries... series) {
-        for (final YIntervalSeries s : series) {
+    public static void fireSeriesChanged(final Series... series) {
+        for (final Series s : series) {
             fireSeriesChanged(s);
         }
     }
 
-    public static void fireSeriesChanged(final YIntervalSeries s) {
+    public static void fireSeriesChanged(final Series s) {
         s.setNotify(true);
         s.fireSeriesChanged();
     }
