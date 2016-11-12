@@ -11,8 +11,6 @@
 	<modules>
 		<module>invesdwin-context</module>
 		<module>invesdwin-context-integration</module>
-		<module>invesdwin-context-security</module>
-		<module>invesdwin-context-security-kerberos</module>
 		<module>invesdwin-context-webserver</module>
 		<module>invesdwin-context-report</module>
 	</modules>
@@ -83,9 +81,6 @@
 		<version.logback>1.1.7</version.logback>
 		<version.janino>2.7.8</version.janino>
 
-		<version.apacheds>2.0.0-M23</version.apacheds>
-		<version.spring-security-kerberos>1.0.1.RELEASE</version.spring-security-kerberos>
-
 		<!-- reports -->
 		<version.jfreechart>1.0.19</version.jfreechart>
 		<version.dynamicreports>4.1.1</version.dynamicreports>
@@ -126,16 +121,6 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-integration</artifactId>
-				<version>${version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-security</artifactId>
-				<version>${version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-security-kerberos</artifactId>
 				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
@@ -388,29 +373,6 @@
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>${version.postgresql}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.directory.server</groupId>
-				<artifactId>apacheds-kerberos-codec</artifactId>
-				<version>${version.apacheds}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>ehcache-core</artifactId>
-						<groupId>net.sf.ehcache</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security.kerberos</groupId>
-				<artifactId>spring-security-kerberos-client</artifactId>
-				<version>${version.spring-security-kerberos}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 
 			<!-- reports -->
