@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.fdate.FDates;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @NotThreadSafe
@@ -47,6 +48,6 @@ public class DailyDownloadCache {
 
     public boolean shouldUpdate(final FDate lastRequestTime) {
         return new Duration(lastRequestTime).isGreaterThan(DAILY_REFRESH_DURATION)
-                || !FDate.isSameDay(lastRequestTime, new FDate());
+                || !FDates.isSameDay(lastRequestTime, new FDate());
     }
 }

@@ -10,6 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.ADelegateComparator;
 import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.fdate.FDates;
 
 @NotThreadSafe
 public class AggregatingOhlcPointsCollection<E extends IOhlcPoint> extends APointsCollection<E> {
@@ -182,7 +183,7 @@ public class AggregatingOhlcPointsCollection<E extends IOhlcPoint> extends APoin
         private final double volume;
 
         AggregatedOhlcPoint(final IOhlcPoint first, final IOhlcPoint second) {
-            this.time = FDate.min(first.getTime(), second.getTime());
+            this.time = FDates.min(first.getTime(), second.getTime());
             this.open = first.getOpen();
             this.high = Math.max(first.getHigh(), second.getHigh());
             this.low = Math.min(first.getLow(), second.getLow());

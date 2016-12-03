@@ -30,6 +30,7 @@ import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.fdate.FDates;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @ThreadSafe
@@ -276,7 +277,7 @@ public abstract class AProperties implements IProperties {
 
     @Override
     public synchronized void setDate(final String key, final FDate value) {
-        setProperty(key, FDate.toString(value, FDate.FORMAT_ISO_DATE_TIME_MS));
+        setProperty(key, FDates.toString(value, FDate.FORMAT_ISO_DATE_TIME_MS));
     }
 
     @Override

@@ -12,6 +12,7 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.time.TimeZones;
 import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.fdate.FDates;
 
 @Immutable
 public final class DefaultTimeZoneConfigurer {
@@ -51,7 +52,7 @@ public final class DefaultTimeZoneConfigurer {
         //joda needs another call explicitly since it might have cached the value too early...
         DateTimeZone.setDefault(DateTimeZone.forTimeZone(newTimeZone));
         //same with FDate
-        FDate.setDefaultTimeZone(newTimeZone);
+        FDates.setDefaultTimeZone(newTimeZone);
         Assertions.assertThat(getDefaultTimeZone().getID())
                 .as("java has inconsistent default %s", TimeZone.class.getSimpleName())
                 .isEqualTo(newTimeZone.getID());
@@ -63,7 +64,7 @@ public final class DefaultTimeZoneConfigurer {
                 .as("joda-time (%s) has inconsistent default %s", DateTimeZone.class.getSimpleName(),
                         TimeZone.class.getSimpleName())
                 .isEqualTo(defaultTimeZone.getID());
-        Assertions.assertThat(FDate.getDefaultTimeZone().getID())
+        Assertions.assertThat(FDates.getDefaultTimeZone().getID())
                 .as("invesdwin-util (%s) has inconsistent default %s", FDate.class.getSimpleName(),
                         TimeZone.class.getSimpleName())
                 .isEqualTo(defaultTimeZone.getID());
