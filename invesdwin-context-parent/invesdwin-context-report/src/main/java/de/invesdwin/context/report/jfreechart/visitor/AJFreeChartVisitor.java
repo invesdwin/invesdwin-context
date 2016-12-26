@@ -7,7 +7,10 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.CombinedRangeCategoryPlot;
@@ -55,18 +58,11 @@ public abstract class AJFreeChartVisitor {
     protected void processPlotRecursive(final Plot plot, final Set<Integer> duplicateAxisFilter) {
         if (plot instanceof XYPlot) {
             final XYPlot cPlot = (XYPlot) plot;
-            for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
-                final ValueAxis axis = cPlot.getRangeAxis(i);
-                if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                    processAxis(axis);
-                }
-            }
-            for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
-                final ValueAxis axis = cPlot.getDomainAxis(i);
-                if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                    processAxis(axis);
-                }
-            }
+            processXYPlot(duplicateAxisFilter, cPlot);
+        }
+        if (plot instanceof CategoryPlot) {
+            final CategoryPlot cPlot = (CategoryPlot) plot;
+            processCategoryPlot(duplicateAxisFilter, cPlot);
         }
 
         //recurse
@@ -97,7 +93,37 @@ public abstract class AJFreeChartVisitor {
         }
     }
 
-    protected void processAxis(final ValueAxis axis) {
+    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final CategoryPlot cPlot) {
+        for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
+            final ValueAxis axis = cPlot.getRangeAxis(i);
+            if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
+                processAxis(axis);
+            }
+        }
+        for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
+            final CategoryAxis axis = cPlot.getDomainAxis(i);
+            if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
+                processAxis(axis);
+            }
+        }
+    }
+
+    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot cPlot) {
+        for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
+            final ValueAxis axis = cPlot.getRangeAxis(i);
+            if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
+                processAxis(axis);
+            }
+        }
+        for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
+            final ValueAxis axis = cPlot.getDomainAxis(i);
+            if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
+                processAxis(axis);
+            }
+        }
+    }
+
+    protected void processAxis(final Axis axis) {
         axis.setLabelFont(processFont(axis.getLabelFont()));
         axis.setTickLabelFont(processFont(axis.getTickLabelFont()));
     }

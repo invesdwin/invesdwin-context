@@ -6,10 +6,10 @@ import java.util.Locale;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SymbolAxis;
-import org.jfree.chart.axis.ValueAxis;
 
 import de.invesdwin.util.math.decimal.Decimal;
 
@@ -29,7 +29,7 @@ public class JFreeChartLocaleChanger extends AJFreeChartVisitor {
     }
 
     @Override
-    protected void processAxis(final ValueAxis axis) {
+    protected void processAxis(final Axis axis) {
         super.processAxis(axis);
         if (axis instanceof DateAxis) {
             final DateAxis dateAxis = (DateAxis) axis;

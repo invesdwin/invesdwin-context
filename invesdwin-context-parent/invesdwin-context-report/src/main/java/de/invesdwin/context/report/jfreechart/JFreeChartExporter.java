@@ -28,10 +28,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ClosedInputStream;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.TickUnitSource;
-import org.jfree.chart.axis.ValueAxis;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
@@ -148,11 +148,12 @@ public enum JFreeChartExporter {
             }
 
             @Override
-            protected void processAxis(final ValueAxis axis) {
+            protected void processAxis(final Axis axis) {
                 if (axis instanceof NumberAxis && !(axis instanceof SymbolAxis)) {
-                    final TickUnitSource standardTickUnits = axis.getStandardTickUnits();
+                    final NumberAxis cAxis = (NumberAxis) axis;
+                    final TickUnitSource standardTickUnits = cAxis.getStandardTickUnits();
                     if (standardTickUnits != null) {
-                        axis.setStandardTickUnits(FiniteTickUnitSource.maybeWrap(standardTickUnits));
+                        cAxis.setStandardTickUnits(FiniteTickUnitSource.maybeWrap(standardTickUnits));
                     }
                 }
                 super.processAxis(axis);
