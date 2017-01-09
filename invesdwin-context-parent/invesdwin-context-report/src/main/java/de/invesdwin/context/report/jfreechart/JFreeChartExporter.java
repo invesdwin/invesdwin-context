@@ -269,7 +269,7 @@ public enum JFreeChartExporter {
             private String chartId;
 
             {
-                if (Throwables.isFinalizerDebugStackTraceEnabled()) {
+                if (Throwables.isDebugStackTraceEnabled()) {
                     initStackTrace = new Exception();
                     initStackTrace.fillInStackTrace();
                 }
