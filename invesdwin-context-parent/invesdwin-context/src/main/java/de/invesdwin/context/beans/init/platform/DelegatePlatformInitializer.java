@@ -113,4 +113,9 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
         return delegate.initSystemPropertiesResource();
     }
 
+    @Override
+    public void initUiManager() {
+        delegate.initUiManager();
+    }
+
 }
