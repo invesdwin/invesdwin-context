@@ -13,12 +13,12 @@ import de.invesdwin.util.collections.concurrent.AFastIterableDelegateSet;
 @ThreadSafe
 public class BroadcastingRetryHook implements IRetryHook {
 
-    private final Set<IRetryHook> hooks = new AFastIterableDelegateSet<IRetryHook>() {
+    private final Set<IRetryHook> hooks = Collections.synchronizedSet(new AFastIterableDelegateSet<IRetryHook>() {
         @Override
         protected Set<IRetryHook> newDelegate() {
-            return Collections.synchronizedSet(new LinkedHashSet<IRetryHook>());
+            return new LinkedHashSet<IRetryHook>();
         }
-    };
+    });
 
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
