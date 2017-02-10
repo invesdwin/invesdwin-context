@@ -56,7 +56,7 @@ public enum JFreeChartExporter {
                 customizeChart(chart, settings);
                 ChartUtilities.writeChartAsJPEG(out, chart, settings.getBounds().width, settings.getBounds().height);
             } catch (final Throwable t) {
-                throw new RuntimeException("At: " + chart.getTitle(), t);
+                throw new RuntimeException("At: " + chart.getTitle().getID(), t);
             }
         }
     },
@@ -68,7 +68,7 @@ public enum JFreeChartExporter {
                 customizeChart(chart, settings);
                 ChartUtilities.writeChartAsPNG(out, chart, settings.getBounds().width, settings.getBounds().height);
             } catch (final Throwable t) {
-                throw new RuntimeException("At: " + chart.getTitle(), t);
+                throw new RuntimeException("At: " + chart.getTitle().getID(), t);
             }
         }
     },
@@ -95,7 +95,7 @@ public enum JFreeChartExporter {
                 writer.flush();
                 writer.close();
             } catch (final Throwable t) {
-                throw new RuntimeException("At: " + chart.getTitle(), t);
+                throw new RuntimeException("At: " + chart.getTitle().getID(), t);
             }
         }
     };
