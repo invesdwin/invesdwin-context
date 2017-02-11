@@ -25,16 +25,13 @@ public abstract class AMain {
     @Option(help = true, name = "-h", aliases = "--help", usage = "Shows this help text")
     protected boolean help;
 
-    static {
-        Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
-    }
-
     protected AMain(final String[] args) {
         this(args, true);
     }
 
     protected AMain(final String[] args, final boolean bootstrap) {
         parseCommandline(args, bootstrap);
+        Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
     }
 
     private void parseCommandline(final String[] args, final boolean bootstrap) {
@@ -71,8 +68,8 @@ public abstract class AMain {
     }
 
     /**
-     * @see <a
-     *      href="http://commons.apache.org/jelly/xref/org/apache/commons/jelly/util/CommandLineParser.html">Source</a>
+     * @see <a href=
+     *      "http://commons.apache.org/jelly/xref/org/apache/commons/jelly/util/CommandLineParser.html">Source</a>
      */
     protected final String[] parseSystemProperties(final String[] args) {
         final SystemProperties sysProps = new SystemProperties();
