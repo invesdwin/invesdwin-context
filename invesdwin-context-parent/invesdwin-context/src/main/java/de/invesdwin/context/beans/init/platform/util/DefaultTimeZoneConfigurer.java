@@ -37,7 +37,7 @@ public final class DefaultTimeZoneConfigurer {
                         + " Additionally using -D" + USER_TIMEZONE_PARAM + "=<" + TimeZone.class.getSimpleName()
                         + "ID> allows to change the default of the JVM." + "\n- Hide this warning by using -D"
                         + USER_TIMEZONE_PARAM + "=" + newTimeZone.getID()
-                        + " to specifiy the default to match the convention.");
+                        + " to specify the default to match the convention.");
                 systemProperties.setString(USER_TIMEZONE_PARAM, newTimeZone.getID());
                 setDefaultTimeZone(newTimeZone);
             }
