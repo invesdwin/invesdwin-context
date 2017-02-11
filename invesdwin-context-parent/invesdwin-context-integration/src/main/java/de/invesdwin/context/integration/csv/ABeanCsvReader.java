@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.csv;
 
 import java.io.InputStream;
-import java.util.NoSuchElementException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -10,6 +9,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.collections.iterable.ACloseableIterator;
+import de.invesdwin.util.error.FastNoSuchElementException;
 
 @NotThreadSafe
 public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
@@ -40,7 +40,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
     protected final E innerNext() {
         final E next = maybeNext();
         if (next == null) {
-            throw new NoSuchElementException();
+            throw new FastNoSuchElementException("ABeanCsvReader maybeNext() returned null");
         } else {
             cachedNext = (E) null;
             return next;

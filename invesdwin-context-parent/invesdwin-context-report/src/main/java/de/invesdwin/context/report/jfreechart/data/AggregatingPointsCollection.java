@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.error.FastNoSuchElementException;
 
 /**
  * A simpler, faster and as it seems more precise algorithm to reduce points in a chart than ramer douglas peucker.
@@ -90,7 +90,8 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
                         delegateInProgressSquare = null;
                         curPointsIterator = ret.getPoints().iterator();
                     } else {
-                        throw new NoSuchElementException();
+                        throw new FastNoSuchElementException(
+                                "AggregatingPointsCollection: delegateInProgressSquare is null");
                     }
                 }
 
@@ -161,8 +162,8 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
 
     private void aggregateSquares() {
         Assertions.assertThat(squares.size() % 2)
-        .as("Size [%s] needs to be a factor of two when aggregating!", squares.size())
-        .isZero();
+                .as("Size [%s] needs to be a factor of two when aggregating!", squares.size())
+                .isZero();
         final List<Square> aggregatedSquares = new ArrayList<Square>(squares.size());
         for (int i = 0; i < squares.size(); i += 2) {
             final Square firstSquare = squares.get(i);

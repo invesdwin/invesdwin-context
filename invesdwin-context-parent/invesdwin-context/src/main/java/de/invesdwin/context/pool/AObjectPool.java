@@ -40,7 +40,9 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
                     factory.destroyObject(obj);
                 }
             } else {
+                //CHECKSTYLE:OFF we explicitly want the stacktrace here
                 throw new NoSuchElementException("internalBorrow() returned null");
+                //CHECKSTYLE:ON
             }
         }
         activeCount.incrementAndGet();

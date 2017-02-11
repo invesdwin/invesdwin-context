@@ -405,7 +405,9 @@ public abstract class AProperties implements IProperties {
 
     private <T> T maybeThrowIfMissing(final String key, final T value) {
         if (getDelegate().isThrowExceptionOnMissing() && value == null) {
+            //CHECKSTYLE:OFF we explicitly want the stacktrace here
             throw new NoSuchElementException('\'' + key + "' doesn't map to an existing object");
+            //CHECKSTYLE:ON
         } else {
             return value;
         }

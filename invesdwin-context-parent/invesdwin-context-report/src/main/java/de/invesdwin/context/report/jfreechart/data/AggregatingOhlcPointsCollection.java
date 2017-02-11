@@ -3,11 +3,11 @@ package de.invesdwin.context.report.jfreechart.data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.error.FastNoSuchElementException;
 import de.invesdwin.util.lang.ADelegateComparator;
 import de.invesdwin.util.time.fdate.FDate;
 import de.invesdwin.util.time.fdate.FDates;
@@ -79,14 +79,14 @@ public class AggregatingOhlcPointsCollection<E extends IOhlcPoint> extends APoin
 
             @Override
             public E next() {
-                if (delegateOhlcPoints.hasNext()) { //TODO: fix iterator
+                if (delegateOhlcPoints.hasNext()) {
                     return factory.newCopy(delegateOhlcPoints.next());
                 } else if (delegateInProgressOhlcPoint != null) {
                     final IOhlcPoint ret = delegateInProgressOhlcPoint;
                     delegateInProgressOhlcPoint = null;
                     return factory.newCopy(ret);
                 } else {
-                    throw new NoSuchElementException();
+                    throw new FastNoSuchElementException("AggregatingOhlcPointsCollection: delegateOhlcPoints is null");
                 }
             }
 
