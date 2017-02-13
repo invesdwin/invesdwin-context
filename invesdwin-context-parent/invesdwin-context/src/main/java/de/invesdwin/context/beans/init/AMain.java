@@ -4,7 +4,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -16,6 +15,7 @@ import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.ResourceBundles;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @Immutable
 public abstract class AMain {
@@ -61,7 +61,9 @@ public abstract class AMain {
 
     protected final void waitForShutdown() {
         try {
-            TimeUnit.DAYS.sleep(Long.MAX_VALUE);
+            while (true) {
+                FTimeUnit.YEARS.sleep(1);
+            }
         } catch (final InterruptedException e) {
             throw Err.process(e);
         }
