@@ -232,7 +232,7 @@ public final class ContextProperties {
             }
         });
         for (final Class<?> clazz : classesToRegister) {
-            Objects.SERIALIZATION_CONFIG.registerClass(clazz);
+            Objects.LOCAL_SERIALIZATION_CONFIG.registerClass(clazz);
         }
     }
 
