@@ -21,6 +21,7 @@ import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.util.error.Throwables;
+import io.netty.util.concurrent.FastThreadLocal;
 
 /**
  * Because of throwing LoggedRuntimeExceptions it is impossible to use the ExceptionPolicies of spring because they
@@ -40,7 +41,7 @@ public class RetryAspect implements InitializingBean {
     @Inject
     private IRetryHook[] listeners;
 
-    private final ThreadLocal<Boolean> parentTransactionAlreadyConsidered = new ThreadLocal<Boolean>() {
+    private final FastThreadLocal<Boolean> parentTransactionAlreadyConsidered = new FastThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
             return false;

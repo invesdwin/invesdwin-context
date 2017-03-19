@@ -6,12 +6,13 @@ import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
+import io.netty.util.concurrent.FastThreadLocal;
 
 @ThreadSafe
 public class LoggingRetryHook implements IRetryHook {
 
     private final Log log = new Log(this);
-    private final ThreadLocal<Throwable> previousCause = new ThreadLocal<Throwable>();
+    private final FastThreadLocal<Throwable> previousCause = new FastThreadLocal<Throwable>();
 
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
