@@ -42,7 +42,7 @@ public final class DefaultTimeZoneConfigurer {
                 setDefaultTimeZone(newTimeZone);
             }
         } else {
-            setDefaultTimeZone(TimeZones.getTimeZone(ORIGINAL_TIMEZONE));
+            setDefaultTimeZone(getOriginalTimezone());
         }
         log.info("Using " + USER_TIMEZONE_PARAM + "=%s", TimeZone.getDefault().getID());
     }
@@ -79,8 +79,8 @@ public final class DefaultTimeZoneConfigurer {
         }
     }
 
-    public static String getOriginalTimezone() {
-        return ORIGINAL_TIMEZONE;
+    public static TimeZone getOriginalTimezone() {
+        return TimeZones.getTimeZone(ORIGINAL_TIMEZONE);
     }
 
 }
