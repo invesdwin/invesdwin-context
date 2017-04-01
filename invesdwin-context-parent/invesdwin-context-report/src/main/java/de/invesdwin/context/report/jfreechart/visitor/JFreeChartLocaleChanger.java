@@ -1,7 +1,6 @@
 package de.invesdwin.context.report.jfreechart.visitor;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import javax.annotation.concurrent.Immutable;
@@ -37,8 +36,8 @@ public class JFreeChartLocaleChanger extends AJFreeChartVisitor {
         } else if (axis instanceof NumberAxis && !(axis instanceof SymbolAxis)) {
             final NumberAxis numberAxis = (NumberAxis) axis;
             if (numberAxis.getNumberFormatOverride() == null) {
-                numberAxis.setNumberFormatOverride(
-                        new DecimalFormat(Decimal.DEFAULT_DECIMAL_FORMAT, DecimalFormatSymbols.getInstance(locale)));
+                final DecimalFormat formatter = Decimal.newDecimalFormatInstance(Decimal.DEFAULT_DECIMAL_FORMAT, locale);
+                numberAxis.setNumberFormatOverride(formatter);
             }
         }
     }
