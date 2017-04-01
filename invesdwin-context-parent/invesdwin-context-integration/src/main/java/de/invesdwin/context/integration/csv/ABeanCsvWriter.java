@@ -3,14 +3,12 @@ package de.invesdwin.context.integration.csv;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.collections.iterable.ICloseableIterable;
 import de.invesdwin.util.collections.iterable.ICloseableIterator;
-import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
 public abstract class ABeanCsvWriter<E> implements Closeable {
@@ -53,11 +51,7 @@ public abstract class ABeanCsvWriter<E> implements Closeable {
             headerWritten = true;
         }
         final List<?> element = getElement(e);
-        final List<String> str = new ArrayList<String>(element.size());
-        for (final Object obj : element) {
-            str.add(Strings.asStringEmptyText(obj));
-        }
-        csvWriter.line(str);
+        csvWriter.line(element);
     }
 
     protected abstract List<String> getHeaders();
@@ -67,6 +61,10 @@ public abstract class ABeanCsvWriter<E> implements Closeable {
     @Override
     public final void close() throws IOException {
         csvWriter.close();
+    }
+
+    public void flush() throws IOException {
+        csvWriter.flush();
     }
 
 }

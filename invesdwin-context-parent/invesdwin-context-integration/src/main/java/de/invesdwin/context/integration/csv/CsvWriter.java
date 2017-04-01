@@ -24,7 +24,7 @@ public class CsvWriter implements Closeable {
     private byte[] columnSeparatorBytes = DEFAULT_COLUMN_SEPARATOR.getBytes();
     private byte[] newlineBytes = DEFAULT_NEWLINE.getBytes();
 
-    private final List<String> currentLine = new ArrayList<String>();
+    private final List<Object> currentLine = new ArrayList<Object>();
     private Integer assertColumnCount;
 
     public CsvWriter(final OutputStream out) {
@@ -61,8 +61,8 @@ public class CsvWriter implements Closeable {
         return assertColumnCount;
     }
 
-    public void column(final String column) {
-        currentLine.add(column);
+    public void column(final Object column) {
+        currentLine.add(Strings.asString(column));
     }
 
     public void newLine() throws IOException {
@@ -70,15 +70,15 @@ public class CsvWriter implements Closeable {
         currentLine.clear();
     }
 
-    public void line(final List<String> columns) throws IOException {
+    public void line(final List<?> columns) throws IOException {
         assertColumnCount(columns.size());
         for (int i = 0; i < columns.size(); i++) {
-            final String column = columns.get(i);
+            final Object column = columns.get(i);
             if (column != null) {
                 if (quoteBytes != null) {
                     out.write(quoteBytes);
                 }
-                out.write(column.getBytes());
+                out.write(Strings.asStringEmptyText(column).getBytes());
                 if (quoteBytes != null) {
                     out.write(quoteBytes);
                 }
@@ -90,7 +90,7 @@ public class CsvWriter implements Closeable {
         out.write(newlineBytes);
     }
 
-    public void line(final String... columns) throws IOException {
+    public void line(final Object... columns) throws IOException {
         line(Arrays.asList(columns));
     }
 
@@ -106,6 +106,10 @@ public class CsvWriter implements Closeable {
     @Override
     public final void close() throws IOException {
         out.close();
+    }
+
+    public void flush() throws IOException {
+        out.flush();
     }
 
 }
