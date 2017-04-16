@@ -1022,6 +1022,8 @@
 									<exclude>org.hibernate:hibernate-c3p0</exclude>
 									<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</exclude>
 									<exclude>javassist:javassist</exclude>
+									<!-- use org.clojars.edbond:talib instead -->
+									<exclude>ta-lib:ta-lib</exclude>
 								</excludes>
 							</bannedDependencies>
 							<requireUpperBoundDeps />
@@ -1146,6 +1148,7 @@
 							<param>org\.codehaus\.janino.*</param>
 							<param>org\.jquantlib.*</param>
 							<param>ta-lib:ta-lib.*</param>
+							<param>org.clojars.edbond:talib.*</param>
 							<param>org\.ow2\.asm.*</param>
 							<param>com\.github\.virtuald:curvesapi.*</param>
 							<!-- epl license -->
