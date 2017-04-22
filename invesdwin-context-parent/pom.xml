@@ -10,7 +10,6 @@
 
 	<modules>
 		<module>invesdwin-context</module>
-		<module>invesdwin-context-integration</module>
 		<module>invesdwin-context-webserver</module>
 		<module>invesdwin-context-report</module>
 	</modules>
@@ -117,11 +116,6 @@
 				<artifactId>invesdwin-context</artifactId>
 				<version>${version.invesdwin-context}</version>
 				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-integration</artifactId>
-				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
