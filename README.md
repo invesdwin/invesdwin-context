@@ -132,3 +132,4 @@ There are a few more modules available in their respective github projects inclu
 
 - **Persistence Modules**: https://github.com/subes/invesdwin-context-persistence
 - **Security Modules**: https://github.com/subes/invesdwin-context-security
+- **Integration Modules**: https://github.com/subes/invesdwin-context-integration
