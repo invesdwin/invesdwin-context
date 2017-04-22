@@ -10,7 +10,6 @@
 
 	<modules>
 		<module>invesdwin-context</module>
-		<module>invesdwin-context-integration</module>
 		<module>invesdwin-context-webserver</module>
 		<module>invesdwin-context-report</module>
 	</modules>
@@ -73,11 +72,6 @@
 		<version.commons-lang3>3.3.2</version.commons-lang3>
 		<version.commons-beanutils>1.9.2</version.commons-beanutils>
 
-		<version.spring-batch>3.0.7.RELEASE</version.spring-batch>
-		<version.spring-retry>1.1.3.RELEASE</version.spring-retry>
-		<version.spring-integration>4.3.1.RELEASE</version.spring-integration>
-		<version.spring-ws>2.3.0.RELEASE</version.spring-ws>
-
 		<version.logback>1.1.7</version.logback>
 		<version.janino>2.7.8</version.janino>
 
@@ -117,11 +111,6 @@
 				<artifactId>invesdwin-context</artifactId>
 				<version>${version.invesdwin-context}</version>
 				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-integration</artifactId>
-				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
@@ -217,48 +206,6 @@
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>${version.commons-beanutils}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework.batch</groupId>
-				<artifactId>spring-batch-infrastructure</artifactId>
-				<version>${version.spring-batch}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.retry</groupId>
-				<artifactId>spring-retry</artifactId>
-				<version>${version.spring-retry}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.integration</groupId>
-				<artifactId>spring-integration-core</artifactId>
-				<version>${version.spring-integration}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.integration</groupId>
-				<artifactId>spring-integration-xml</artifactId>
-				<version>${version.spring-integration}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>stax-api</artifactId>
-						<groupId>javax.xml.stream</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.ws</groupId>
-				<artifactId>spring-xml</artifactId>
-				<version>${version.spring-ws}</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>commons-logging</artifactId>
