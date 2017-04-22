@@ -10,7 +10,7 @@
 
 	<modules>
 		<module>invesdwin-context</module>
-		<module>invesdwin-context-io</module>
+		<module>invesdwin-context-integration</module>
 		<module>invesdwin-context-webserver</module>
 		<module>invesdwin-context-report</module>
 	</modules>
@@ -120,7 +120,7 @@
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-io</artifactId>
+				<artifactId>invesdwin-context-integration</artifactId>
 				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
