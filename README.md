@@ -125,3 +125,10 @@ This module bundles tools and utilities for creating reports of various types:
 	- `Aggragating(Ohlc)PointsCollection`: generating charts from large datasets is very slow and memory intensive without having any visual benefit, thus it makes sense to prefilter the data by aggregating points into to-be-pixels. This is handled by this special collection for XY-Points and OHLC-Bars spectively. You normally don't need more than around 10.000 datapoints for a XY-Chart or more than 1.000 datapoints for a OHLC-Chart to look good.
 	- `AJFreeChartVisitor`: allows to visit and modify chart elements to apply some common modifications on charts by post-processing. The included `JFreeChartLocaleChanger` and `JFreeChartWeekendGapRemover` are two examples for such cases. The first one adjusts date and number formats in the chart according to the given locale (JFreeChart otherwise uses the JVM default locale) and the second one removes weekends from `DateAxis` instances by setting an appropriate `SegmentedTimeline`. 
 	- `JFreeChartExporter`: allows you to easily export charts lazily, memory sensitive and in parallel as desired into different file formats and dimensions. It also allows you to scale the fonts via a multiplier so they are not too small on higher chart resolutions.
+
+## More Modules
+
+There are a few more modules available in their respective github projects including their individual documentation:
+
+- **Persistence Modules**: https://github.com/subes/invesdwin-context-persistence
+- **Security Modules**: https://github.com/subes/invesdwin-context-security
