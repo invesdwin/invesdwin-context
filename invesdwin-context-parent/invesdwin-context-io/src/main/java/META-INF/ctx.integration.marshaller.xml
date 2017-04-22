@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:si="http://www.springframework.org/schema/integration" xmlns:si-xml="http://www.springframework.org/schema/integration/xml"
+	xmlns:si-stream="http://www.springframework.org/schema/integration/stream" xmlns:jms="http://www.springframework.org/schema/integration/jms"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/integration
+            http://www.springframework.org/schema/integration/spring-integration.xsd
+            http://www.springframework.org/schema/integration/stream
+            http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
+            http://www.springframework.org/schema/integration/jms
+			http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+            http://www.springframework.org/schema/integration/xml
+			http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+	<!-- Dieser Context wird nur geladen, wenn auch wirklich JAXB Generate im Classpath gefunden wurden. -->
+
+	<bean id="jaxbMarshaller" class="de.invesdwin.context.integration.internal.MergedJaxb2Marshaller" />
+	<bean id="jaxbMarshallingTransformer" class="org.springframework.integration.xml.transformer.MarshallingTransformer">
+		<constructor-arg ref="jaxbMarshaller" />
+		<constructor-arg>
+			<bean class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+		</constructor-arg>
+	</bean>
+	<bean name="jaxbMarshallingTransformerInterceptor" class="org.springframework.integration.transformer.MessageTransformingChannelInterceptor">
+		<constructor-arg ref="jaxbMarshallingTransformer" />
+		<property name="transformOnSend" value="true" />
+	</bean>
+
+	<alias alias="jaxbUnmarshaller" name="jaxbMarshaller" />
+	<bean id="jaxbUnmarshallingTransformer" class="org.springframework.integration.xml.transformer.UnmarshallingTransformer">
+		<constructor-arg ref="jaxbUnmarshaller" />
+	</bean>
+	<bean name="jaxbUnmarshallingTransformerInterceptor" class="org.springframework.integration.transformer.MessageTransformingChannelInterceptor">
+		<constructor-arg ref="jaxbUnmarshallingTransformer" />
+		<property name="transformOnSend" value="true" />
+	</bean>
+
+</beans>

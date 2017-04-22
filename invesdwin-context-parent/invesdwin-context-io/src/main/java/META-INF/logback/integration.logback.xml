@@ -1,0 +1,17 @@
+<configuration>
+
+	<appender name="integration" class="de.invesdwin.context.log.logback.ConfiguredFileAppender" />
+
+	<logger name="org.springframework.batch.item.file.FlatFileItemReader" additivity="false" level="OFF" />
+
+    <logger name="org.springframework.integration" additivity="false" level="ERROR">
+        <appender-ref ref="stderr" />
+        <appender-ref ref="error" />
+        <appender-ref ref="integration" />
+    </logger>
+    
+    <logger name="de.invesdwin.MESSAGES" additivity="false" level="INFO">
+        <appender-ref ref="integration" />
+    </logger>
+    
+</configuration>
