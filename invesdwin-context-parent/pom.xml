@@ -69,7 +69,6 @@
 		<version.commons-configuration>1.9</version.commons-configuration>
 		<version.commons-pool2>2.3</version.commons-pool2>
 		<version.commons-compress>1.5</version.commons-compress>
-		<version.commons-lang3>3.3.2</version.commons-lang3>
 		<version.commons-beanutils>1.9.2</version.commons-beanutils>
 
 		<version.logback>1.1.7</version.logback>
@@ -196,11 +195,6 @@
 						<groupId>org.tukaani</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${version.commons-lang3}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-beanutils</groupId>
