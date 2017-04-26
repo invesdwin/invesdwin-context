@@ -1089,9 +1089,10 @@
 							<param>org\.codehaus\.janino.*</param>
 							<param>org\.jquantlib.*</param>
 							<param>ta-lib:ta-lib.*</param>
-							<param>org.clojars.edbond:talib.*</param>
+							<param>org\.clojars.edbond:talib.*</param>
 							<param>org\.ow2\.asm.*</param>
 							<param>com\.github\.virtuald:curvesapi.*</param>
+							<param>com\.jcabi:jcabi-aether.*</param>
 							<!-- epl license -->
 							<param>com\.h2database.*</param>
 							<!-- LGPL license -->
@@ -1107,7 +1108,7 @@
 							<param>org\.jfree:jfreechart.*</param>
 							<param>OpenForecast:OpenForecast.*</param>
 							<param>7zip:7zip.*</param>
-							<param>net.sf.jpcapng:jpcapng.*</param>
+							<param>net\.sf\.jpcapng:jpcapng.*</param>
 							<!-- CDDL -->
 							<param>javax\.mail:mail.*</param>
 							<param>javax\.xml\.bind:jaxb.*</param>
@@ -1139,6 +1140,8 @@
 							<param>org\.webjars:highstock.*</param>
 							<!-- WARNING: commercial license needs to be bought -->
 							<param>com\.nj4x:jfx.*</param>
+							<!-- WARNING: gpl license, only use when you conform to its terms -->
+							<param>org\.renjin:renjin-script-engine.*</param>)
 						</excludesRegex>
 					</configuration>
 				</plugin>
