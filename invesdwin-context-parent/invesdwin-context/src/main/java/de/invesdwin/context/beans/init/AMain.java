@@ -31,7 +31,7 @@ public abstract class AMain {
 
     protected AMain(final String[] args, final boolean bootstrap) {
         parseCommandline(args, bootstrap);
-        Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
+        Assertions.assertThat(PreMergedContext.class).isNotNull();
     }
 
     private void parseCommandline(final String[] args, final boolean bootstrap) {
