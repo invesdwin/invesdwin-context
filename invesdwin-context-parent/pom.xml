@@ -1109,6 +1109,7 @@
 							<param>OpenForecast:OpenForecast.*</param>
 							<param>7zip:7zip.*</param>
 							<param>net\.sf\.jpcapng:jpcapng.*</param>
+							<param>org\.nuiton\.thirdparty:JRI.*</param>
 							<!-- CDDL -->
 							<param>javax\.mail:mail.*</param>
 							<param>javax\.xml\.bind:jaxb.*</param>
@@ -1143,6 +1144,8 @@
 							<!-- WARNING: gpl license, only use when you conform to its terms -->
 							<param>org\.renjin:renjin-script-engine.*</param>
 							<param>org\.renjin\.cran:DEoptim.*</param>
+							<!-- WARNING: no license specified, though since it interacts with R over a socket, we expect it to be GPL -->
+							<param>com\.github\.yannrichet:Rsession.*</param>
 						</excludesRegex>
 					</configuration>
 				</plugin>
