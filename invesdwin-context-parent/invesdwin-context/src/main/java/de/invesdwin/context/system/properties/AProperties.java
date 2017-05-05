@@ -165,18 +165,22 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized String getStringWithSecurityWarning(final String key, final String defaultPasswordWarning) {
+    public synchronized String getStringWithSecurityWarning(final String key, final String defaultValueWarning) {
         final String keyPath = prefix(key);
-        final String password = maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
-        if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultPasswordWarning != null
-                && defaultPasswordWarning.equals(password)) {
+        final String actualValue = maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
+        maybeLogSecurityWarning(keyPath, actualValue, defaultValueWarning);
+        return actualValue;
+    }
+
+    public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
+        if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultValueWarning != null
+                && defaultValueWarning.equals(actualValue)) {
             log.warn(
                     "Property [%s] is currently set to the default value [%s] in a production environment, "
                             + "please override this value because otherwise you might expose yourself to a security risk. "
                             + "See the invesdwin-context documentation for details on how to do this.",
-                    keyPath, defaultPasswordWarning);
+                    prefix(key), defaultValueWarning);
         }
-        return password;
     }
 
     @Override

@@ -56,9 +56,13 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
         if (factory.validateObject(obj)) {
             factory.passivateObject(obj);
         } else {
-            internalRemoveObject(obj);
-            factory.destroyObject(obj);
+            removeObject(obj);
         }
+    }
+
+    protected void removeObject(final E obj) throws Exception {
+        internalRemoveObject(obj);
+        factory.destroyObject(obj);
     }
 
     @Override
