@@ -12,6 +12,7 @@ import org.kohsuke.args4j.Option;
 
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.context.system.properties.ResourceBundles;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
@@ -48,8 +49,9 @@ public abstract class AMain {
                 startApplication(parser);
             }
         } catch (final Throwable e) {
-            Err.process(e);
+            final LoggedRuntimeException processed = Err.process(e);
             printHelp(parser);
+            throw processed; //for the case when the main method was called directly
         }
     }
 
