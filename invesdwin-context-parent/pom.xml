@@ -1110,6 +1110,7 @@
 							<param>7zip:7zip.*</param>
 							<param>net\.sf\.jpcapng:jpcapng.*</param>
 							<param>org\.nuiton\.thirdparty:JRI.*</param>
+							<param>com\.github\.jbytecode:RCaller.*</param>
 							<!-- CDDL -->
 							<param>javax\.mail:mail.*</param>
 							<param>javax\.xml\.bind:jaxb.*</param>
