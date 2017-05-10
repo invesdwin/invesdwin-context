@@ -204,9 +204,7 @@ public final class ContextProperties {
         }
         if (cpuThreadPoolCount == null || cpuThreadPoolCount <= 0) {
             cpuThreadPoolCount = Runtime.getRuntime().availableProcessors();
-            if (PlatformInitializerProperties.isAllowed()) {
-                systemProperties.setInteger(key, cpuThreadPoolCount);
-            }
+            systemProperties.setInteger(key, cpuThreadPoolCount);
         }
         return cpuThreadPoolCount;
     }

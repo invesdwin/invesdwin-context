@@ -34,7 +34,7 @@ public class SystemProperties extends AProperties {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
                 //Load properties if not done so yet
-                Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
+                Assertions.assertThat(PreMergedContext.class).isNotNull();
             } catch (final Throwable t) {
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
