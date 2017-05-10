@@ -1093,6 +1093,8 @@
 							<param>org\.ow2\.asm.*</param>
 							<param>com\.github\.virtuald:curvesapi.*</param>
 							<param>com\.jcabi:jcabi-aether.*</param>
+							<!-- psfl (bsd-like) license -->
+							<param>org\.scijava:jython-shaded.*</param>
 							<!-- epl license -->
 							<param>com\.h2database.*</param>
 							<!-- LGPL license -->
