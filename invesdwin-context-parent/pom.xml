@@ -963,8 +963,6 @@
 									<exclude>org.hibernate:hibernate-c3p0</exclude>
 									<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</exclude>
 									<exclude>javassist:javassist</exclude>
-									<!-- use org.clojars.edbond:talib instead -->
-									<exclude>ta-lib:ta-lib</exclude>
 								</excludes>
 							</bannedDependencies>
 							<requireUpperBoundDeps />
@@ -1093,6 +1091,7 @@
 							<param>org\.ow2\.asm.*</param>
 							<param>com\.github\.virtuald:curvesapi.*</param>
 							<param>com\.jcabi:jcabi-aether.*</param>
+							<param>net\.sf\.py4j:py4j.*</param>
 							<!-- psfl (bsd-like) license -->
 							<param>org\.scijava:jython-shaded.*</param>
 							<!-- epl license -->
@@ -1113,6 +1112,8 @@
 							<param>net\.sf\.jpcapng:jpcapng.*</param>
 							<param>org\.nuiton\.thirdparty:JRI.*</param>
 							<param>com\.github\.jbytecode:RCaller.*</param>
+							<!-- zlib -->
+							<param>com\.github\.mrj0:jep.*</param>
 							<!-- CDDL -->
 							<param>javax\.mail:mail.*</param>
 							<param>javax\.xml\.bind:jaxb.*</param>
