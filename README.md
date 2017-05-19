@@ -123,6 +123,6 @@ There are a few more modules available in their respective github projects inclu
 - **Integration Modules**: https://github.com/subes/invesdwin-context-integration
 - **Persistence Modules**: https://github.com/subes/invesdwin-context-persistence
 - **Security Modules**: https://github.com/subes/invesdwin-context-security
+- **Client Modules**: https://github.com/subes/invesdwin-context-client (desktop and web frontends)
 - **R Modules**: https://github.com/subes/invesdwin-context-r
 - **Python Modules**: https://github.com/subes/invesdwin-context-python
-- **Client Modules**: https://github.com/subes/invesdwin-context-client (desktop and web frontends)
