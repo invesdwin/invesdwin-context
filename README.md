@@ -125,4 +125,4 @@ There are a few more modules available in their respective github projects inclu
 - **Security Modules**: https://github.com/subes/invesdwin-context-security (Authentication, Authorization, SSO)
 - **Client Modules**: https://github.com/subes/invesdwin-context-client (Desktop and Web Frontends)
 - **R Modules**: https://github.com/subes/invesdwin-context-r (Scripting with R)
-- **Python Modules**: https://github.com/subes/invesdwin-context-python (Scripting with python)
+- **Python Modules**: https://github.com/subes/invesdwin-context-python (Scripting with Python)
