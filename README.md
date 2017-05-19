@@ -120,9 +120,15 @@ This module bundles tools and utilities for creating reports of various types:
 
 There are a few more modules available in their respective github projects including their individual documentation:
 
-- **Integration Modules**: https://github.com/subes/invesdwin-context-integration (IO, IPC, Messaging, Services, Batch, Hadoop)
-- **Persistence Modules**: https://github.com/subes/invesdwin-context-persistence (Databases, SQL, NoSQL)
-- **Security Modules**: https://github.com/subes/invesdwin-context-security (Authentication, Authorization, SSO)
-- **Client Modules**: https://github.com/subes/invesdwin-context-client (Desktop and Web Frontends)
-- **R Modules**: https://github.com/subes/invesdwin-context-r (Scripting with R)
-- **Python Modules**: https://github.com/subes/invesdwin-context-python (Scripting with Python)
+- **Integration Modules**: https://github.com/subes/invesdwin-context-integration 
+	- IO, IPC, Messaging, Services, Batch, Hadoop
+- **Persistence Modules**: https://github.com/subes/invesdwin-context-persistence
+	- Databases, SQL, NoSQL
+- **Security Modules**: https://github.com/subes/invesdwin-context-security 
+	- Authentication, Authorization, SSO
+- **Client Modules**: https://github.com/subes/invesdwin-context-client 
+	- Desktop and Web Frontends
+- **R Modules**: https://github.com/subes/invesdwin-context-r 
+	- Scripting with R
+- **Python Modules**: https://github.com/subes/invesdwin-context-python
+	- Scripting with Python
