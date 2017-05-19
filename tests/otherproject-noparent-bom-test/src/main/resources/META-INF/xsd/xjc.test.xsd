@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xjcTest="http://invesdwin.de/metaproject/test/schema" targetNamespace="http://invesdwin.de/metaproject/test/schema">
+
+	<xsd:complexType name="JavaTypesTestPayload">
+		<xsd:attribute name="anySimpleType_Required" type="xsd:anySimpleType"
+			use="required" />
+		<xsd:attribute name="anySimpleType_Optional" type="xsd:anySimpleType"
+			use="optional" />
+
+		<xsd:attribute name="anyURI_Required" type="xsd:anyURI"
+			use="required" />
+		<xsd:attribute name="anyURI_Optional" type="xsd:anyURI"
+			use="optional" />
+
+		<xsd:attribute name="base64Binary_Required" type="xsd:base64Binary"
+			use="required" />
+		<xsd:attribute name="base64Binary_Optional" type="xsd:base64Binary"
+			use="optional" />
+
+		<xsd:attribute name="boolean_Required" type="xsd:boolean"
+			use="required" />
+		<xsd:attribute name="boolean_Optional" type="xsd:boolean"
+			use="optional" />
+
+		<xsd:attribute name="byte_Required" type="xsd:byte" use="required" />
+		<xsd:attribute name="byte_Optional" type="xsd:byte" use="optional" />
+
+		<xsd:attribute name="date_Required" type="xsd:date" use="required" />
+		<xsd:attribute name="date_Optional" type="xsd:date" use="optional" />
+
+		<xsd:attribute name="dateTime_Required" type="xsd:dateTime"
+			use="required" />
+		<xsd:attribute name="dateTime_Optional" type="xsd:dateTime"
+			use="optional" />
+
+		<xsd:attribute name="decimal_Required" type="xsd:decimal"
+			use="required" />
+		<xsd:attribute name="decimal_Optional" type="xsd:decimal"
+			use="optional" />
+
+		<xsd:attribute name="double_Required" type="xsd:double"
+			use="required" />
+		<xsd:attribute name="double_Optional" type="xsd:double"
+			use="optional" />
+
+		<xsd:attribute name="duration_Required" type="xsd:duration"
+			use="required" />
+		<xsd:attribute name="duration_Optional" type="xsd:duration"
+			use="optional" />
+
+		<!-- <xsd:attribute name="ENTITIES_Required" type="xsd:ENTITIES" use="required" 
+			/> <xsd:attribute name="ENTITIES_Optional" type="xsd:ENTITIES" use="optional" 
+			/> <xsd:attribute name="ENTITY_Required" type="xsd:ENTITY" use="required" 
+			/> <xsd:attribute name="ENTITY_Optional" type="xsd:ENTITY" use="optional" 
+			/> -->
+
+		<xsd:attribute name="float_Required" type="xsd:float"
+			use="required" />
+		<xsd:attribute name="float_Optional" type="xsd:float"
+			use="optional" />
+
+		<xsd:attribute name="gDay_Required" type="xsd:gDay" use="required" />
+		<xsd:attribute name="gDay_Optional" type="xsd:gDay" use="optional" />
+
+		<xsd:attribute name="gMonth_Required" type="xsd:gMonth"
+			use="required" />
+		<xsd:attribute name="gMonth_Optional" type="xsd:gMonth"
+			use="optional" />
+
+		<xsd:attribute name="gMonthDay_Required" type="xsd:gMonthDay"
+			use="required" />
+		<xsd:attribute name="gMonthDay_Optional" type="xsd:gMonthDay"
+			use="optional" />
+
+		<xsd:attribute name="gYear_Required" type="xsd:gYear"
+			use="required" />
+		<xsd:attribute name="gYear_Optional" type="xsd:gYear"
+			use="optional" />
+
+		<xsd:attribute name="gYearMonth_Required" type="xsd:gYearMonth"
+			use="required" />
+		<xsd:attribute name="gYearMonth_Optional" type="xsd:gYearMonth"
+			use="optional" />
+
+		<xsd:attribute name="hexBinary_Required" type="xsd:hexBinary"
+			use="required" />
+		<xsd:attribute name="hexBinary_Optional" type="xsd:hexBinary"
+			use="optional" />
+
+		<!-- <xsd:attribute name="ID_Required" type="xsd:ID" use="required" /> 
+			<xsd:attribute name="ID_Optional" type="xsd:ID" use="optional" /> <xsd:attribute 
+			name="IDREF_Required" type="xsd:IDREF" use="required" /> <xsd:attribute name="IDREF_Optional" 
+			type="xsd:IDREF" use="optional" /> <xsd:attribute name="IDREFS_Required" 
+			type="xsd:IDREFS" use="required" /> <xsd:attribute name="IDREFS_Optional" 
+			type="xsd:IDREFS" use="optional" /> -->
+
+		<xsd:attribute name="int_Required" type="xsd:int" use="required" />
+		<xsd:attribute name="int_Optional" type="xsd:int" use="optional" />
+
+		<xsd:attribute name="integer_Required" type="xsd:integer"
+			use="required" />
+		<xsd:attribute name="integer_Optional" type="xsd:integer"
+			use="optional" />
+
+		<xsd:attribute name="language_Required" type="xsd:language"
+			use="required" />
+		<xsd:attribute name="language_Optional" type="xsd:language"
+			use="optional" />
+
+		<xsd:attribute name="long_Required" type="xsd:long" use="required" />
+		<xsd:attribute name="long_Optional" type="xsd:long" use="optional" />
+
+		<xsd:attribute name="Name_Required" type="xsd:Name" use="required" />
+		<xsd:attribute name="Name_Optional" type="xsd:Name" use="optional" />
+
+		<!-- <xsd:attribute name="NCName_Required" type="xsd:NCName" use="required" 
+			/> <xsd:attribute name="NCName_Optional" type="xsd:NCName" use="optional" 
+			/> -->
+
+		<xsd:attribute name="negativeInteger_Required" type="xsd:negativeInteger"
+			use="required" />
+		<xsd:attribute name="negativeInteger_Optional" type="xsd:negativeInteger"
+			use="optional" />
+
+		<!-- <xsd:attribute name="NMTOKEN_Required" type="xsd:NMTOKEN" use="required" 
+			/> <xsd:attribute name="NMTOKEN_Optional" type="xsd:NMTOKEN" use="optional" 
+			/> <xsd:attribute name="NMTOKENS_Required" type="xsd:NMTOKENS" use="required" 
+			/> <xsd:attribute name="NMTOKENS_Optional" type="xsd:NMTOKENS" use="optional" 
+			/> -->
+
+		<xsd:attribute name="nonNegativeInteger_Required" type="xsd:nonNegativeInteger"
+			use="required" />
+		<xsd:attribute name="nonNegativeInteger_Optional" type="xsd:nonNegativeInteger"
+			use="optional" />
+
+		<xsd:attribute name="nonPositiveInteger_Required" type="xsd:nonPositiveInteger"
+			use="required" />
+		<xsd:attribute name="nonPositiveInteger_Optional" type="xsd:nonPositiveInteger"
+			use="optional" />
+
+		<xsd:attribute name="normalizedString_Required" type="xsd:normalizedString"
+			use="required" />
+		<xsd:attribute name="normalizedString_Optional" type="xsd:normalizedString"
+			use="optional" />
+
+		<!-- <xsd:attribute name="NOTATION_Required" type="xsd:NOTATION" use="required" 
+			/> <xsd:attribute name="NOTATION_Optional" type="xsd:NOTATION" use="optional" 
+			/> -->
+
+		<xsd:attribute name="positiveInteger_Required" type="xsd:positiveInteger"
+			use="required" />
+		<xsd:attribute name="positiveInteger_Optional" type="xsd:positiveInteger"
+			use="optional" />
+
+		<!-- <xsd:attribute name="QName_Required" type="xsd:QName" use="required" 
+			/> <xsd:attribute name="QName_Optional" type="xsd:QName" use="optional" /> -->
+
+		<xsd:attribute name="short_Required" type="xsd:short"
+			use="required" />
+		<xsd:attribute name="short_Optional" type="xsd:short"
+			use="optional" />
+
+		<xsd:attribute name="string_Required" type="xsd:string"
+			use="required" />
+		<xsd:attribute name="string_Optional" type="xsd:string"
+			use="optional" />
+
+		<xsd:attribute name="time_Required" type="xsd:time" use="required" />
+		<xsd:attribute name="time_Optional" type="xsd:time" use="optional" />
+
+		<!-- <xsd:attribute name="token_Required" type="xsd:token" use="required" 
+			/> <xsd:attribute name="token_Optional" type="xsd:token" use="optional" /> -->
+
+		<xsd:attribute name="unsignedByte_Required" type="xsd:unsignedByte"
+			use="required" />
+		<xsd:attribute name="unsignedByte_Optional" type="xsd:unsignedByte"
+			use="optional" />
+
+		<xsd:attribute name="unsignedInt_Required" type="xsd:unsignedInt"
+			use="required" />
+		<xsd:attribute name="unsignedInt_Optional" type="xsd:unsignedInt"
+			use="optional" />
+
+		<xsd:attribute name="unsignedLong_Required" type="xsd:unsignedLong"
+			use="required" />
+		<xsd:attribute name="unsignedLong_Optional" type="xsd:unsignedLong"
+			use="optional" />
+
+		<xsd:attribute name="unsignedShort_Required" type="xsd:unsignedShort"
+			use="required" />
+		<xsd:attribute name="unsignedShort_Optional" type="xsd:unsignedShort"
+			use="optional" />
+	</xsd:complexType>
+
+	<xsd:element name="JavaTypesTestContainer">
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:element name="payload" type="xjcTest:JavaTypesTestPayload" />
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>
