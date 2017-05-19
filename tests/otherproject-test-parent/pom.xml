@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.invesdwin</groupId>
-		<artifactId>invesdwin-common-parent</artifactId>
-		<version>0.5.0-SNAPSHOT</version>
+		<artifactId>invesdwin-context-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>com.otherproject</groupId>
 	<artifactId>otherproject-test-parent</artifactId>
@@ -19,11 +19,21 @@
 	</modules>
 
 	<properties>
+		<version.invesdwin-context-persistence>1.0.0-SNAPSHOT</version.invesdwin-context-persistence>
 		<version.otherproject>0.0.1-SNAPSHOT</version.otherproject>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- additional projects need to be imported via bom -->
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-persistence-parent</artifactId>
+				<version>${version.invesdwin-context-persistence}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
 			<dependency>
 				<groupId>com.otherproject</groupId>
 				<artifactId>otherproject-basepackage-test</artifactId>
@@ -45,5 +55,32 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>invesdwin.de-releases</name>
+			<url>http://invesdwin.de/artifactory/invesdwin-oss</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>invesdwin.de-snapshots</name>
+			<url>http://invesdwin.de/artifactory/invesdwin-oss</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>invesdwin-oss</id>
+			<url>http://invesdwin.de/artifactory/invesdwin-oss-remote</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>invesdwin-oss</id>
+			<url>http://invesdwin.de/artifactory/invesdwin-oss-remote</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 
 </project>
