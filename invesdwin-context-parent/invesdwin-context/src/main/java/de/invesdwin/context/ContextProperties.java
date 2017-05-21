@@ -182,7 +182,7 @@ public final class ContextProperties {
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String key = "DEFAULT_NETWORK_TIMEOUT";
         final Duration duration;
-        if (!systemProperties.containsKey(key) && !PlatformInitializerProperties.isAllowed()) {
+        if (!PlatformInitializerProperties.isAllowed() || !systemProperties.containsValue(key)) {
             //default to 30 seconds if for some reason the properties were not loaded
             duration = new Duration(30, FTimeUnit.SECONDS);
         } else {
