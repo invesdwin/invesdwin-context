@@ -132,3 +132,5 @@ There are a few more modules available in their respective github projects inclu
 	- https://github.com/subes/invesdwin-context-r 
 - **Python Modules**: Scripting with Python
 	- https://github.com/subes/invesdwin-context-python
+- **Webproxy Modules**: Download Manager for Web Scraping that supports Proxy Servers
+	- https://github.com/subes/invesdwin-context-python
