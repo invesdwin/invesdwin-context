@@ -28,7 +28,7 @@ import de.invesdwin.context.report.jasperreports.Virtualizers;
 import de.invesdwin.context.test.ATest;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.StretchType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -66,8 +66,8 @@ public class LargeReportTest extends ATest {
         final JasperReportBuilder report = DynamicReports.report().setDataSource(new JREmptyDataSource(1));
         report.detailHeader(DynamicReports.cmp.text("Page " + page));
         report.detail(DynamicReports.cmp.image(getUniqueSampleImage())
-                .setStretchType(StretchType.RELATIVE_TO_BAND_HEIGHT)
-                .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                .setStretchType(StretchType.CONTAINER_HEIGHT)
+                .setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)
                 .setUsingCache(false));
         report.detail(DynamicReports.cmp.pageBreak());
         document.detail(DynamicReports.cmp.subreport(report));
