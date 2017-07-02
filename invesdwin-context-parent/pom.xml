@@ -1112,6 +1112,7 @@
 							<param>net\.sf\.jpcapng:jpcapng.*</param>
 							<param>org\.nuiton\.thirdparty:JRI.*</param>
 							<param>com\.github\.jbytecode:RCaller.*</param>
+							<param>com\.googlecode\.matrix-toolkits-java:mtj.*</param>
 							<!-- zlib -->
 							<param>com\.github\.mrj0:jep.*</param>
 							<!-- CDDL -->
