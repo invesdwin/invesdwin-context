@@ -134,3 +134,7 @@ There are a few more modules available in their respective github projects inclu
 	- https://github.com/subes/invesdwin-context-python
 - **Webproxy Modules**: Download Manager for Web Scraping that supports Proxy Servers
 	- https://github.com/subes/invesdwin-webproxy
+	
+## Support
+
+If you need further assistance or have some ideas for improvements and don't want to create an issue here on github, feel free to ask a question in our [invesdwin-platform googlegroup](https://groups.google.com/forum/#!forum/invesdwin-platform).
