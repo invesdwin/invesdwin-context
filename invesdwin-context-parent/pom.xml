@@ -1079,6 +1079,7 @@
 							<param>javax\.jdo.*</param>
 							<param>org\.jasig\.cas.*</param>
 							<param>io\.mappedbus:mappedbus.*</param>
+							<param>dk\.ange:javaoctave.*</param>
 							<!-- MIT license -->
 							<param>org\.slf4j.*</param>
 							<param>org\.bouncycastle.*</param>
