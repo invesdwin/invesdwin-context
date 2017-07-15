@@ -1093,6 +1093,7 @@
 							<param>com\.github\.virtuald:curvesapi.*</param>
 							<param>com\.jcabi:jcabi-aether.*</param>
 							<param>net\.sf\.py4j:py4j.*</param>
+							<param>com\.diffplug\.matsim:matconsolectl.*</param>
 							<!-- psfl (bsd-like) license -->
 							<param>org\.scijava:jython-shaded.*</param>
 							<!-- epl license -->
