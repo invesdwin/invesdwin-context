@@ -1151,6 +1151,8 @@
 							<!-- WARNING: gpl license, only use when you conform to its terms -->
 							<param>org\.renjin:renjin-script-engine.*</param>
 							<param>org\.renjin\.cran:DEoptim.*</param>
+							<param>org\.scilab\.modules:javasci.*</param>
+							<param>org\.scilab\.modules:types.*</param>
 							<!-- WARNING: no license specified, though since it interacts with R over a socket, we expect it to be GPL -->
 							<param>com\.github\.yannrichet:Rsession.*</param>
 						</excludesRegex>
