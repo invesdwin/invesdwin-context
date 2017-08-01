@@ -132,7 +132,7 @@ There are a few more modules available in their respective github projects inclu
 	- https://github.com/subes/invesdwin-context-r 
 - **Python Modules**: Scripting with Python
 	- https://github.com/subes/invesdwin-context-python
-- **Matlab/Octave Modules**: Scripting with Matlab and Octave
+- **Matlab/Octave/Scilab Modules**: Scripting with Matlab, Octave and Scilab
 	- https://github.com/subes/invesdwin-context-matlab
 - **Webproxy Modules**: Download Manager for Web Scraping that supports Proxy Servers
 	- https://github.com/subes/invesdwin-webproxy
