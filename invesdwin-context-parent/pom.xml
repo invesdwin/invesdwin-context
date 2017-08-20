@@ -397,6 +397,10 @@
 						<artifactId>core</artifactId>
 						<groupId>com.google.zxing</groupId>
 					</exclusion>
+					<exclusion>
+						<groupId>com.ibm.icu</groupId>
+						<artifactId>icu4j</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -1153,7 +1157,8 @@
 							<param>org\.renjin\.cran:DEoptim.*</param>
 							<param>org\.scilab\.modules:javasci.*</param>
 							<param>org\.scilab\.modules:types.*</param>
-							<!-- WARNING: no license specified, though since it interacts with R over a socket, we expect it to be GPL -->
+							<!-- WARNING: no license specified, though since it interacts with 
+								R over a socket, we expect it to be GPL -->
 							<param>com\.github\.yannrichet:Rsession.*</param>
 						</excludesRegex>
 					</configuration>
