@@ -210,27 +210,29 @@ public final class ContextProperties {
     }
 
     private static void registerTypesForSerialization() {
-        /*
-         * performance optimization see: https://github.com/RuedigerMoeller/fast-serialization/wiki/Serialization
-         */
-        final ClassPathScanner scanner = new ClassPathScanner();
-        scanner.addIncludeFilter(new AssignableTypeFilter(ISerializableValueObject.class));
-        final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
-        for (final String basePackage : ContextProperties.getBasePackages()) {
-            for (final BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
-                final Class<?> clazz = Reflections.classForName(bd.getBeanClassName());
-                classesToRegister.add(clazz);
+        if (Objects.SERIALIZATION_CONFIG != null) {
+            /*
+             * performance optimization see: https://github.com/RuedigerMoeller/fast-serialization/wiki/Serialization
+             */
+            final ClassPathScanner scanner = new ClassPathScanner();
+            scanner.addIncludeFilter(new AssignableTypeFilter(ISerializableValueObject.class));
+            final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
+            for (final String basePackage : ContextProperties.getBasePackages()) {
+                for (final BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
+                    final Class<?> clazz = Reflections.classForName(bd.getBeanClassName());
+                    classesToRegister.add(clazz);
+                }
             }
-        }
-        //sort them so they always get the same index in registration
-        classesToRegister.sort(new Comparator<Class<?>>() {
-            @Override
-            public int compare(final Class<?> o1, final Class<?> o2) {
-                return o1.getName().compareTo(o2.getName());
+            //sort them so they always get the same index in registration
+            classesToRegister.sort(new Comparator<Class<?>>() {
+                @Override
+                public int compare(final Class<?> o1, final Class<?> o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+            for (final Class<?> clazz : classesToRegister) {
+                Objects.SERIALIZATION_CONFIG.registerClass(clazz);
             }
-        });
-        for (final Class<?> clazz : classesToRegister) {
-            Objects.SERIALIZATION_CONFIG.registerClass(clazz);
         }
     }
 
