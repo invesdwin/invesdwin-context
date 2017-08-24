@@ -40,11 +40,16 @@ public final class PlatformInitializerProperties {
 
     public static synchronized boolean isAllowed() {
         //CHECKSTYLE:OFF single line
-        final String property = System.getProperty(KEY_ALLOWED);
-        if (Strings.isBlank(property)) {
-            return true;
-        } else {
-            return BooleanUtils.toBoolean(property);
+        try {
+            final String property = System.getProperty(KEY_ALLOWED);
+            if (Strings.isBlank(property)) {
+                return true;
+            } else {
+                return BooleanUtils.toBoolean(property);
+            }
+        } catch (final Throwable t) {
+            //maybe some webstart security control prevents reading system properties
+            return false;
         }
         //CHECKSTYLE:ON
     }
