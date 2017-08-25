@@ -20,7 +20,6 @@ import org.springframework.core.type.filter.TypeFilter;
 import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.log.Log;
-import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.OperatingSystem;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
@@ -170,14 +169,10 @@ public final class ContextProperties {
                 scanner.addIncludeFilter(new AssignableTypeFilter(IBasePackageDefinition.class));
 
                 basePackages = new HashSet<String>();
-                try {
-                    for (final BeanDefinition bd : scanner.findCandidateComponents("de.invesdwin")) {
-                        final Class<IBasePackageDefinition> clazz = Reflections.classForName(bd.getBeanClassName());
-                        final IBasePackageDefinition basePackage = clazz.newInstance();
-                        basePackages.add(basePackage.getBasePackage());
-                    }
-                } catch (final Exception e) {
-                    throw Err.process(e);
+                for (final BeanDefinition bd : scanner.findCandidateComponents("de.invesdwin")) {
+                    final Class<IBasePackageDefinition> clazz = Reflections.classForName(bd.getBeanClassName());
+                    final IBasePackageDefinition basePackage = clazz.newInstance();
+                    basePackages.add(basePackage.getBasePackage());
                 }
 
                 final Log log = new Log(ContextProperties.class);
