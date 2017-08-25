@@ -62,7 +62,10 @@ public final class DefaultTimeZoneConfigurer {
     public static void setDefaultTimeZone(final TimeZone newTimeZone) {
         try {
             TimeZone.setDefault(newTimeZone);
-            setDefaultTimeZoneForLibraries(newTimeZone);
+            //joda needs another call explicitly since it might have cached the value too early...
+            DateTimeZone.setDefault(DateTimeZone.forTimeZone(newTimeZone));
+            //same with FDate
+            FDates.setDefaultTimeZone(newTimeZone);
             Assertions.assertThat(getDefaultTimeZone().getID())
                     .as("java has inconsistent default %s", TimeZone.class.getSimpleName())
                     .isEqualTo(newTimeZone.getID());
@@ -70,18 +73,8 @@ public final class DefaultTimeZoneConfigurer {
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             //webstart safety for access control
             //we want to at least use in the strategy UTC even if it failed for the jvm
-            DefaultTimeZoneConfigurer.setDefaultTimeZoneForLibraries(newTimeZone);
+            FDates.setDefaultTimeZone(newTimeZone);
         }
-    }
-
-    private static void setDefaultTimeZoneForLibraries(final TimeZone newTimeZone) {
-        //joda needs another call explicitly since it might have cached the value too early...
-        DateTimeZone.setDefault(DateTimeZone.forTimeZone(newTimeZone));
-        //same with FDate
-        FDates.setDefaultTimeZone(newTimeZone);
-        Assertions.assertThat(getDefaultTimeZoneForLibraries().getID())
-                .as("libraries have inconsistent default %s", TimeZone.class.getSimpleName())
-                .isEqualTo(newTimeZone.getID());
     }
 
     public static TimeZone getDefaultTimeZone() {
@@ -97,17 +90,8 @@ public final class DefaultTimeZoneConfigurer {
                     .isEqualTo(defaultTimeZone.getID());
             return defaultTimeZone;
         } else {
-            return getDefaultTimeZoneForLibraries();
+            return FDates.getDefaultTimeZone();
         }
-    }
-
-    private static TimeZone getDefaultTimeZoneForLibraries() {
-        final TimeZone defaultTimeZone = FDates.getDefaultTimeZone();
-        Assertions.assertThat(DateTimeZone.getDefault().toTimeZone().getID())
-                .as("joda-time (%s) has inconsistent default %s", DateTimeZone.class.getSimpleName(),
-                        TimeZone.class.getSimpleName())
-                .isEqualTo(defaultTimeZone.getID());
-        return defaultTimeZone;
     }
 
     private static boolean getKeepDefaultTimezone() {
