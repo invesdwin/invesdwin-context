@@ -85,7 +85,6 @@ public final class ContextProperties {
                 initializer.initSystemPropertiesLoader();
 
                 initializer.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
-
             } catch (final Throwable t) {
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
@@ -207,19 +206,27 @@ public final class ContextProperties {
     }
 
     private static int readCpuThreadPoolCount() {
-        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-        final String key = "CPU_THREAD_POOL_COUNT";
-        Integer cpuThreadPoolCount;
-        if (!systemProperties.containsValue(key) || !PlatformInitializerProperties.isAllowed()) {
-            cpuThreadPoolCount = null;
-        } else {
-            cpuThreadPoolCount = systemProperties.getInteger(key);
+        try {
+            final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+            final String key = "CPU_THREAD_POOL_COUNT";
+            Integer cpuThreadPoolCount;
+            if (!PlatformInitializerProperties.isAllowed() || !systemProperties.containsValue(key)) {
+                cpuThreadPoolCount = null;
+            } else {
+                cpuThreadPoolCount = systemProperties.getInteger(key);
+            }
+            if (cpuThreadPoolCount == null || cpuThreadPoolCount <= 0) {
+                cpuThreadPoolCount = Runtime.getRuntime().availableProcessors();
+                if (PlatformInitializerProperties.isAllowed()) {
+                    systemProperties.setInteger(key, cpuThreadPoolCount);
+                }
+            }
+            return cpuThreadPoolCount;
+        } catch (final Throwable t) {
+            //webstart safety
+            PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
+            return Runtime.getRuntime().availableProcessors();
         }
-        if (cpuThreadPoolCount == null || cpuThreadPoolCount <= 0) {
-            cpuThreadPoolCount = Runtime.getRuntime().availableProcessors();
-            systemProperties.setInteger(key, cpuThreadPoolCount);
-        }
-        return cpuThreadPoolCount;
     }
 
     private static void registerTypesForSerialization() {
