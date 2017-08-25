@@ -70,6 +70,7 @@ public final class ContextProperties {
             tempClasspathDirectory = initializer.initTempClasspathDirectory(tempDirectory);
             ehcacheDiskStoreDirectory = new File(tempDirectory, "ehcache");
         } catch (final Throwable t) {
+            //webstart safety for access control
             tempDirectory = null;
             tempClasspathDirectory = null;
             ehcacheDiskStoreDirectory = null;
@@ -189,7 +190,7 @@ public final class ContextProperties {
                     log.info("Loading %s %s %s", basePackages.size(), basePackageSingularPlural, basePackages);
                 }
             } catch (final Throwable t) {
-                //webstart safety
+                //webstart safety for access control
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
                 basePackages = new HashSet<String>(Arrays.asList("de.invesdwin"));
             }
@@ -230,7 +231,7 @@ public final class ContextProperties {
             }
             return cpuThreadPoolCount;
         } catch (final Throwable t) {
-            //webstart safety
+            //webstart safety for access control
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             return Runtime.getRuntime().availableProcessors();
         }

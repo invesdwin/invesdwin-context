@@ -19,9 +19,20 @@ public final class DefaultTimeZoneConfigurer {
 
     private static final String USER_TIMEZONE_PARAM = "user.timezone";
     private static final String KEEP_USER_TIMEZONE_PARAM = "keep.user.timezone";
-    //CHECKSTYLE:OFF
-    private static final String ORIGINAL_TIMEZONE = System.getProperty(USER_TIMEZONE_PARAM);
-    //CHECKSTYLE:ON
+    private static final String ORIGINAL_TIMEZONE;
+
+    static {
+        String originalTimeZone = null;
+        try {
+            //CHECKSTYLE:OFF
+            originalTimeZone = System.getProperty(USER_TIMEZONE_PARAM);
+            //CHECKSTYLE:ON
+        } catch (final Throwable t) {
+            //webstart safety for access control
+            originalTimeZone = TimeZone.getDefault().getID();
+        }
+        ORIGINAL_TIMEZONE = originalTimeZone;
+    }
 
     private DefaultTimeZoneConfigurer() {}
 
