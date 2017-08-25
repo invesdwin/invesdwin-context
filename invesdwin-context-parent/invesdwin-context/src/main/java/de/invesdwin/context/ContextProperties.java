@@ -61,9 +61,22 @@ public final class ContextProperties {
         final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
         IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
 
-        TEMP_DIRECTORY = initializer.initTempDirectory();
-        TEMP_CLASSPATH_DIRECTORY = initializer.initTempClasspathDirectory(TEMP_DIRECTORY);
-        EHCACHE_DISK_STORE_DIRECTORY = new File(TEMP_DIRECTORY, "ehcache");
+        File tempDirectory = null;
+        File tempClasspathDirectory = null;
+        File ehcacheDiskStoreDirectory = null;
+        try {
+            tempDirectory = initializer.initTempDirectory();
+            tempClasspathDirectory = initializer.initTempClasspathDirectory(tempDirectory);
+            ehcacheDiskStoreDirectory = new File(tempDirectory, "ehcache");
+        } catch (final Throwable t) {
+            tempDirectory = null;
+            tempClasspathDirectory = null;
+            ehcacheDiskStoreDirectory = null;
+            PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
+        }
+        TEMP_DIRECTORY = tempDirectory;
+        TEMP_CLASSPATH_DIRECTORY = tempClasspathDirectory;
+        EHCACHE_DISK_STORE_DIRECTORY = ehcacheDiskStoreDirectory;
 
         if (PlatformInitializerProperties.isAllowed()) {
             try {
