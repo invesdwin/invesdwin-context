@@ -28,6 +28,8 @@ public final class PlatformInitializerProperties {
 
     private static IPlatformInitializer initializer = new DefaultPlatformInitializer();
 
+    private static boolean initializationFailed;
+
     static {
         final String expectedPropertiesPrefix = PlatformInitializerProperties.class.getName();
         if (!expectedPropertiesPrefix.equals(PROPERTIES_PREFIX)) {
@@ -39,6 +41,9 @@ public final class PlatformInitializerProperties {
     private PlatformInitializerProperties() {}
 
     public static synchronized boolean isAllowed() {
+        if (initializationFailed) {
+            return false;
+        }
         //CHECKSTYLE:OFF single line
         try {
             final String property = System.getProperty(KEY_ALLOWED);
@@ -49,14 +54,19 @@ public final class PlatformInitializerProperties {
             }
         } catch (final Throwable t) {
             //maybe some webstart security control prevents reading system properties
-            return false;
+            return initializationFailed;
         }
         //CHECKSTYLE:ON
     }
 
     public static synchronized void setAllowed(final boolean allowed) {
         //CHECKSTYLE:OFF single line
-        System.setProperty(KEY_ALLOWED, String.valueOf(allowed));
+        try {
+            System.setProperty(KEY_ALLOWED, String.valueOf(allowed));
+        } catch (final Throwable t) {
+            //maybe some webstart security control prevents setting system properties
+            initializationFailed = true;
+        }
         //CHECKSTYLE:ON
     }
 
@@ -88,6 +98,7 @@ public final class PlatformInitializerProperties {
         //only log the first warning and ignore any subsequent ones
         if (isAllowed()) {
             setAllowed(false); //mark initialization as skipped after the error
+            initializationFailed = true;
             //CHECKSTYLE:OFF ignore if not in standalone environment
             new RuntimeException(
                     "invesdwin initialization failed, ignoring for now since this might be a restricted environment in which partial operation is possible. Please set system property "
