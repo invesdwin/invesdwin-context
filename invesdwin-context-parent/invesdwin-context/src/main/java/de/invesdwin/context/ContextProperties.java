@@ -2,6 +2,7 @@ package de.invesdwin.context;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -163,28 +164,34 @@ public final class ContextProperties {
 
     public static synchronized Set<String> getBasePackages() {
         if (basePackages == null) {
-            final ClassPathScanner scanner = new ClassPathScanner();
-            scanner.addIncludeFilter(new AssignableTypeFilter(IBasePackageDefinition.class));
-
-            basePackages = new HashSet<String>();
             try {
-                for (final BeanDefinition bd : scanner.findCandidateComponents("de.invesdwin")) {
-                    final Class<IBasePackageDefinition> clazz = Reflections.classForName(bd.getBeanClassName());
-                    final IBasePackageDefinition basePackage = clazz.newInstance();
-                    basePackages.add(basePackage.getBasePackage());
-                }
-            } catch (final Exception e) {
-                throw Err.process(e);
-            }
+                final ClassPathScanner scanner = new ClassPathScanner();
+                scanner.addIncludeFilter(new AssignableTypeFilter(IBasePackageDefinition.class));
 
-            final Log log = new Log(ContextProperties.class);
-            if (log.isInfoEnabled() && basePackages.size() > 0) {
-                String basePackageSingularPlural = "base package";
-                if (basePackages.size() != 1) {
-                    basePackageSingularPlural += "s";
+                basePackages = new HashSet<String>();
+                try {
+                    for (final BeanDefinition bd : scanner.findCandidateComponents("de.invesdwin")) {
+                        final Class<IBasePackageDefinition> clazz = Reflections.classForName(bd.getBeanClassName());
+                        final IBasePackageDefinition basePackage = clazz.newInstance();
+                        basePackages.add(basePackage.getBasePackage());
+                    }
+                } catch (final Exception e) {
+                    throw Err.process(e);
                 }
 
-                log.info("Loading %s %s %s", basePackages.size(), basePackageSingularPlural, basePackages);
+                final Log log = new Log(ContextProperties.class);
+                if (log.isInfoEnabled() && basePackages.size() > 0) {
+                    String basePackageSingularPlural = "base package";
+                    if (basePackages.size() != 1) {
+                        basePackageSingularPlural += "s";
+                    }
+
+                    log.info("Loading %s %s %s", basePackages.size(), basePackageSingularPlural, basePackages);
+                }
+            } catch (final Throwable t) {
+                //webstart safety
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
+                basePackages = new HashSet<String>(Arrays.asList("de.invesdwin"));
             }
         }
         return basePackages;
