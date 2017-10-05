@@ -161,7 +161,7 @@ public enum JFreeChartExporter {
         }.process(chart);
     }
 
-    public abstract void writeChart(final OutputStream out, JFreeChart chart, JFreeChartExporterSettings settings)
+    public abstract void writeChart(OutputStream out, JFreeChart chart, JFreeChartExporterSettings settings)
             throws IOException;
 
     public void exportToFile(final File file, final JFreeChart chart, final JFreeChartExporterSettings settings) {

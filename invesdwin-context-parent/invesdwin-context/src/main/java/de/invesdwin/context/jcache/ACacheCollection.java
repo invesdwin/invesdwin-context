@@ -16,7 +16,7 @@ public abstract class ACacheCollection<E> implements Collection<E> {
 
     protected abstract Cache<Integer, E> createDelegate();
 
-    protected abstract Integer keyOf(final Object o);
+    protected abstract Integer keyOf(Object o);
 
     public synchronized ACacheMap<Integer, E> getDelegate() {
         if (delegate == null) {
