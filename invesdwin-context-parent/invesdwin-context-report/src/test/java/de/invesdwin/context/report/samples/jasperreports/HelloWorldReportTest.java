@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.ContextProperties;
@@ -30,6 +30,7 @@ public final class HelloWorldReportTest extends ATest {
 
     private final String jrxml = "/" + getClass().getPackage().getName().replace(".", "/") + "/HelloWorldReport.jrxml";
 
+    @SuppressWarnings("JUnit4SetUpNotRun")
     @Override
     public void setUp() throws Exception {
         super.setUp();

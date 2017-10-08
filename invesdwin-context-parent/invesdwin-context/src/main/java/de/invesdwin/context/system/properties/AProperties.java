@@ -51,6 +51,7 @@ public abstract class AProperties implements IProperties {
         return delegate;
     }
 
+    @SuppressWarnings("GuardedBy")
     private void updateDelimiterParsingDisabled(final boolean value) {
         delegate.setDelimiterParsingDisabled(value);
         if (delegate instanceof AbstractFileConfiguration) {
@@ -175,11 +176,10 @@ public abstract class AProperties implements IProperties {
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultValueWarning != null
                 && defaultValueWarning.equals(actualValue)) {
-            log.warn(
-                    "Property [%s] is currently set to the default value [%s] in a production environment, "
-                            + "please override this value because otherwise you might expose yourself to a security risk. "
-                            + "See the invesdwin-context documentation for details on how to do this.",
-                    prefix(key), defaultValueWarning);
+            log.warn("Property [%s] is currently set to the default value [%s] in a production environment, "
+                    + "please override this value because otherwise you might expose yourself to a security risk. "
+                    + "See the invesdwin-context documentation for details on how to do this.", prefix(key),
+                    defaultValueWarning);
         }
     }
 

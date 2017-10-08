@@ -61,7 +61,7 @@
 			<groupId>com.fasterxml</groupId>
 			<artifactId>classmate</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>de.odysseus.juel</groupId>
 			<artifactId>juel-impl</artifactId>
@@ -139,6 +139,10 @@
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
 		</dependency>
 	</dependencies>
 

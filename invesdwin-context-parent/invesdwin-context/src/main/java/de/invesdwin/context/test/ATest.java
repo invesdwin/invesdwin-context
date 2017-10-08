@@ -6,11 +6,12 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,7 +23,7 @@ import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.test.internal.ITestLifecycle;
-import de.invesdwin.context.test.internal.LoadTimeWeavingClassRunner;
+import de.invesdwin.context.test.internal.LoadTimeWeavingExtension;
 import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.time.Instant;
@@ -50,30 +51,26 @@ import de.invesdwin.util.time.Instant;
  * @author subes
  * 
  */
-@RunWith(LoadTimeWeavingClassRunner.class)
+@RunWith(JUnitPlatform.class)
+@ExtendWith(LoadTimeWeavingExtension.class)
 @ContextConfiguration(locations = { TestContextLoader.CTX_DUMMY }, loader = TestContextLoader.class)
 @ThreadSafe
 //TransactionalTestExecutionListener collides with CTW transactions
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 public abstract class ATest implements ITestLifecycle {
 
-    @GuardedBy("this.class")
+    @GuardedBy("ATest.class")
     private static ATest lastTestClassInstance;
-    @GuardedBy("this.class")
+    @GuardedBy("ATest.class")
     private static Instant testClassTimeMeasurement;
-    @GuardedBy("this.class")
+    @GuardedBy("ATest.class")
     private static int testClassId;
-    @GuardedBy("this.class")
+    @GuardedBy("ATest.class")
     private static int testMethodId;
 
     protected final Log log = new Log(this);
     protected TestContext ctx;
     private Instant testMethodTimeMeasurement = new Instant();
-
-    //CHECKSTYLE:OFF public
-    @Rule
-    public final TestName testMethodName = new TestName();
-    //CHECKSTYLE:ON
 
     static {
         Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
@@ -111,8 +108,8 @@ public abstract class ATest implements ITestLifecycle {
         }
     }
 
-    @Before
-    public final void before() throws Exception {
+    @BeforeEach
+    public final void before(final TestInfo testInfo) throws Exception {
         MockitoAnnotations.initMocks(this);
         synchronized (ATest.class) {
             if (lastTestClassInstance == null) {
@@ -121,7 +118,7 @@ public abstract class ATest implements ITestLifecycle {
             }
             testMethodId++;
             log.info("%s.%s) ++ [%s.%s] ++ running", testClassId, testMethodId, getClass().getSimpleName(),
-                    testMethodName.getMethodName());
+                    testInfo.getDisplayName());
         }
         setUp();
     }
@@ -136,17 +133,17 @@ public abstract class ATest implements ITestLifecycle {
 
     @Override
     public void tearDown() throws Exception {
-        synchronized (ATest.class) {
-            log.info("%s.%s) -- [%s.%s] -- finished after %s", testClassId, testMethodId, getClass().getSimpleName(),
-                    testMethodName.getMethodName(), testMethodTimeMeasurement);
-        }
         for (final IStub hook : hooks) {
             hook.tearDown(this, ctx);
         }
     }
 
-    @After
-    public final void after() throws Exception {
+    @AfterEach
+    public final void after(final TestInfo testInfo) throws Exception {
+        synchronized (ATest.class) {
+            log.info("%s.%s) -- [%s.%s] -- finished after %s", testClassId, testMethodId, getClass().getSimpleName(),
+                    testInfo.getDisplayName(), testMethodTimeMeasurement);
+        }
         tearDown();
     }
 
@@ -164,7 +161,7 @@ public abstract class ATest implements ITestLifecycle {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static synchronized void tearDownOnceStatic() throws Exception {
         if (lastTestClassInstance != null) {
             lastTestClassInstance.tearDownOnce();

@@ -45,14 +45,14 @@ public final class MergedContext extends ADelegateContext {
     /*
      * Order must be preserved, thus LinkedHashSet.
      */
-    @GuardedBy("this.class")
+    @GuardedBy("MergedContext.class")
     private static final Set<ParentContext> TO_BE_SET_PARENTS = new LinkedHashSet<ParentContext>();
     /*
      * Order must be preserved, thus LinkedHashSet.
      */
-    @GuardedBy("this.class")
+    @GuardedBy("MergedContext.class")
     private static final Set<BeanFactoryPostProcessor> TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS = new LinkedHashSet<BeanFactoryPostProcessor>();
-    @GuardedBy("this.class")
+    @GuardedBy("MergedContext.class")
     private static MergedContext instance;
     private static volatile boolean bootstrapFinished;
 
@@ -66,7 +66,7 @@ public final class MergedContext extends ADelegateContext {
         super(ctx);
     }
 
-    public static MergedContext getInstance() {
+    public static synchronized MergedContext getInstance() {
         return instance;
     }
 
@@ -114,10 +114,12 @@ public final class MergedContext extends ADelegateContext {
         }
     }
 
+    @SuppressWarnings("GuardedBy")
     private static void autowireBeanFactoryPostProcessor(final BeanFactoryPostProcessor beanFactoryPostProcessor) {
         instance.addBeanFactoryPostProcessor(beanFactoryPostProcessor);
     }
 
+    @SuppressWarnings("GuardedBy")
     private static void autowireReplacement(final ADelegateContext delegateCtx) {
         final MergedContext prevInstance = instance;
         instance = new MergedContext(delegateCtx);
@@ -147,6 +149,7 @@ public final class MergedContext extends ADelegateContext {
         }
     }
 
+    @SuppressWarnings("GuardedBy")
     private static void autowireParentContext(final ParentContext target) {
         Assertions.assertThat(instance).as("Bootstrap must be finished before parents can be set!").isNotNull();
         final ConfigurableApplicationContext rootCtx = (ConfigurableApplicationContext) ApplicationContexts
@@ -154,6 +157,7 @@ public final class MergedContext extends ADelegateContext {
         rootCtx.setParent(target);
     }
 
+    @SuppressWarnings("GuardedBy")
     private static void autowireChildContext(final ApplicationContext target) {
         Assertions.assertThat(target)
                 .as("%s must be a %s, so that a parent context can be set on it!",
@@ -175,12 +179,13 @@ public final class MergedContext extends ADelegateContext {
         targetCtx.setParent(instance.delegate);
     }
 
+    @SuppressWarnings("GuardedBy")
     private static void autowireBean(final Object target) {
         instance.getAutowireCapableBeanFactory().autowireBeanProperties(target, AutowireCapableBeanFactory.AUTOWIRE_NO,
                 false);
     }
 
-    public static void logBootstrapFinished() {
+    public static synchronized void logBootstrapFinished() {
         instance.getBean(StartupHookManager.class).start();
         LOG.info("Bootstrap finished after: %s",
                 new Duration(PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME));

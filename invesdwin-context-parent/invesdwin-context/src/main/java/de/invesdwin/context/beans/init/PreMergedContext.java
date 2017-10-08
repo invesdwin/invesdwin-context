@@ -30,7 +30,7 @@ import de.invesdwin.util.assertions.Assertions;
 @ThreadSafe
 public final class PreMergedContext extends ADelegateContext {
 
-    @GuardedBy("this")
+    @GuardedBy("PreMergedContext.class")
     private static PreMergedContext instance;
 
     static {

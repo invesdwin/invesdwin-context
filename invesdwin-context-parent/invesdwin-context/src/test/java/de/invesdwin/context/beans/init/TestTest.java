@@ -5,7 +5,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 
 import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.invesdwin.context.beans.init.duplicate.IBeanWithSameClassName;
@@ -15,11 +15,11 @@ import de.invesdwin.util.assertions.Assertions;
 @NotThreadSafe
 public class TestTest extends ATest implements InitializingBean {
 
-    @GuardedBy("this.class")
+    @GuardedBy("TestTest.class")
     private static int afterPropertiesSetCalled;
-    @GuardedBy("this.class")
+    @GuardedBy("TestTest.class")
     private static int setUpOnceCalled;
-    @GuardedBy("this.class")
+    @GuardedBy("TestTest.class")
     private static int tearDownOnceCalled;
 
     @Inject
@@ -36,7 +36,7 @@ public class TestTest extends ATest implements InitializingBean {
     }
 
     @AfterClass
-    public static void testAufrufe() {
+    public static synchronized void testCalls() {
         Assertions.assertThat(TestTest.setUpOnceCalled).isEqualTo(1);
         Assertions.assertThat(TestTest.afterPropertiesSetCalled).isEqualTo(3);
     }

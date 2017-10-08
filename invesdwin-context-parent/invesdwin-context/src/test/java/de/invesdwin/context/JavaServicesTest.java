@@ -1,10 +1,11 @@
 package de.invesdwin.context;
 
+import java.nio.charset.Charset;
+
 import javax.annotation.concurrent.ThreadSafe;
-import javax.xml.bind.JAXBContext;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.beans.init.MergedContext;
@@ -23,7 +24,7 @@ public class JavaServicesTest extends ATest {
         for (final Resource res : resources) {
             String sys = systemProperties.getString(res.getFilename());
             if (sys == null) {
-                for (final String line : IOUtils.readLines(res.getInputStream())) {
+                for (final String line : IOUtils.readLines(res.getInputStream(), Charset.defaultCharset())) {
                     if (Strings.isBlank(line) || line.contains("#")) {
                         continue;
                     } else {
@@ -35,7 +36,5 @@ public class JavaServicesTest extends ATest {
             }
             log.info("%s=%s", res.getFilename(), sys);
         }
-
-        log.info("%s=%s", JAXBContext.class.getName(), JAXBContext.newInstance().getClass().getName());
     }
 }

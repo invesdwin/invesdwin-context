@@ -11,12 +11,11 @@
 	<properties>
 		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
 		<version.invesdwin-maven-plugin>1.0.0-SNAPSHOT</version.invesdwin-maven-plugin>
-		<version.maven-enforcer-plugin>1.3.1</version.maven-enforcer-plugin>
-		<version.jaxb2-maven-plugin>1.5</version.jaxb2-maven-plugin>
-		<version.build-helper-maven-plugin>1.8</version.build-helper-maven-plugin>
-		<version.maven-compiler-plugin>3.1</version.maven-compiler-plugin>
+		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
+		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
+		<version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
-		<version.maven-dependency-plugin>2.8</version.maven-dependency-plugin>
+		<version.maven-dependency-plugin>3.0.2</version.maven-dependency-plugin>
 		<version.compiler>1.7</version.compiler>
 	</properties>
 
@@ -61,8 +60,13 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -163,28 +167,6 @@
 						</goals>
 						<configuration>
 							<!-- false is default <useInvesdwinEclipseSettings>false</useInvesdwinEclipseSettings> -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>${version.jaxb2-maven-plugin}</version>
-				<executions>
-					<execution>
-						<id>xjc-invesdwin</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<failOnNoSchemas>false</failOnNoSchemas>
-							<extension>true</extension>
-							<!-- defining invesdwin default here, use custom execution configuration 
-								for special cases -->
-							<schemaDirectory>${project.basedir}/src/main/resources/META-INF/xsd</schemaDirectory>
-							<bindingDirectory>${project.basedir}/.settings</bindingDirectory>
-							<bindingFiles>invesdwin.xjb</bindingFiles>
 						</configuration>
 					</execution>
 				</executions>

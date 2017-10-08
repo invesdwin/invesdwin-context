@@ -2,8 +2,8 @@ package de.invesdwin.metaproject.test.beanpath;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.norva.beanpath.annotation.Hidden;
 import de.invesdwin.norva.beanpath.annotation.BeanPathRedirect;
+import de.invesdwin.norva.beanpath.annotation.Hidden;
 
 // CS:OFF VisibilityModifier
 @NotThreadSafe

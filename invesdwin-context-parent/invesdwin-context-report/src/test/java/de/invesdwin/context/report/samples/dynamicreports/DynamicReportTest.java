@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.test.ATest;
@@ -20,6 +20,7 @@ import net.sf.jasperreports.view.JasperViewer;
 @ThreadSafe
 public class DynamicReportTest extends ATest {
 
+    @SuppressWarnings("JUnit4SetUpNotRun")
     @Override
     public void setUp() throws Exception {
         super.setUp();

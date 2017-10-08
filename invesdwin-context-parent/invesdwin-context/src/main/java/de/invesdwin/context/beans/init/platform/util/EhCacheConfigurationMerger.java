@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class EhCacheConfigurationMerger {
 
     public static final String DEFAULT_EHCACHE_CLASSPATH_LOCATION = "ehcache.xml";
     private static final String EHCACHE_PATH = "/META-INF/ehcache/";
-    @GuardedBy("this.class")
+    @GuardedBy("EhCacheConfigurationMerger.class")
     private static File alreadyGenerated;
     private final Log log = new Log(this);
 
@@ -58,7 +59,7 @@ public class EhCacheConfigurationMerger {
                     final String merged = generateNewXmlContent();
                     final File file = new File(ContextProperties.TEMP_CLASSPATH_DIRECTORY,
                             DEFAULT_EHCACHE_CLASSPATH_LOCATION);
-                    FileUtils.write(file, template.replace(placeholder, merged));
+                    FileUtils.write(file, template.replace(placeholder, merged), Charset.defaultCharset());
                     alreadyGenerated = file;
                 }
                 return new FileSystemResource(alreadyGenerated).getURL();
