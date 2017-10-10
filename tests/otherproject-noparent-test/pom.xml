@@ -13,7 +13,7 @@
 		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
 		<version.invesdwin-maven-plugin>1.0.0-SNAPSHOT</version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
-		<version.junit-jupiter>5.0.1</version.junit-jupiter>
+		<version.junit>4.12</version.junit>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
 		<version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
@@ -135,15 +135,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>${version.junit-jupiter}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${version.junit-jupiter}</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

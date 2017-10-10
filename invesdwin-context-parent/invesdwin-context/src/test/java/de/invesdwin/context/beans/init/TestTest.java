@@ -5,7 +5,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 
 import org.junit.AfterClass;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.invesdwin.context.beans.init.duplicate.IBeanWithSameClassName;

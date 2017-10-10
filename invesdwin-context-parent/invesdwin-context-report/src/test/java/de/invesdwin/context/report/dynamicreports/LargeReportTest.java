@@ -18,8 +18,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.ContextProperties;
@@ -40,7 +40,7 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 public class LargeReportTest extends ATest {
 
     @Test
-    @Disabled("manual test")
+    @Ignore("manual test")
     public void testLargeReport() throws FileNotFoundException, DRException {
         final JasperReportBuilder document = createReport();
         log.info("Generating");

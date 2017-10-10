@@ -6,7 +6,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import de.invesdwin.context.JavaServicesTest;
 import de.invesdwin.context.integration.Marshallers;

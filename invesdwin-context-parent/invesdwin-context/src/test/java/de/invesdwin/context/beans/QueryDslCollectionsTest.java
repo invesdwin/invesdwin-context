@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import com.querydsl.collections.CollQuery;
 import com.querydsl.core.alias.Alias;

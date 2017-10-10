@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.beans.init.MergedContext;

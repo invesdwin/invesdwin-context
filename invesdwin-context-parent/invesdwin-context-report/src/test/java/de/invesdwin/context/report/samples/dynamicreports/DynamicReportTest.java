@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.test.ATest;
