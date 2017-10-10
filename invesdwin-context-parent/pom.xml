@@ -54,11 +54,10 @@
 		<version.ant-nodeps>1.8.1</version.ant-nodeps>
 		<version.maven-dependency-plugin>3.0.2</version.maven-dependency-plugin>
 		<version.versions-maven-plugin>2.5</version.versions-maven-plugin>
-		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
 		<version.checkstyle>8.2</version.checkstyle>
 		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
 		<version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
-		<version.license-check-maven-plugin>0.5.4-inv</version.license-check-maven-plugin>
+		
 
 		<version.jetty>9.4.7.v20170914</version.jetty>
 
@@ -969,184 +968,6 @@
 					<artifactId>keytool-maven-plugin</artifactId>
 					<version>${version.keytool-maven-plugin}</version>
 				</plugin>
-				<plugin>
-					<groupId>org.complykit</groupId>
-					<artifactId>license-check-maven-plugin</artifactId>
-					<version>${version.license-check-maven-plugin}</version>
-					<executions>
-						<execution>
-							<phase>verify</phase>
-							<goals>
-								<goal>os-check</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<blacklist>
-							<param>agpl-1.0</param>
-							<param>agpl-2.0</param>
-							<param>agpl-3.0</param>
-							<param>gpl-1.0</param>
-							<param>gpl-2.0</param>
-							<param>gpl-3.0</param>
-						</blacklist>
-						<excludesRegex>
-							<!-- apache license -->
-							<param>org\.apache.*</param>
-							<param>cglib.*</param>
-							<param>joda-time.*</param>
-							<param>javax\.jdo.*</param>
-							<param>org\.jasig\.cas.*</param>
-							<param>io\.mappedbus:mappedbus.*</param>
-							<param>dk\.ange:javaoctave.*</param>
-							<!-- MIT license -->
-							<param>org\.slf4j.*</param>
-							<param>org\.bouncycastle.*</param>
-							<!-- bsd license -->
-							<param>org\.postgresql.*</param>
-							<param>org\.codehaus\.janino.*</param>
-							<param>org\.jquantlib.*</param>
-							<param>ta-lib:ta-lib.*</param>
-							<param>org\.clojars.edbond:talib.*</param>
-							<param>org\.ow2\.asm.*</param>
-							<param>com\.github\.virtuald:curvesapi.*</param>
-							<param>com\.jcabi:jcabi-aether.*</param>
-							<param>net\.sf\.py4j:py4j.*</param>
-							<param>com\.diffplug\.matsim:matconsolectl.*</param>
-							<!-- psfl (bsd-like) license -->
-							<param>org\.scijava:jython-shaded.*</param>
-							<!-- epl license -->
-							<param>com\.h2database.*</param>
-							<!-- LGPL license -->
-							<param>org\.jboss\.logging:jboss-logging-generator.*</param>
-							<param>org\.hibernate.*</param>
-							<param>net\.sourceforge.mydoggy.*</param>
-							<param>it\.tidalwave\.betterbeansbinding.*</param>
-							<param>org\.jdesktop\.bsaf.*</param>
-							<param>org\.swinglabs:swingx.*</param>
-							<param>com\.toedter:jcalendar.*</param>
-							<param>net\.sourceforge\.dynamicreports.*</param>
-							<param>net\.sf\.jasperreports.*</param>
-							<param>org\.jfree:jfreechart.*</param>
-							<param>OpenForecast:OpenForecast.*</param>
-							<param>7zip:7zip.*</param>
-							<param>net\.sf\.jpcapng:jpcapng.*</param>
-							<param>org\.nuiton\.thirdparty:JRI.*</param>
-							<param>com\.github\.jbytecode:RCaller.*</param>
-							<param>com\.googlecode\.matrix-toolkits-java:mtj.*</param>
-							<!-- zlib -->
-							<param>com\.github\.mrj0:jep.*</param>
-							<!-- CDDL -->
-							<param>javax\.mail:mail.*</param>
-							<param>javax\.xml\.bind:jaxb.*</param>
-							<!-- CPL -->
-							<param>wsdl4j.*</param>
-							<!-- GPL with classpath exception -->
-							<param>com\.jidesoft:jide-oss.*</param>
-							<param>org\.glassfish\.jersey.*</param>
-							<param>javax\.annotation:javax\.annotation-api.*</param>
-							<!-- public domain -->
-							<param>org\.freedesktop\.tango.*</param>
-							<!-- MPL -->
-							<param>org\.javassist.*</param>
-							<!-- EPL -->
-							<param>org\.jvnet\.hudson.*</param>
-							<!-- modified bsd license -->
-							<param>com\.jamonapi.*</param>
-							<!-- not everything is open sourced -->
-							<param>de\.invesdwin.*</param>
-							<!-- WARNING: CCA 2.5 license, you need to put a link to this when 
-								using the icons -->
-							<param>com\.famfamfam:silk.*</param>
-							<!-- WARNING: gpl license, just a test dependency, you need to buy 
-								a license when using in a commercial application -->
-							<param>mysql.*</param>
-							<!-- WARNING: commercial license bound to broker account, not for 
-								free use -->
-							<param>com\.dukascopy.*</param>
-							<!-- WARNING: optional, you need to buy a license to use this dependency -->
-							<param>org\.webjars:highstock.*</param>
-							<!-- WARNING: commercial license needs to be bought -->
-							<param>com\.nj4x:jfx.*</param>
-							<!-- WARNING: gpl license, only use when you conform to its terms -->
-							<param>org\.renjin:renjin-script-engine.*</param>
-							<param>org\.renjin\.cran:DEoptim.*</param>
-							<param>org\.scilab\.modules:javasci.*</param>
-							<param>org\.scilab\.modules:types.*</param>
-							<!-- WARNING: no license specified, though since it interacts with 
-								R over a socket, we expect it to be GPL -->
-							<param>com\.github\.yannrichet:Rsession.*</param>
-						</excludesRegex>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>${version.lifecycle-mapping}</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-plugin-plugin
-										</artifactId>
-										<versionRange>
-											[3.2,)
-										</versionRange>
-										<goals>
-											<goal>descriptor</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-dependency-plugin
-										</artifactId>
-										<versionRange>
-											[2.8,)
-										</versionRange>
-										<goals>
-											<goal>analyze-only</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.google.code.maven-replacer-plugin
-										</groupId>
-										<artifactId>
-											replacer
-										</artifactId>
-										<versionRange>
-											[1.5.3,)
-										</versionRange>
-										<goals>
-											<goal>replace</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -1181,10 +1002,6 @@
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>replacer</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.complykit</groupId>
-				<artifactId>license-check-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
