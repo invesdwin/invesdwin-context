@@ -118,4 +118,14 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
         delegate.initUiManager();
     }
 
+    @Override
+    public void registerTypesForSerialization() {
+        delegate.registerTypesForSerialization();
+    }
+
+    @Override
+    public void initClassPathScanner() {
+        delegate.initClassPathScanner();
+    }
+
 }

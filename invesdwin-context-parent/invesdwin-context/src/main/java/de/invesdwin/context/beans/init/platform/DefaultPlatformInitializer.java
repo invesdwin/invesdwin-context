@@ -4,16 +4,25 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.type.filter.AssignableTypeFilter;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
+import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
 import de.invesdwin.context.beans.init.platform.util.internal.InstrumentationHookLoader;
@@ -26,7 +35,11 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
+import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.classpath.ClassPathScanner;
+import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -41,6 +54,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initInstrumentation() {
+        AspectJWeaverIncludesConfigurer.configure();
         DynamicInstrumentationLoader.waitForInitialized();
         Assertions.assertThat(DynamicInstrumentationLoader.initLoadTimeWeavingContext()).isNotNull();
         InstrumentationHookLoader.runInstrumentationHooks();
@@ -182,6 +196,43 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     public void initUiManager() {
         //prevent race condition in JFreeChart when UIManager initialized by multiple threads at the same time
         UIManager.getColor("Panel.background");
+    }
+
+    @Override
+    public void registerTypesForSerialization() {
+        if (Objects.SERIALIZATION_CONFIG != null) {
+            /*
+             * performance optimization see: https://github.com/RuedigerMoeller/fast-serialization/wiki/Serialization
+             */
+            final ClassPathScanner scanner = new ClassPathScanner();
+            scanner.addIncludeFilter(new AssignableTypeFilter(ISerializableValueObject.class));
+            final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
+            for (final String basePackage : ContextProperties.getBasePackages()) {
+                for (final BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
+                    final Class<?> clazz = Reflections.classForName(bd.getBeanClassName());
+                    classesToRegister.add(clazz);
+                }
+            }
+            //sort them so they always get the same index in registration
+            classesToRegister.sort(new Comparator<Class<?>>() {
+                @Override
+                public int compare(final Class<?> o1, final Class<?> o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+            for (final Class<?> clazz : classesToRegister) {
+                Objects.SERIALIZATION_CONFIG.registerClass(clazz);
+            }
+        }
+    }
+
+    @Override
+    public void initClassPathScanner() {
+        final List<TypeFilter> defaultExcludeFilters = new ArrayList<TypeFilter>();
+        //filter out test classes to prevent issues with class not found or resource not found in production
+        defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*(Test|Stub)")));
+        defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*\\.test\\..*")));
+        ClassPathScanner.setDefaultExcludeFilters(defaultExcludeFilters);
     }
 
 }

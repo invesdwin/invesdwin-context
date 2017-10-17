@@ -49,4 +49,8 @@ public interface IPlatformInitializer {
 
     void initUiManager();
 
+    void registerTypesForSerialization();
+
+    void initClassPathScanner();
+
 }

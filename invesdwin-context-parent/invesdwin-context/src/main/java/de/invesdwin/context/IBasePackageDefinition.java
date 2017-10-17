@@ -1,4 +1,4 @@
-package de.invesdwin.context.beans.init.locations;
+package de.invesdwin.context;
 
 public interface IBasePackageDefinition {
 

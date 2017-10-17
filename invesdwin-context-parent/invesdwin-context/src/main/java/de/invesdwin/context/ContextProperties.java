@@ -1,33 +1,17 @@
 package de.invesdwin.context;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.core.type.filter.AssignableTypeFilter;
-import org.springframework.core.type.filter.RegexPatternTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
-
-import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
-import de.invesdwin.context.log.Log;
+import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.OperatingSystem;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
-import de.invesdwin.norva.marker.ISerializableValueObject;
-import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.lang.Objects;
-import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.uri.URIsConnect;
 import de.invesdwin.util.time.duration.Duration;
@@ -54,8 +38,6 @@ public final class ContextProperties {
     private static File homeDirectory;
     @GuardedBy("ContextProperties.class")
     private static File logDirectory;
-    @GuardedBy("ContextProperties.class")
-    private static Set<String> basePackages;
 
     static {
         final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
@@ -95,10 +77,6 @@ public final class ContextProperties {
         URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
-
-        //needs to happen after properties have been loaded
-        initClassPathScanner();
-        registerTypesForSerialization();
     }
 
     private ContextProperties() {}
@@ -163,34 +141,7 @@ public final class ContextProperties {
     }
 
     public static synchronized Set<String> getBasePackages() {
-        if (basePackages == null) {
-            try {
-                final ClassPathScanner scanner = new ClassPathScanner();
-                scanner.addIncludeFilter(new AssignableTypeFilter(IBasePackageDefinition.class));
-
-                basePackages = new HashSet<String>();
-                for (final BeanDefinition bd : scanner.findCandidateComponents("de.invesdwin")) {
-                    final Class<IBasePackageDefinition> clazz = Reflections.classForName(bd.getBeanClassName());
-                    final IBasePackageDefinition basePackage = clazz.newInstance();
-                    basePackages.add(basePackage.getBasePackage());
-                }
-
-                final Log log = new Log(ContextProperties.class);
-                if (log.isInfoEnabled() && basePackages.size() > 0) {
-                    String basePackageSingularPlural = "base package";
-                    if (basePackages.size() != 1) {
-                        basePackageSingularPlural += "s";
-                    }
-
-                    log.info("Loading %s %s %s", basePackages.size(), basePackageSingularPlural, basePackages);
-                }
-            } catch (final Throwable t) {
-                //webstart safety for access control
-                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
-                basePackages = new HashSet<String>(Arrays.asList("de.invesdwin"));
-            }
-        }
-        return basePackages;
+        return BasePackagesConfigurer.getBasePackages();
     }
 
     private static Duration readDefaultNetworkTimeout() {
@@ -230,41 +181,6 @@ public final class ContextProperties {
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             return Runtime.getRuntime().availableProcessors();
         }
-    }
-
-    private static void registerTypesForSerialization() {
-        if (Objects.SERIALIZATION_CONFIG != null) {
-            /*
-             * performance optimization see: https://github.com/RuedigerMoeller/fast-serialization/wiki/Serialization
-             */
-            final ClassPathScanner scanner = new ClassPathScanner();
-            scanner.addIncludeFilter(new AssignableTypeFilter(ISerializableValueObject.class));
-            final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
-            for (final String basePackage : ContextProperties.getBasePackages()) {
-                for (final BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
-                    final Class<?> clazz = Reflections.classForName(bd.getBeanClassName());
-                    classesToRegister.add(clazz);
-                }
-            }
-            //sort them so they always get the same index in registration
-            classesToRegister.sort(new Comparator<Class<?>>() {
-                @Override
-                public int compare(final Class<?> o1, final Class<?> o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
-            for (final Class<?> clazz : classesToRegister) {
-                Objects.SERIALIZATION_CONFIG.registerClass(clazz);
-            }
-        }
-    }
-
-    public static void initClassPathScanner() {
-        final List<TypeFilter> defaultExcludeFilters = new ArrayList<TypeFilter>();
-        //filter out test classes to prevent issues with class not found or resource not found in production
-        defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*(Test|Stub)")));
-        defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*\\.test\\..*")));
-        ClassPathScanner.setDefaultExcludeFilters(defaultExcludeFilters);
     }
 
     public static String getProcessId() {

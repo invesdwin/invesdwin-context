@@ -1,11 +1,9 @@
 package de.invesdwin.context.beans.init.internal;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
 
-import de.invesdwin.context.beans.init.locations.IBasePackageDefinition;
+import de.invesdwin.context.IBasePackageDefinition;
 
-@Named
 @Immutable
 public class InvesdwinBasePackage implements IBasePackageDefinition {
 

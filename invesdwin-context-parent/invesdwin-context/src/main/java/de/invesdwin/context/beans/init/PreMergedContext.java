@@ -39,6 +39,9 @@ public final class PreMergedContext extends ADelegateContext {
                 final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
                 initializer.initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
+                //needs to happen after properties have been loaded
+                initializer.initClassPathScanner();
+                initializer.registerTypesForSerialization();
                 Assertions.assertThat(Err.UNCAUGHT_EXCEPTION_HANDLER).isNotNull();
                 initializer.initProtocolRegistration();
                 initializer.initDefaultTimezoneConfigurer();
