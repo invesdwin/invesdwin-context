@@ -3,10 +3,10 @@ package de.invesdwin.context.log.error;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.junit.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.assertions.Executable;
 
 @ThreadSafe
 public class ErrTest extends ATest {
