@@ -9,8 +9,8 @@ import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.IBasePackageDefinition;
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.context.beans.hook.IBasePackageDefinitionHook;
 
 @ThreadSafe
 public final class BasePackagesConfigurer {
@@ -26,11 +26,11 @@ public final class BasePackagesConfigurer {
         if (basePackages == null) {
             try {
                 basePackages = new HashSet<String>();
-                final Iterator<IBasePackageDefinition> basePackageDefinitions = ServiceLoader
-                        .load(IBasePackageDefinition.class)
+                final Iterator<IBasePackageDefinitionHook> basePackageDefinitions = ServiceLoader
+                        .load(IBasePackageDefinitionHook.class)
                         .iterator();
                 while (basePackageDefinitions.hasNext()) {
-                    final IBasePackageDefinition basePackageDefinition = basePackageDefinitions.next();
+                    final IBasePackageDefinitionHook basePackageDefinition = basePackageDefinitions.next();
                     basePackages.add(basePackageDefinition.getBasePackage());
                 }
 
