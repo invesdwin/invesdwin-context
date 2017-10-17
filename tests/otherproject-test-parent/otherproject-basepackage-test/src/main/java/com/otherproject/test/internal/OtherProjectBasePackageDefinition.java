@@ -2,10 +2,10 @@ package com.otherproject.test.internal;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.beans.hook.IBasePackageDefinitionHook;
+import de.invesdwin.context.IBasePackageDefinition;
 
 @Immutable
-public class OtherProjectBasePackageDefinitionHook implements IBasePackageDefinitionHook {
+public class OtherProjectBasePackageDefinition implements IBasePackageDefinition {
 
     @Override
     public String getBasePackage() {
