@@ -4,11 +4,11 @@ import java.net.URL;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-
-import de.invesdwin.context.log.error.Err;
+import org.apache.commons.configuration2.AbstractConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 @NotThreadSafe
 public class URLProperties extends AProperties {
@@ -21,12 +21,15 @@ public class URLProperties extends AProperties {
 
     @Override
     protected AbstractConfiguration createDelegate() {
+        final FileBasedConfigurationBuilder<PropertiesConfiguration> builder = new FileBasedConfigurationBuilder<>(
+                PropertiesConfiguration.class);
+        builder.setAutoSave(true);
         try {
-            final PropertiesConfiguration conf = new PropertiesConfiguration(url);
-            conf.setAutoSave(true);
+            final PropertiesConfiguration conf = builder.configure(new Parameters().properties().setURL(url))
+                    .getConfiguration();
             return conf;
         } catch (final ConfigurationException e) {
-            throw Err.process(e);
+            throw new RuntimeException(e);
         }
     }
 

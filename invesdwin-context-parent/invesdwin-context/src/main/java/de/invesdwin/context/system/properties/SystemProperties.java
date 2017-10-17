@@ -9,8 +9,8 @@ import java.util.Properties;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.MapConfiguration;
+import org.apache.commons.configuration2.AbstractConfiguration;
+import org.apache.commons.configuration2.MapConfiguration;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.PlatformInitializerProperties;

@@ -16,9 +16,7 @@ import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.AbstractFileConfiguration;
-import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration2.AbstractConfiguration;
 import org.springframework.util.SocketUtils;
 
 import de.invesdwin.context.ContextProperties;
@@ -36,6 +34,8 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 @ThreadSafe
 public abstract class AProperties implements IProperties {
 
+    public static final char LIST_DELIMITER = ',';
+
     private final Log log = new Log(this);
 
     @GuardedBy("this")
@@ -46,26 +46,8 @@ public abstract class AProperties implements IProperties {
     public synchronized AbstractConfiguration getDelegate() {
         if (delegate == null) {
             delegate = createDelegate();
-            updateDelimiterParsingDisabled(true); //delimiter parsing is evil!
         }
         return delegate;
-    }
-
-    @SuppressWarnings("GuardedBy")
-    private void updateDelimiterParsingDisabled(final boolean value) {
-        delegate.setDelimiterParsingDisabled(value);
-        if (delegate instanceof AbstractFileConfiguration) {
-            final AbstractFileConfiguration conf = (AbstractFileConfiguration) delegate;
-            if (conf.getFile() != null && conf.getFile().exists()
-                    || conf.getURL() != null && URIs.connect(conf.getURL()).isDownloadPossible()) {
-                try {
-                    //need to refresh here, or else the setting is not applied
-                    conf.refresh();
-                } catch (final ConfigurationException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     private void setProperty(final String key, final String value) {
@@ -176,10 +158,11 @@ public abstract class AProperties implements IProperties {
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultValueWarning != null
                 && defaultValueWarning.equals(actualValue)) {
-            log.warn("Property [%s] is currently set to the default value [%s] in a production environment, "
-                    + "please override this value because otherwise you might expose yourself to a security risk. "
-                    + "See the invesdwin-context documentation for details on how to do this.", prefix(key),
-                    defaultValueWarning);
+            log.warn(
+                    "Property [%s] is currently set to the default value [%s] in a production environment, "
+                            + "please override this value because otherwise you might expose yourself to a security risk. "
+                            + "See the invesdwin-context documentation for details on how to do this.",
+                    prefix(key), defaultValueWarning);
         }
     }
 
@@ -214,35 +197,19 @@ public abstract class AProperties implements IProperties {
         if (getString(keyPath) == null) {
             return null;
         }
-        final boolean delimiterParsinDisabledPreviously = getDelegate().isDelimiterParsingDisabled();
-        try {
-            updateDelimiterParsingDisabled(false);
-            return getDelegate().getStringArray(prefix(keyPath));
-        } finally {
-            updateDelimiterParsingDisabled(delimiterParsinDisabledPreviously);
-        }
+        final String str = getDelegate().getString(prefix(keyPath));
+        return Strings.split(str, LIST_DELIMITER);
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public synchronized List<String> getList(final String key) {
-        final String keyPath = prefix(key);
-        if (getString(keyPath) == null) {
-            return null;
-        }
-        final boolean delimiterParsinDisabledPreviously = getDelegate().isDelimiterParsingDisabled();
-        try {
-            updateDelimiterParsingDisabled(false);
-            return (List) getDelegate().getList(keyPath);
-        } finally {
-            updateDelimiterParsingDisabled(delimiterParsinDisabledPreviously);
-        }
+        return Strings.asList(getStringArray(key));
     }
 
     @Override
     public synchronized void setList(final String key, final List<String> value) {
         final String keyPath = prefix(key);
-        final String valueStr = Strings.asString(value, String.valueOf(getDelegate().getListDelimiter()));
+        final String valueStr = Strings.asString(value, LIST_DELIMITER);
         getDelegate().setProperty(keyPath, valueStr);
     }
 
