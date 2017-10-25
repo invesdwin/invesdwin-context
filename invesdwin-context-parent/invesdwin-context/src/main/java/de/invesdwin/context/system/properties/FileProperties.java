@@ -30,8 +30,7 @@ public class FileProperties extends AProperties {
             if (!file.exists()) {
                 FileUtils.touch(file);
             }
-            final PropertiesConfiguration conf = builder
-                    .configure(new Parameters().fileBased().setFile(file).setThrowExceptionOnMissing(true))
+            final PropertiesConfiguration conf = builder.configure(new Parameters().fileBased().setFile(file))
                     .getConfiguration();
             return conf;
         } catch (final ConfigurationException | IOException e) {
