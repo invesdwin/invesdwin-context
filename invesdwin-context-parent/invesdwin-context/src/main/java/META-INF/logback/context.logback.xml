@@ -44,6 +44,14 @@
 		<appender-ref ref="common" />
 		<appender-ref ref="error" />
 	</logger>
+	
+	<!-- Error when creating PropertyDescriptor for ... -->
+	<logger name="org.apache.commons.beanutils" additivity="false" level="ERROR">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="stderr" />
+		<appender-ref ref="common" />
+		<appender-ref ref="error" />
+	</logger>
 
 	<!-- not interesting if aspectj fails to identify some interface or so; unit tests should show if something is wrong anyway -->
 	<logger name="AspectJ Weaver" additivity="false" level="OFF" />

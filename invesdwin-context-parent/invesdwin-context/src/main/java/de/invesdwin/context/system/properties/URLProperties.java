@@ -25,7 +25,8 @@ public class URLProperties extends AProperties {
                 PropertiesConfiguration.class);
         builder.setAutoSave(true);
         try {
-            final PropertiesConfiguration conf = builder.configure(new Parameters().fileBased().setURL(url))
+            final PropertiesConfiguration conf = builder
+                    .configure(new Parameters().fileBased().setThrowExceptionOnMissing(true).setURL(url))
                     .getConfiguration();
             return conf;
         } catch (final ConfigurationException e) {
