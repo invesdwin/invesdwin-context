@@ -158,11 +158,10 @@ public abstract class AProperties implements IProperties {
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultValueWarning != null
                 && defaultValueWarning.equals(actualValue)) {
-            log.warn(
-                    "Property [%s] is currently set to the default value [%s] in a production environment, "
-                            + "please override this value because otherwise you might expose yourself to a security risk. "
-                            + "See the invesdwin-context documentation for details on how to do this.",
-                    prefix(key), defaultValueWarning);
+            log.warn("Property [%s] is currently set to the default value [%s] in a production environment, "
+                    + "please override this value because otherwise you might expose yourself to a security risk. "
+                    + "See the invesdwin-context documentation for details on how to do this.", prefix(key),
+                    defaultValueWarning);
         }
     }
 
@@ -252,27 +251,22 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public synchronized void setDuration(final String key, final Duration value) {
+        setProperty(key, Duration.toStringValue(value));
+    }
+
+    @Override
     public synchronized Duration getDuration(final String key) {
         final String value = getString(key);
-        Duration ret;
-        try {
-            final String[] values = value.split(" ");
-            final int duration = Integer.valueOf(values[0]);
-            final FTimeUnit unit = FTimeUnit.valueOf(values[1]);
-            ret = new Duration(duration, unit);
-        } catch (final NumberFormatException e) {
-            ret = null;
-        } catch (final IllegalArgumentException e) {
-            ret = null;
-        } catch (final IndexOutOfBoundsException e) {
-            ret = null;
+        if (value == null) {
+            return null;
         }
-        if (ret != null) {
-            return ret;
-        } else {
+        final Duration ret = Duration.valueOf(value);
+        if (ret == null) {
             throw new IllegalArgumentException(getErrorMessage(key, value, Duration.class,
                     "Expected format: <NUMBER> " + getEnumFormat(FTimeUnit.class)));
         }
+        return ret;
 
     }
 

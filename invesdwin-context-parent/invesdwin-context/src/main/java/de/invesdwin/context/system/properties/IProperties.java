@@ -68,6 +68,8 @@ public interface IProperties {
 
     Duration getDuration(String key);
 
+    void setDuration(String key, Duration value);
+
     URL getURL(String key, boolean validatePort);
 
     URI getURI(String key, boolean validatePort);

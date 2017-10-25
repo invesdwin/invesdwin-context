@@ -314,6 +314,16 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setDuration(final String key, final Duration value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setDuration(key, value);
+            }
+        });
+    }
+
+    @Override
     public URL getURL(final String key, final boolean validatePort) {
         return get(key, new Callable<URL>() {
             @Override
