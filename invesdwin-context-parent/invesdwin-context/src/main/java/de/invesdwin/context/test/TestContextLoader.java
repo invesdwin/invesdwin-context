@@ -68,7 +68,13 @@ public class TestContextLoader implements ContextLoader {
 
     protected List<PositionedResource> configureContextLocations() throws Exception {
         StartupHookManager.reinitializationStarted();
-        configureContext(new TestContext(PreMergedContext.getInstance(true)));
+        final TestContext premergedContext = new TestContext(PreMergedContext.getInstance(true));
+        final List<PositionedResource> preMergedContexts = PreMergedContext.collectMergedContexts();
+        currentTest.setUpContextLocations(preMergedContexts);
+        for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
+            testHook.setUpContextLocations(currentTest, preMergedContexts);
+        }
+        configureContext(premergedContext);
         final List<PositionedResource> mergedContexts = PreMergedContext.collectMergedContexts();
         currentTest.setUpContextLocations(mergedContexts);
         for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {

@@ -66,7 +66,8 @@ public final class MergedContext extends ADelegateContext {
         super(ctx);
     }
 
-    public static synchronized MergedContext getInstance() {
+    @SuppressWarnings("GuardedBy")
+    public static MergedContext getInstance() {
         return instance;
     }
 
@@ -185,7 +186,8 @@ public final class MergedContext extends ADelegateContext {
                 false);
     }
 
-    public static synchronized void logBootstrapFinished() {
+    @SuppressWarnings("GuardedBy")
+    public static void logBootstrapFinished() {
         instance.getBean(StartupHookManager.class).start();
         LOG.info("Bootstrap finished after: %s",
                 new Duration(PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME));
