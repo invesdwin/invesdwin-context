@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +15,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
+
+import com.google.common.cache.CacheBuilder;
 
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.math.decimal.Decimal;
@@ -28,11 +29,20 @@ public final class CachingPropertiesWrapper implements IProperties {
     private final IProperties delegate;
 
     @GuardedBy("this")
-    private final Map<String, Optional<?>> cache = new HashMap<String, Optional<?>>();
+    private final Map<String, Optional<?>> cache;
 
     public CachingPropertiesWrapper(final IProperties delegate) {
         Assertions.assertThat(delegate).isNotInstanceOf(getClass());
+        this.cache = newCache();
         this.delegate = delegate;
+    }
+
+    public IProperties getDelegate() {
+        return delegate;
+    }
+
+    protected Map<String, Optional<?>> newCache() {
+        return CacheBuilder.newBuilder().maximumSize(1000).<String, Optional<?>> build().asMap();
     }
 
     @Override
@@ -55,7 +65,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Boolean getBoolean(final String key) {
-        return get(key, new Callable<Boolean>() {
+        return getOrLoad(key, new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 return delegate.getBoolean(key);
@@ -63,7 +73,18 @@ public final class CachingPropertiesWrapper implements IProperties {
         });
     }
 
-    private synchronized <T> T get(final String key, final Callable<T> getter) {
+    @Override
+    public void setBoolean(final String key, final Boolean value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setBoolean(key, value);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized <T> T getOrLoad(final String key, final Callable<T> getter) {
         final Optional<T> existingValue = (Optional<T>) cache.get(key);
         if (existingValue != null) {
             return existingValue.orElse(null);
@@ -85,7 +106,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Byte getByte(final String key) {
-        return get(key, new Callable<Byte>() {
+        return getOrLoad(key, new Callable<Byte>() {
             @Override
             public Byte call() {
                 return delegate.getByte(key);
@@ -95,7 +116,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Double getDouble(final String key) {
-        return get(key, new Callable<Double>() {
+        return getOrLoad(key, new Callable<Double>() {
             @Override
             public Double call() {
                 return delegate.getDouble(key);
@@ -105,7 +126,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Float getFloat(final String key) {
-        return get(key, new Callable<Float>() {
+        return getOrLoad(key, new Callable<Float>() {
             @Override
             public Float call() {
                 return delegate.getFloat(key);
@@ -115,7 +136,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Integer getInteger(final String key) {
-        return get(key, new Callable<Integer>() {
+        return getOrLoad(key, new Callable<Integer>() {
             @Override
             public Integer call() {
                 return delegate.getInteger(key);
@@ -135,7 +156,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Long getLong(final String key) {
-        return get(key, new Callable<Long>() {
+        return getOrLoad(key, new Callable<Long>() {
             @Override
             public Long call() {
                 return delegate.getLong(key);
@@ -145,7 +166,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Short getShort(final String key) {
-        return get(key, new Callable<Short>() {
+        return getOrLoad(key, new Callable<Short>() {
             @Override
             public Short call() {
                 return delegate.getShort(key);
@@ -155,7 +176,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public BigDecimal getBigDecimal(final String key) {
-        return get(key, new Callable<BigDecimal>() {
+        return getOrLoad(key, new Callable<BigDecimal>() {
             @Override
             public BigDecimal call() {
                 return delegate.getBigDecimal(key);
@@ -165,7 +186,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public BigInteger getBigInteger(final String key) {
-        return get(key, new Callable<BigInteger>() {
+        return getOrLoad(key, new Callable<BigInteger>() {
             @Override
             public BigInteger call() {
                 return delegate.getBigInteger(key);
@@ -175,7 +196,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Decimal getDecimal(final String key) {
-        return get(key, new Callable<Decimal>() {
+        return getOrLoad(key, new Callable<Decimal>() {
             @Override
             public Decimal call() {
                 return delegate.getDecimal(key);
@@ -185,7 +206,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public String getString(final String key) {
-        return get(key, new Callable<String>() {
+        return getOrLoad(key, new Callable<String>() {
             @Override
             public String call() {
                 return delegate.getString(key);
@@ -195,7 +216,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public String getStringWithSecurityWarning(final String key, final String defaultPasswordWarning) {
-        return get(key, new Callable<String>() {
+        return getOrLoad(key, new Callable<String>() {
             @Override
             public String call() {
                 return delegate.getStringWithSecurityWarning(key, defaultPasswordWarning);
@@ -205,7 +226,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public <T extends Enum<T>> T getEnum(final Class<T> enumType, final String key) {
-        return get(key, new Callable<T>() {
+        return getOrLoad(key, new Callable<T>() {
             @Override
             public T call() {
                 return delegate.getEnum(enumType, key);
@@ -235,7 +256,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public String[] getStringArray(final String key) {
-        return get(key, new Callable<String[]>() {
+        return getOrLoad(key, new Callable<String[]>() {
             @Override
             public String[] call() {
                 return delegate.getStringArray(key);
@@ -245,7 +266,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public List<String> getList(final String key) {
-        return get(key, new Callable<List<String>>() {
+        return getOrLoad(key, new Callable<List<String>>() {
             @Override
             public List<String> call() {
                 return delegate.getList(key);
@@ -265,7 +286,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Set<String> getSet(final String key) {
-        return get(key, new Callable<Set<String>>() {
+        return getOrLoad(key, new Callable<Set<String>>() {
             @Override
             public Set<String> call() {
                 return delegate.getSet(key);
@@ -285,7 +306,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public FDate getDate(final String key) {
-        return get(key, new Callable<FDate>() {
+        return getOrLoad(key, new Callable<FDate>() {
             @Override
             public FDate call() {
                 return delegate.getDate(key);
@@ -305,7 +326,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public Duration getDuration(final String key) {
-        return get(key, new Callable<Duration>() {
+        return getOrLoad(key, new Callable<Duration>() {
             @Override
             public Duration call() {
                 return delegate.getDuration(key);
@@ -325,7 +346,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public URL getURL(final String key, final boolean validatePort) {
-        return get(key, new Callable<URL>() {
+        return getOrLoad(key, new Callable<URL>() {
             @Override
             public URL call() {
                 return delegate.getURL(key, validatePort);
@@ -335,7 +356,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public URI getURI(final String key, final boolean validatePort) {
-        return get(key, new Callable<URI>() {
+        return getOrLoad(key, new Callable<URI>() {
             @Override
             public URI call() {
                 return delegate.getURI(key, validatePort);
@@ -345,7 +366,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public InetAddress getInetAddress(final String key) {
-        return get(key, new Callable<InetAddress>() {
+        return getOrLoad(key, new Callable<InetAddress>() {
             @Override
             public InetAddress call() {
                 return delegate.getInetAddress(key);
@@ -355,7 +376,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public InetSocketAddress getInetSocketAddress(final String key) {
-        return get(key, new Callable<InetSocketAddress>() {
+        return getOrLoad(key, new Callable<InetSocketAddress>() {
             @Override
             public InetSocketAddress call() {
                 return delegate.getInetSocketAddress(key);
@@ -365,7 +386,7 @@ public final class CachingPropertiesWrapper implements IProperties {
 
     @Override
     public File getFile(final String key) {
-        return get(key, new Callable<File>() {
+        return getOrLoad(key, new Callable<File>() {
             @Override
             public File call() {
                 return delegate.getFile(key);
@@ -382,16 +403,6 @@ public final class CachingPropertiesWrapper implements IProperties {
     public String getErrorMessage(final String key, final Object value, final Class<?> expectedType,
             final String message) {
         return delegate.getErrorMessage(key, value, expectedType, message);
-    }
-
-    @Override
-    public void setBoolean(final String key, final Boolean value) {
-        set(key, value, new Runnable() {
-            @Override
-            public void run() {
-                delegate.setBoolean(key, value);
-            }
-        });
     }
 
 }
