@@ -41,6 +41,15 @@ public final class CachingPropertiesWrapper implements IProperties {
         return delegate;
     }
 
+    public synchronized Object removeFromCache(final String key) {
+        final Optional<?> value = cache.remove(key);
+        if (value == null) {
+            return null;
+        } else {
+            return value.orElse(null);
+        }
+    }
+
     protected Map<String, Optional<?>> newCache() {
         return CacheBuilder.newBuilder().maximumSize(1000).<String, Optional<?>> build().asMap();
     }
