@@ -50,6 +50,15 @@ public final class CachingPropertiesWrapper implements IProperties {
         }
     }
 
+    public synchronized Object putIntoCache(final String key, final Object value) {
+        final Optional<?> oldValue = cache.put(key, Optional.ofNullable(value));
+        if (oldValue == null) {
+            return null;
+        } else {
+            return oldValue.orElse(null);
+        }
+    }
+
     protected Map<String, Optional<?>> newCache() {
         return CacheBuilder.newBuilder().maximumSize(1000).<String, Optional<?>> build().asMap();
     }
