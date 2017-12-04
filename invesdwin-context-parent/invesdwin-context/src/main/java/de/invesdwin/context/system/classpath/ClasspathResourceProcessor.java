@@ -15,6 +15,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
+import de.invesdwin.util.math.Bytes;
 
 @Immutable
 public class ClasspathResourceProcessor {
@@ -99,7 +100,7 @@ public class ClasspathResourceProcessor {
     private boolean processDirectory(final File root, final File file, final IClasspathResourceVisitor visitor) {
         final String fullPath = file.getAbsolutePath();
         final String resourcePath = createResourcePath(root, file) + "/";
-        return visitor.visit(fullPath, resourcePath, new ByteArrayInputStream(new byte[0]));
+        return visitor.visit(fullPath, resourcePath, new ByteArrayInputStream(Bytes.EMPTY_ARRAY));
     }
 
     private boolean processJar(final File file, final IClasspathResourceVisitor visitor) throws IOException {
