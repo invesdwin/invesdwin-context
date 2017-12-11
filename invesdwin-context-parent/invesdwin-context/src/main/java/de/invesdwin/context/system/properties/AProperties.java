@@ -312,12 +312,28 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public Integer getPort(final String key, final boolean validatePort) {
+        final Integer port = getInteger(key);
+        if (validatePort) {
+            if (port == 0) {
+                final int randomPort = SocketUtils.findAvailableTcpPort();
+                //override property
+                setInteger(key, randomPort);
+                return randomPort;
+            } else {
+                Assertions.assertThat(port).as("Unable to determine port").isGreaterThan(0);
+            }
+        }
+        return port;
+    }
+
+    @Override
     public synchronized InetAddress getInetAddress(final String key) {
         return Addresses.asAddress(getString(key));
     }
 
     @Override
-    public synchronized InetSocketAddress getInetSocketAddress(final String key) {
+    public synchronized InetSocketAddress getInetSocketAddress(final String key, final boolean validatePort) {
         final String value = getString(key);
         final String[] split = Strings.split(value, ":");
         Throwable cause = null;
@@ -325,6 +341,16 @@ public abstract class AProperties implements IProperties {
             try {
                 final String host = split[0];
                 final int port = Integer.parseInt(split[1]);
+                if (validatePort) {
+                    if (port == 0) {
+                        final int randomPort = SocketUtils.findAvailableTcpPort();
+                        //override property
+                        setString(key, host + ":" + randomPort);
+                        return Addresses.asAddress(host, randomPort);
+                    } else {
+                        Assertions.assertThat(port).as("Unable to determine port").isGreaterThan(0);
+                    }
+                }
                 return Addresses.asAddress(host, port);
             } catch (final NumberFormatException e) {
                 cause = e;

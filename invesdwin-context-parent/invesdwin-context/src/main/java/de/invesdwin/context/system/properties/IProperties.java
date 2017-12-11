@@ -74,9 +74,11 @@ public interface IProperties {
 
     URI getURI(String key, boolean validatePort);
 
+    Integer getPort(String key, boolean validatePort);
+
     InetAddress getInetAddress(String key);
 
-    InetSocketAddress getInetSocketAddress(String key);
+    InetSocketAddress getInetSocketAddress(String key, boolean validatePort);
 
     File getFile(String key);
 

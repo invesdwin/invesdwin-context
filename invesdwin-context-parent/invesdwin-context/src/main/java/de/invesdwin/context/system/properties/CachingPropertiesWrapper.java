@@ -393,11 +393,21 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
-    public InetSocketAddress getInetSocketAddress(final String key) {
+    public Integer getPort(final String key, final boolean validatePort) {
+        return getOrLoad(key, new Callable<Integer>() {
+            @Override
+            public Integer call() {
+                return delegate.getPort(key, validatePort);
+            }
+        });
+    }
+
+    @Override
+    public InetSocketAddress getInetSocketAddress(final String key, final boolean validatePort) {
         return getOrLoad(key, new Callable<InetSocketAddress>() {
             @Override
             public InetSocketAddress call() {
-                return delegate.getInetSocketAddress(key);
+                return delegate.getInetSocketAddress(key, validatePort);
             }
         });
     }
