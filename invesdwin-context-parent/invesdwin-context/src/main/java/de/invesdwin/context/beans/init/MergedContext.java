@@ -182,6 +182,9 @@ public final class MergedContext extends ADelegateContext {
 
     @SuppressWarnings("GuardedBy")
     private static void autowireBean(final Object target) {
+        if (target == null) {
+            return;
+        }
         instance.getAutowireCapableBeanFactory().autowireBeanProperties(target, AutowireCapableBeanFactory.AUTOWIRE_NO,
                 false);
     }
