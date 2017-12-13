@@ -272,4 +272,10 @@ public final class MergedContext extends ADelegateContext {
                 .isTrue();
     }
 
+    public static void awaitBootstrapFinished() throws InterruptedException {
+        while (!isBootstrapFinished()) {
+            Duration.ONE_MILLISECOND.sleep();
+        }
+    }
+
 }
