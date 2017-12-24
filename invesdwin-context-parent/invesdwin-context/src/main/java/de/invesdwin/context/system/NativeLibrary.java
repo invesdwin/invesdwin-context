@@ -93,8 +93,7 @@ public final class NativeLibrary {
         final String libname = System.mapLibraryName(this.libname);
         final String arch = System.getProperty("os.arch");
         final String name = System.getProperty("os.name");
-        String resourceName = getNativeLibraryResourcePath(OperatingSystem.getCurrent(), arch, name)
-                + "/" + libname;
+        String resourceName = getNativeLibraryResourcePath(OperatingSystem.getCurrent(), arch, name) + "/" + libname;
         URL url = classFromSameJar.getResource(resourceName);
 
         // Add an ugly hack for OpenJDK (soylatte) - JNI libs use the usual
@@ -273,10 +272,9 @@ public final class NativeLibrary {
             // to do so
             if (!deleteNativeLibrary(nativeLibraryPath, unpacked)) {
                 try {
-                    Runtime.getRuntime().exec(
-                            new String[] { System.getProperty("java.home") + "/bin/java", "-cp",
-                                    System.getProperty("java.class.path"), getClass().getName(),
-                                    file.getAbsolutePath(), });
+                    Runtime.getRuntime().exec(new String[] {
+                            System.getProperty("java.home") + File.separator + "bin" + File.separator + "java", "-cp",
+                            System.getProperty("java.class.path"), getClass().getName(), file.getAbsolutePath(), });
                 } catch (final IOException e) {
                     e.printStackTrace();
                 }
@@ -295,8 +293,8 @@ public final class NativeLibrary {
                             Thread.currentThread().interrupt();
                         }
                         if (System.currentTimeMillis() - start > 5000) {
-                            new Log(DeleteNativeLibrary.class).error("Could not remove temp file: "
-                                    + file.getAbsolutePath());
+                            new Log(DeleteNativeLibrary.class)
+                                    .error("Could not remove temp file: " + file.getAbsolutePath());
                             break;
                         }
                     }
