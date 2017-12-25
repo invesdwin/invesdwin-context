@@ -8,11 +8,9 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
-import de.invesdwin.context.system.OperatingSystem;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.uri.URIsConnect;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
@@ -103,24 +101,7 @@ public final class ContextProperties {
      * this should $HOME
      */
     public static String getSystemHomeDirectory() {
-        final String[] envs;
-        if (OperatingSystem.isWindows()) {
-            envs = new String[] { "USERPROFILE" };
-        } else {
-            envs = new String[] { "HOME" };
-        }
-        String home = null;
-        for (final String env : envs) {
-            final String envHome = System.getenv(env);
-            if (Strings.isNotBlank(envHome)) {
-                home = envHome;
-                break;
-            }
-        }
-        if (Strings.isBlank(home)) {
-            home = new SystemProperties().getString("user.home");
-        }
-        return home;
+        return new SystemProperties().getString("user.home");
     }
 
     public static synchronized File getLogDirectory() {
