@@ -105,7 +105,7 @@ public final class ContextProperties {
     public static String getSystemHomeDirectory() {
         final String[] envs;
         if (OperatingSystem.isWindows()) {
-            envs = new String[] { "HOMEDRIVE", "HOMEPATH", "USERPROFILE" };
+            envs = new String[] { "USERPROFILE" };
         } else {
             envs = new String[] { "HOME" };
         }
