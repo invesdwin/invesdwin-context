@@ -112,11 +112,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public boolean initIsTestEnvironment() {
         try {
-            //since java classes are packaged in src/main/java, we check if the test directory exists and if it actually contains any tests
+            //since java classes are packaged in src/main/java, we check if the test directory exists
             final File srcTestJavaDir = new File("src/test/java");
-            final boolean testClassesExist = srcTestJavaDir.exists() && srcTestJavaDir.isDirectory()
-                    && srcTestJavaDir.list().length > 0;
-            return testClassesExist;
+            return srcTestJavaDir.exists() && srcTestJavaDir.isDirectory();
         } catch (final Throwable t) {
             //access control might prevent access to files/folders in a webstart environment
             return false;
