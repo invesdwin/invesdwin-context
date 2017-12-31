@@ -23,7 +23,9 @@ public class ContextDirectoriesStub extends StubSupport {
 
     static {
         addProtectedDirectory(ContextProperties.TEMP_CLASSPATH_DIRECTORY);
-        addProtectedDirectory(ContextProperties.getHomeDirectory());
+        if (PlatformInitializerProperties.isKeepSystemHomeDuringTests()) {
+            addProtectedDirectory(ContextProperties.getHomeDirectory());
+        }
     }
 
     @Override
