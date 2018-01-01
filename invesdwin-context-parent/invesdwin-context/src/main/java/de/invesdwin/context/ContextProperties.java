@@ -29,6 +29,7 @@ public final class ContextProperties {
     public static final File TEMP_CLASSPATH_DIRECTORY;
     public static final File EHCACHE_DISK_STORE_DIRECTORY;
     public static final Duration DEFAULT_NETWORK_TIMEOUT;
+    public static final int DEFAULT_NETWORK_TIMEOUT_MILLIS;
     public static final int CPU_THREAD_POOL_COUNT;
     @GuardedBy("ContextProperties.class")
     private static File cacheDirectory;
@@ -73,6 +74,7 @@ public final class ContextProperties {
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
+        DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
     }
