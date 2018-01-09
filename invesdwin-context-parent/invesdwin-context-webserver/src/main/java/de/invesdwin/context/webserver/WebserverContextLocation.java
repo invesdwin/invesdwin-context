@@ -20,7 +20,7 @@ import de.invesdwin.context.beans.init.locations.PositionedResource.ResourcePosi
 @Named
 public class WebserverContextLocation extends AConditionalContextLocation {
 
-    private static volatile boolean activated = false;
+    private static volatile boolean activated = true;
 
     @Override
     protected List<PositionedResource> getContextResourcesIfConditionSatisfied() {
