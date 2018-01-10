@@ -90,9 +90,6 @@ public final class ContextProperties {
         if (homeDirectory == null) {
             homeDirectory = PlatformInitializerProperties.getInitializer().initHomeDirectory(getSystemHomeDirectory(),
                     IS_TEST_ENVIRONMENT && !PlatformInitializerProperties.isKeepSystemHomeDuringTests());
-            if (PlatformInitializerProperties.isKeepSystemHomeDuringTests()) {
-                ContextDirectoriesStub.addProtectedDirectory(homeDirectory);
-            }
         }
         return homeDirectory;
     }
