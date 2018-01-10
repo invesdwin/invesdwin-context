@@ -73,17 +73,17 @@ public final class PlatformInitializerProperties {
     public static synchronized boolean isKeepSystemHomeDuringTests() {
         //CHECKSTYLE:OFF single line
         final String property = System.getProperty(KEY_KEEP_SYSTEM_HOME_DURING_TESTS);
+        //CHECKSTYLE:ON
         if (Strings.isBlank(property)) {
-            return false;
+            return true; //default to true
         } else {
             return BooleanUtils.toBoolean(property);
         }
-        //CHECKSTYLE:ON
     }
 
-    public static synchronized void setKeepSystemHomeDuringTests(final boolean invesdwinInitSkip) {
+    public static synchronized void setKeepSystemHomeDuringTests(final boolean keepSystemHomeDuringTests) {
         //CHECKSTYLE:OFF single line
-        System.setProperty(KEY_KEEP_SYSTEM_HOME_DURING_TESTS, String.valueOf(invesdwinInitSkip));
+        System.setProperty(KEY_KEEP_SYSTEM_HOME_DURING_TESTS, String.valueOf(keepSystemHomeDuringTests));
         //CHECKSTYLE:ON
     }
 
