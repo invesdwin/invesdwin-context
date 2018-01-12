@@ -1056,4 +1056,10 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<scm>
+		<url>https://github.com/subes/invesdwin-context</url>
+		<connection>scm:git:https://github.com/subes/invesdwin-context.git</connection>
+		<tag>HEAD</tag>
+	</scm>
+
 </project>
