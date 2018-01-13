@@ -13,7 +13,6 @@ import org.apache.commons.io.FilenameUtils;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.context.test.TestContext;
 import de.invesdwin.context.test.stub.StubSupport;
-import de.invesdwin.util.assertions.Assertions;
 
 @Named
 @NotThreadSafe
@@ -42,7 +41,7 @@ public class ContextDirectoriesStub extends StubSupport {
                         }
                     }
                     if (!isProtectedDir) {
-                        Assertions.checkTrue(FileUtils.deleteQuietly(f));
+                        FileUtils.deleteQuietly(f);
                     }
                 }
             }
