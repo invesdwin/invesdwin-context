@@ -24,6 +24,7 @@ public class LoggingRetryHook implements IRetryHook {
 
     @Override
     public void onRetryAborted(final RetryOriginator originator, final int retryCount, final Throwable cause) {
+        log.warn(createAbortedMessage(originator, retryCount, cause));
         previousCause.remove();
     }
 
@@ -47,6 +48,18 @@ public class LoggingRetryHook implements IRetryHook {
         sb.append(originator);
         sb.append(
                 " will be retried until success or another decision has been made. Maybe a destination is down or another transient exception occured.");
+        return sb.toString();
+    }
+
+    public static String createAbortedMessage(final RetryOriginator originator, final int retryCount,
+            final Throwable cause) {
+        Assertions.assertThat(retryCount).isGreaterThan(0);
+        final StringBuilder sb = new StringBuilder();
+        sb.append("(-) Call of ");
+        sb.append(originator);
+        sb.append(" aborted after ");
+        sb.append(retryCount);
+        sb.append(" retries. Cause: " + cause);
         return sb.toString();
     }
 
