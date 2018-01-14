@@ -2,7 +2,6 @@ package de.invesdwin.context.integration.retry.internal;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +21,8 @@ import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 
+import de.invesdwin.context.integration.retry.RetryDisabledException;
+import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.RetryOriginator;
@@ -39,16 +40,6 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
 
     private static final String ATTRIBUTE_LAST_LOGGED_RETRY_COUNT = "ATTRIBUTE_LAST_LOGGED_RETRY_COUNT";
 
-    //<property name="alwaysAllowedCauses">
-    //    <set>
-    //        <!-- exceptions that should always be allowed, even if they are in disallowedCauses (maybe a cause of that exception) -->
-    //        <value>java.net.SocketTimeoutException</value>
-    //        <value>de.invesdwin.context.integration.retry.RetryLaterException</value>
-    //        <value>de.invesdwin.context.integration.retry.RetryLaterRuntimeException</value>
-    //    </set>
-    //</property>
-    private final List<Class<? extends Exception>> alwaysAllowedCauses = Arrays.asList(SocketTimeoutException.class,
-            RetryLaterException.class, RetryLaterRuntimeException.class);
     //<property name="disallowedCauses">
     //    <set>
     //        <!-- specific exceptions that are children of allowedCauses should still not be allowed -->
@@ -96,10 +87,16 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
 
     private boolean decideRetry(final RetryContext context) {
         final Throwable lastThrowable = context.getLastThrowable();
-        for (final Class<? extends Throwable> alwaysAllowedCause : alwaysAllowedCauses) {
-            if (Throwables.isCausedByType(lastThrowable, alwaysAllowedCause)) {
+        Throwable cause = lastThrowable;
+        while (cause != null) {
+            if (cause instanceof RetryDisabledException || cause instanceof RetryDisabledRuntimeException) {
+                //always disallowed
+                return false;
+            } else if (cause instanceof RetryLaterException || cause instanceof RetryLaterRuntimeException) {
+                //always allowed
                 return true;
             }
+            cause = cause.getCause();
         }
         for (final Class<? extends Throwable> allowedCause : disallowedCauses) {
             if (Throwables.isCausedByType(lastThrowable, allowedCause)) {
