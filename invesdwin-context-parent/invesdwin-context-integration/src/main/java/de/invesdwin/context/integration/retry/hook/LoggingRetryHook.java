@@ -24,7 +24,9 @@ public class LoggingRetryHook implements IRetryHook {
 
     @Override
     public void onRetryAborted(final RetryOriginator originator, final int retryCount, final Throwable cause) {
-        log.warn(createAbortedMessage(originator, retryCount, cause));
+        if (retryCount > 0) {
+            log.warn(createAbortedMessage(originator, retryCount, cause));
+        }
         previousCause.remove();
     }
 
