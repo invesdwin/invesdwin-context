@@ -37,6 +37,6 @@ public abstract class ARetryingCallable<E> implements Callable<E> {
         }
     }
 
-    protected abstract E callRetryable();
+    protected abstract E callRetryable() throws Exception;
 
 }
