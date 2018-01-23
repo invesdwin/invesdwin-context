@@ -25,7 +25,7 @@ public class ExceptionCauseRetryCallback<E> implements RetryCallback<E, Exceptio
     @Override
     public E doWithRetry(final RetryContext retryContext) throws Exception {
         retryContext.setAttribute(RetryOriginator.ATTRIBUTE_RETRY_ORIGINATOR, originator);
-        retryCount = retryContext.getRetryCount() + 1;
+        retryCount = retryContext.getRetryCount();
         try {
             final E ret = callable.call();
             if (retryContext.getRetryCount() > 0) {
