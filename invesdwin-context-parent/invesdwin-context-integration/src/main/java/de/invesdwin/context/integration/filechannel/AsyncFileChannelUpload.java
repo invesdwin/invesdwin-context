@@ -42,16 +42,16 @@ public class AsyncFileChannelUpload implements Runnable {
                 new RetryOriginator(AsyncFileChannelUpload.class, "run", channel, localTempFile)) {
             @Override
             protected void runRetryable() throws Exception {
+                cleanupForUpload();
                 try {
-                    cleanupForUpload();
                     EXECUTOR.awaitPendingCount(MAX_PARALLEL_UPLOADS);
-                    uploadAsync();
                 } catch (final InterruptedException e) {
                     channel.close();
                     throw new RuntimeException(e);
                 } catch (final Throwable t) {
                     throw handleRetry(t);
                 }
+                uploadAsync();
             }
 
         };
