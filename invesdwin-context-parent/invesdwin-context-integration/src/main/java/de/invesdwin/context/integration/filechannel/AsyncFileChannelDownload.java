@@ -24,7 +24,7 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 @NotThreadSafe
 public class AsyncFileChannelDownload implements Callable<InputStream> {
 
-    private static final int MAX_PARALLEL_DOWNLOADS = AsyncFileChannelUpload.MAX_PARALLEL_UPLOADS;
+    private static final int MAX_PARALLEL_DOWNLOADS = 50;
 
     private static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelDownload.class.getSimpleName(), MAX_PARALLEL_DOWNLOADS);
