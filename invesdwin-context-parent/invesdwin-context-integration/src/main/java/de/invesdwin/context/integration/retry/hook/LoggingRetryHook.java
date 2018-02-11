@@ -2,7 +2,10 @@ package de.invesdwin.context.integration.retry.hook;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import org.slf4j.ext.XLogger.Level;
+
 import de.invesdwin.context.integration.retry.RetryOriginator;
+import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
@@ -17,7 +20,8 @@ public class LoggingRetryHook implements IRetryHook {
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
         if (!Err.isSameMeaning(cause, previousCause.get())) {
-            Err.process(new RuntimeException(createFailureMessage(originator, retryCount), cause));
+            log.catching(Level.ERROR,
+                    new FastRetryLaterRuntimeException(createFailureMessage(originator, retryCount), cause));
             previousCause.set(cause);
         }
     }
