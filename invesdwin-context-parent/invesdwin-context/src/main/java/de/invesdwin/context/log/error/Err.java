@@ -123,19 +123,11 @@ public final class Err {
     }
 
     public static String getDetailedStackTrace(final Throwable e) {
-        if (e instanceof LoggedRuntimeException) {
-            return ThrowableConverter.loggedRuntimeExceptionToString((LoggedRuntimeException) e, true);
-        } else {
-            return ThrowableConverter.throwableToString(e, true);
-        }
+        return ThrowableConverter.throwableToString(e, true);
     }
 
     public static String getSimplifiedStackTrace(final Throwable e) {
-        if (e instanceof LoggedRuntimeException) {
-            return ThrowableConverter.loggedRuntimeExceptionToString((LoggedRuntimeException) e, false);
-        } else {
-            return ThrowableConverter.throwableToString(e, false);
-        }
+        return ThrowableConverter.throwableToString(e, false);
     }
 
 }
