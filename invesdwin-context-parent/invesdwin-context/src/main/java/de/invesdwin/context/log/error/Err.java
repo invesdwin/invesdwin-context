@@ -57,8 +57,8 @@ public final class Err {
             }
 
             final LoggedRuntimeException le = LoggedRuntimeException.newInstance(e);
-            LOG.error(ThrowableConverter.throwableToString(le, false));
-            LOG_DETAIL.error(ThrowableConverter.throwableToString(le, true));
+            LOG.error(ThrowableConverter.loggedRuntimeExceptionToString(le, false));
+            LOG_DETAIL.error(ThrowableConverter.loggedRuntimeExceptionToString(le, true));
             ErrHookManager.loggedException(le, uncaughtException);
 
             return le;
@@ -120,6 +120,22 @@ public final class Err {
         final Throwable ue1 = Throwables.getCauseByType(e1, forcedType);
         final Throwable ue2 = Throwables.getCauseByType(e1, forcedType);
         return isSameMeaning(ue1, ue2);
+    }
+
+    public static String getDetailedStackTrace(final Throwable e) {
+        if (e instanceof LoggedRuntimeException) {
+            return ThrowableConverter.loggedRuntimeExceptionToString((LoggedRuntimeException) e, true);
+        } else {
+            return ThrowableConverter.throwableToString(e, true);
+        }
+    }
+
+    public static String getSimplifiedStackTrace(final Throwable e) {
+        if (e instanceof LoggedRuntimeException) {
+            return ThrowableConverter.loggedRuntimeExceptionToString((LoggedRuntimeException) e, false);
+        } else {
+            return ThrowableConverter.throwableToString(e, false);
+        }
     }
 
 }

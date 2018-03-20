@@ -17,10 +17,21 @@ final class ThrowableConverter {
 
     private ThrowableConverter() {}
 
-    public static String throwableToString(final LoggedRuntimeException e, final boolean detailed) {
+    public static String loggedRuntimeExceptionToString(final LoggedRuntimeException e, final boolean detailed) {
         final StringBuilder s = new StringBuilder("processing ");
         s.append(e.getIdString());
 
+        s.append(throwableToString((Throwable) e, detailed));
+
+        if (detailed) {
+            s.append("\n\n\n");
+        }
+
+        return s.toString();
+    }
+
+    public static String throwableToString(final Throwable e, final boolean detailed) {
+        final StringBuilder s = new StringBuilder();
         Throwable cause = e;
         while (cause != null) {
             s.append("\n");
@@ -34,11 +45,6 @@ final class ThrowableConverter {
             s.append(stackTraceToString(cause, detailed));
             cause = cause.getCause();
         }
-
-        if (detailed) {
-            s.append("\n\n\n");
-        }
-
         return s.toString();
     }
 
