@@ -17,8 +17,8 @@ import org.springframework.context.ApplicationContextAware;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.concurrent.Futures;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
+import de.invesdwin.util.concurrent.future.Futures;
 
 /**
  * Registers hooks for the application start. The hooks are called only once after the merged ApplicationContext has
