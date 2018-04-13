@@ -8,9 +8,8 @@ import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.springframework.instrument.InstrumentationSavingAgent;
-
 import de.invesdwin.context.beans.hook.IInstrumentationHook;
+import de.invesdwin.instrument.DynamicInstrumentationReflections;
 
 @NotThreadSafe
 public final class InstrumentationHookLoader {
@@ -23,7 +22,7 @@ public final class InstrumentationHookLoader {
             instrumentationHooks.add(hook);
         }
         for (final IInstrumentationHook instrumentationHook : instrumentationHooks) {
-            instrumentationHook.instrument(InstrumentationSavingAgent.getInstrumentation());
+            instrumentationHook.instrument(DynamicInstrumentationReflections.getInstrumentation());
         }
         if (!instrumentationHooks.isEmpty()) {
             final StringBuilder message = new StringBuilder();
