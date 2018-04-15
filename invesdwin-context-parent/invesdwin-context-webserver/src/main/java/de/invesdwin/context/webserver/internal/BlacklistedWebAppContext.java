@@ -1,20 +1,15 @@
 package de.invesdwin.context.webserver.internal;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.URLResource;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
-import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.Strings;
 
 /**
@@ -34,7 +29,7 @@ public class BlacklistedWebAppContext extends WebAppContext {
 
     @Override
     public Resource getResource(final String uriInContext) throws MalformedURLException {
-        final ClassPathResource cpResource = new ClassPathResource(uriInContext);
+        final Resource cpResource = Resource.newClassPathResource(uriInContext);
         if (cpResource.exists()) {
             for (final String blacklist : CLASSPATH_RESOURCE_BLACKLIST) {
                 if (Strings.containsIgnoreCase(uriInContext, blacklist)) {
@@ -43,13 +38,7 @@ public class BlacklistedWebAppContext extends WebAppContext {
                     return null;
                 }
             }
-            try {
-                final URL url = cpResource.getURL();
-                return new URLResource(url, null) {
-                };
-            } catch (final IOException e) {
-                throw Err.process(e);
-            }
+            return cpResource;
         } else {
             return super.getResource(uriInContext);
         }
