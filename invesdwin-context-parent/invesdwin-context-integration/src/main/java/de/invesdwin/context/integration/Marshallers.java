@@ -14,6 +14,7 @@ import org.springframework.xml.transform.StringSource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -50,6 +51,10 @@ public final class Marshallers implements ApplicationContextAware {
         if (multiline) {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         }
+        // Uses Enum.toString() for serialization of an Enum
+        mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
+        // Uses Enum.toString() for deserialization of an Enum
+        mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         return mapper;
     }
 
