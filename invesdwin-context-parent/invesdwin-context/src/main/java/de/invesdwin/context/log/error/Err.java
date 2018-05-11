@@ -26,12 +26,7 @@ public final class Err {
     private static final Log LOG_DETAIL = new Log("de.invesdwin.ERROR_DETAIL");
 
     static {
-        final UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(final Thread t, final Throwable e) {
-                process(e, true);
-            }
-        };
+        final UncaughtExceptionHandler handler = new ErrUncaughtExceptionHandler();
         if (PlatformInitializerProperties.isAllowed()) {
             PlatformInitializerProperties.getInitializer().initDefaultUncaughtExceptionHandler(handler);
         }
@@ -47,7 +42,7 @@ public final class Err {
         return process(e, false);
     }
 
-    private static LoggedRuntimeException process(final Throwable e, final boolean uncaughtException) {
+    static LoggedRuntimeException process(final Throwable e, final boolean uncaughtException) {
         try {
             if (e == null) {
                 return null;
