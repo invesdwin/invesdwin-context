@@ -61,7 +61,7 @@
 		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
 		<version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
 
-		<version.jetty>9.4.7.v20170914</version.jetty>
+		<version.jetty>9.4.9.v20180320</version.jetty>
 
 		<version.ehcache-jcache>1.0.1</version.ehcache-jcache>
 		<version.ehcache>2.10.4</version.ehcache>
