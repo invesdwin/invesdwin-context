@@ -30,7 +30,7 @@ public class BlacklistedWebAppContext extends WebAppContext {
     @Override
     public Resource getResource(final String uriInContext) throws MalformedURLException {
         final Resource cpResource = Resource.newClassPathResource(uriInContext);
-        if (cpResource.exists()) {
+        if (cpResource != null && cpResource.exists()) {
             for (final String blacklist : CLASSPATH_RESOURCE_BLACKLIST) {
                 if (Strings.containsIgnoreCase(uriInContext, blacklist)) {
                     log.warn("Ignoring resource path [%s] because it matches blacklist entry [%s]", uriInContext,
