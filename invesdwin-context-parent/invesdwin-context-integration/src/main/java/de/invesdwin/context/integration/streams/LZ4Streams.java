@@ -57,7 +57,7 @@ public final class LZ4Streams {
         return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
     }
 
-    public static LZ4BlockOutputStream newLargeLZ4OutputStream(final OutputStream out) {
+    public static LZ4BlockOutputStream newLargeHighLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out, LARGE_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -65,6 +65,10 @@ public final class LZ4Streams {
             final int compressionLevel) {
         return new LZ4BlockOutputStream(out, blockSize, LZ4Factory.fastestInstance().highCompressor(compressionLevel),
                 XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+    }
+
+    public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
+        return newFastLZ4OutputStream(out, LARGE_BLOCK_SIZE);
     }
 
     public static LZ4BlockOutputStream newFastLZ4OutputStream(final OutputStream out) {
