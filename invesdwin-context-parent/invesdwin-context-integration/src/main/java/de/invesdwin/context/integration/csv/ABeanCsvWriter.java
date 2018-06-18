@@ -1,17 +1,13 @@
 package de.invesdwin.context.integration.csv;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.util.collections.iterable.ICloseableIterable;
-import de.invesdwin.util.collections.iterable.ICloseableIterator;
-
 @NotThreadSafe
-public abstract class ABeanCsvWriter<E> implements Closeable {
+public abstract class ABeanCsvWriter<E> implements IBeanWriter<E> {
 
     private final CsvWriter csvWriter;
     private boolean headerWritten = false;
@@ -31,21 +27,8 @@ public abstract class ABeanCsvWriter<E> implements Closeable {
         this.csvWriter.line(headers);
     }
 
-    public final void write(final ICloseableIterable<? extends E> iterable) throws IOException {
-        try (ICloseableIterator<? extends E> iterator = iterable.iterator()) {
-            while (iterator.hasNext()) {
-                write(iterator.next());
-            }
-        }
-    }
-
-    public final void write(final Iterable<? extends E> iterable) throws IOException {
-        for (final E e : iterable) {
-            write(e);
-        }
-    }
-
-    public final void write(final E e) throws IOException {
+    @Override
+    public void write(final E e) throws IOException {
         if (!headerWritten) {
             writeHeaderLine();
             headerWritten = true;
@@ -63,6 +46,7 @@ public abstract class ABeanCsvWriter<E> implements Closeable {
         csvWriter.close();
     }
 
+    @Override
     public void flush() throws IOException {
         csvWriter.flush();
     }
