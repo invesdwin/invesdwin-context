@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
@@ -85,7 +86,14 @@ public final class JsonMerge {
     }
 
     private static void updateArray(final JsonNode valueToBePlaced, final Map.Entry<String, JsonNode> toBeMerged) {
-        toBeMerged.setValue(valueToBePlaced);
+        final JsonNode valueToBeMerged = toBeMerged.getValue();
+        if (valueToBeMerged instanceof ArrayNode && valueToBePlaced instanceof ArrayNode) {
+            final ArrayNode valueToBeMergedArrayNode = (ArrayNode) valueToBeMerged;
+            final ArrayNode valueToBePlacedArrayNode = (ArrayNode) valueToBePlaced;
+            valueToBeMergedArrayNode.addAll(valueToBePlacedArrayNode);
+        } else {
+            toBeMerged.setValue(valueToBePlaced);
+        }
     }
 
     private static void updateObject(final JsonNode mergeInTo, final ValueNode valueToBePlaced,

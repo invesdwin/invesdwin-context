@@ -12,6 +12,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -55,6 +56,8 @@ public final class Marshallers implements ApplicationContextAware {
         mapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
         // Uses Enum.toString() for deserialization of an Enum
         mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+        //don't require quotes for field names
+        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         return mapper;
     }
 
