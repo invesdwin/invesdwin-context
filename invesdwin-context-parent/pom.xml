@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -144,6 +145,11 @@
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-webapp</artifactId>
+				<version>${version.jetty}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.websocket</groupId>
+				<artifactId>javax-websocket-server-impl</artifactId>
 				<version>${version.jetty}</version>
 			</dependency>
 			<dependency>
@@ -978,9 +984,12 @@
 											<manifest
 												file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
 												<attribute name="Built-By" value="${user.name}" />
-												<attribute name="Specification-Title" value="${project.name}" />
-												<attribute name="Specification-Version" value="${project.version}" />
-												<attribute name="Specification-Vendor-Id" value="${project.groupId}" />
+												<attribute name="Specification-Title"
+													value="${project.name}" />
+												<attribute name="Specification-Version"
+													value="${project.version}" />
+												<attribute name="Specification-Vendor-Id"
+													value="${project.groupId}" />
 											</manifest>
 										</then>
 									</ac:if>

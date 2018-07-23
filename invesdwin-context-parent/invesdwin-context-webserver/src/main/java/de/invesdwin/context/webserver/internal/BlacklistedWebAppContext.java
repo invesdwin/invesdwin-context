@@ -1,13 +1,16 @@
 package de.invesdwin.context.webserver.internal;
 
 import java.net.MalformedURLException;
+import java.util.Map;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.websocket.server.ServerEndpointConfig;
 
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.lang.Strings;
@@ -46,6 +49,15 @@ public class BlacklistedWebAppContext extends WebAppContext {
 
     @Override
     protected void startContext() throws Exception {
+        final org.eclipse.jetty.websocket.jsr356.server.ServerContainer serverContainer = org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer
+                .configureContext(this);
+        final Map<String, ServerEndpointConfig> endpointConfigs = MergedContext.getInstance()
+                .getBeansOfType(ServerEndpointConfig.class);
+        if (endpointConfigs != null) {
+            for (final ServerEndpointConfig endpointConfig : endpointConfigs.values()) {
+                serverContainer.addEndpoint(endpointConfig);
+            }
+        }
         logServerStarting();
         super.startContext();
     }
