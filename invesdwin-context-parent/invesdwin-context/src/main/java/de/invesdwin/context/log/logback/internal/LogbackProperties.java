@@ -9,7 +9,7 @@ public final class LogbackProperties {
      * This property cannot be put into CommonProperties because the logging has to be initialized before
      * SystemProperties get loaded.
      */
-    public static final String ENCODER_PATTERN = "%-46(%d{ISO8601} [%.-21(%1X{transactions}|%thread))] %-5level %-60.-60(%logger{45}.%method) - %msg%n";
+    public static final String ENCODER_PATTERN = "%-46(%date{yyyy-MM-dd HH:mm:ss.SSS} [%.-21(%1X{transactions}|%thread))] %-5level %-60.-60(%logger{45}.%method) - %msg%n";
 
     private LogbackProperties() {}
 
