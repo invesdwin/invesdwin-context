@@ -123,6 +123,12 @@ public class CsvWriter implements Closeable {
     }
 
     @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        close();
+    }
+
+    @Override
     public final void close() throws IOException {
         out.close();
     }
