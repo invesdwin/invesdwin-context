@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -38,6 +37,7 @@ import org.w3c.dom.Document;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.report.jfreechart.visitor.AJFreeChartVisitor;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
@@ -262,7 +262,8 @@ public enum JFreeChartExporter {
             final Duration renderTimeout) {
         return new ADelegateInputStream() {
 
-            private final Lock lock = new ReentrantLock();
+            private final Lock lock = Threads.getCycleDetectingLockFactory()
+                    .newReentrantLock(JFreeChartExporter.class.getSimpleName() + "_exportToStreamCallable_lock");
             private final Future<?> future;
             private String chartTitle;
             private Exception initStackTrace;
