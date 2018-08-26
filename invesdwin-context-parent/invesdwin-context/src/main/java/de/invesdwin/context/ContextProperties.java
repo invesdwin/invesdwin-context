@@ -18,7 +18,7 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 @ThreadSafe
 public final class ContextProperties {
 
-    public static final String DEFAULT_CACHE_NAME = "";
+    public static final String DEFAULT_CACHE_NAME = "default";
 
     public static final boolean IS_TEST_ENVIRONMENT;
 
