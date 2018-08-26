@@ -13,9 +13,8 @@ import javax.cache.integration.CacheWriter;
 import de.invesdwin.context.jcache.internal.CacheBuilderInternalFactory;
 import de.invesdwin.util.bean.AValueObject;
 import de.invesdwin.util.lang.UniqueNameGenerator;
-import de.invesdwin.util.math.decimal.scaled.ByteSize;
+import de.invesdwin.util.time.duration.Duration;
 
-@SuppressWarnings("serial")
 @NotThreadSafe
 public class CacheBuilder<K, V> extends AValueObject {
 
@@ -31,12 +30,12 @@ public class CacheBuilder<K, V> extends AValueObject {
     private CacheWriter<K, V> cacheWriter;
     private final Set<CacheEntryListenerSupport<K, V>> cacheEntryListeners = new LinkedHashSet<CacheEntryListenerSupport<K, V>>();
 
-    //ehCacheConfig
+    //caffeine
     private String name;
-    private ByteSize maxDiskSize;
-    private Integer maxDiskElements;
-    private ByteSize maxHeapSize;
-    private Integer maxHeapElements;
+    private Integer maximumSize;
+    private Duration expireAfterWrite;
+    private Duration expireAfterAccess;
+    private Duration refreshAfterWrite;
 
     public CacheBuilder() {}
 
@@ -114,7 +113,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return this;
     }
 
-    //---------------------------------- ehCacheConfig -----------------------------------//
+    //---------------------------------- caffeine -----------------------------------//
 
     public String getName() {
         return name;
@@ -130,44 +129,44 @@ public class CacheBuilder<K, V> extends AValueObject {
         return this;
     }
 
-    public ByteSize getMaxDiskSize() {
-        return maxDiskSize;
-    }
-
-    public CacheBuilder<K, V> withMaxDiskSize(final ByteSize maxDiskSize) {
-        this.maxDiskSize = maxDiskSize;
-        return this;
-    }
-
-    public Integer getMaxDiskElements() {
-        return maxDiskElements;
-    }
-
-    public CacheBuilder<K, V> withMaxDiskElements(final Integer maxDiskElements) {
-        this.maxDiskElements = maxDiskElements;
-        return this;
-    }
-
-    public ByteSize getMaxHeapSize() {
-        return maxHeapSize;
-    }
-
-    public CacheBuilder<K, V> withMaxHeapSize(final ByteSize maxHeapSize) {
-        this.maxHeapSize = maxHeapSize;
-        return this;
-    }
-
-    public Integer getMaxHeapElements() {
-        return maxHeapElements;
-    }
-
-    public CacheBuilder<K, V> withMaxHeapElements(final Integer maxHeapElements) {
-        this.maxHeapElements = maxHeapElements;
-        return this;
-    }
-
     public Cache<K, V> newCache() {
         return CacheBuilderInternalFactory.newCache(this);
+    }
+
+    public Integer getMaximumSize() {
+        return maximumSize;
+    }
+
+    public CacheBuilder<K, V> withMaximumSize(final Integer maximumSize) {
+        this.maximumSize = maximumSize;
+        return this;
+    }
+
+    public Duration getExpireAfterWrite() {
+        return expireAfterWrite;
+    }
+
+    public CacheBuilder<K, V> withExpireAfterWrite(final Duration expireAfterWrite) {
+        this.expireAfterWrite = expireAfterWrite;
+        return this;
+    }
+
+    public Duration getExpireAfterAccess() {
+        return expireAfterAccess;
+    }
+
+    public CacheBuilder<K, V> withExpireAfterAccess(final Duration expireAfterAccess) {
+        this.expireAfterAccess = expireAfterAccess;
+        return this;
+    }
+
+    public Duration getRefreshAfterWrite() {
+        return refreshAfterWrite;
+    }
+
+    public CacheBuilder<K, V> setRefreshAfterWrite(final Duration refreshAfterWrite) {
+        this.refreshAfterWrite = refreshAfterWrite;
+        return this;
     }
 
 }

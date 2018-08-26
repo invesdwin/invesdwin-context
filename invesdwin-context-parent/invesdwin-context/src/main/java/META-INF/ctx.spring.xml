@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:task="http://www.springframework.org/schema/task" xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
@@ -24,24 +26,17 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="scheduledExecutorService" class="de.invesdwin.util.concurrent.Executors"
+	<bean id="scheduledExecutorService"
+		class="de.invesdwin.util.concurrent.Executors"
 		factory-method="newScheduledThreadPool">
 		<constructor-arg value="@Scheduled" />
 	</bean>
-	<task:annotation-driven mode="aspectj" executor="asyncTaskExecutor"
-		scheduler="scheduledExecutorService" />
+	<task:annotation-driven mode="aspectj"
+		executor="asyncTaskExecutor" scheduler="scheduledExecutorService" />
 
 	<!-- activate @CacheResult -->
 	<cache:annotation-driven mode="aspectj" />
 	<bean id="cacheManager"
-		class="de.invesdwin.context.beans.init.internal.ConfiguredJCacheCacheManager">
-		<constructor-arg ref="ehCacheManager" />
-	</bean>
-	<bean id="ehCacheManager"
-		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="shared" value="true" />
-		<property name="configLocation"
-			value="#{ehCacheConfigurationMerger.newEhCacheXml().toString()}" />
-	</bean>
+		class="org.springframework.cache.jcache.JCacheCacheManager" />
 
 </beans>

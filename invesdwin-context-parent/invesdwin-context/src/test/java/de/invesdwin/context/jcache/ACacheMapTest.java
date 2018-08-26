@@ -19,7 +19,7 @@ public class ACacheMapTest extends ATest {
             @Override
             protected Cache<Integer, String> createDelegate() {
                 return new CacheBuilder<Integer, String>().withName(ACacheMap.class.getName())
-                        .withMaxHeapElements(1000)
+                        .withMaximumSize(1000)
                         .newCache();
             }
         };

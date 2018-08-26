@@ -64,9 +64,6 @@
 
 		<version.jetty>9.4.9.v20180320</version.jetty>
 
-		<version.ehcache-jcache>1.0.1</version.ehcache-jcache>
-		<version.ehcache>2.10.4</version.ehcache>
-		<version.jcache>1.0.0</version.jcache>
 		<version.jboss-transaction-api_1.1_spec>1.0.1.Final</version.jboss-transaction-api_1.1_spec>
 		<version.javax.annotation-api>1.3.1</version.javax.annotation-api>
 
@@ -158,31 +155,6 @@
 				<version>${version.jetty}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.ehcache</groupId>
-				<artifactId>jcache</artifactId>
-				<version>${version.ehcache-jcache}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javax.enterprise</groupId>
-						<artifactId>cdi-api</artifactId>
-					</exclusion>
-					<exclusion>
-						<artifactId>ehcache-core</artifactId>
-						<groupId>net.sf.ehcache</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>net.sf.ehcache</groupId>
-				<artifactId>ehcache</artifactId>
-				<version>${version.ehcache}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.cache</groupId>
-				<artifactId>cache-api</artifactId>
-				<version>${version.jcache}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.jboss.spec.javax.transaction</groupId>
 				<artifactId>jboss-transaction-api_1.1_spec</artifactId>
