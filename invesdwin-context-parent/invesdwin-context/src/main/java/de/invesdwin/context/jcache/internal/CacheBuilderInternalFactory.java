@@ -38,7 +38,7 @@ public final class CacheBuilderInternalFactory {
             };
         }
     };
-    private static final Factory<Executor> EXECUTOR_FACTORY = new Factory<Executor>() {
+    private static final Factory<Executor> DISABLED_EXECUTOR_FACTORY = new Factory<Executor>() {
         @Override
         public Executor create() {
             return Executors.DISABLED_EXECUTOR;
@@ -94,7 +94,17 @@ public final class CacheBuilderInternalFactory {
                     OptionalLong.of(builder.getRefreshAfterWrite().longValue(FTimeUnit.NANOSECONDS)));
         }
         config.setCopierFactory(COPIER_FACTORY);
-        config.setExecutorFactory(EXECUTOR_FACTORY);
+        final Executor executor = builder.getExecutor();
+        if (executor != null) {
+            config.setExecutorFactory(new Factory<Executor>() {
+                @Override
+                public Executor create() {
+                    return executor;
+                }
+            });
+        } else {
+            config.setExecutorFactory(DISABLED_EXECUTOR_FACTORY);
+        }
     }
 
     private static <K, V> void applyJCacheFactories(final CacheBuilder<K, V> builder,

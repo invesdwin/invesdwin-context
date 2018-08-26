@@ -3,6 +3,7 @@ package de.invesdwin.context.jcache;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.cache.Cache;
@@ -37,6 +38,7 @@ public class CacheBuilder<K, V> extends AValueObject {
     private Duration expireAfterWrite;
     private Duration expireAfterAccess;
     private Duration refreshAfterWrite;
+    private Executor executor;
 
     public CacheBuilder() {}
 
@@ -171,8 +173,17 @@ public class CacheBuilder<K, V> extends AValueObject {
         return refreshAfterWrite;
     }
 
-    public CacheBuilder<K, V> setRefreshAfterWrite(final Duration refreshAfterWrite) {
+    public CacheBuilder<K, V> withRefreshAfterWrite(final Duration refreshAfterWrite) {
         this.refreshAfterWrite = refreshAfterWrite;
+        return this;
+    }
+
+    public Executor getExecutor() {
+        return executor;
+    }
+
+    public CacheBuilder<K, V> withExecutor(final Executor executor) {
+        this.executor = executor;
         return this;
     }
 
