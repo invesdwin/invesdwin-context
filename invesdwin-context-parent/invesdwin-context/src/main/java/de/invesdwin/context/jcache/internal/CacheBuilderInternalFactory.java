@@ -1,6 +1,7 @@
 package de.invesdwin.context.jcache.internal;
 
 import java.util.OptionalLong;
+import java.util.concurrent.Executor;
 
 import javax.annotation.concurrent.Immutable;
 import javax.cache.Cache;
@@ -18,6 +19,7 @@ import com.github.benmanes.caffeine.jcache.copy.Copier;
 import de.invesdwin.context.jcache.CacheBuilder;
 import de.invesdwin.context.jcache.CacheEntryListenerSupport;
 import de.invesdwin.context.jcache.MergedExpiryPolicy;
+import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -34,6 +36,12 @@ public final class CacheBuilderInternalFactory {
                     return Objects.deepClone(object);
                 }
             };
+        }
+    };
+    private static final Factory<Executor> EXECUTOR_FACTORY = new Factory<Executor>() {
+        @Override
+        public Executor create() {
+            return Executors.DISABLED_EXECUTOR;
         }
     };
 
@@ -86,6 +94,7 @@ public final class CacheBuilderInternalFactory {
                     OptionalLong.of(builder.getRefreshAfterWrite().longValue(FTimeUnit.NANOSECONDS)));
         }
         config.setCopierFactory(COPIER_FACTORY);
+        config.setExecutorFactory(EXECUTOR_FACTORY);
     }
 
     private static <K, V> void applyJCacheFactories(final CacheBuilder<K, V> builder,
