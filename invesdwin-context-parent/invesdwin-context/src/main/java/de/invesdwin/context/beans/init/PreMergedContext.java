@@ -90,8 +90,11 @@ public final class PreMergedContext extends ADelegateContext {
      * This should only be used by infrastructure classes.
      */
     public static synchronized List<PositionedResource> collectMergedContexts() {
-        //First only collect the context files
-        final Map<String, IContextLocation> mergers = getInstance().getBeansOfType(IContextLocation.class);
+        /*
+         * First only collect the context files, don't allow eager init or else the result will be cached and unit tests
+         * will fail to register new beans during configuration phase
+         */
+        final Map<String, IContextLocation> mergers = getInstance().getBeansOfType(IContextLocation.class, true, false);
         final List<PositionedResource> contexts = new ArrayList<PositionedResource>();
         for (final IContextLocation merger : mergers.values()) {
             final List<PositionedResource> contextResources = merger.getContextResources();
