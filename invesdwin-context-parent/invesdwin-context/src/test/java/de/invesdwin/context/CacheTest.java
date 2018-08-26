@@ -29,7 +29,7 @@ public class CacheTest extends ATest {
         Assertions.assertThat(methodInvocations).isEqualTo(2);
     }
 
-    @CacheDefaults(cacheName = ContextProperties.COMMON_CACHE_NAME)
+    @CacheDefaults(cacheName = ContextProperties.DEFAULT_CACHE_NAME)
     private class CacheAspectMethods {
 
         //        @Cacheable(CommonProperties.COMMON_CACHE_NAME)

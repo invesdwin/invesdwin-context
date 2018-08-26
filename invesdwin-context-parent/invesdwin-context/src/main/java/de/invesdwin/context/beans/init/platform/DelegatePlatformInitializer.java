@@ -59,8 +59,8 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void initEhcacheSystemProperties(final File ehcacheDiskStoreDirectory) {
-        delegate.initEhcacheSystemProperties(ehcacheDiskStoreDirectory);
+    public void initDefaultCache(final String defaultCacheName) {
+        delegate.initDefaultCache(defaultCacheName);
     }
 
     @Override

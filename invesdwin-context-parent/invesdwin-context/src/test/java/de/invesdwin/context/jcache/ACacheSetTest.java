@@ -20,7 +20,7 @@ public class ACacheSetTest extends ATest {
             protected Cache<Integer, String> createDelegate() {
                 return new CacheBuilder<Integer, String>().withName(ACacheSetTest.class.getName())
                         .withMaximumSize(100)
-                        .newCache();
+                        .create();
             }
         };
         Assertions.assertThat(cacheSet.size()).isEqualTo(0);

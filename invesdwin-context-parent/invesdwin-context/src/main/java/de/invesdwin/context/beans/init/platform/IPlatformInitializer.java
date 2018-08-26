@@ -25,7 +25,7 @@ public interface IPlatformInitializer {
 
     void initSystemPropertiesLoader();
 
-    void initEhcacheSystemProperties(File ehcacheDiskStoreDirectory);
+    void initDefaultCache(String defaultCacheName);
 
     void initDefaultTimeoutSystemProperties(Duration duration);
 

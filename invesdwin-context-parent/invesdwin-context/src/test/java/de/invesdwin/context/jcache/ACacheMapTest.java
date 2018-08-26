@@ -20,7 +20,7 @@ public class ACacheMapTest extends ATest {
             protected Cache<Integer, String> createDelegate() {
                 return new CacheBuilder<Integer, String>().withName(ACacheMap.class.getName())
                         .withMaximumSize(1000)
-                        .newCache();
+                        .create();
             }
         };
         Assertions.assertThat(map.size()).isEqualTo(0);

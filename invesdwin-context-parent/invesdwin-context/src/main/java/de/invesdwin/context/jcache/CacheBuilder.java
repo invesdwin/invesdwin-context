@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.cache.Cache;
+import javax.cache.Caching;
 import javax.cache.expiry.ExpiryPolicy;
 import javax.cache.integration.CacheLoader;
 import javax.cache.integration.CacheWriter;
@@ -120,17 +121,23 @@ public class CacheBuilder<K, V> extends AValueObject {
     }
 
     public CacheBuilder<K, V> withName(final String name) {
-        this.name = UNIQUE_NAME_GENERATOR.get(name);
+        this.name = name;
         return this;
     }
 
     public CacheBuilder<K, V> withName(final Object idObj) {
-        this.name = UNIQUE_NAME_GENERATOR.get(idObj.getClass().getSimpleName());
+        this.name = idObj.getClass().getSimpleName();
         return this;
     }
 
-    public Cache<K, V> newCache() {
-        return CacheBuilderInternalFactory.newCache(this);
+    public CacheBuilder<K, V> withUniqueName(final String name) {
+        this.name = UNIQUE_NAME_GENERATOR.get(name);
+        return this;
+    }
+
+    public CacheBuilder<K, V> withUniqueName(final Object idObj) {
+        this.name = UNIQUE_NAME_GENERATOR.get(idObj.getClass().getSimpleName());
+        return this;
     }
 
     public Integer getMaximumSize() {
@@ -167,6 +174,27 @@ public class CacheBuilder<K, V> extends AValueObject {
     public CacheBuilder<K, V> setRefreshAfterWrite(final Duration refreshAfterWrite) {
         this.refreshAfterWrite = refreshAfterWrite;
         return this;
+    }
+
+    public Cache<K, V> create() {
+        assertNameIsSet();
+        return CacheBuilderInternalFactory.newCache(this);
+    }
+
+    public Cache<K, V> getOrCreate() {
+        assertNameIsSet();
+        final Cache<K, V> existing = Caching.getCachingProvider().getCacheManager().getCache(name);
+        if (existing != null) {
+            return existing;
+        } else {
+            return create();
+        }
+    }
+
+    private void assertNameIsSet() {
+        if (name == null) {
+            throw new IllegalStateException("name should not be null");
+        }
     }
 
 }

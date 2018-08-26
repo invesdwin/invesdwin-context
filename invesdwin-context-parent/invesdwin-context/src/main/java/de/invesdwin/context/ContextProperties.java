@@ -18,7 +18,7 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 @ThreadSafe
 public final class ContextProperties {
 
-    public static final String COMMON_CACHE_NAME = "common";
+    public static final String DEFAULT_CACHE_NAME = "";
 
     public static final boolean IS_TEST_ENVIRONMENT;
 
@@ -27,7 +27,6 @@ public final class ContextProperties {
      */
     public static final File TEMP_DIRECTORY;
     public static final File TEMP_CLASSPATH_DIRECTORY;
-    public static final File EHCACHE_DISK_STORE_DIRECTORY;
     public static final Duration DEFAULT_NETWORK_TIMEOUT;
     public static final int DEFAULT_NETWORK_TIMEOUT_MILLIS;
     public static final int CPU_THREAD_POOL_COUNT;
@@ -44,21 +43,17 @@ public final class ContextProperties {
 
         File tempDirectory = null;
         File tempClasspathDirectory = null;
-        File ehcacheDiskStoreDirectory = null;
         try {
             tempDirectory = initializer.initTempDirectory();
             tempClasspathDirectory = initializer.initTempClasspathDirectory(tempDirectory);
-            ehcacheDiskStoreDirectory = new File(tempDirectory, "ehcache");
         } catch (final Throwable t) {
             //webstart safety for access control
             tempDirectory = null;
             tempClasspathDirectory = null;
-            ehcacheDiskStoreDirectory = null;
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
         }
         TEMP_DIRECTORY = tempDirectory;
         TEMP_CLASSPATH_DIRECTORY = tempClasspathDirectory;
-        EHCACHE_DISK_STORE_DIRECTORY = ehcacheDiskStoreDirectory;
 
         if (PlatformInitializerProperties.isAllowed()) {
             try {
@@ -66,7 +61,7 @@ public final class ContextProperties {
                 initializer.initLogbackConfigurationLoader();
                 initializer.initSystemPropertiesLoader();
 
-                initializer.initEhcacheSystemProperties(EHCACHE_DISK_STORE_DIRECTORY);
+                initializer.initDefaultCache(DEFAULT_CACHE_NAME);
             } catch (final Throwable t) {
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }

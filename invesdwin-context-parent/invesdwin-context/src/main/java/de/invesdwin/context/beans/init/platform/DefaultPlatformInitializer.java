@@ -30,6 +30,7 @@ import de.invesdwin.context.beans.init.platform.util.internal.LogbackConfigurati
 import de.invesdwin.context.beans.init.platform.util.internal.SystemPropertiesLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
+import de.invesdwin.context.jcache.CacheBuilder;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
@@ -96,10 +97,11 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void initEhcacheSystemProperties(final File ehcacheDiskStoreDirectory) {
-        final SystemProperties systemProperties = new SystemProperties();
-        systemProperties.setString("ehcache.disk.store.dir", ehcacheDiskStoreDirectory.getAbsolutePath());
-        systemProperties.setString("net.sf.ehcache.enableShutdownHook", "true");
+    public void initDefaultCache(final String defaultCacheName) {
+        new CacheBuilder<Object, Object>().withMaximumSize(1000000)
+                .withName(defaultCacheName)
+                .withExpireAfterAccess(new Duration(2, FTimeUnit.MINUTES))
+                .getOrCreate();
     }
 
     @Override
