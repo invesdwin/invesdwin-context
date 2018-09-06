@@ -50,7 +50,7 @@ public abstract class AJFreeChartVisitor {
         } else if (title instanceof LegendTitle) {
             final LegendTitle cTitle = (LegendTitle) title;
             cTitle.setItemFont(processFont(cTitle.getItemFont()));
-        } else {
+        } else if (title != null) {
             throw new IllegalArgumentException("Unknown " + Title.class + " type: " + title.getClass());
         }
     }
