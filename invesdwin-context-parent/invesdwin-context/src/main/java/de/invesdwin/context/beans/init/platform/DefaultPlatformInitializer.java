@@ -13,10 +13,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.UIManager;
 
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
@@ -39,10 +37,13 @@ import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
+import de.invesdwin.util.classpath.FastClassPathScanner;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 
 /**
  * You can override this class and disable individual methods to skip specific invesdwin initialization features.
@@ -204,14 +205,11 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
             /*
              * performance optimization see: https://github.com/RuedigerMoeller/fast-serialization/wiki/Serialization
              */
-            final ClassPathScanner scanner = new ClassPathScanner();
-            scanner.addIncludeFilter(new AssignableTypeFilter(ISerializableValueObject.class));
+            final ScanResult scanner = FastClassPathScanner.getScanResult();
             final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
-            for (final String basePackage : ContextProperties.getBasePackages()) {
-                for (final BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
-                    final Class<?> clazz = Reflections.classForName(bd.getBeanClassName());
-                    classesToRegister.add(clazz);
-                }
+            for (final ClassInfo ci : scanner.getClassesImplementing(ISerializableValueObject.class.getName())) {
+                final Class<?> clazz = Reflections.classForName(ci.getName());
+                classesToRegister.add(clazz);
             }
             //sort them so they always get the same index in registration
             classesToRegister.sort(new Comparator<Class<?>>() {
@@ -228,6 +226,14 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initClassPathScanner() {
+        //filter out test classes to prevent issues with class not found or resource not found in production
+        FastClassPathScanner.addBlacklistPath("de/invesdwin/*Test");
+        FastClassPathScanner.addBlacklistPath("de/invesdwin/*Stub");
+        FastClassPathScanner.addBlacklistPath("de/invesdwin/*/test/*");
+        for (final String basePackage : ContextProperties.getBasePackages()) {
+            FastClassPathScanner.addWhitelistPath(basePackage.replace(".", "/"));
+        }
+
         final List<TypeFilter> defaultExcludeFilters = new ArrayList<TypeFilter>();
         //filter out test classes to prevent issues with class not found or resource not found in production
         defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*(Test|Stub)")));
