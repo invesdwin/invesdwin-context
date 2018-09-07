@@ -16,6 +16,8 @@ import io.github.classgraph.ScanResult;
 @NotThreadSafe
 public class RegisterTypesForSerializationConfigurer {
 
+    public static final Class<ISerializableValueObject> SERIALIZABLE_INTERFACE = ISerializableValueObject.class;
+
     public void registerTypesForSerialization() {
         if (Objects.SERIALIZATION_CONFIG != null) {
             final List<Class<?>> classesToRegister = scanSerializableClassesToRegister();
@@ -38,7 +40,7 @@ public class RegisterTypesForSerializationConfigurer {
          */
         final ScanResult scanner = FastClassPathScanner.getScanResult();
         final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
-        for (final ClassInfo ci : scanner.getClassesImplementing(ISerializableValueObject.class.getName())) {
+        for (final ClassInfo ci : scanner.getClassesImplementing(SERIALIZABLE_INTERFACE.getName())) {
             final Class<?> clazz = Reflections.classForName(ci.getName());
             classesToRegister.add(clazz);
         }
