@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -22,6 +21,7 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
+import de.invesdwin.context.beans.init.platform.util.RegisterTypesForSerializationConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
 import de.invesdwin.context.beans.init.platform.util.internal.InstrumentationHookLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.LogbackConfigurationLoader;
@@ -34,16 +34,11 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
-import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
-import de.invesdwin.util.lang.Objects;
-import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
-import io.github.classgraph.ClassInfo;
-import io.github.classgraph.ScanResult;
 
 /**
  * You can override this class and disable individual methods to skip specific invesdwin initialization features.
@@ -201,27 +196,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void registerTypesForSerialization() {
-        if (Objects.SERIALIZATION_CONFIG != null) {
-            /*
-             * performance optimization see: https://github.com/RuedigerMoeller/fast-serialization/wiki/Serialization
-             */
-            final ScanResult scanner = FastClassPathScanner.getScanResult();
-            final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
-            for (final ClassInfo ci : scanner.getClassesImplementing(ISerializableValueObject.class.getName())) {
-                final Class<?> clazz = Reflections.classForName(ci.getName());
-                classesToRegister.add(clazz);
-            }
-            //sort them so they always get the same index in registration
-            classesToRegister.sort(new Comparator<Class<?>>() {
-                @Override
-                public int compare(final Class<?> o1, final Class<?> o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
-            for (final Class<?> clazz : classesToRegister) {
-                Objects.SERIALIZATION_CONFIG.registerClass(clazz);
-            }
-        }
+        new RegisterTypesForSerializationConfigurer().registerTypesForSerialization();
     }
 
     @Override

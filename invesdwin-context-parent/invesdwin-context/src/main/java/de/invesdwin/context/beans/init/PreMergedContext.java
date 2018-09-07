@@ -36,9 +36,10 @@ public final class PreMergedContext extends ADelegateContext {
     static {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
-                final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
-                initializer.initInstrumentation();
+                PlatformInitializerProperties.getInitializer().initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
+                //reload initializer after instrumentation was done, since a hook might have changed the initializer
+                final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
                 //needs to happen after properties have been loaded
                 initializer.initClassPathScanner();
                 initializer.registerTypesForSerialization();
