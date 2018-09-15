@@ -16,7 +16,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import com.google.common.cache.CacheBuilder;
+import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.math.decimal.Decimal;
@@ -60,7 +60,7 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     protected Map<String, Optional<?>> newCache() {
-        return CacheBuilder.newBuilder().maximumSize(1000).<String, Optional<?>> build().asMap();
+        return Caffeine.newBuilder().maximumSize(1000).<String, Optional<?>> build().asMap();
     }
 
     @Override
