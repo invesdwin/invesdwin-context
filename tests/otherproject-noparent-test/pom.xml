@@ -114,7 +114,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-persistence-leveldb</artifactId>
+			<artifactId>invesdwin-context-persistence-timeseries</artifactId>
 			<version>${version.invesdwin-context}</version>
 		</dependency>
 		<dependency>
