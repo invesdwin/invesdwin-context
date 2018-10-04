@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import de.invesdwin.util.math.decimal.Decimal;
+import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
 import net.jpountz.lz4.LZ4BlockInputStream;
@@ -22,18 +22,16 @@ import net.jpountz.xxhash.XXHashFactory;
 public final class LZ4Streams {
 
     public static final int DEFAULT_COMPRESSION_LEVEL = 99;
-    public static final int LARGE_BLOCK_SIZE = new ByteSize(new Decimal("1"), ByteSizeScale.MEGABYTES)
-            .getValue(ByteSizeScale.BYTES)
-            .intValue();
+    public static final int LARGE_BLOCK_SIZE = Integers
+            .checkedCast(new ByteSize(1D, ByteSizeScale.MEGABYTES).getValue(ByteSizeScale.BYTES));
     /*
      * 64KB is default in LZ4OutputStream (1 << 16) though 128K is almost the same speed with a bit better compression
      * on fast compressor
      * 
      * http://java-performance.info/performance-general-compression/
      */
-    public static final int DEFAULT_BLOCK_SIZE = new ByteSize(new Decimal("64"), ByteSizeScale.KILOBYTES)
-            .getValue(ByteSizeScale.BYTES)
-            .intValue();
+    public static final int DEFAULT_BLOCK_SIZE = Integers
+            .checkedCast(new ByteSize(64D, ByteSizeScale.KILOBYTES).getValue(ByteSizeScale.BYTES));
     public static final int DEFAULT_SEED = 0x9747b28c;
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;

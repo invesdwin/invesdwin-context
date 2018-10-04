@@ -88,7 +88,7 @@ public interface IScriptTaskInputs {
     }
 
     default void putDecimal(final String variable, final ADecimal<?> value) {
-        putDouble(variable, value.getDefaultValue().doubleValueRaw());
+        putDouble(variable, value.getDefaultValue());
     }
 
     default <T extends ADecimal<?>> void putDecimalVector(final String variable, final T[] value) {
