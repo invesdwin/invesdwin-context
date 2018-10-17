@@ -82,7 +82,7 @@
 		<version.batik>1.8</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
 		<version.itext>2.1.7.js5</version.itext>
-		<version.bcprov>1.46</version.bcprov>
+		<version.bcprov>1.60</version.bcprov>
 		<version.poi>3.16</version.poi>
 
 		<!-- integration -->
@@ -437,7 +437,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk15</artifactId>
+				<artifactId>bcprov-jdk15on</artifactId>
 				<version>${version.bcprov}</version>
 			</dependency>
 			<dependency>

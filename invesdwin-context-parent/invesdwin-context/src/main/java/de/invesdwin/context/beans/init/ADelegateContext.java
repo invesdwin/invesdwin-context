@@ -9,6 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -390,6 +391,16 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     @Override
     public void addProtocolResolver(final ProtocolResolver resolver) {
         delegate.addProtocolResolver(resolver);
+    }
+
+    @Override
+    public <T> ObjectProvider<T> getBeanProvider(final Class<T> requiredType) {
+        return delegate.getBeanProvider(requiredType);
+    }
+
+    @Override
+    public <T> ObjectProvider<T> getBeanProvider(final ResolvableType requiredType) {
+        return delegate.getBeanProvider(requiredType);
     }
 
 }
