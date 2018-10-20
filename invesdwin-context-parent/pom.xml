@@ -70,7 +70,7 @@
 		<version.commons-configuration>1.10</version.commons-configuration>
 		<version.commons-configuration2>2.2</version.commons-configuration2>
 		<version.commons-pool2>2.5.0</version.commons-pool2>
-		<version.commons-compress>1.15</version.commons-compress>
+		<version.commons-compress>1.18</version.commons-compress>
 
 		<version.logback>1.1.7</version.logback>
 		<version.janino>2.7.8</version.janino>
@@ -88,8 +88,8 @@
 		<!-- integration -->
 		<version.spring-batch>4.0.1.RELEASE</version.spring-batch>
 		<version.spring-retry>1.2.2.RELEASE</version.spring-retry>
-		<version.spring-integration>5.0.5.RELEASE</version.spring-integration>
-		<version.spring-ws>3.0.1.RELEASE</version.spring-ws>
+		<version.spring-integration>5.0.9.RELEASE</version.spring-integration>
+		<version.spring-ws>3.0.4.RELEASE</version.spring-ws>
 
 		<version.h2>1.4.196</version.h2>
 		<!-- 6.0.4 still has this error: http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue -->
