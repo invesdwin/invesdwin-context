@@ -26,11 +26,14 @@ public abstract class AMain {
     @Option(help = true, name = "-h", aliases = "--help", usage = "Shows this help text")
     protected boolean help;
 
+    protected final String[] args;
+
     protected AMain(final String[] args) {
         this(args, true);
     }
 
     protected AMain(final String[] args, final boolean bootstrap) {
+        this.args = args;
         parseCommandline(args, bootstrap);
         Assertions.assertThat(PreMergedContext.class).isNotNull();
     }
