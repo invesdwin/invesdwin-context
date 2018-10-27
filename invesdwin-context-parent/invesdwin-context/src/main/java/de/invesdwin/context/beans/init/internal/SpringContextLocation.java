@@ -10,14 +10,15 @@ import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.beans.init.locations.IContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
-import de.invesdwin.context.beans.init.locations.PositionedResource.ResourcePosition;
+import de.invesdwin.context.beans.init.locations.position.ResourcePosition;
 
 @Named
 @Immutable
 public class SpringContextLocation implements IContextLocation {
     @Override
     public List<PositionedResource> getContextResources() {
-        return Arrays.asList(PositionedResource.of(new ClassPathResource("/META-INF/ctx.spring.xml"), ResourcePosition.START));
+        return Arrays.asList(
+                PositionedResource.of(new ClassPathResource("/META-INF/ctx.spring.xml"), ResourcePosition.START));
     }
 
 }

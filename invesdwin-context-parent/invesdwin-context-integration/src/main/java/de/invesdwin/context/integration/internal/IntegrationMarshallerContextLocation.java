@@ -10,7 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.beans.init.locations.ABeanDependantContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
-import de.invesdwin.context.beans.init.locations.PositionedResource.ResourcePosition;
+import de.invesdwin.context.beans.init.locations.position.ResourcePosition;
 import de.invesdwin.context.integration.IMergedJaxbContextPath;
 
 @Named

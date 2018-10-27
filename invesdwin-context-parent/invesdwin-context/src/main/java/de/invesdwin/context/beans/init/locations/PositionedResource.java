@@ -10,6 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.springframework.core.io.Resource;
 
+import de.invesdwin.context.beans.init.locations.position.ResourcePosition;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.ADelegateComparator;
 
@@ -29,14 +30,6 @@ public final class PositionedResource implements Resource, Comparable<Resource> 
             return e;
         }
     };
-
-    public enum ResourcePosition {
-        START,
-        MIDDLE,
-        END;
-
-        public static final ResourcePosition DEFAULT = MIDDLE;
-    }
 
     private final Resource delegate;
     private final ResourcePosition position;
@@ -139,9 +132,7 @@ public final class PositionedResource implements Resource, Comparable<Resource> 
         } else {
             oPosition = ResourcePosition.DEFAULT;
         }
-        final Integer thisPositionOrdinal = getPosition().ordinal();
-        final Integer otherPositionOrdinal = oPosition.ordinal();
-        return thisPositionOrdinal.compareTo(otherPositionOrdinal);
+        return getPosition().compareTo(oPosition);
     }
 
     public static PositionedResource of(final Resource resource, final ResourcePosition position) {
