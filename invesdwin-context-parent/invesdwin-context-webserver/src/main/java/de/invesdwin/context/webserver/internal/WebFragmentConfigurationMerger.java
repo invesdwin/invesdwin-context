@@ -2,6 +2,7 @@ package de.invesdwin.context.webserver.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +14,11 @@ import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.init.PreMergedContext;
+import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.maven.plugin.util.AWebFragmentConfigurationMerger;
 import de.invesdwin.maven.plugin.util.WebFragmentResource;
+import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
 public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMerger {
@@ -43,14 +46,22 @@ public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMer
         return names;
     }
 
-    public String getContextPath() throws IOException {
+    public String getContextPath() {
+        final String contextPath = IntegrationProperties.WEBSERVER_BIND_URI.getPath();
+        if (Strings.isBlank(contextPath)) {
+            return "/";
+        }
+        return Strings.eventuallyAddPrefix(contextPath, "/");
+    }
+
+    public String getResourceBase() throws IOException {
         if (alreadyGenerated == null || !alreadyGenerated.exists()) {
             final File webappDirectory = new File(ContextProperties.TEMP_DIRECTORY, "webapp");
             final File webinfDirectory = new File(webappDirectory, "WEB-INF");
             final File webFragmentFile = new File(webinfDirectory, "web.xml");
             final String merged = mergeConfigs();
             FileUtils.forceMkdir(webinfDirectory);
-            FileUtils.writeStringToFile(webFragmentFile, merged);
+            FileUtils.writeStringToFile(webFragmentFile, merged, Charset.defaultCharset());
             alreadyGenerated = webappDirectory;
         }
         return alreadyGenerated.getAbsolutePath();

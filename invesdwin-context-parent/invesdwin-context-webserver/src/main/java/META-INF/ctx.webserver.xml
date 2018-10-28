@@ -11,14 +11,16 @@
 	<bean id="webServer" class="org.eclipse.jetty.server.Server"
 		init-method="start" destroy-method="stop">
 		<constructor-arg>
-			<bean id="ThreadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+			<bean id="ThreadPool"
+				class="org.eclipse.jetty.util.thread.QueuedThreadPool">
 				<property name="minThreads" value="1" />
 				<property name="maxThreads" value="50" />
 			</bean>
 		</constructor-arg>
 		<property name="connectors">
 			<list>
-				<bean id="connector" class="org.eclipse.jetty.server.ServerConnector">
+				<bean id="connector"
+					class="org.eclipse.jetty.server.ServerConnector">
 					<constructor-arg ref="webServer" />
 					<property name="port"
 						value="#{T(de.invesdwin.context.integration.IntegrationProperties).WEBSERVER_BIND_URI.getPort()}" />
@@ -28,9 +30,10 @@
 		<property name="handler">
 			<bean
 				class="de.invesdwin.context.webserver.internal.BlacklistedWebAppContext">
-				<property name="contextPath" value="/" />
-				<property name="resourceBase"
+				<property name="contextPath"
 					value="#{webFragmentConfigurationMerger.getContextPath()}" />
+				<property name="resourceBase"
+					value="#{webFragmentConfigurationMerger.getResourceBase()}" />
 			</bean>
 		</property>
 		<property name="stopAtShutdown" value="true" />

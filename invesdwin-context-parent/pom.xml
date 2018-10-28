@@ -79,7 +79,7 @@
 		<version.jfreechart>1.0.19</version.jfreechart>
 		<version.dynamicreports>4.1.1</version.dynamicreports>
 		<version.jasperreports>6.3.0</version.jasperreports>
-		<version.batik>1.8</version.batik>
+		<version.batik>1.10</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
 		<version.itext>2.1.7.js5</version.itext>
 		<version.bcprov>1.60</version.bcprov>
@@ -453,6 +453,10 @@
 					<exclusion>
 						<artifactId>xalan</artifactId>
 						<groupId>xalan</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
