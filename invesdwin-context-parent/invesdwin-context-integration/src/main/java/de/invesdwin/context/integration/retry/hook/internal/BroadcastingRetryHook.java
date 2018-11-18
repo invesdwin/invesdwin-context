@@ -7,12 +7,12 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
-import de.invesdwin.util.collections.concurrent.AFastIterableDelegateSet;
+import de.invesdwin.util.collections.fast.concurrent.ASynchronizedFastIterableDelegateSet;
 
 @ThreadSafe
 public class BroadcastingRetryHook implements IRetryHook {
 
-    private final AFastIterableDelegateSet<IRetryHook> hooks = new AFastIterableDelegateSet<IRetryHook>() {
+    private final ASynchronizedFastIterableDelegateSet<IRetryHook> hooks = new ASynchronizedFastIterableDelegateSet<IRetryHook>() {
         @Override
         protected Set<IRetryHook> newDelegate() {
             return new LinkedHashSet<IRetryHook>();
