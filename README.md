@@ -65,7 +65,7 @@ The following lifecycle hooks are available, which can either just be added to a
 	- discover base packages for further classpath scanning (`IBasePackageDefinition`)
 	- determine if we are running inside a test envinronment (if `src/test/java` directory exists, see `ContextProperties.IS_TEST_ENVIRONMENT`)
 	- initialize our context directories which can be optionally used by our modules (see `ContextProperties` class):
-		- a process specific temp directory for classpath extension with generated classes that gets deleted when the application is exits (e.g. to load a dynamic instrumentation agent as in `invesdwin-instrument` or to create additional configuration files that get generated from classpath scanning like a persistence.xml) 
+		- a process specific temp directory for classpath extension with generated classes that gets deleted when the application exits (e.g. to load a dynamic instrumentation agent as in `invesdwin-instrument` or to create additional configuration files that get generated from classpath scanning like a persistence.xml) 
 		- a cache directory inside our working directory for our application specific cache files that should be remembered between restarts (e.g. to store downloaded files that only have to be updated daily or monthly and should otherwise be remembered between application restarts)
 		- a process specific log folder inside our working directory
 		- a user specific home directory (`$HOME/.invesdwin`) where files can be stored that can be accessed by different processes and applications (e.g. to store financial data used by multiple instances of parallel running strategy backtest processes)
