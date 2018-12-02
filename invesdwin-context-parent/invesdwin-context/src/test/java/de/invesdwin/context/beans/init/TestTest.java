@@ -38,12 +38,18 @@ public class TestTest extends ATest implements InitializingBean {
     @AfterClass
     public static synchronized void testCalls() {
         Assertions.assertThat(TestTest.setUpOnceCalled).isEqualTo(1);
-        Assertions.assertThat(TestTest.afterPropertiesSetCalled).isEqualTo(3);
+        Assertions.assertThat(TestTest.afterPropertiesSetCalled).isEqualTo(4);
     }
 
     @Test
     public void testDependencyInjectionInTC() {
-        new ConfigurableBean().test();
+        new ExtendedConfigurableBean().test();
+        Assertions.assertThat(duplicates.length).isEqualTo(2);
+    }
+
+    @Test
+    public void testConstructorFinishedHook() {
+        new ExtendedConstructorFinishedBean().test();
         Assertions.assertThat(duplicates.length).isEqualTo(2);
     }
 
