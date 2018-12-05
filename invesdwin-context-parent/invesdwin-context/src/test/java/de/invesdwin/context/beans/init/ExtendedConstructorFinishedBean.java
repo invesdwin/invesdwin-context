@@ -21,8 +21,8 @@ class ExtendedConstructorFinishedBean extends ConstructorFinishedBean {
     }
 
     @Override
-    public void onConstructorFinished() {
-        super.onConstructorFinished();
+    public void constructorFinished() {
+        super.constructorFinished();
         Assertions.assertThat(constructorInitialized).isTrue();
         extendedInitialized = true;
     }

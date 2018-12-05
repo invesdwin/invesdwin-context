@@ -15,7 +15,7 @@ class ConstructorFinishedBean implements IConstructorFinishedHook {
     }
 
     @Override
-    public void onConstructorFinished() {
+    public void constructorFinished() {
         initialized = true;
     }
 
