@@ -2,7 +2,7 @@ package de.invesdwin.context.beans.init;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.aspects.IConstructorFinishedHook;
+import de.invesdwin.aspects.hook.IConstructorFinishedHook;
 import de.invesdwin.util.assertions.Assertions;
 
 @NotThreadSafe
