@@ -5,11 +5,11 @@ import java.awt.Font;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class JFreeChartFontMultiplier extends AJFreeChartVisitor {
+public class JFreeChartFontSizeMultiplier extends AJFreeChartVisitor {
 
     private final double fontMultiplier;
 
-    public JFreeChartFontMultiplier(final double fontMultiplier) {
+    public JFreeChartFontSizeMultiplier(final double fontMultiplier) {
         this.fontMultiplier = fontMultiplier;
     }
 

@@ -35,7 +35,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import de.invesdwin.context.jfreechart.visitor.AJFreeChartVisitor;
-import de.invesdwin.context.jfreechart.visitor.JFreeChartFontMultiplier;
+import de.invesdwin.context.jfreechart.visitor.JFreeChartFontSizeMultiplier;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
@@ -144,7 +144,7 @@ public enum JFreeChartExporter {
                 if (settings == null || settings.getFontMultiplier() == null) {
                     return font;
                 } else {
-                    return JFreeChartFontMultiplier.multiplyFont(font, settings.getFontMultiplier());
+                    return JFreeChartFontSizeMultiplier.multiplyFont(font, settings.getFontMultiplier());
                 }
             }
 
