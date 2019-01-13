@@ -15,6 +15,10 @@ public class JFreeChartFontMultiplier extends AJFreeChartVisitor {
 
     @Override
     protected Font processFont(final Font font) {
+        return multiplyFont(font, fontMultiplier);
+    }
+
+    public static Font multiplyFont(final Font font, final double fontMultiplier) {
         if (fontMultiplier == 1D) {
             return font;
         } else {
