@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-report</artifactId>
+			<artifactId>invesdwin-context-jasperreports</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>

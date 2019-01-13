@@ -119,7 +119,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-report</artifactId>
+			<artifactId>invesdwin-context-jasperreports</artifactId>
 			<version>${version.invesdwin-context}</version>
 		</dependency>
 		<dependency>

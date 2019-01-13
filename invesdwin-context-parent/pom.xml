@@ -17,7 +17,8 @@
 		<module>invesdwin-context</module>
 		<module>invesdwin-context-integration</module>
 		<module>invesdwin-context-webserver</module>
-		<module>invesdwin-context-report</module>
+		<module>invesdwin-context-jasperreports</module>
+		<module>invesdwin-context-jfreechart</module>
 	</modules>
 
 	<licenses>
@@ -125,7 +126,12 @@
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-report</artifactId>
+				<artifactId>invesdwin-context-jasperreports</artifactId>
+				<version>${version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-jfreechart</artifactId>
 				<version>${version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
