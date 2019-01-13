@@ -115,13 +115,12 @@ This module packages an embedded [jetty server](http://www.eclipse.org/jetty/) t
 
 Also note that with this module generally resources are served from the classpath (as this is the only place where modules can store their resources since they are packaged as a `jar`). The classpath underlies a resource blacklist that prevents class and java files from being served by accident to ensure security (see `BlacklistedWebAppContext`). Also file browsing is disabled on the server for security reasons.
 
-## Report Module
+## Report Modules
 
-This module bundles tools and utilities for creating reports of various types:
+These modules bundle tools and utilities for creating reports of various types:
 
-- **PDF**: create PDF files using [DynamicReports](http://www.dynamicreports.org/) which is a pure Java API frontend for [JasperReports](http://community.jaspersoft.com/project/jasperreports-library) so you don't have to fiddle around with JRXML files.
-- **Excel**: sometimes tabular data is favorable since it allows easy editing of the raw data, this is handled by [Apache POI]( https://poi.apache.org/).
-- **Chart**: you might want to include charts in your reports, this can be handled by [JFreeChart](http://www.jfree.org/jfreechart/). Notable utilties provided for this are:
+- **invesdwin-context-jasperreports**: create PDF files using [DynamicReports](http://www.dynamicreports.org/) which is a pure Java API frontend for [JasperReports](http://community.jaspersoft.com/project/jasperreports-library) so you don't have to fiddle around with JRXML files.
+- **invesdwin-context-jfreechart**: you might want to include charts in your reports, this can be handled by [JFreeChart](http://www.jfree.org/jfreechart/). Notable utilties provided for this are:
 	- `Aggragating(Ohlc)PointsCollection`: generating charts from large datasets is very slow and memory intensive without having any visual benefit, thus it makes sense to prefilter the data by aggregating points into to-be-pixels. This is handled by this special collection for XY-Points and OHLC-Bars respectively. You normally don't need more than around 10,000 datapoints for a XY-Chart or more than 1,000 datapoints for a OHLC-Chart to look good.
 	- `AJFreeChartVisitor`: allows to visit and modify chart elements to apply some common modifications on charts by post-processing. The included `JFreeChartLocaleChanger` and `JFreeChartWeekendGapRemover` are two examples for such cases. The first one adjusts date and number formats in the chart according to the given locale (JFreeChart otherwise uses the JVM default locale) and the second one removes weekends from `DateAxis` instances by setting an appropriate `SegmentedTimeline`. 
 	- `JFreeChartExporter`: allows you to easily export charts lazily, memory sensitive and in parallel as desired into different file formats and dimensions. It also allows you to scale the fonts via a multiplier so they are not too small on higher chart resolutions.
