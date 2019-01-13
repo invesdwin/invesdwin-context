@@ -97,13 +97,13 @@ public abstract class AJFreeChartVisitor {
         for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
             final ValueAxis axis = cPlot.getRangeAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processAxis(axis);
+                processRangeAxis(axis);
             }
         }
         for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
             final CategoryAxis axis = cPlot.getDomainAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processAxis(axis);
+                processDomainAxis(axis);
             }
         }
     }
@@ -112,15 +112,23 @@ public abstract class AJFreeChartVisitor {
         for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
             final ValueAxis axis = cPlot.getRangeAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processAxis(axis);
+                processRangeAxis(axis);
             }
         }
         for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
             final ValueAxis axis = cPlot.getDomainAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processAxis(axis);
+                processDomainAxis(axis);
             }
         }
+    }
+
+    protected void processDomainAxis(final Axis axis) {
+        processAxis(axis);
+    }
+
+    protected void processRangeAxis(final Axis axis) {
+        processAxis(axis);
     }
 
     protected void processAxis(final Axis axis) {
