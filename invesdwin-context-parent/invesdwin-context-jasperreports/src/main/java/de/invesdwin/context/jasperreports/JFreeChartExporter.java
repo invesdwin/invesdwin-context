@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart;
+package de.invesdwin.context.jasperreports;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,6 +34,7 @@ import org.jfree.chart.axis.TickUnitSource;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
+import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.context.jfreechart.visitor.AJFreeChartVisitor;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartFontSizeMultiplier;
 import de.invesdwin.context.log.error.Err;

@@ -7,8 +7,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.JFreeChart;
 
-import de.invesdwin.context.jfreechart.JFreeChartExporter;
-import de.invesdwin.context.jfreechart.JFreeChartExporterSettings;
 import de.invesdwin.context.log.error.Err;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.definition.ReportParameters;

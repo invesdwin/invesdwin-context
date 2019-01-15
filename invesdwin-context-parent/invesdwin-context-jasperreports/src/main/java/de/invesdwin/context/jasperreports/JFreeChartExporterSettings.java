@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart;
+package de.invesdwin.context.jasperreports;
 
 import java.awt.Dimension;
 
