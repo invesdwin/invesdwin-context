@@ -77,39 +77,54 @@ public final class MergedContext extends ADelegateContext {
     /**
      * Should only be used by infrastructure classes.
      */
-    public static synchronized void autowire(final Object target) {
+    public static void autowire(final Object target) {
         if (target instanceof BeanFactoryPostProcessor) {
-            final BeanFactoryPostProcessor beanFactoryPostProcessor = (BeanFactoryPostProcessor) target;
-            if (instance == null) {
-                TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS.add(beanFactoryPostProcessor);
-            } else {
-                autowireBeanFactoryPostProcessor(beanFactoryPostProcessor);
+            synchronized (MergedContext.class) {
+                final BeanFactoryPostProcessor beanFactoryPostProcessor = (BeanFactoryPostProcessor) target;
+                if (instance == null) {
+                    TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS.add(beanFactoryPostProcessor);
+                } else {
+                    autowireBeanFactoryPostProcessor(beanFactoryPostProcessor);
+                }
             }
         } else if (target instanceof ADelegateContext) {
-            if (target instanceof ParentContext) {
-                //For example for CXF
-                final ParentContext parentContext = (ParentContext) target;
-                if (instance == null) {
-                    TO_BE_SET_PARENTS.add(parentContext);
+            synchronized (MergedContext.class) {
+                if (target instanceof ParentContext) {
+                    //For example for CXF
+                    final ParentContext parentContext = (ParentContext) target;
+                    if (instance == null) {
+                        TO_BE_SET_PARENTS.add(parentContext);
+                    } else {
+                        autowireParentContext(parentContext);
+                    }
                 } else {
-                    autowireParentContext(parentContext);
+                    //For example TestContext is being used directly instead of injecting something into it
+                    final ADelegateContext delegateCtx = (ADelegateContext) target;
+                    autowireReplacement(delegateCtx);
                 }
-            } else {
-                //For example TestContext is being used directly instead of injecting something into it
-                final ADelegateContext delegateCtx = (ADelegateContext) target;
-                autowireReplacement(delegateCtx);
             }
         } else {
-            if (instance == null) {
-                //If started productive, bootstrap must be called
-                bootstrap();
+            synchronized (MergedContext.class) {
+                if (instance == null) {
+                    //If started productive, bootstrap must be called
+                    bootstrap();
+                }
             }
             if (target instanceof ApplicationContext) {
-                //If called with another Context make MergedContext available to it
-                autowireChildContext((ApplicationContext) target);
+                synchronized (MergedContext.class) {
+                    //If called with another Context make MergedContext available to it
+                    autowireChildContext((ApplicationContext) target);
+                }
             } else {
-                //If called with a normal class, do dependency injection on it
-                autowireBean(target);
+                try {
+                    awaitBootstrapFinished();
+                } catch (final InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                synchronized (MergedContext.class) {
+                    //If called with a normal class, do dependency injection on it
+                    autowireBean(target);
+                }
             }
         }
     }
@@ -178,11 +193,6 @@ public final class MergedContext extends ADelegateContext {
     private static void autowireBean(final Object target) {
         if (target == null) {
             return;
-        }
-        try {
-            awaitBootstrapFinished();
-        } catch (final InterruptedException e) {
-            throw new RuntimeException(e);
         }
         instance.getAutowireCapableBeanFactory()
                 .autowireBeanProperties(target, AutowireCapableBeanFactory.AUTOWIRE_NO, false);
