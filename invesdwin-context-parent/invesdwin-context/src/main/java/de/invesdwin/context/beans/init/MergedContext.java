@@ -66,7 +66,6 @@ public final class MergedContext extends ADelegateContext {
         super(ctx);
     }
 
-    @SuppressWarnings("GuardedBy")
     public static MergedContext getInstance() {
         return instance;
     }
@@ -115,12 +114,10 @@ public final class MergedContext extends ADelegateContext {
         }
     }
 
-    @SuppressWarnings("GuardedBy")
     private static void autowireBeanFactoryPostProcessor(final BeanFactoryPostProcessor beanFactoryPostProcessor) {
         instance.addBeanFactoryPostProcessor(beanFactoryPostProcessor);
     }
 
-    @SuppressWarnings("GuardedBy")
     private static void autowireReplacement(final ADelegateContext delegateCtx) {
         final MergedContext prevInstance = instance;
         instance = new MergedContext(delegateCtx);
@@ -150,7 +147,6 @@ public final class MergedContext extends ADelegateContext {
         }
     }
 
-    @SuppressWarnings("GuardedBy")
     private static void autowireParentContext(final ParentContext target) {
         Assertions.assertThat(instance).as("Bootstrap must be finished before parents can be set!").isNotNull();
         final ConfigurableApplicationContext rootCtx = (ConfigurableApplicationContext) ApplicationContexts
@@ -158,7 +154,6 @@ public final class MergedContext extends ADelegateContext {
         rootCtx.setParent(target);
     }
 
-    @SuppressWarnings("GuardedBy")
     private static void autowireChildContext(final ApplicationContext target) {
         Assertions.assertThat(target)
                 .as("%s must be a %s, so that a parent context can be set on it!",
@@ -180,16 +175,19 @@ public final class MergedContext extends ADelegateContext {
         targetCtx.setParent(instance.delegate);
     }
 
-    @SuppressWarnings("GuardedBy")
     private static void autowireBean(final Object target) {
         if (target == null) {
             return;
         }
-        instance.getAutowireCapableBeanFactory().autowireBeanProperties(target, AutowireCapableBeanFactory.AUTOWIRE_NO,
-                false);
+        try {
+            awaitBootstrapFinished();
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        instance.getAutowireCapableBeanFactory()
+                .autowireBeanProperties(target, AutowireCapableBeanFactory.AUTOWIRE_NO, false);
     }
 
-    @SuppressWarnings("GuardedBy")
     public static void logBootstrapFinished() {
         instance.getBean(StartupHookManager.class).start();
         LOG.info("Bootstrap finished after: %s",
