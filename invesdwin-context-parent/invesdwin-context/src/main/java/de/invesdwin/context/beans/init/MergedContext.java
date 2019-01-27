@@ -54,6 +54,7 @@ public final class MergedContext extends ADelegateContext {
     private static final Set<BeanFactoryPostProcessor> TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS = new LinkedHashSet<BeanFactoryPostProcessor>();
     @GuardedBy("MergedContext.class")
     private static MergedContext instance;
+    private static volatile boolean bootstrapRunning;
     private static volatile boolean bootstrapFinished;
 
     static {
@@ -68,6 +69,10 @@ public final class MergedContext extends ADelegateContext {
 
     public static MergedContext getInstance() {
         return instance;
+    }
+
+    public static boolean isBootstrapRunning() {
+        return bootstrapRunning;
     }
 
     public static boolean isBootstrapFinished() {
@@ -188,9 +193,11 @@ public final class MergedContext extends ADelegateContext {
         LOG.info("Bootstrap finished after: %s",
                 new Duration(PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME));
         bootstrapFinished = true;
+        bootstrapRunning = false;
     }
 
     public static void logContextsBeingLoaded(final List<PositionedResource> contexts) {
+        bootstrapRunning = true;
         //validate locations
         final Map<String, IContextLocationValidator> validators = PreMergedContext.getInstance()
                 .getBeansOfType(IContextLocationValidator.class);
@@ -267,6 +274,12 @@ public final class MergedContext extends ADelegateContext {
 
     public static void awaitBootstrapFinished() throws InterruptedException {
         while (!isBootstrapFinished()) {
+            Duration.ONE_MILLISECOND.sleep();
+        }
+    }
+
+    public static void awaitBootstrapFinishedIfRunning() throws InterruptedException {
+        while (!isBootstrapRunning()) {
             Duration.ONE_MILLISECOND.sleep();
         }
     }
