@@ -17,4 +17,7 @@
     <!-- disable kotlin warning -->
     <logger name="org.springframework.http.converter.json.Jackson2ObjectMapperBuilder" additivity="true" level="ERROR" />
     
+    <!-- disable xerces warnings: http://javax.xml.XMLConstants/property/accessExternalDTD property not supported by org.apache.xerces.jaxp.DocumentBuilderFactoryImpl -->
+    <logger name="org.springframework.xml.DocumentBuilderFactoryUtils" additivity="true" level="ERROR" />
+    
 </configuration>
