@@ -6,6 +6,7 @@ import java.util.TimeZone;
 import javax.annotation.concurrent.Immutable;
 
 import org.joda.time.DateTimeZone;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
@@ -66,6 +67,7 @@ public final class DefaultTimeZoneConfigurer {
             DateTimeZone.setDefault(DateTimeZone.forTimeZone(newTimeZone));
             //same with FDate
             FDates.setDefaultTimeZone(newTimeZone);
+            LocaleContextHolder.setDefaultTimeZone(newTimeZone);
             Assertions.assertThat(getDefaultTimeZone().getID())
                     .as("java has inconsistent default %s", TimeZone.class.getSimpleName())
                     .isEqualTo(newTimeZone.getID());
@@ -74,6 +76,7 @@ public final class DefaultTimeZoneConfigurer {
             //webstart safety for access control
             //we want to at least use in the strategy UTC even if it failed for the jvm
             FDates.setDefaultTimeZone(newTimeZone);
+            LocaleContextHolder.setDefaultTimeZone(newTimeZone);
         }
     }
 
