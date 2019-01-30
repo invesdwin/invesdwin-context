@@ -279,7 +279,7 @@ public final class MergedContext extends ADelegateContext {
     }
 
     public static void awaitBootstrapFinishedIfRunning() throws InterruptedException {
-        while (!isBootstrapRunning()) {
+        while (isBootstrapRunning()) {
             Duration.ONE_MILLISECOND.sleep();
         }
     }
