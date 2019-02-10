@@ -25,7 +25,7 @@ import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ClosedInputStream;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.NumberAxis;
@@ -56,7 +56,7 @@ public enum JFreeChartExporter {
                 final JFreeChartExporterSettings settings) throws IOException {
             try {
                 customizeChart(chart, settings);
-                ChartUtilities.writeChartAsJPEG(out, chart, settings.getBounds().width, settings.getBounds().height);
+                ChartUtils.writeChartAsJPEG(out, chart, settings.getBounds().width, settings.getBounds().height);
             } catch (final Throwable t) {
                 throw new RuntimeException("At: " + chart.getTitle().getID(), t);
             }
@@ -68,7 +68,7 @@ public enum JFreeChartExporter {
                 final JFreeChartExporterSettings settings) throws IOException {
             try {
                 customizeChart(chart, settings);
-                ChartUtilities.writeChartAsPNG(out, chart, settings.getBounds().width, settings.getBounds().height);
+                ChartUtils.writeChartAsPNG(out, chart, settings.getBounds().width, settings.getBounds().height);
             } catch (final Throwable t) {
                 throw new RuntimeException("At: " + chart.getTitle().getID(), t);
             }

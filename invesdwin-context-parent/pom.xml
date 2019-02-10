@@ -77,12 +77,12 @@
 		<version.janino>2.7.8</version.janino>
 
 		<!-- reports -->
-		<version.jfreechart>1.0.19</version.jfreechart>
-		<version.dynamicreports>4.1.1</version.dynamicreports>
-		<version.jasperreports>6.3.0</version.jasperreports>
+		<version.jfreechart>1.5.0</version.jfreechart>
+		<version.dynamicreports>6.0.0</version.dynamicreports>
+		<version.jasperreports>6.7.0</version.jasperreports>
 		<version.batik>1.10</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
-		<version.itext>2.1.7.js5</version.itext>
+		<version.itext>2.1.7.js6</version.itext>
 		<version.bcprov>1.60</version.bcprov>
 		<version.poi>3.16</version.poi>
 
@@ -349,8 +349,16 @@
 						<groupId>jfree</groupId>
 					</exclusion>
 					<exclusion>
+						<artifactId>jcommon</artifactId>
+						<groupId>org.jfree</groupId>
+					</exclusion>
+					<exclusion>
 						<artifactId>jfreechart</artifactId>
 						<groupId>jfree</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jfreechart</artifactId>
+						<groupId>org.jfree</groupId>
 					</exclusion>
 					<exclusion>
 						<artifactId>xml-apis</artifactId>
@@ -446,6 +454,17 @@
 				<artifactId>bcprov-jdk15on</artifactId>
 				<version>${version.bcprov}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcmail-jdk15on</artifactId>
+				<version>${version.bcprov}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk15on</artifactId>
+				<version>${version.bcprov}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
 				<artifactId>batik-svggen</artifactId>
