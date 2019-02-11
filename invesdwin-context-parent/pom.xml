@@ -58,6 +58,7 @@
 		<version.ant-contrib>1.0b3</version.ant-contrib>
 		<version.ant-nodeps>1.8.1</version.ant-nodeps>
 		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
+		<version.maven-dependency-analyzer>1.11.1</version.maven-dependency-analyzer>
 		<version.versions-maven-plugin>2.5</version.versions-maven-plugin>
 		<version.checkstyle>8.2</version.checkstyle>
 		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
@@ -1025,6 +1026,13 @@
 							</goals>
 						</execution>
 					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.shared</groupId>
+							<artifactId>maven-dependency-analyzer</artifactId>
+							<version>${version.maven-dependency-analyzer}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
