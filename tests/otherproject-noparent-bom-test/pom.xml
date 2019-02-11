@@ -15,7 +15,7 @@
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
 		<version.maven-compiler-plugin>3.7.0</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
-		<version.maven-dependency-plugin>3.0.2</version.maven-dependency-plugin>
+		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
 		<version.compiler>1.7</version.compiler>
 	</properties>
 
@@ -142,6 +142,8 @@
 								<exclude>org.glassfish:javax.servlet</exclude>
 								<exclude>org.hibernate:hibernate-c3p0</exclude>
 								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</exclude>
+								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.1-api</exclude>
+								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.2-api</exclude>
 							</excludes>
 						</bannedDependencies>
 					</rules>

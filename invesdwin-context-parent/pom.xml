@@ -57,7 +57,7 @@
 		<version.maven-antrun-plugin>1.8</version.maven-antrun-plugin>
 		<version.ant-contrib>1.0b3</version.ant-contrib>
 		<version.ant-nodeps>1.8.1</version.ant-nodeps>
-		<version.maven-dependency-plugin>3.0.2</version.maven-dependency-plugin>
+		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
 		<version.versions-maven-plugin>2.5</version.versions-maven-plugin>
 		<version.checkstyle>8.2</version.checkstyle>
 		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
@@ -717,6 +717,14 @@
 							</configuration>
 						</execution>
 					</executions>
+					<dependencies>
+						<!-- jpamodelgen processor needs jaxb -->
+						<dependency>
+							<groupId>org.glassfish.jaxb</groupId>
+							<artifactId>jaxb-runtime</artifactId>
+							<version>${version.jaxb}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
