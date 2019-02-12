@@ -41,18 +41,17 @@
 
 		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
-		<version.maven-processor-plugin>3.3.2</version.maven-processor-plugin>
-		<!-- maven-jar-plugin 2.4 causes errors in eclipse: https://github.com/tesla/m2eclipse-extras/issues/10 -->
-		<version.maven-jar-plugin>3.0.2</version.maven-jar-plugin>
-		<version.maven-war-plugin>3.1.0</version.maven-war-plugin>
-		<version.maven-bundle-plugin>3.3.0</version.maven-bundle-plugin>
-		<version.maven-surefire-plugin>2.20.1</version.maven-surefire-plugin>
+		<version.maven-processor-plugin>3.3.3</version.maven-processor-plugin>
+		<version.maven-jar-plugin>3.1.1</version.maven-jar-plugin>
+		<version.maven-war-plugin>3.2.2</version.maven-war-plugin>
+		<version.maven-bundle-plugin>4.1.0</version.maven-bundle-plugin>
+		<version.maven-surefire-plugin>2.22.1</version.maven-surefire-plugin>
 
-		<version.maven-shade-plugin>3.1.0</version.maven-shade-plugin>
-		<version.launch4j-maven-plugin>1.7.21</version.launch4j-maven-plugin>
-		<version.maven-resources-plugin>3.0.2</version.maven-resources-plugin>
-		<version.maven-checkstyle-plugin>2.17</version.maven-checkstyle-plugin>
-		<version.maven-assembly-plugin>3.1.0</version.maven-assembly-plugin>
+		<version.maven-shade-plugin>3.2.1</version.maven-shade-plugin>
+		<version.launch4j-maven-plugin>1.7.25</version.launch4j-maven-plugin>
+		<version.maven-resources-plugin>3.1.0</version.maven-resources-plugin>
+		<version.maven-checkstyle-plugin>3.0.0</version.maven-checkstyle-plugin>
+		<version.maven-assembly-plugin>3.1.1</version.maven-assembly-plugin>
 		<version.appassembler-maven-plugin>2.0.0</version.appassembler-maven-plugin>
 		<version.maven-antrun-plugin>1.8</version.maven-antrun-plugin>
 		<version.ant-contrib>1.0b3</version.ant-contrib>
@@ -73,8 +72,6 @@
 		<version.commons-configuration2>2.2</version.commons-configuration2>
 		<version.commons-pool2>2.5.0</version.commons-pool2>
 		<version.commons-compress>1.18</version.commons-compress>
-
-		<version.javax.el-api>3.0.0</version.javax.el-api>
 
 		<version.logback>1.1.7</version.logback>
 		<version.janino>2.7.8</version.janino>
@@ -593,12 +590,6 @@
 						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>javax.el</groupId>
-				<artifactId>javax.el-api</artifactId>
-				<version>${version.javax.el-api}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
