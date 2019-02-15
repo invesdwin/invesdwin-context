@@ -722,11 +722,13 @@
 						<dependency>
 							<groupId>org.glassfish.jaxb</groupId>
 							<artifactId>jaxb-runtime</artifactId>
+							<version>${version.jaxb}</version>
 						</dependency>
 						<!-- norva needs commons-lang3 -->
 						<dependency>
 							<groupId>org.apache.commons</groupId>
 							<artifactId>commons-lang3</artifactId>
+							<version>${version.commons-lang3}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
