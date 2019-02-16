@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.data;
+package de.invesdwin.context.jfreechart.dataset.data;
 
 import java.util.ArrayList;
 import java.util.Iterator;
