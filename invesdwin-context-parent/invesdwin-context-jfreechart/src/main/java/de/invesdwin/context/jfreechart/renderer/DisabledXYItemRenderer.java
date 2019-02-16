@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.renderer;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

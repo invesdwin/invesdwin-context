@@ -1,12 +1,10 @@
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.dataset;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataset;
-
-import de.invesdwin.trading.charts.richclient.swing.chart.panel.jfreechart.datetime.IPlotSource;
 
 @Immutable
 public class DisabledXYDataset extends AbstractXYDataset implements IPlotSource {

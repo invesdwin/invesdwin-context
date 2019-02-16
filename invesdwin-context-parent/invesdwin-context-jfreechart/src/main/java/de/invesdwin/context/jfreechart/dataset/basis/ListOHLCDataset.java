@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.dataset.basis;
 
 import java.util.ArrayList;
 import java.util.Date;

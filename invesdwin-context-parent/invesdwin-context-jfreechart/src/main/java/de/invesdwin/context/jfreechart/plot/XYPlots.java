@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.plot;
 
 import java.text.DecimalFormat;
 
@@ -8,7 +8,8 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.general.Dataset;
 
-import de.invesdwin.trading.charts.richclient.swing.chart.panel.jfreechart.datetime.IPlotSource;
+import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
+import de.invesdwin.context.jfreechart.dataset.IPlotSource;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.scaled.Percent;

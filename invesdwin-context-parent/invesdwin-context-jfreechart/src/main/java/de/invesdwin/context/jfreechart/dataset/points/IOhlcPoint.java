@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.dataset.data;
+package de.invesdwin.context.jfreechart.dataset.points;
 
 import de.invesdwin.util.time.fdate.FDate;
 

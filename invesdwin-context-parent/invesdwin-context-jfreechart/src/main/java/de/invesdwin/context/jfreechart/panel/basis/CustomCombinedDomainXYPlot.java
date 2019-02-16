@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.panel.basis;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -12,14 +12,15 @@ import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 
-import de.invesdwin.trading.charts.richclient.swing.chart.panel.ChartPanel;
+import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.context.jfreechart.plot.XYPlots;
 
 @NotThreadSafe
 public class CustomCombinedDomainXYPlot extends CombinedDomainXYPlot {
 
-    private final ChartPanel chartPanel;
+    private final InteractiveChartPanel chartPanel;
 
-    public CustomCombinedDomainXYPlot(final ChartPanel chartPanel) {
+    public CustomCombinedDomainXYPlot(final InteractiveChartPanel chartPanel) {
         super(chartPanel.getDomainAxis());
         this.chartPanel = chartPanel;
     }

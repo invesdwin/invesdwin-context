@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.dataset.basis;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

@@ -32,7 +32,7 @@
  *
  */
 
-package de.invesdwin.context.jfreechart.panel;
+package de.invesdwin.context.jfreechart.panel.basis;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;

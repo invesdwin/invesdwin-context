@@ -2,7 +2,7 @@ package de.invesdwin.context.jfreechart.dataset;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.jfreechart.panel.ListXYSeries;
+import de.invesdwin.context.jfreechart.dataset.basis.ListXYSeries;
 
 @NotThreadSafe
 public class IndexedDateTimeXYSeries extends ListXYSeries {

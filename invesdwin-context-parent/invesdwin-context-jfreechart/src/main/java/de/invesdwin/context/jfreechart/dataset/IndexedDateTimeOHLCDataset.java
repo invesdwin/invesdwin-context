@@ -7,7 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.OHLCDataItem;
 
-import de.invesdwin.context.jfreechart.panel.ListOHLCDataset;
+import de.invesdwin.context.jfreechart.dataset.basis.ListOHLCDataset;
 import de.invesdwin.util.math.Integers;
 
 @NotThreadSafe
