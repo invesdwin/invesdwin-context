@@ -823,6 +823,7 @@
 							should not fail. To be safe about this regarding any framework, assertions 
 							are disabled by default here. -->
 						<enableAssertions>false</enableAssertions>
+						<argLine>-Xmx2g</argLine>
 					</configuration>
 				</plugin>
 				<plugin>
