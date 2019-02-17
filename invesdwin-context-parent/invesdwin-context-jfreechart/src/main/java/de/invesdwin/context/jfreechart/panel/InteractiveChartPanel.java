@@ -36,15 +36,20 @@ import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.renderer.CustomCandlestickRenderer;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
 import de.invesdwin.util.math.Doubles;
+import de.invesdwin.util.time.duration.Duration;
+import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.fdate.FTimeUnit;
 
 // CHECKSTYLE:OFF
 @NotThreadSafe
 public class InteractiveChartPanel extends JPanel {
     //CHECKSTYLE:ON
 
+    public static final double MOUSE_SCROLL_FACTOR = 0.05D;
     public static final double HOTKEY_SCROLL_FACTOR = 0.1D;
     public static final int MAX_ZOOM_ITEM_COUNT = 10000;
     private static final int MIN_ZOOM_ITEM_COUNT = 10;
+    private static final Duration SCROLL_LOCK_DURATION = new Duration(250, FTimeUnit.MILLISECONDS);
 
     private final NumberAxis domainAxis;
     private final IndexedDateTimeOHLCDataset dataset;
@@ -58,6 +63,8 @@ public class InteractiveChartPanel extends JPanel {
     private final PlotLegendHelper plotLegendHelper = new PlotLegendHelper(this);
     private final PlotNavigationHelper plotNavigationHelper = new PlotNavigationHelper(this);
     private CustomCandlestickRenderer candlestickRenderer;
+    private FDate lastHorizontalScroll = FDate.MIN_DATE;
+    private FDate lastVerticalScroll = FDate.MIN_DATE;
 
     public InteractiveChartPanel(final IndexedDateTimeOHLCDataset dataset) {
         this.dataset = dataset;
@@ -84,7 +91,6 @@ public class InteractiveChartPanel extends JPanel {
         };
 
         chartPanel.setAllowedRangeGap(2);
-        chartPanel.setMouseWheelEnabled(true);
         chartPanel.setMouseZoomable(false);
         chartPanel.setRangeZoomable(false);
         chartPanel.setDomainZoomable(true);
@@ -98,6 +104,7 @@ public class InteractiveChartPanel extends JPanel {
         chartPanel.setDisplayToolTips(false);
         chartPanel.addChartMouseListener(new ChartMouseListenerImpl());
         chartPanel.addMouseListener(new MouseListenerImpl());
+        chartPanel.addMouseWheelListener(new MouseWheelListenerImpl());
         setLayout(new GridLayout());
         add(chartPanel);
         resetRange();
@@ -270,6 +277,7 @@ public class InteractiveChartPanel extends JPanel {
     }
 
     private final class MouseListenerImpl extends MouseAdapter {
+
         @Override
         public void mouseExited(final MouseEvent e) {
             InteractiveChartPanel.this.mouseExited();
@@ -288,6 +296,15 @@ public class InteractiveChartPanel extends JPanel {
             plotLegendHelper.mouseReleased(e);
             plotResizeHelper.mouseReleased(e);
             plotNavigationHelper.mouseReleased(e);
+            if (new Duration(lastVerticalScroll).isGreaterThan(SCROLL_LOCK_DURATION)) {
+                if (e.getButton() == 4) {
+                    panLeft(MOUSE_SCROLL_FACTOR);
+                    lastHorizontalScroll = new FDate();
+                } else if (e.getButton() == 5) {
+                    panRight(MOUSE_SCROLL_FACTOR);
+                    lastHorizontalScroll = new FDate();
+                }
+            }
         }
     }
 
@@ -343,7 +360,22 @@ public class InteractiveChartPanel extends JPanel {
     private final class MouseWheelListenerImpl implements MouseWheelListener {
         @Override
         public void mouseWheelMoved(final MouseWheelEvent e) {
-            update();
+            if (new Duration(lastHorizontalScroll).isGreaterThan(SCROLL_LOCK_DURATION)) {
+                if (e.isShiftDown()) {
+                    if (e.getWheelRotation() > 0) {
+                        panLeft(MOUSE_SCROLL_FACTOR);
+                    } else {
+                        panRight(MOUSE_SCROLL_FACTOR);
+                    }
+                } else {
+                    if (e.getWheelRotation() > 0) {
+                        zoomOut();
+                    } else {
+                        zoomIn();
+                    }
+                }
+                lastVerticalScroll = new FDate();
+            }
             chartPanel.requestFocusInWindow();
         }
     }

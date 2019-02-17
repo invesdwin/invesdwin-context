@@ -979,11 +979,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         this.zoomOutlinePaint = paint;
     }
 
-    /**
-     * The mouse wheel handler.
-     */
-    private MouseWheelHandler mouseWheelHandler;
-
     private int allowedRangeGap = 5;
 
     public int getAllowedRangeGap() {
@@ -992,34 +987,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
     public void setAllowedRangeGap(final int allowedRangeGap) {
         this.allowedRangeGap = allowedRangeGap;
-    }
-
-    /**
-     * Returns <code>true</code> if the mouse wheel handler is enabled, and <code>false</code> otherwise.
-     *
-     * @return A boolean.
-     *
-     * @since 1.0.13
-     */
-    public boolean isMouseWheelEnabled() {
-        return this.mouseWheelHandler != null;
-    }
-
-    /**
-     * Enables or disables mouse wheel support for the panel.
-     *
-     * @param flag
-     *            a boolean.
-     *
-     * @since 1.0.13
-     */
-    public void setMouseWheelEnabled(final boolean flag) {
-        if (flag && this.mouseWheelHandler == null) {
-            this.mouseWheelHandler = new MouseWheelHandler(this);
-        } else if (!flag && this.mouseWheelHandler != null) {
-            this.removeMouseWheelListener(this.mouseWheelHandler);
-            this.mouseWheelHandler = null;
-        }
     }
 
     /**
