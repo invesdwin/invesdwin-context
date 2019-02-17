@@ -20,6 +20,7 @@ import de.invesdwin.context.jfreechart.icon.XYIconAnnotationEntity;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.helper.icons.PlotNavigationIcons;
+import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe
 public class PlotNavigationHelper {
@@ -55,6 +56,7 @@ public class PlotNavigationHelper {
 
     private XYPlot shownOnPlot;
     private XYIconAnnotation highlightedAnnotation;
+    private Shape highlightingArea;
     private boolean highlighting = false;
     private boolean visible = false;
     private Timer buttonTimer;
@@ -88,7 +90,7 @@ public class PlotNavigationHelper {
         final XYIconAnnotation annotation = new XYIconAnnotation(0.5D, 0.05D, icon.newIcon(24, alpha)) {
             @Override
             protected double modifyYInput(final double y) {
-                return y * chartPanel.getCombinedPlot().getSubplots().size();
+                return Doubles.min(y * chartPanel.getCombinedPlot().getSubplots().size(), 0.5D);
             }
 
             @Override
@@ -125,16 +127,17 @@ public class PlotNavigationHelper {
                 newHighlightedAnnotation = getIconAnnotation(l);
             }
             final boolean newVisible = findVisibleEntity(mouseX, mouseY);
+            this.highlighting = determineHighlighting(mouseX, mouseY);
             if (newHighlightedAnnotation != this.highlightedAnnotation || visible != newVisible) {
                 removeAnnotations(shownOnPlot, false);
                 addAnnotations(shownOnPlot, newVisible, newHighlightedAnnotation);
+                highlightingArea = null;
                 this.highlightedAnnotation = newHighlightedAnnotation;
                 this.visible = newVisible;
                 if (buttonTimerAnnotation != null && highlightedAnnotation != buttonTimerAnnotation) {
                     stopButtonTimer();
                 }
             }
-            this.highlighting = getIconAnnotation(findHighlightingEntity(mouseX, mouseY)) != null;
             if (this.highlighting) {
                 chartPanel.getChartPanel().setCursor(PlotResizeHelper.DEFAULT_CURSOR);
             }
@@ -149,7 +152,8 @@ public class PlotNavigationHelper {
             final XYIconAnnotation annotation = visibleCheckAnnotations[i];
             final XYAnnotationEntity entity = annotation.getEntity();
             if (entity != null) {
-                if (area.intersects((Rectangle2D) entity.getArea())) {
+                final Rectangle2D entityArea = (Rectangle2D) entity.getArea();
+                if (area.intersects(entityArea)) {
                     return true;
                 }
             }
@@ -157,31 +161,38 @@ public class PlotNavigationHelper {
         return false;
     }
 
-    private XYIconAnnotationEntity findHighlightingEntity(final int mouseX, final int mouseY) {
-        ChartEntity entity = chartPanel.getChartPanel().getEntityForPoint(mouseX, mouseY);
-        if (entity instanceof XYIconAnnotationEntity) {
-            return (XYIconAnnotationEntity) entity;
+    private boolean determineHighlighting(final int mouseX, final int mouseY) {
+        final Shape area = getHighlightingArea();
+        if (area == null) {
+            return false;
         }
-        entity = chartPanel.getChartPanel().getEntityForPoint(mouseX + 5, mouseY);
-        if (entity instanceof XYIconAnnotationEntity) {
-            final XYIconAnnotationEntity cEntity = (XYIconAnnotationEntity) entity;
-            if (cEntity.getIconAnnotation() == panLeft) {
-                return null;
-            } else {
-                return cEntity;
+        return area.contains(mouseX, mouseY);
+    }
+
+    private Shape getHighlightingArea() {
+        if (highlightingArea == null) {
+            Double minX = null;
+            Double minY = null;
+            Double maxX = null;
+            Double maxY = null;
+
+            for (int i = 0; i < visibleCheckAnnotations.length; i++) {
+                final XYIconAnnotation annotation = visibleCheckAnnotations[i];
+                final XYAnnotationEntity entity = annotation.getEntity();
+                if (entity != null) {
+                    final Rectangle2D entityArea = (Rectangle2D) entity.getArea();
+                    minX = Doubles.min(minX, entityArea.getX());
+                    minY = Doubles.min(minY, entityArea.getY());
+                    maxX = Doubles.max(maxX, entityArea.getMaxX());
+                    maxY = Doubles.max(maxY, entityArea.getMaxY());
+                }
             }
-        }
-        entity = chartPanel.getChartPanel().getEntityForPoint(mouseX - 5, mouseY);
-        if (entity instanceof XYIconAnnotationEntity) {
-            final XYIconAnnotationEntity cEntity = (XYIconAnnotationEntity) entity;
-            if (cEntity.getIconAnnotation() == panRight) {
+            if (minY == null) {
                 return null;
-            } else {
-                return cEntity;
             }
-        } else {
-            return null;
+            highlightingArea = new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
         }
+        return highlightingArea;
     }
 
     private XYIconAnnotation getIconAnnotation(final XYIconAnnotationEntity l) {
