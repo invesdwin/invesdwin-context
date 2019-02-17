@@ -1368,7 +1368,7 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
                 displayPopupMenu(e.getX(), e.getY());
             }
         } else {
-            if (plot instanceof Pannable && isPanAllowed()) {
+            if (plot instanceof Pannable && isPanAllowed() && e.getButton() == MouseEvent.BUTTON1) {
                 final Pannable pannable = (Pannable) plot;
                 if (pannable.isDomainPannable() || pannable.isRangePannable()) {
                     final Rectangle2D screenDataArea = getScreenDataArea(e.getX(), e.getY());
