@@ -20,7 +20,7 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 @NotThreadSafe
 public class IndexedDateTimeNumberFormat extends NumberFormat {
     private static final String DATE_TIME_SEPARATOR = " ";
-    private static final String DATE_FORMAT = "dd.MMM''yy";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final int THRESHOLD_MULTIPLIER = 10;
     private static final Duration MILLISECOND_THRESHOLD = Duration.ONE_MINUTE.multiply(THRESHOLD_MULTIPLIER);
     private static final Duration SECOND_THRESHOLD = Duration.ONE_HOUR.multiply(THRESHOLD_MULTIPLIER);
