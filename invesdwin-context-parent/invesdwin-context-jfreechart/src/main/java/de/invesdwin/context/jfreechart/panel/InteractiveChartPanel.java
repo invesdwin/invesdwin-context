@@ -289,13 +289,6 @@ public class InteractiveChartPanel extends JPanel {
             plotResizeHelper.mousePressed(e);
             plotLegendHelper.mousePressed(e);
             plotNavigationHelper.mousePressed(e);
-        }
-
-        @Override
-        public void mouseReleased(final MouseEvent e) {
-            plotLegendHelper.mouseReleased(e);
-            plotResizeHelper.mouseReleased(e);
-            plotNavigationHelper.mouseReleased(e);
             if (new Duration(lastVerticalScroll).isGreaterThan(SCROLL_LOCK_DURATION)) {
                 if (e.getButton() == 4) {
                     panLeft(MOUSE_SCROLL_FACTOR);
@@ -305,6 +298,13 @@ public class InteractiveChartPanel extends JPanel {
                     lastHorizontalScroll = new FDate();
                 }
             }
+        }
+
+        @Override
+        public void mouseReleased(final MouseEvent e) {
+            plotLegendHelper.mouseReleased(e);
+            plotResizeHelper.mouseReleased(e);
+            plotNavigationHelper.mouseReleased(e);
         }
     }
 
