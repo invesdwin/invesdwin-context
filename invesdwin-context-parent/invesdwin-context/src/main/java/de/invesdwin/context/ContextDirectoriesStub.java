@@ -35,7 +35,7 @@ public class ContextDirectoriesStub extends StubSupport {
                 for (final File f : dir.listFiles()) {
                     boolean isProtectedDir = false;
                     for (final String protectedDir : PROTECTED_DIRECTORIES) {
-                        if (FilenameUtils.normalize(f.getAbsolutePath()).startsWith(protectedDir)) {
+                        if (FilenameUtils.normalizeNoEndSeparator(f.getAbsolutePath()).startsWith(protectedDir)) {
                             isProtectedDir = true;
                             break;
                         }
@@ -49,7 +49,7 @@ public class ContextDirectoriesStub extends StubSupport {
     }
 
     public static void addProtectedDirectory(final File protectedDirectory) {
-        PROTECTED_DIRECTORIES.add(FilenameUtils.normalize(protectedDirectory.getAbsolutePath()));
+        PROTECTED_DIRECTORIES.add(FilenameUtils.normalizeNoEndSeparator(protectedDirectory.getAbsolutePath()));
     }
 
 }
