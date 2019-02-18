@@ -280,9 +280,6 @@ public class PlotNavigationHelper {
     }
 
     public void mouseExited() {
-        if (chartPanel.getPlotConfigurationHelper().isShowing()) {
-            return;
-        }
         if (shownOnPlot != null) {
             removeAnnotations(shownOnPlot, true);
             shownOnPlot = null;

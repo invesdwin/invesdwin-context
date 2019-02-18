@@ -288,6 +288,9 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseExited(final MouseEvent e) {
+            if (plotConfigurationHelper.isShowing()) {
+                return;
+            }
             InteractiveChartPanel.this.mouseExited();
         }
 
@@ -297,6 +300,7 @@ public class InteractiveChartPanel extends JPanel {
 
             plotConfigurationHelper.mousePressed(e);
             if (plotConfigurationHelper.isShowing()) {
+                getPlotCrosshairHelper().disableCrosshair();
                 return;
             }
 
@@ -330,7 +334,7 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void chartMouseMoved(final ChartMouseEvent event) {
-            if (plotLegendHelper.isHighlighting() || plotNavigationHelper.isHighlighting()) {
+            if (isHighlighting()) {
                 plotCrosshairHelper.disableCrosshair();
             } else {
                 plotCrosshairHelper.mouseMoved(event);
@@ -377,7 +381,7 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseMoved(final MouseEvent e) {
-            if (plotConfigurationHelper.isShowing() && plotNavigationHelper.isHighlighting()) {
+            if (plotConfigurationHelper.isShowing() || plotNavigationHelper.isHighlighting()) {
                 return;
             }
             plotResizeHelper.mouseMoved(e);

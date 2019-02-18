@@ -1,6 +1,8 @@
 package de.invesdwin.context.jfreechart.panel.helper;
 
 import java.awt.Insets;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
@@ -13,6 +15,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartTransferable;
@@ -39,12 +43,27 @@ public class PlotConfigurationHelper {
     protected JPopupMenu createPopupMenu() {
 
         final JPopupMenu result = new JPopupMenu("Chart:");
+        result.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
+                if (!isMouseOverChart()) {
+                    chartPanel.mouseExited();
+                }
+            }
+
+            @Override
+            public void popupMenuCanceled(final PopupMenuEvent e) {}
+        });
 
         //copy
         final JMenuItem copyItem = new JMenuItem("Copy To Clipboard");
         copyItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                chartPanel.getPlotNavigationHelper().mouseExited();
                 copyToClipboard();
             }
         });
@@ -56,6 +75,7 @@ public class PlotConfigurationHelper {
         pngItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                chartPanel.getPlotNavigationHelper().mouseExited();
                 saveAsPNG();
             }
         });
@@ -63,6 +83,15 @@ public class PlotConfigurationHelper {
 
         return result;
 
+    }
+
+    private boolean isMouseOverChart() {
+        final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+        final Point chartPanelLocation = chartPanel.getLocationOnScreen();
+        return mouseLocation.x >= chartPanelLocation.x
+                && mouseLocation.x <= chartPanelLocation.x + chartPanel.getWidth()
+                && mouseLocation.y >= chartPanelLocation.y
+                && mouseLocation.y <= chartPanelLocation.y + chartPanel.getHeight();
     }
 
     public void displayPopupMenu(final int x, final int y) {
