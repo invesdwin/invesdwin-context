@@ -47,6 +47,7 @@ public class PlotConfigurationHelper {
 
             @Override
             public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
+                //only the first popup should have the crosshair visible
                 chartPanel.mouseExited();
             }
 
