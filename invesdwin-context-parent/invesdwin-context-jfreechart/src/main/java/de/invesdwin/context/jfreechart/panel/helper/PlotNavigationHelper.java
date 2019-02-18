@@ -291,6 +291,7 @@ public class PlotNavigationHelper {
     }
 
     public void mousePressed(final MouseEvent e) {
+        mouseMoved(e); //update highlighting when popup is dismissed
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
         }
