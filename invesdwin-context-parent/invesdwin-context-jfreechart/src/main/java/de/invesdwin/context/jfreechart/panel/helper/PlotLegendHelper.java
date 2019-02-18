@@ -12,7 +12,6 @@ import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.annotations.XYTitleAnnotation;
@@ -305,9 +304,9 @@ public class PlotLegendHelper {
         }
     }
 
-    public void mouseMoved(final ChartMouseEvent event) {
-        final int mouseX = event.getTrigger().getX();
-        final int mouseY = event.getTrigger().getY();
+    public void mouseMoved(final MouseEvent e) {
+        final int mouseX = e.getX();
+        final int mouseY = e.getY();
         highlightLegendInfo(mouseX, mouseY);
     }
 

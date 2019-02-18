@@ -15,7 +15,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
@@ -26,7 +25,6 @@ import org.jfree.data.general.DatasetChangeListener;
 
 import de.invesdwin.context.jfreechart.dataset.IndexedDateTimeNumberFormat;
 import de.invesdwin.context.jfreechart.dataset.IndexedDateTimeOHLCDataset;
-import de.invesdwin.context.jfreechart.listener.ChartMouseListenerSupport;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.helper.PlotConfigurationHelper;
@@ -106,7 +104,6 @@ public class InteractiveChartPanel extends JPanel {
         new JFreeChartLocaleChanger().process(chart);
 
         chartPanel.setDisplayToolTips(false);
-        chartPanel.addChartMouseListener(new ChartMouseListenerImpl());
         chartPanel.addMouseListener(new MouseListenerImpl());
         chartPanel.addMouseWheelListener(new MouseWheelListenerImpl());
         setLayout(new GridLayout());
@@ -329,24 +326,6 @@ public class InteractiveChartPanel extends JPanel {
         }
     }
 
-    private final class ChartMouseListenerImpl extends ChartMouseListenerSupport {
-
-        @Override
-        public void chartMouseMoved(final ChartMouseEvent event) {
-            if (plotConfigurationHelper.isShowing()) {
-                //keep the crosshair as it is when making a right click screenshot
-                return;
-            }
-            if (plotLegendHelper.isHighlighting() || plotNavigationHelper.isHighlighting()) {
-                plotCrosshairHelper.disableCrosshair();
-            } else {
-                plotCrosshairHelper.mouseMoved(event);
-            }
-            plotLegendHelper.mouseMoved(event);
-        }
-
-    }
-
     private final class KeyListenerImpl extends KeyAdapter {
         @Override
         public void keyPressed(final KeyEvent e) {
@@ -385,8 +364,15 @@ public class InteractiveChartPanel extends JPanel {
         @Override
         public void mouseMoved(final MouseEvent e) {
             if (plotConfigurationHelper.isShowing()) {
+                //keep the crosshair as it is when making a right click screenshot
                 return;
             }
+            if (plotLegendHelper.isHighlighting() || plotNavigationHelper.isHighlighting()) {
+                plotCrosshairHelper.disableCrosshair();
+            } else {
+                plotCrosshairHelper.mouseMoved(e);
+            }
+            plotLegendHelper.mouseMoved(e);
             plotResizeHelper.mouseMoved(e);
             plotNavigationHelper.mouseMoved(e);
         }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
@@ -12,7 +13,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotRenderingInfo;
@@ -166,9 +166,9 @@ public class PlotCrosshairHelper {
         }
     }
 
-    public void mouseMoved(final ChartMouseEvent event) {
-        final int mouseX = event.getTrigger().getX();
-        final int mouseY = event.getTrigger().getY();
+    public void mouseMoved(final MouseEvent e) {
+        final int mouseX = e.getX();
+        final int mouseY = e.getY();
         updateCrosshair(mouseX, mouseY);
     }
 

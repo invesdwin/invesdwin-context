@@ -207,17 +207,17 @@ public class PlotNavigationHelper {
         }
         final XYIconAnnotation highlighted;
         final XYIconAnnotation io = l.getIconAnnotation();
-        if (io == panLeft || io == panLeft_highlighted || io == panLeft_invisible) {
+        if (io == panLeft || io == panLeft_highlighted) {
             highlighted = panLeft;
-        } else if (io == zoomOut || io == zoomOut_highlighted || io == zoomOut_invisible) {
+        } else if (io == zoomOut || io == zoomOut_highlighted) {
             highlighted = zoomOut;
-        } else if (io == reset || io == reset_highlighted || io == reset_invisible) {
+        } else if (io == reset || io == reset_highlighted) {
             highlighted = reset;
-        } else if (io == configure || io == configure_highlighted || io == configure_invisible) {
+        } else if (io == configure || io == configure_highlighted) {
             highlighted = configure;
-        } else if (io == zoomIn || io == zoomIn_highlighted || io == zoomIn_invisible) {
+        } else if (io == zoomIn || io == zoomIn_highlighted) {
             highlighted = zoomIn;
-        } else if (io == panRight || io == panRight_highlighted || io == panRight_invisible) {
+        } else if (io == panRight || io == panRight_highlighted) {
             highlighted = panRight;
         } else {
             highlighted = null;
@@ -288,7 +288,6 @@ public class PlotNavigationHelper {
     }
 
     public void mousePressed(final MouseEvent e) {
-        mouseMoved(e); //update highlighting when popup is dismissed
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
         }

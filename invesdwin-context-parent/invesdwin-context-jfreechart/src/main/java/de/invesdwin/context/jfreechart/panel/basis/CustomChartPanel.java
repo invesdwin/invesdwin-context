@@ -28,15 +28,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.EventListener;
 import java.util.ResourceBundle;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
-import javax.swing.event.EventListenerList;
 
-import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.JFreeChart;
@@ -102,9 +99,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
     /** The chart that is displayed in the panel. */
     private JFreeChart chart;
-
-    /** Storage for registered (chart) mouse listeners. */
-    private transient EventListenerList chartMouseListeners;
 
     /** A flag that controls whether or not the off-screen buffer is used. */
     private final boolean useBuffer;
@@ -320,7 +314,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             final boolean useBuffer) {
 
         setChart(chart);
-        this.chartMouseListeners = new EventListenerList();
         this.info = new ChartRenderingInfo();
         setPreferredSize(new Dimension(width, height));
         this.useBuffer = useBuffer;
@@ -1408,24 +1401,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             return;
         }
         this.chart.setNotify(true); // force a redraw
-        // new entity code...
-        final Object[] listeners = this.chartMouseListeners.getListeners(ChartMouseListener.class);
-        if (listeners.length == 0) {
-            return;
-        }
-
-        ChartEntity entity = null;
-        if (this.info != null) {
-            final EntityCollection entities = this.info.getEntityCollection();
-            if (entities != null) {
-                entity = entities.getEntity(x, y);
-            }
-        }
-        final ChartMouseEvent chartEvent = new ChartMouseEvent(getChart(), event, entity);
-        for (int i = listeners.length - 1; i >= 0; i -= 1) {
-            ((ChartMouseListener) listeners[i]).chartMouseClicked(chartEvent);
-        }
-
     }
 
     /**
@@ -1444,32 +1419,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             drawVerticalAxisTrace(g2, e.getY());
         }
         g2.dispose();
-
-        final Object[] listeners = this.chartMouseListeners.getListeners(ChartMouseListener.class);
-        if (listeners.length == 0) {
-            return;
-        }
-        final Insets insets = getInsets();
-        final int x = (int) ((e.getX() - insets.left) / this.scaleX);
-        final int y = (int) ((e.getY() - insets.top) / this.scaleY);
-
-        ChartEntity entity = null;
-        if (this.info != null) {
-            final EntityCollection entities = this.info.getEntityCollection();
-            if (entities != null) {
-                entity = entities.getEntity(x, y);
-            }
-        }
-
-        // we can only generate events if the panel's chart is not null
-        // (see bug report 1556951)
-        if (this.chart != null) {
-            final ChartMouseEvent event = new ChartMouseEvent(getChart(), e, entity);
-            for (int i = listeners.length - 1; i >= 0; i -= 1) {
-                ((ChartMouseListener) listeners[i]).chartMouseMoved(event);
-            }
-        }
-
     }
 
     /**
@@ -1988,45 +1937,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * Adds a listener to the list of objects listening for chart mouse events.
-     *
-     * @param listener
-     *            the listener (<code>null</code> not permitted).
-     */
-    public void addChartMouseListener(final ChartMouseListener listener) {
-        Args.nullNotPermitted(listener, "listener");
-        this.chartMouseListeners.add(ChartMouseListener.class, listener);
-    }
-
-    /**
-     * Removes a listener from the list of objects listening for chart mouse events.
-     *
-     * @param listener
-     *            the listener.
-     */
-    public void removeChartMouseListener(final ChartMouseListener listener) {
-        this.chartMouseListeners.remove(ChartMouseListener.class, listener);
-    }
-
-    /**
-     * Returns an array of the listeners of the given type registered with the panel.
-     *
-     * @param listenerType
-     *            the listener type.
-     *
-     * @return An array of listeners.
-     */
-    @Override
-    public EventListener[] getListeners(final Class listenerType) {
-        if (listenerType == ChartMouseListener.class) {
-            // fetch listeners from local storage
-            return this.chartMouseListeners.getListeners(listenerType);
-        } else {
-            return super.getListeners(listenerType);
-        }
-    }
-
-    /**
      * Provides serialization support.
      *
      * @param stream
@@ -2056,9 +1966,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         stream.defaultReadObject();
         this.zoomFillPaint = SerialUtils.readPaint(stream);
         this.zoomOutlinePaint = SerialUtils.readPaint(stream);
-
-        // we create a new but empty chartMouseListeners list
-        this.chartMouseListeners = new EventListenerList();
 
         // register as a listener with sub-components...
         if (this.chart != null) {
