@@ -103,9 +103,7 @@ public class PlotConfigurationHelper {
     }
 
     public void mousePressed(final MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            displayPopupMenu(e.getX(), e.getY());
-        }
+        mouseReleased(e);
     }
 
     public void mouseReleased(final MouseEvent e) {

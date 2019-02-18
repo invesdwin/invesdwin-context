@@ -316,7 +316,7 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseReleased(final MouseEvent e) {
-            plotConfigurationHelper.mousePressed(e);
+            plotConfigurationHelper.mouseReleased(e);
             if (plotConfigurationHelper.isShowing()) {
                 return;
             }
