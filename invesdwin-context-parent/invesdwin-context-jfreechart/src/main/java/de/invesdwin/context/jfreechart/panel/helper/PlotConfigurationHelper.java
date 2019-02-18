@@ -69,7 +69,6 @@ public class PlotConfigurationHelper {
         result.add(copyItem);
 
         //save
-        result.addSeparator();
         final JMenuItem pngItem = new JMenuItem("Save As PNG...");
         pngItem.addActionListener(new ActionListener() {
             @Override
