@@ -11,14 +11,15 @@ import org.jfree.chart.plot.XYPlot;
 
 import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe
 public class PlotResizeHelper {
 
-    public static final int INITIAL_PLOT_WEIGHT = 1000;
     public static final Cursor RESIZE_CURSOR = Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR);
     public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
+    private static final int INITIAL_PLOT_WEIGHT = CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT;
     private static final int RESIZE_WEIGHT_MIN_MODIFICATION = 10;
 
     private final InteractiveChartPanel chartPanel;

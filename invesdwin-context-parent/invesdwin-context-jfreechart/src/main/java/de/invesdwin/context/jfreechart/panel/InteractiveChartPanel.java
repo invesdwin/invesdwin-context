@@ -80,6 +80,7 @@ public class InteractiveChartPanel extends JPanel {
         combinedPlot.setDomainPannable(true);
 
         dataset.addChangeListener(new DatasetChangeListenerImpl());
+        plotLegendHelper.setDatasetTrashable(dataset, false);
 
         initPlots();
         chart = new JFreeChart(null, null, combinedPlot, false);
@@ -180,7 +181,7 @@ public class InteractiveChartPanel extends JPanel {
         dataset.setPlot(ohlcPlot);
         dataset.setPrecision(precision);
         //give main plot twice the weight
-        combinedPlot.add(ohlcPlot, PlotResizeHelper.INITIAL_PLOT_WEIGHT * 2);
+        combinedPlot.add(ohlcPlot, CustomCombinedDomainXYPlot.MAIN_PLOT_WEIGHT);
         XYPlots.updateRangeAxisPrecision(ohlcPlot);
     }
 

@@ -5,7 +5,10 @@ import java.awt.Font;
 import java.awt.Paint;
 import java.awt.event.MouseEvent;
 import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -30,6 +33,7 @@ import de.invesdwin.context.jfreechart.dataset.IPlotSource;
 import de.invesdwin.context.jfreechart.icon.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
+import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
@@ -39,11 +43,13 @@ import de.invesdwin.util.error.UnknownArgumentException;
 @NotThreadSafe
 public class PlotLegendHelper {
 
-    private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
-    private static final Color ADD_BACKGROUND_COLOR = new Color(220, 235, 194);
-    private static final Color REMOVE_BACKGROUND_COLOR = new Color(235, 197, 201);
-    private static final int INITIAL_PLOT_WEIGHT = PlotResizeHelper.INITIAL_PLOT_WEIGHT;
-    private static final int EMPTY_PLOT_WEIGHT = INITIAL_PLOT_WEIGHT / 5;
+    private static final Color DEFAULT_BACKGROUND_COLOR = CustomCombinedDomainXYPlot.DEFAULT_BACKGROUND_COLOR;
+    private static final Color ADD_BACKGROUND_COLOR = new Color(223, 235, 209);
+    private static final Color REMOVE_BACKGROUND_COLOR = new Color(235, 209, 210);
+    private static final int INVISIBLE_PLOT_WEIGHT = CustomCombinedDomainXYPlot.INVISIBLE_PLOT_WEIGHT;
+    private static final int INITIAL_PLOT_WEIGHT = CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT;
+    private static final int EMPTY_PLOT_WEIGHT = CustomCombinedDomainXYPlot.EMPTY_PLOT_WEIGHT;
+
     private static final Color LEGEND_BACKGROUND_PAINT = new Color(255, 255, 255, 100);
     private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(222, 222, 222, 100);
 
@@ -53,17 +59,21 @@ public class PlotLegendHelper {
     private HighlightedLegendInfo dragStart;
     private boolean dragged = false;
     private XYPlot emptyPlot;
+    private XYPlot trashPlot;
 
     private final XYIconAnnotation addAnnotation;
     private final XYIconAnnotation removeAnnotation;
     private final XYIconAnnotation trashAnnotation;
 
+    private final Set<Dataset> nonTrashableDatasets = Collections
+            .newSetFromMap(new IdentityHashMap<Dataset, Boolean>());
+
     public PlotLegendHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
 
-        addAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.ADD.newIcon(24, 0.3F));
-        removeAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.REMOVE.newIcon(24, 0.3F));
-        trashAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.TRASH.newIcon(24, 0.3F));
+        addAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.ADD.newIcon(16, 0.3F));
+        removeAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.REMOVE.newIcon(16, 0.3F));
+        trashAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.TRASH.newIcon(16, 0.3F));
     }
 
     public void update() {
@@ -246,7 +256,8 @@ public class PlotLegendHelper {
             dragStart = null;
             dragged = false;
             chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
-            chartPanel.getCombinedPlot().removeEmptyPlots();
+            trashPlot = null;
+            chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
             emptyPlot = null;
         }
     }
@@ -312,23 +323,20 @@ public class PlotLegendHelper {
                 emptyPlot.addAnnotation(addAnnotation);
                 emptyPlot.setBackgroundPaint(ADD_BACKGROUND_COLOR);
                 chartPanel.getCombinedPlot().add(emptyPlot, EMPTY_PLOT_WEIGHT);
+
+                final XYDataset dataset = dragStart.getPlot().getDataset(dragStart.getDatasetIndex());
+                if (!nonTrashableDatasets.contains(dataset)) {
+                    trashPlot = chartPanel.getCombinedPlot().getTrashPlot();
+                    trashPlot.addAnnotation(trashAnnotation);
+                    trashPlot.setBackgroundPaint(REMOVE_BACKGROUND_COLOR);
+                    trashPlot.setWeight(EMPTY_PLOT_WEIGHT);
+                }
             }
             chartPanel.getChartPanel().setCursor(CustomChartPanel.MOVE_CURSOR);
             if (toSubplotIndex != -1 && toSubplotIndex != dragStart.getSubplotIndex()) {
                 final XYPlot fromPlot = dragStart.getPlot();
                 final List<XYPlot> toPlots = chartPanel.getCombinedPlot().getSubplots();
                 final XYPlot toPlot = toPlots.get(toSubplotIndex);
-                if (toPlot == emptyPlot) {
-                    emptyPlot.setWeight(INITIAL_PLOT_WEIGHT);
-                    emptyPlot.removeAnnotation(addAnnotation);
-                    emptyPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
-                } else {
-                    emptyPlot.setWeight(EMPTY_PLOT_WEIGHT);
-                    if (!emptyPlot.getAnnotations().contains(addAnnotation)) {
-                        emptyPlot.addAnnotation(addAnnotation);
-                        emptyPlot.setBackgroundPaint(ADD_BACKGROUND_COLOR);
-                    }
-                }
                 final int fromDatasetIndex = dragStart.getDatasetIndex();
                 final int toDatasetIndex = XYPlots.getFreeDatasetIndex(toPlot);
                 final XYDataset dataset = fromPlot.getDataset(fromDatasetIndex);
@@ -339,20 +347,41 @@ public class PlotLegendHelper {
                 toPlot.mapDatasetToDomainAxis(toDatasetIndex, 0);
                 toPlot.mapDatasetToRangeAxis(toDatasetIndex, 0);
                 XYPlots.removeDataset(fromPlot, fromDatasetIndex);
-                if (!XYPlots.hasDataset(fromPlot) && fromPlot != emptyPlot) {
-                    fromPlot.addAnnotation(removeAnnotation);
-                    fromPlot.setBackgroundPaint(REMOVE_BACKGROUND_COLOR);
-                }
-                toPlot.removeAnnotation(removeAnnotation);
-                toPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
-
-                XYPlots.updateRangeAxisPrecision(fromPlot);
-                XYPlots.updateRangeAxisPrecision(toPlot);
+                updatePlots(fromPlot, toPlot);
                 highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
                 dragStart = new HighlightedLegendInfo(toSubplotIndex, toPlot, getTitle(toPlot), toDatasetIndex);
                 dragStart.getTitle().setBackgroundPaint(HIGHLIGHTED_LEGEND_BACKGROUND_PAINT);
                 highlightedLegendInfo = dragStart;
             }
+        }
+    }
+
+    private void updatePlots(final XYPlot fromPlot, final XYPlot toPlot) {
+        if (toPlot == emptyPlot) {
+            emptyPlot.setWeight(INITIAL_PLOT_WEIGHT);
+            emptyPlot.removeAnnotation(addAnnotation);
+            emptyPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
+        } else {
+            emptyPlot.setWeight(EMPTY_PLOT_WEIGHT);
+            if (!emptyPlot.getAnnotations().contains(addAnnotation)) {
+                emptyPlot.addAnnotation(addAnnotation);
+                emptyPlot.setBackgroundPaint(ADD_BACKGROUND_COLOR);
+            }
+        }
+        if (!XYPlots.hasDataset(fromPlot) && fromPlot != emptyPlot && fromPlot != trashPlot) {
+            fromPlot.addAnnotation(removeAnnotation);
+            fromPlot.setBackgroundPaint(REMOVE_BACKGROUND_COLOR);
+        }
+        if (toPlot != trashPlot) {
+            toPlot.removeAnnotation(removeAnnotation);
+            toPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
+        }
+
+        if (fromPlot != trashPlot) {
+            XYPlots.updateRangeAxisPrecision(fromPlot);
+        }
+        if (toPlot != trashPlot) {
+            XYPlots.updateRangeAxisPrecision(toPlot);
         }
     }
 
@@ -366,10 +395,19 @@ public class PlotLegendHelper {
                 return title;
             }
         }
-        throw new IllegalStateException("No title found for plot");
+        throw new IllegalStateException("title not found");
     }
 
     public boolean isHighlighting() {
         return dragStart != null || highlightedLegendInfo != null;
     }
+
+    public void setDatasetTrashable(final Dataset dataset, final boolean trashable) {
+        if (trashable) {
+            nonTrashableDatasets.remove(dataset);
+        } else {
+            nonTrashableDatasets.add(dataset);
+        }
+    }
+
 }
