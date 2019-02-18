@@ -27,9 +27,11 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.dataset.IPlotSource;
+import de.invesdwin.context.jfreechart.icon.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
+import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
@@ -37,6 +39,9 @@ import de.invesdwin.util.error.UnknownArgumentException;
 @NotThreadSafe
 public class PlotLegendHelper {
 
+    private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+    private static final Color ADD_BACKGROUND_COLOR = new Color(220, 235, 194);
+    private static final Color REMOVE_BACKGROUND_COLOR = new Color(235, 197, 201);
     private static final int INITIAL_PLOT_WEIGHT = PlotResizeHelper.INITIAL_PLOT_WEIGHT;
     private static final int EMPTY_PLOT_WEIGHT = INITIAL_PLOT_WEIGHT / 5;
     private static final Color LEGEND_BACKGROUND_PAINT = new Color(255, 255, 255, 100);
@@ -49,8 +54,16 @@ public class PlotLegendHelper {
     private boolean dragged = false;
     private XYPlot emptyPlot;
 
+    private final XYIconAnnotation addAnnotation;
+    private final XYIconAnnotation removeAnnotation;
+    private final XYIconAnnotation trashAnnotation;
+
     public PlotLegendHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
+
+        addAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.ADD.newIcon(24, 0.3F));
+        removeAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.REMOVE.newIcon(24, 0.3F));
+        trashAnnotation = new XYIconAnnotation(0.5D, 0.5D, PlotIcons.TRASH.newIcon(24, 0.3F));
     }
 
     public void update() {
@@ -233,12 +246,7 @@ public class PlotLegendHelper {
             dragStart = null;
             dragged = false;
             chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
-            EventDispatchThreadUtil.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    chartPanel.getCombinedPlot().removeEmptyPlots();
-                }
-            });
+            chartPanel.getCombinedPlot().removeEmptyPlots();
             emptyPlot = null;
         }
     }
@@ -301,6 +309,8 @@ public class PlotLegendHelper {
             if (!dragged) {
                 dragged = true;
                 emptyPlot = chartPanel.newPlot(0);
+                emptyPlot.addAnnotation(addAnnotation);
+                emptyPlot.setBackgroundPaint(ADD_BACKGROUND_COLOR);
                 chartPanel.getCombinedPlot().add(emptyPlot, EMPTY_PLOT_WEIGHT);
             }
             chartPanel.getChartPanel().setCursor(CustomChartPanel.MOVE_CURSOR);
@@ -309,9 +319,15 @@ public class PlotLegendHelper {
                 final List<XYPlot> toPlots = chartPanel.getCombinedPlot().getSubplots();
                 final XYPlot toPlot = toPlots.get(toSubplotIndex);
                 if (toPlot == emptyPlot) {
-                    toPlot.setWeight(INITIAL_PLOT_WEIGHT);
+                    emptyPlot.setWeight(INITIAL_PLOT_WEIGHT);
+                    emptyPlot.removeAnnotation(addAnnotation);
+                    emptyPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
                 } else {
                     emptyPlot.setWeight(EMPTY_PLOT_WEIGHT);
+                    if (!emptyPlot.getAnnotations().contains(addAnnotation)) {
+                        emptyPlot.addAnnotation(addAnnotation);
+                        emptyPlot.setBackgroundPaint(ADD_BACKGROUND_COLOR);
+                    }
                 }
                 final int fromDatasetIndex = dragStart.getDatasetIndex();
                 final int toDatasetIndex = XYPlots.getFreeDatasetIndex(toPlot);
@@ -323,6 +339,12 @@ public class PlotLegendHelper {
                 toPlot.mapDatasetToDomainAxis(toDatasetIndex, 0);
                 toPlot.mapDatasetToRangeAxis(toDatasetIndex, 0);
                 XYPlots.removeDataset(fromPlot, fromDatasetIndex);
+                if (!XYPlots.hasDataset(fromPlot) && fromPlot != emptyPlot) {
+                    fromPlot.addAnnotation(removeAnnotation);
+                    fromPlot.setBackgroundPaint(REMOVE_BACKGROUND_COLOR);
+                }
+                toPlot.removeAnnotation(removeAnnotation);
+                toPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
 
                 XYPlots.updateRangeAxisPrecision(fromPlot);
                 XYPlots.updateRangeAxisPrecision(toPlot);

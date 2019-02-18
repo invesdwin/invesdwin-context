@@ -19,7 +19,7 @@ import de.invesdwin.context.jfreechart.icon.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.icon.XYIconAnnotationEntity;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
-import de.invesdwin.context.jfreechart.panel.helper.icons.PlotNavigationIcons;
+import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
 import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe
@@ -64,29 +64,29 @@ public class PlotNavigationHelper {
 
     public PlotNavigationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
-        this.panLeft = newIcon(PlotNavigationIcons.PAN_LEFT, -60, VISIBLE_ALPHA);
-        this.zoomOut = newIcon(PlotNavigationIcons.ZOOM_OUT, -30, VISIBLE_ALPHA);
-        this.reset = newIcon(PlotNavigationIcons.RESET, 0, VISIBLE_ALPHA);
-        this.zoomIn = newIcon(PlotNavigationIcons.ZOOM_IN, +30, VISIBLE_ALPHA);
-        this.panRight = newIcon(PlotNavigationIcons.PAN_RIGHT, +60, VISIBLE_ALPHA);
+        this.panLeft = newIcon(PlotIcons.PAN_LEFT, -60, VISIBLE_ALPHA);
+        this.zoomOut = newIcon(PlotIcons.ZOOM_OUT, -30, VISIBLE_ALPHA);
+        this.reset = newIcon(PlotIcons.RESET, 0, VISIBLE_ALPHA);
+        this.zoomIn = newIcon(PlotIcons.ZOOM_IN, +30, VISIBLE_ALPHA);
+        this.panRight = newIcon(PlotIcons.PAN_RIGHT, +60, VISIBLE_ALPHA);
 
-        this.panLeft_highlighted = newIcon(PlotNavigationIcons.PAN_LEFT, -60, HIGHLIGHTED_ALPHA);
-        this.zoomOut_highlighted = newIcon(PlotNavigationIcons.ZOOM_OUT, -30, HIGHLIGHTED_ALPHA);
-        this.reset_highlighted = newIcon(PlotNavigationIcons.RESET, 0, HIGHLIGHTED_ALPHA);
-        this.zoomIn_highlighted = newIcon(PlotNavigationIcons.ZOOM_IN, +30, HIGHLIGHTED_ALPHA);
-        this.panRight_highlighted = newIcon(PlotNavigationIcons.PAN_RIGHT, +60, HIGHLIGHTED_ALPHA);
+        this.panLeft_highlighted = newIcon(PlotIcons.PAN_LEFT, -60, HIGHLIGHTED_ALPHA);
+        this.zoomOut_highlighted = newIcon(PlotIcons.ZOOM_OUT, -30, HIGHLIGHTED_ALPHA);
+        this.reset_highlighted = newIcon(PlotIcons.RESET, 0, HIGHLIGHTED_ALPHA);
+        this.zoomIn_highlighted = newIcon(PlotIcons.ZOOM_IN, +30, HIGHLIGHTED_ALPHA);
+        this.panRight_highlighted = newIcon(PlotIcons.PAN_RIGHT, +60, HIGHLIGHTED_ALPHA);
 
-        this.panLeft_invisible = newIcon(PlotNavigationIcons.PAN_LEFT, -60, INVISIBLE_ALPHA);
-        this.zoomOut_invisible = newIcon(PlotNavigationIcons.ZOOM_OUT, -30, INVISIBLE_ALPHA);
-        this.reset_invisible = newIcon(PlotNavigationIcons.RESET, 0, INVISIBLE_ALPHA);
-        this.zoomIn_invisible = newIcon(PlotNavigationIcons.ZOOM_IN, +30, INVISIBLE_ALPHA);
-        this.panRight_invisible = newIcon(PlotNavigationIcons.PAN_RIGHT, +60, INVISIBLE_ALPHA);
+        this.panLeft_invisible = newIcon(PlotIcons.PAN_LEFT, -60, INVISIBLE_ALPHA);
+        this.zoomOut_invisible = newIcon(PlotIcons.ZOOM_OUT, -30, INVISIBLE_ALPHA);
+        this.reset_invisible = newIcon(PlotIcons.RESET, 0, INVISIBLE_ALPHA);
+        this.zoomIn_invisible = newIcon(PlotIcons.ZOOM_IN, +30, INVISIBLE_ALPHA);
+        this.panRight_invisible = newIcon(PlotIcons.PAN_RIGHT, +60, INVISIBLE_ALPHA);
 
         this.visibleCheckAnnotations = new XYIconAnnotation[] { panLeft, panLeft_highlighted, panLeft_invisible,
                 panRight, panRight_highlighted, panRight_invisible };
     }
 
-    private XYIconAnnotation newIcon(final PlotNavigationIcons icon, final int xModification, final float alpha) {
+    private XYIconAnnotation newIcon(final PlotIcons icon, final int xModification, final float alpha) {
         final XYIconAnnotation annotation = new XYIconAnnotation(0.5D, 0.05D, icon.newIcon(24, alpha)) {
             @Override
             protected double modifyYInput(final double y) {

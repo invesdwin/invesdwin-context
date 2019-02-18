@@ -345,7 +345,11 @@ public class InteractiveChartPanel extends JPanel {
         public void mouseDragged(final MouseEvent e) {
             plotResizeHelper.mouseDragged(e);
             plotLegendHelper.mouseDragged(e);
-            plotNavigationHelper.mouseDragged(e);
+            if (plotLegendHelper.isHighlighting()) {
+                plotNavigationHelper.mouseExited();
+            } else {
+                plotNavigationHelper.mouseDragged(e);
+            }
             update();
         }
 
