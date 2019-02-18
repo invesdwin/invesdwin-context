@@ -384,7 +384,7 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseMoved(final MouseEvent e) {
-            if (plotConfigurationHelper.isShowing() || plotNavigationHelper.isHighlighting()) {
+            if (plotConfigurationHelper.isShowing()) {
                 return;
             }
             plotResizeHelper.mouseMoved(e);

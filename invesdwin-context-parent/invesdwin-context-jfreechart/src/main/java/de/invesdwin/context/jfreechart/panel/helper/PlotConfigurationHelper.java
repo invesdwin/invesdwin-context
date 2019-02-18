@@ -1,8 +1,6 @@
 package de.invesdwin.context.jfreechart.panel.helper;
 
 import java.awt.Insets;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
@@ -49,9 +47,7 @@ public class PlotConfigurationHelper {
 
             @Override
             public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
-                if (!isMouseOverChart()) {
-                    chartPanel.mouseExited();
-                }
+                chartPanel.mouseExited();
             }
 
             @Override
@@ -80,15 +76,6 @@ public class PlotConfigurationHelper {
 
         return result;
 
-    }
-
-    private boolean isMouseOverChart() {
-        final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-        final Point chartPanelLocation = chartPanel.getLocationOnScreen();
-        return mouseLocation.x >= chartPanelLocation.x
-                && mouseLocation.x <= chartPanelLocation.x + chartPanel.getWidth()
-                && mouseLocation.y >= chartPanelLocation.y
-                && mouseLocation.y <= chartPanelLocation.y + chartPanel.getHeight();
     }
 
     public void displayPopupMenu(final int x, final int y) {
