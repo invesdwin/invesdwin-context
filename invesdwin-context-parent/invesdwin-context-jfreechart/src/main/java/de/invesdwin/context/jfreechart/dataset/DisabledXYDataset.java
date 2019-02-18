@@ -66,4 +66,13 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSource 
         plotSource.setPrecision(precision);
     }
 
+    public static XYDataset maybeUnwrap(final XYDataset dataset) {
+        if (dataset instanceof DisabledXYDataset) {
+            final DisabledXYDataset cDataset = (DisabledXYDataset) dataset;
+            return cDataset.getEnabledDataset();
+        } else {
+            return dataset;
+        }
+    }
+
 }

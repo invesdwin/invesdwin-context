@@ -46,7 +46,6 @@ public class PlotLegendHelper {
     private static final Color DEFAULT_BACKGROUND_COLOR = CustomCombinedDomainXYPlot.DEFAULT_BACKGROUND_COLOR;
     private static final Color ADD_BACKGROUND_COLOR = new Color(223, 235, 209);
     private static final Color REMOVE_BACKGROUND_COLOR = new Color(235, 209, 210);
-    private static final int INVISIBLE_PLOT_WEIGHT = CustomCombinedDomainXYPlot.INVISIBLE_PLOT_WEIGHT;
     private static final int INITIAL_PLOT_WEIGHT = CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT;
     private static final int EMPTY_PLOT_WEIGHT = CustomCombinedDomainXYPlot.EMPTY_PLOT_WEIGHT;
 
@@ -325,7 +324,7 @@ public class PlotLegendHelper {
                 chartPanel.getCombinedPlot().add(emptyPlot, EMPTY_PLOT_WEIGHT);
 
                 final XYDataset dataset = dragStart.getPlot().getDataset(dragStart.getDatasetIndex());
-                if (!nonTrashableDatasets.contains(dataset)) {
+                if (!isDatasetTrashable(dataset)) {
                     trashPlot = chartPanel.getCombinedPlot().getTrashPlot();
                     trashPlot.addAnnotation(trashAnnotation);
                     trashPlot.setBackgroundPaint(REMOVE_BACKGROUND_COLOR);
@@ -403,11 +402,19 @@ public class PlotLegendHelper {
     }
 
     public void setDatasetTrashable(final Dataset dataset, final boolean trashable) {
+        if (dataset instanceof DisabledXYDataset) {
+            throw new IllegalArgumentException(
+                    "dataset should not be an instance of " + DisabledXYDataset.class.getSimpleName());
+        }
         if (trashable) {
             nonTrashableDatasets.remove(dataset);
         } else {
             nonTrashableDatasets.add(dataset);
         }
+    }
+
+    public boolean isDatasetTrashable(final XYDataset dataset) {
+        return nonTrashableDatasets.contains(DisabledXYDataset.maybeUnwrap(dataset));
     }
 
 }
