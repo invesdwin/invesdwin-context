@@ -300,7 +300,6 @@ public class InteractiveChartPanel extends JPanel {
 
             plotConfigurationHelper.mousePressed(e);
             if (plotConfigurationHelper.isShowing()) {
-                getPlotCrosshairHelper().disableCrosshair();
                 return;
             }
 
@@ -334,7 +333,11 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void chartMouseMoved(final ChartMouseEvent event) {
-            if (isHighlighting()) {
+            if (plotConfigurationHelper.isShowing()) {
+                //keep the crosshair as it is when making a right click screenshot
+                return;
+            }
+            if (plotLegendHelper.isHighlighting() || plotNavigationHelper.isHighlighting()) {
                 plotCrosshairHelper.disableCrosshair();
             } else {
                 plotCrosshairHelper.mouseMoved(event);

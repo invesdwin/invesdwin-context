@@ -19,10 +19,10 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jfree.chart.ChartTransferable;
 import org.jfree.chart.ChartUtils;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
@@ -63,7 +63,6 @@ public class PlotConfigurationHelper {
         copyItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                chartPanel.getPlotNavigationHelper().mouseExited();
                 copyToClipboard();
             }
         });
@@ -75,7 +74,6 @@ public class PlotConfigurationHelper {
         pngItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                chartPanel.getPlotNavigationHelper().mouseExited();
                 saveAsPNG();
             }
         });
@@ -99,18 +97,23 @@ public class PlotConfigurationHelper {
     }
 
     public void copyToClipboard() {
+        //hide navigation on screenshot
+        chartPanel.getPlotNavigationHelper().mouseExited();
+
         final Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         final Insets insets = chartPanel.getChartPanel().getInsets();
         final int w = chartPanel.getChartPanel().getWidth() - insets.left - insets.right;
         final int h = chartPanel.getChartPanel().getHeight() - insets.top - insets.bottom;
-        final ChartTransferable selection = new ChartTransferable(chartPanel.getChart(), w, h,
+        final CustomChartTransferable selection = new CustomChartTransferable(chartPanel.getChart(), w, h,
                 chartPanel.getChartPanel().getMinimumDrawWidth(), chartPanel.getChartPanel().getMinimumDrawHeight(),
-                chartPanel.getChartPanel().getMaximumDrawWidth(), chartPanel.getChartPanel().getMaximumDrawHeight(),
-                true);
+                chartPanel.getChartPanel().getMaximumDrawWidth(), chartPanel.getChartPanel().getMaximumDrawHeight());
         systemClipboard.setContents(selection, null);
     }
 
     public void saveAsPNG() {
+        //hide navigation on screenshot
+        chartPanel.getPlotNavigationHelper().mouseExited();
+
         final JFileChooser fileChooser = new JFileChooser();
         final FileNameExtensionFilter filter = new FileNameExtensionFilter(".png", "png");
         fileChooser.addChoosableFileFilter(filter);
