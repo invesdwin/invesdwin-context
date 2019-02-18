@@ -13,6 +13,7 @@ public enum PlotIcons {
     PAN_LEFT("panLeft_128.png"),
     ZOOM_OUT("zoomOut_128.png"),
     RESET("reset_128.png"),
+    CONFIGURE("configure_128.png"),
     ZOOM_IN("zoomIn_128.png"),
     PAN_RIGHT("panRight_128.png"),
 

@@ -14,11 +14,7 @@ import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.Transparency;
-import java.awt.datatransfer.Clipboard;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,37 +24,21 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.ResourceBundle;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.EventListenerList;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.ChartTransferable;
-import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.ChartEntity;
@@ -86,8 +66,8 @@ import org.jfree.data.Range;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class CustomChartPanel extends JPanel implements ChartChangeListener, ChartProgressListener, ActionListener,
-        MouseListener, MouseMotionListener, Printable, Serializable {
+public class CustomChartPanel extends JPanel implements ChartChangeListener, ChartProgressListener, MouseListener,
+        MouseMotionListener, Printable, Serializable {
 
     public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
     public static final Cursor MOVE_CURSOR = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
@@ -119,25 +99,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
     /** The minimum size required to perform a zoom on a rectangle */
     public static final int DEFAULT_ZOOM_TRIGGER_DISTANCE = 10;
-
-    /**
-     * Copy action command.
-     *
-     * @since 1.0.13
-     */
-    public static final String COPY_COMMAND = "COPY";
-
-    /** Save action command. */
-    public static final String SAVE_COMMAND = "SAVE";
-
-    /** Action command to save as PNG. */
-    private static final String SAVE_AS_PNG_COMMAND = "SAVE_AS_PNG";
-
-    /** Action command to save as SVG. */
-    private static final String SAVE_AS_SVG_COMMAND = "SAVE_AS_SVG";
-
-    /** Action command to save as PDF. */
-    private static final String SAVE_AS_PDF_COMMAND = "SAVE_AS_PDF";
 
     /** The chart that is displayed in the panel. */
     private JFreeChart chart;
@@ -179,9 +140,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
      * The maximum height for drawing a chart (uses scaling for bigger heights).
      */
     private int maximumDrawHeight;
-
-    /** The popup menu for the frame. */
-    private JPopupMenu popup;
 
     /** The drawing info collected the last time the chart was drawn. */
     private final ChartRenderingInfo info;
@@ -230,43 +188,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
     /** A horizontal trace line. */
     private transient Line2D horizontalTraceLine;
-
-    /** Menu item for zooming in on a chart (both axes). */
-    private JMenuItem zoomInBothMenuItem;
-
-    /** Menu item for zooming in on a chart (domain axis). */
-    private JMenuItem zoomInDomainMenuItem;
-
-    /** Menu item for zooming in on a chart (range axis). */
-    private JMenuItem zoomInRangeMenuItem;
-
-    /** Menu item for zooming out on a chart. */
-    private JMenuItem zoomOutBothMenuItem;
-
-    /** Menu item for zooming out on a chart (domain axis). */
-    private JMenuItem zoomOutDomainMenuItem;
-
-    /** Menu item for zooming out on a chart (range axis). */
-    private JMenuItem zoomOutRangeMenuItem;
-
-    /** Menu item for resetting the zoom (both axes). */
-    private JMenuItem zoomResetBothMenuItem;
-
-    /** Menu item for resetting the zoom (domain axis only). */
-    private JMenuItem zoomResetDomainMenuItem;
-
-    /** Menu item for resetting the zoom (range axis only). */
-    private JMenuItem zoomResetRangeMenuItem;
-
-    /**
-     * The default directory for saving charts to file.
-     *
-     * @since 1.0.7
-     */
-    private File defaultDirectoryForSaveAs;
-
-    /** A flag that controls whether or not file extensions are enforced. */
-    private boolean enforceFileExtensions;
 
     /** A flag that indicates if original tooltip delays are changed. */
     private boolean ownToolTipDelaysActive;
@@ -410,17 +331,11 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         this.maximumDrawHeight = maximumDrawHeight;
         this.zoomTriggerDistance = DEFAULT_ZOOM_TRIGGER_DISTANCE;
 
-        // set up popup menu...
-        this.popup = createPopupMenu();
-
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         enableEvents(AWTEvent.MOUSE_MOTION_EVENT_MASK);
         setDisplayToolTips(false);
         addMouseListener(this);
         addMouseMotionListener(this);
-
-        this.defaultDirectoryForSaveAs = null;
-        this.enforceFileExtensions = true;
 
         // initialize ChartPanel-specific tool tip delays with
         // values the from ToolTipManager.sharedInstance()
@@ -616,25 +531,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
      */
     protected void setAnchor(final Point2D anchor) {
         this.anchor = anchor;
-    }
-
-    /**
-     * Returns the popup menu.
-     *
-     * @return The popup menu.
-     */
-    public JPopupMenu getPopupMenu() {
-        return this.popup;
-    }
-
-    /**
-     * Sets the popup menu for the panel.
-     *
-     * @param popup
-     *            the popup menu (<code>null</code> permitted).
-     */
-    public void setPopupMenu(final JPopupMenu popup) {
-        this.popup = popup;
     }
 
     /**
@@ -839,58 +735,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
      */
     protected void setVerticalTraceLine(final Line2D line) {
         this.verticalTraceLine = line;
-    }
-
-    /**
-     * Returns the default directory for the "save as" option.
-     *
-     * @return The default directory (possibly <code>null</code>).
-     *
-     * @since 1.0.7
-     */
-    public File getDefaultDirectoryForSaveAs() {
-        return this.defaultDirectoryForSaveAs;
-    }
-
-    /**
-     * Sets the default directory for the "save as" option. If you set this to <code>null</code>, the user's default
-     * directory will be used.
-     *
-     * @param directory
-     *            the directory (<code>null</code> permitted).
-     *
-     * @since 1.0.7
-     */
-    public void setDefaultDirectoryForSaveAs(final File directory) {
-        if (directory != null) {
-            if (!directory.isDirectory()) {
-                throw new IllegalArgumentException("The 'directory' argument is not a directory.");
-            }
-        }
-        this.defaultDirectoryForSaveAs = directory;
-    }
-
-    /**
-     * Returns <code>true</code> if file extensions should be enforced, and <code>false</code> otherwise.
-     *
-     * @return The flag.
-     *
-     * @see #setEnforceFileExtensions(boolean)
-     */
-    public boolean isEnforceFileExtensions() {
-        return this.enforceFileExtensions;
-    }
-
-    /**
-     * Sets a flag that controls whether or not file extensions are enforced.
-     *
-     * @param enforce
-     *            the new flag value.
-     *
-     * @see #isEnforceFileExtensions()
-     */
-    public void setEnforceFileExtensions(final boolean enforce) {
-        this.enforceFileExtensions = enforce;
     }
 
     /**
@@ -1272,39 +1116,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * Handles action events generated by the popup menu.
-     *
-     * @param event
-     *            the event.
-     */
-    @Override
-    public void actionPerformed(final ActionEvent event) {
-
-        final String command = event.getActionCommand();
-
-        if (command.equals(COPY_COMMAND)) {
-            doCopy();
-        } else if (command.equals(SAVE_AS_PNG_COMMAND)) {
-            try {
-                doSaveAs();
-            } catch (final IOException e) {
-                javax.swing.JOptionPane.showMessageDialog(this, "I/O error occurred.", "Save As PNG",
-                        javax.swing.JOptionPane.WARNING_MESSAGE);
-            }
-        } else if (command.equals(SAVE_AS_SVG_COMMAND)) {
-            try {
-                saveAsSVG(null);
-            } catch (final IOException e) {
-                javax.swing.JOptionPane.showMessageDialog(this, "I/O error occurred.", "Save As SVG",
-                        javax.swing.JOptionPane.WARNING_MESSAGE);
-            }
-        } else if (command.equals(SAVE_AS_PDF_COMMAND)) {
-            saveAsPDF(null);
-        }
-
-    }
-
-    /**
      * Handles a 'mouse entered' event. This method changes the tooltip delays of ToolTipManager.sharedInstance() to the
      * possibly different values set for this chart panel.
      *
@@ -1363,25 +1174,19 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         }
         final Plot plot = this.chart.getPlot();
         // can we pan this plot?
-        if (e.isPopupTrigger()) {
-            if (this.popup != null) {
-                displayPopupMenu(e.getX(), e.getY());
-            }
-        } else {
-            if (plot instanceof Pannable && isPanAllowed() && e.getButton() == MouseEvent.BUTTON1) {
-                final Pannable pannable = (Pannable) plot;
-                if (pannable.isDomainPannable() || pannable.isRangePannable()) {
-                    final Rectangle2D screenDataArea = getScreenDataArea(e.getX(), e.getY());
-                    if (screenDataArea != null && screenDataArea.contains(e.getPoint())) {
-                        this.panW = screenDataArea.getWidth();
-                        this.panH = screenDataArea.getHeight();
-                        this.panLast = e.getPoint();
-                        setCursor(MOVE_CURSOR);
-                    }
+        if (plot instanceof Pannable && isPanAllowed() && e.getButton() == MouseEvent.BUTTON1) {
+            final Pannable pannable = (Pannable) plot;
+            if (pannable.isDomainPannable() || pannable.isRangePannable()) {
+                final Rectangle2D screenDataArea = getScreenDataArea(e.getX(), e.getY());
+                if (screenDataArea != null && screenDataArea.contains(e.getPoint())) {
+                    this.panW = screenDataArea.getWidth();
+                    this.panH = screenDataArea.getHeight();
+                    this.panLast = e.getPoint();
+                    setCursor(MOVE_CURSOR);
                 }
-                // the actual panning occurs later in the mouseDragged()
-                // method
             }
+            // the actual panning occurs later in the mouseDragged()
+            // method
         }
     }
 
@@ -1416,12 +1221,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
      */
     @Override
     public void mouseDragged(final MouseEvent e) {
-
-        // if the popup menu has already been triggered, then ignore dragging...
-        if (this.popup != null && this.popup.isShowing()) {
-            return;
-        }
-
         // handle panning if we have a start point
         if (this.panLast != null) {
             final double dx = e.getX() - this.panLast.getX();
@@ -1588,13 +1387,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             }
 
         }
-
-        else if (e.isPopupTrigger()) {
-            if (this.popup != null) {
-                displayPopupMenu(e.getX(), e.getY());
-            }
-        }
-
     }
 
     /**
@@ -2168,286 +1960,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * Copies the current chart to the system clipboard.
-     * 
-     * @since 1.0.13
-     */
-    public void doCopy() {
-        final Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        final Insets insets = getInsets();
-        final int w = getWidth() - insets.left - insets.right;
-        final int h = getHeight() - insets.top - insets.bottom;
-        final ChartTransferable selection = new ChartTransferable(this.chart, w, h, getMinimumDrawWidth(),
-                getMinimumDrawHeight(), getMaximumDrawWidth(), getMaximumDrawHeight(), true);
-        systemClipboard.setContents(selection, null);
-    }
-
-    /**
-     * Opens a file chooser and gives the user an opportunity to save the chart in PNG format.
-     *
-     * @throws IOException
-     *             if there is an I/O error.
-     */
-    public void doSaveAs() throws IOException {
-        final JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(this.defaultDirectoryForSaveAs);
-        final FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                localizationResources.getString("PNG_Image_Files"), "png");
-        fileChooser.addChoosableFileFilter(filter);
-        fileChooser.setFileFilter(filter);
-
-        final int option = fileChooser.showSaveDialog(this);
-        if (option == JFileChooser.APPROVE_OPTION) {
-            String filename = fileChooser.getSelectedFile().getPath();
-            if (isEnforceFileExtensions()) {
-                if (!filename.endsWith(".png")) {
-                    filename = filename + ".png";
-                }
-            }
-            ChartUtils.saveChartAsPNG(new File(filename), this.chart, getWidth(), getHeight());
-        }
-    }
-
-    /**
-     * Saves the chart in SVG format (a filechooser will be displayed so that the user can specify the filename). Note
-     * that this method only works if the JFreeSVG library is on the classpath...if this library is not present, the
-     * method will fail.
-     */
-    private void saveAsSVG(final File f) throws IOException {
-        File file = f;
-        if (file == null) {
-            final JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(this.defaultDirectoryForSaveAs);
-            final FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    localizationResources.getString("SVG_Files"), "svg");
-            fileChooser.addChoosableFileFilter(filter);
-            fileChooser.setFileFilter(filter);
-
-            final int option = fileChooser.showSaveDialog(this);
-            if (option == JFileChooser.APPROVE_OPTION) {
-                String filename = fileChooser.getSelectedFile().getPath();
-                if (isEnforceFileExtensions()) {
-                    if (!filename.endsWith(".svg")) {
-                        filename = filename + ".svg";
-                    }
-                }
-                file = new File(filename);
-                if (file.exists()) {
-                    final String fileExists = localizationResources.getString("FILE_EXISTS_CONFIRM_OVERWRITE");
-                    final int response = javax.swing.JOptionPane.showConfirmDialog(this, fileExists, "Save As SVG",
-                            javax.swing.JOptionPane.OK_CANCEL_OPTION);
-                    if (response == javax.swing.JOptionPane.CANCEL_OPTION) {
-                        file = null;
-                    }
-                }
-            }
-        }
-
-        if (file != null) {
-            // use reflection to get the SVG string
-            final String svg = generateSVG(getWidth(), getHeight());
-            BufferedWriter writer = null;
-            try {
-                writer = new BufferedWriter(new FileWriter(file));
-                writer.write(
-                        "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
-                writer.write(svg + "\n");
-                writer.flush();
-            } finally {
-                try {
-                    if (writer != null) {
-                        writer.close();
-                    }
-                } catch (final IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-
-        }
-    }
-
-    /**
-     * Generates a string containing a rendering of the chart in SVG format. This feature is only supported if the
-     * JFreeSVG library is included on the classpath.
-     * 
-     * @return A string containing an SVG element for the current chart, or <code>null</code> if there is a problem with
-     *         the method invocation by reflection.
-     */
-    private String generateSVG(final int width, final int height) {
-        final Graphics2D g2 = createSVGGraphics2D(width, height);
-        if (g2 == null) {
-            throw new IllegalStateException("JFreeSVG library is not present.");
-        }
-        // we suppress shadow generation, because SVG is a vector format and
-        // the shadow effect is applied via bitmap effects...
-        g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
-        String svg = null;
-        final Rectangle2D drawArea = new Rectangle2D.Double(0, 0, width, height);
-        this.chart.draw(g2, drawArea);
-        try {
-            final Method m = g2.getClass().getMethod("getSVGElement");
-            svg = (String) m.invoke(g2);
-        } catch (final NoSuchMethodException e) {
-            // null will be returned
-        } catch (final SecurityException e) {
-            // null will be returned
-        } catch (final IllegalAccessException e) {
-            // null will be returned
-        } catch (final IllegalArgumentException e) {
-            // null will be returned
-        } catch (final InvocationTargetException e) {
-            // null will be returned
-        }
-        return svg;
-    }
-
-    private Graphics2D createSVGGraphics2D(final int w, final int h) {
-        try {
-            final Class svgGraphics2d = Class.forName("org.jfree.graphics2d.svg.SVGGraphics2D");
-            final Constructor ctor = svgGraphics2d.getConstructor(int.class, int.class);
-            return (Graphics2D) ctor.newInstance(w, h);
-        } catch (final ClassNotFoundException ex) {
-            return null;
-        } catch (final NoSuchMethodException ex) {
-            return null;
-        } catch (final SecurityException ex) {
-            return null;
-        } catch (final InstantiationException ex) {
-            return null;
-        } catch (final IllegalAccessException ex) {
-            return null;
-        } catch (final IllegalArgumentException ex) {
-            return null;
-        } catch (final InvocationTargetException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Saves the chart in PDF format (a filechooser will be displayed so that the user can specify the filename). Note
-     * that this method only works if the OrsonPDF library is on the classpath...if this library is not present, the
-     * method will fail.
-     */
-    private void saveAsPDF(final File f) {
-        File file = f;
-        if (file == null) {
-            final JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(this.defaultDirectoryForSaveAs);
-            final FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    localizationResources.getString("PDF_Files"), "pdf");
-            fileChooser.addChoosableFileFilter(filter);
-            fileChooser.setFileFilter(filter);
-
-            final int option = fileChooser.showSaveDialog(this);
-            if (option == JFileChooser.APPROVE_OPTION) {
-                String filename = fileChooser.getSelectedFile().getPath();
-                if (isEnforceFileExtensions()) {
-                    if (!filename.endsWith(".pdf")) {
-                        filename = filename + ".pdf";
-                    }
-                }
-                file = new File(filename);
-                if (file.exists()) {
-                    final String fileExists = localizationResources.getString("FILE_EXISTS_CONFIRM_OVERWRITE");
-                    final int response = javax.swing.JOptionPane.showConfirmDialog(this, fileExists, "Save As PDF",
-                            javax.swing.JOptionPane.OK_CANCEL_OPTION);
-                    if (response == javax.swing.JOptionPane.CANCEL_OPTION) {
-                        file = null;
-                    }
-                }
-            }
-        }
-
-        if (file != null) {
-            writeAsPDF(file, getWidth(), getHeight());
-        }
-    }
-
-    /**
-     * Returns <code>true</code> if OrsonPDF is on the classpath, and <code>false</code> otherwise. The OrsonPDF library
-     * can be found at http://www.object-refinery.com/pdf/
-     * 
-     * @return A boolean.
-     */
-    private boolean isOrsonPDFAvailable() {
-        Class pdfDocumentClass = null;
-        try {
-            pdfDocumentClass = Class.forName("com.orsonpdf.PDFDocument");
-        } catch (final ClassNotFoundException e) {
-            // pdfDocument class will be null so the function will return false
-        }
-        return (pdfDocumentClass != null);
-    }
-
-    /**
-     * Writes the current chart to the specified file in PDF format. This will only work when the OrsonPDF library is
-     * found on the classpath. Reflection is used to ensure there is no compile-time dependency on OrsonPDF (which is
-     * non-free software).
-     * 
-     * @param file
-     *            the output file (<code>null</code> not permitted).
-     * @param w
-     *            the chart width.
-     * @param h
-     *            the chart height.
-     */
-    private void writeAsPDF(final File file, final int w, final int h) {
-        if (!isOrsonPDFAvailable()) {
-            throw new IllegalStateException("OrsonPDF is not present on the classpath.");
-        }
-        Args.nullNotPermitted(file, "file");
-        try {
-            final Class pdfDocClass = Class.forName("com.orsonpdf.PDFDocument");
-            final Object pdfDoc = pdfDocClass.newInstance();
-            final Method m = pdfDocClass.getMethod("createPage", Rectangle2D.class);
-            final Rectangle2D rect = new Rectangle(w, h);
-            final Object page = m.invoke(pdfDoc, rect);
-            final Method m2 = page.getClass().getMethod("getGraphics2D");
-            final Graphics2D g2 = (Graphics2D) m2.invoke(page);
-            // we suppress shadow generation, because PDF is a vector format and
-            // the shadow effect is applied via bitmap effects...
-            g2.setRenderingHint(JFreeChart.KEY_SUPPRESS_SHADOW_GENERATION, true);
-            final Rectangle2D drawArea = new Rectangle2D.Double(0, 0, w, h);
-            this.chart.draw(g2, drawArea);
-            final Method m3 = pdfDocClass.getMethod("writeToFile", File.class);
-            m3.invoke(pdfDoc, file);
-        } catch (final ClassNotFoundException ex) {
-            throw new RuntimeException(ex);
-        } catch (final InstantiationException ex) {
-            throw new RuntimeException(ex);
-        } catch (final IllegalAccessException ex) {
-            throw new RuntimeException(ex);
-        } catch (final NoSuchMethodException ex) {
-            throw new RuntimeException(ex);
-        } catch (final SecurityException ex) {
-            throw new RuntimeException(ex);
-        } catch (final IllegalArgumentException ex) {
-            throw new RuntimeException(ex);
-        } catch (final InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
-     * Creates a print job for the chart.
-     */
-    public void createChartPrintJob() {
-        final PrinterJob job = PrinterJob.getPrinterJob();
-        final PageFormat pf = job.defaultPage();
-        final PageFormat pf2 = job.pageDialog(pf);
-        if (pf2 != pf) {
-            job.setPrintable(this, pf2);
-            if (job.printDialog()) {
-                try {
-                    job.print();
-                } catch (final PrinterException e) {
-                    javax.swing.JOptionPane.showMessageDialog(this, e);
-                }
-            }
-        }
-    }
-
-    /**
      * Prints the chart on a single page.
      *
      * @param g
@@ -2512,134 +2024,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         } else {
             return super.getListeners(listenerType);
         }
-    }
-
-    /**
-     * Creates a popup menu for the panel.
-     *
-     * @param properties
-     *            include a menu item for the chart property editor.
-     * @param copy
-     *            include a menu item for copying to the clipboard.
-     * @param save
-     *            include a menu item for saving the chart.
-     * @param print
-     *            include a menu item for printing the chart.
-     * @param zoom
-     *            include menu items for zooming.
-     *
-     * @return The popup menu.
-     *
-     * @since 1.0.13
-     */
-    protected JPopupMenu createPopupMenu() {
-
-        final JPopupMenu result = new JPopupMenu(localizationResources.getString("Chart") + ":");
-
-        //copy
-        final JMenuItem copyItem = new JMenuItem(localizationResources.getString("Copy"));
-        copyItem.setActionCommand(COPY_COMMAND);
-        copyItem.addActionListener(this);
-        result.add(copyItem);
-
-        //save
-        result.addSeparator();
-        final JMenu saveSubMenu = new JMenu(localizationResources.getString("Save_as"));
-        final JMenuItem pngItem = new JMenuItem(localizationResources.getString("PNG..."));
-        pngItem.setActionCommand("SAVE_AS_PNG");
-        pngItem.addActionListener(this);
-        saveSubMenu.add(pngItem);
-
-        if (createSVGGraphics2D(10, 10) != null) {
-            final JMenuItem svgItem = new JMenuItem(localizationResources.getString("SVG..."));
-            svgItem.setActionCommand("SAVE_AS_SVG");
-            svgItem.addActionListener(this);
-            saveSubMenu.add(svgItem);
-        }
-
-        if (isOrsonPDFAvailable()) {
-            final JMenuItem pdfItem = new JMenuItem(localizationResources.getString("PDF..."));
-            pdfItem.setActionCommand("SAVE_AS_PDF");
-            pdfItem.addActionListener(this);
-            saveSubMenu.add(pdfItem);
-        }
-        result.add(saveSubMenu);
-
-        return result;
-
-    }
-
-    /**
-     * The idea is to modify the zooming options depending on the type of chart being displayed by the panel.
-     *
-     * @param x
-     *            horizontal position of the popup.
-     * @param y
-     *            vertical position of the popup.
-     */
-    protected void displayPopupMenu(final int x, final int y) {
-
-        if (this.popup == null) {
-            return;
-        }
-
-        // go through each zoom menu item and decide whether or not to
-        // enable it...
-        boolean isDomainZoomable = false;
-        boolean isRangeZoomable = false;
-        final Plot plot = (this.chart != null ? this.chart.getPlot() : null);
-        if (plot instanceof Zoomable) {
-            final Zoomable z = (Zoomable) plot;
-            isDomainZoomable = z.isDomainZoomable();
-            isRangeZoomable = z.isRangeZoomable();
-        }
-
-        if (this.zoomInDomainMenuItem != null) {
-            this.zoomInDomainMenuItem.setEnabled(isDomainZoomable);
-        }
-        if (this.zoomOutDomainMenuItem != null) {
-            this.zoomOutDomainMenuItem.setEnabled(isDomainZoomable);
-        }
-        if (this.zoomResetDomainMenuItem != null) {
-            this.zoomResetDomainMenuItem.setEnabled(isDomainZoomable);
-        }
-
-        if (this.zoomInRangeMenuItem != null) {
-            this.zoomInRangeMenuItem.setEnabled(isRangeZoomable);
-        }
-        if (this.zoomOutRangeMenuItem != null) {
-            this.zoomOutRangeMenuItem.setEnabled(isRangeZoomable);
-        }
-
-        if (this.zoomResetRangeMenuItem != null) {
-            this.zoomResetRangeMenuItem.setEnabled(isRangeZoomable);
-        }
-
-        if (this.zoomInBothMenuItem != null) {
-            this.zoomInBothMenuItem.setEnabled(isDomainZoomable && isRangeZoomable);
-        }
-        if (this.zoomOutBothMenuItem != null) {
-            this.zoomOutBothMenuItem.setEnabled(isDomainZoomable && isRangeZoomable);
-        }
-        if (this.zoomResetBothMenuItem != null) {
-            this.zoomResetBothMenuItem.setEnabled(isDomainZoomable && isRangeZoomable);
-        }
-
-        this.popup.show(this, x, y);
-
-    }
-
-    /**
-     * Updates the UI for a LookAndFeel change.
-     */
-    @Override
-    public void updateUI() {
-        // here we need to update the UI for the popup menu, if the panel
-        // has one...
-        if (this.popup != null) {
-            SwingUtilities.updateComponentTreeUI(this.popup);
-        }
-        super.updateUI();
     }
 
     /**

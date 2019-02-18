@@ -35,18 +35,21 @@ public class PlotNavigationHelper {
     private final XYIconAnnotation panLeft;
     private final XYIconAnnotation zoomOut;
     private final XYIconAnnotation reset;
+    private final XYIconAnnotation configure;
     private final XYIconAnnotation zoomIn;
     private final XYIconAnnotation panRight;
 
     private final XYIconAnnotation panLeft_highlighted;
     private final XYIconAnnotation zoomOut_highlighted;
     private final XYIconAnnotation reset_highlighted;
+    private final XYIconAnnotation configure_highlighted;
     private final XYIconAnnotation zoomIn_highlighted;
     private final XYIconAnnotation panRight_highlighted;
 
     private final XYIconAnnotation panLeft_invisible;
     private final XYIconAnnotation zoomOut_invisible;
     private final XYIconAnnotation reset_invisible;
+    private final XYIconAnnotation configure_invisible;
     private final XYIconAnnotation zoomIn_invisible;
     private final XYIconAnnotation panRight_invisible;
 
@@ -64,23 +67,26 @@ public class PlotNavigationHelper {
 
     public PlotNavigationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
-        this.panLeft = newIcon(PlotIcons.PAN_LEFT, -60, VISIBLE_ALPHA);
-        this.zoomOut = newIcon(PlotIcons.ZOOM_OUT, -30, VISIBLE_ALPHA);
-        this.reset = newIcon(PlotIcons.RESET, 0, VISIBLE_ALPHA);
-        this.zoomIn = newIcon(PlotIcons.ZOOM_IN, +30, VISIBLE_ALPHA);
-        this.panRight = newIcon(PlotIcons.PAN_RIGHT, +60, VISIBLE_ALPHA);
+        this.panLeft = newIcon(PlotIcons.PAN_LEFT, -60 - 15, VISIBLE_ALPHA);
+        this.zoomOut = newIcon(PlotIcons.ZOOM_OUT, -30 - 15, VISIBLE_ALPHA);
+        this.reset = newIcon(PlotIcons.RESET, -15, VISIBLE_ALPHA);
+        this.configure = newIcon(PlotIcons.CONFIGURE, +15, VISIBLE_ALPHA);
+        this.zoomIn = newIcon(PlotIcons.ZOOM_IN, +30 + 15, VISIBLE_ALPHA);
+        this.panRight = newIcon(PlotIcons.PAN_RIGHT, +60 + 15, VISIBLE_ALPHA);
 
-        this.panLeft_highlighted = newIcon(PlotIcons.PAN_LEFT, -60, HIGHLIGHTED_ALPHA);
-        this.zoomOut_highlighted = newIcon(PlotIcons.ZOOM_OUT, -30, HIGHLIGHTED_ALPHA);
-        this.reset_highlighted = newIcon(PlotIcons.RESET, 0, HIGHLIGHTED_ALPHA);
-        this.zoomIn_highlighted = newIcon(PlotIcons.ZOOM_IN, +30, HIGHLIGHTED_ALPHA);
-        this.panRight_highlighted = newIcon(PlotIcons.PAN_RIGHT, +60, HIGHLIGHTED_ALPHA);
+        this.panLeft_highlighted = newIcon(PlotIcons.PAN_LEFT, -60 - 15, HIGHLIGHTED_ALPHA);
+        this.zoomOut_highlighted = newIcon(PlotIcons.ZOOM_OUT, -30 - 15, HIGHLIGHTED_ALPHA);
+        this.reset_highlighted = newIcon(PlotIcons.RESET, -15, HIGHLIGHTED_ALPHA);
+        this.configure_highlighted = newIcon(PlotIcons.CONFIGURE, +15, HIGHLIGHTED_ALPHA);
+        this.zoomIn_highlighted = newIcon(PlotIcons.ZOOM_IN, +30 + 15, HIGHLIGHTED_ALPHA);
+        this.panRight_highlighted = newIcon(PlotIcons.PAN_RIGHT, +60 + 15, HIGHLIGHTED_ALPHA);
 
-        this.panLeft_invisible = newIcon(PlotIcons.PAN_LEFT, -60, INVISIBLE_ALPHA);
-        this.zoomOut_invisible = newIcon(PlotIcons.ZOOM_OUT, -30, INVISIBLE_ALPHA);
-        this.reset_invisible = newIcon(PlotIcons.RESET, 0, INVISIBLE_ALPHA);
-        this.zoomIn_invisible = newIcon(PlotIcons.ZOOM_IN, +30, INVISIBLE_ALPHA);
-        this.panRight_invisible = newIcon(PlotIcons.PAN_RIGHT, +60, INVISIBLE_ALPHA);
+        this.panLeft_invisible = newIcon(PlotIcons.PAN_LEFT, -60 - 15, INVISIBLE_ALPHA);
+        this.zoomOut_invisible = newIcon(PlotIcons.ZOOM_OUT, -30 - 15, INVISIBLE_ALPHA);
+        this.reset_invisible = newIcon(PlotIcons.RESET, -15, INVISIBLE_ALPHA);
+        this.configure_invisible = newIcon(PlotIcons.RESET, +15, INVISIBLE_ALPHA);
+        this.zoomIn_invisible = newIcon(PlotIcons.ZOOM_IN, +30 + 15, INVISIBLE_ALPHA);
+        this.panRight_invisible = newIcon(PlotIcons.PAN_RIGHT, +60 + 15, INVISIBLE_ALPHA);
 
         this.visibleCheckAnnotations = new XYIconAnnotation[] { panLeft, panLeft_highlighted, panLeft_invisible,
                 panRight, panRight_highlighted, panRight_invisible };
@@ -207,6 +213,8 @@ public class PlotNavigationHelper {
             highlighted = zoomOut;
         } else if (io == reset || io == reset_highlighted || io == reset_invisible) {
             highlighted = reset;
+        } else if (io == configure || io == configure_highlighted || io == configure_invisible) {
+            highlighted = configure;
         } else if (io == zoomIn || io == zoomIn_highlighted || io == zoomIn_invisible) {
             highlighted = zoomIn;
         } else if (io == panRight || io == panRight_highlighted || io == panRight_invisible) {
@@ -246,6 +254,11 @@ public class PlotNavigationHelper {
             } else {
                 plot.addAnnotation(reset, false);
             }
+            if (highlighted == configure) {
+                plot.addAnnotation(configure_highlighted, false);
+            } else {
+                plot.addAnnotation(configure, false);
+            }
             if (highlighted == zoomIn) {
                 plot.addAnnotation(zoomIn_highlighted, false);
             } else {
@@ -260,12 +273,16 @@ public class PlotNavigationHelper {
             plot.addAnnotation(panLeft_invisible, false);
             plot.addAnnotation(zoomOut_invisible, false);
             plot.addAnnotation(reset_invisible, false);
+            plot.addAnnotation(configure_invisible, false);
             plot.addAnnotation(zoomIn_invisible, false);
             plot.addAnnotation(panRight_invisible, true);
         }
     }
 
     public void mouseExited() {
+        if (chartPanel.getPlotConfigurationHelper().isShowing()) {
+            return;
+        }
         if (shownOnPlot != null) {
             removeAnnotations(shownOnPlot, true);
             shownOnPlot = null;
@@ -343,6 +360,8 @@ public class PlotNavigationHelper {
             final XYIconAnnotation iconAnnotation = getIconAnnotation(l);
             if (iconAnnotation == reset) {
                 chartPanel.resetRange();
+            } else if (iconAnnotation == configure) {
+                chartPanel.getPlotConfigurationHelper().displayPopupMenu(mouseX, mouseY);
             }
         }
 

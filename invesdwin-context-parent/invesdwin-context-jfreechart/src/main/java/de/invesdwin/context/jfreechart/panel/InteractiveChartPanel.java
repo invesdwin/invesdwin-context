@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.JFreeChart;
@@ -28,6 +29,7 @@ import de.invesdwin.context.jfreechart.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.listener.ChartMouseListenerSupport;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
+import de.invesdwin.context.jfreechart.panel.helper.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotCrosshairHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotLegendHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotNavigationHelper;
@@ -62,6 +64,7 @@ public class InteractiveChartPanel extends JPanel {
     private final PlotCrosshairHelper plotCrosshairHelper = new PlotCrosshairHelper(this);
     private final PlotLegendHelper plotLegendHelper = new PlotLegendHelper(this);
     private final PlotNavigationHelper plotNavigationHelper = new PlotNavigationHelper(this);
+    private final PlotConfigurationHelper plotConfigurationHelper = new PlotConfigurationHelper(this);
     private CustomCandlestickRenderer candlestickRenderer;
     private FDate lastHorizontalScroll = FDate.MIN_DATE;
     private FDate lastVerticalScroll = FDate.MIN_DATE;
@@ -87,7 +90,7 @@ public class InteractiveChartPanel extends JPanel {
         chartPanel = new CustomChartPanel(chart, true) {
             @Override
             protected boolean isPanAllowed() {
-                return isHighlighting();
+                return !isHighlighting();
             }
         };
 
@@ -125,6 +128,10 @@ public class InteractiveChartPanel extends JPanel {
 
     public PlotNavigationHelper getPlotNavigationHelper() {
         return plotNavigationHelper;
+    }
+
+    public PlotConfigurationHelper getPlotConfigurationHelper() {
+        return plotConfigurationHelper;
     }
 
     public CustomCandlestickRenderer getCandlestickRenderer() {
@@ -287,6 +294,12 @@ public class InteractiveChartPanel extends JPanel {
         @Override
         public void mousePressed(final MouseEvent e) {
             chartPanel.requestFocusInWindow();
+
+            plotConfigurationHelper.mousePressed(e);
+            if (plotConfigurationHelper.isShowing()) {
+                return;
+            }
+
             plotResizeHelper.mousePressed(e);
             plotLegendHelper.mousePressed(e);
             plotNavigationHelper.mousePressed(e);
@@ -303,6 +316,10 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseReleased(final MouseEvent e) {
+            plotConfigurationHelper.mousePressed(e);
+            if (plotConfigurationHelper.isShowing()) {
+                return;
+            }
             plotLegendHelper.mouseReleased(e);
             plotResizeHelper.mouseReleased(e);
             plotNavigationHelper.mouseReleased(e);
@@ -344,6 +361,10 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseDragged(final MouseEvent e) {
+            if (plotConfigurationHelper.isShowing()) {
+                return;
+            }
+
             plotResizeHelper.mouseDragged(e);
             plotLegendHelper.mouseDragged(e);
             if (plotLegendHelper.isHighlighting()) {
@@ -356,6 +377,9 @@ public class InteractiveChartPanel extends JPanel {
 
         @Override
         public void mouseMoved(final MouseEvent e) {
+            if (plotConfigurationHelper.isShowing() && plotNavigationHelper.isHighlighting()) {
+                return;
+            }
             plotResizeHelper.mouseMoved(e);
             plotNavigationHelper.mouseMoved(e);
         }
@@ -387,13 +411,14 @@ public class InteractiveChartPanel extends JPanel {
 
     @Override
     public void setCursor(final Cursor cursor) {
-        if (!chartPanel.isPanning() && isHighlighting()) {
+        if (!chartPanel.isPanning() && !isHighlighting()) {
             chartPanel.setCursor(cursor);
         }
     }
 
     private boolean isHighlighting() {
-        return !plotLegendHelper.isHighlighting() && !plotNavigationHelper.isHighlighting();
+        return plotLegendHelper.isHighlighting() || plotNavigationHelper.isHighlighting()
+                || plotConfigurationHelper.isShowing();
     }
 
     public void mouseExited() {
@@ -412,6 +437,14 @@ public class InteractiveChartPanel extends JPanel {
         newPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(newPlot);
         return newPlot;
+    }
+
+    @Override
+    public void updateUI() {
+        if (plotConfigurationHelper != null) {
+            SwingUtilities.updateComponentTreeUI(plotConfigurationHelper.getPopupMenu());
+        }
+        super.updateUI();
     }
 
 }
