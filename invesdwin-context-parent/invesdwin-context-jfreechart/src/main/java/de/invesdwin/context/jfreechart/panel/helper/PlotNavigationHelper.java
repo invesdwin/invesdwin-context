@@ -228,13 +228,13 @@ public class PlotNavigationHelper {
     private void removeAnnotations(final XYPlot plot, final boolean notify) {
         final int lastIndex = annotations.size() - 1;
         for (int i = 0; i <= lastIndex; i++) {
-            removeAnnotation(plot, annotations.get(i), i == lastIndex);
+            final XYIconAnnotation annotation = annotations.get(i);
+            annotation.setEntity(null);
+            plot.removeAnnotation(annotation, false);
         }
-    }
-
-    private void removeAnnotation(final XYPlot plot, final XYIconAnnotation annotation, final boolean notify) {
-        annotation.setEntity(null);
-        plot.removeAnnotation(annotation, notify);
+        if (notify) {
+            chartPanel.getChart().fireChartChanged();
+        }
     }
 
     private void addAnnotations(final XYPlot plot, final boolean visible, final XYIconAnnotation highlighted) {
@@ -288,6 +288,7 @@ public class PlotNavigationHelper {
     }
 
     public void mousePressed(final MouseEvent e) {
+        mouseMoved(e); //update when configuration popup becomes invisible
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
         }
@@ -343,6 +344,7 @@ public class PlotNavigationHelper {
     }
 
     public void mouseReleased(final MouseEvent e) {
+        mouseMoved(e); //update when configuration popup becomes invisible
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
         }

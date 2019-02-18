@@ -43,7 +43,9 @@ public class PlotConfigurationHelper {
         final JPopupMenu result = new JPopupMenu("Chart:");
         result.addPopupMenuListener(new PopupMenuListener() {
             @Override
-            public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {}
+            public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
+                chartPanel.getPlotNavigationHelper().mouseExited();
+            }
 
             @Override
             public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
@@ -84,9 +86,6 @@ public class PlotConfigurationHelper {
     }
 
     public void copyToClipboard() {
-        //hide navigation on screenshot
-        chartPanel.getPlotNavigationHelper().mouseExited();
-
         final Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         final Insets insets = chartPanel.getChartPanel().getInsets();
         final int w = chartPanel.getChartPanel().getWidth() - insets.left - insets.right;
@@ -98,9 +97,6 @@ public class PlotConfigurationHelper {
     }
 
     public void saveAsPNG() {
-        //hide navigation on screenshot
-        chartPanel.getPlotNavigationHelper().mouseExited();
-
         final JFileChooser fileChooser = new JFileChooser();
         final FileNameExtensionFilter filter = new FileNameExtensionFilter(".png", "png");
         fileChooser.addChoosableFileFilter(filter);
