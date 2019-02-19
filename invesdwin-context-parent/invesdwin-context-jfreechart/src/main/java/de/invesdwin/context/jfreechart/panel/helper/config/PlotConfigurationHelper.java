@@ -21,7 +21,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartUtils;
@@ -41,6 +40,7 @@ import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.swing.Dialogs;
+import de.invesdwin.util.swing.listener.PopupMenuListenerSupport;
 
 @NotThreadSafe
 public class PlotConfigurationHelper {
@@ -194,7 +194,7 @@ public class PlotConfigurationHelper {
         initHelpItem();
 
         popupMenu = new JPopupMenu();
-        popupMenu.addPopupMenuListener(new PopupMenuListener() {
+        popupMenu.addPopupMenuListener(new PopupMenuListenerSupport() {
 
             @Override
             public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
@@ -255,9 +255,6 @@ public class PlotConfigurationHelper {
 
                 chartPanel.getPlotNavigationHelper().mouseExited();
             }
-
-            @Override
-            public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {}
 
             @Override
             public void popupMenuCanceled(final PopupMenuEvent e) {

@@ -2,13 +2,9 @@ package de.invesdwin.context.jfreechart.panel;
 
 import java.awt.Cursor;
 import java.awt.GridLayout;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -36,6 +32,10 @@ import de.invesdwin.context.jfreechart.panel.helper.legend.PlotLegendHelper;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
 import de.invesdwin.util.math.Doubles;
+import de.invesdwin.util.swing.listener.KeyListenerSupport;
+import de.invesdwin.util.swing.listener.MouseListenerSupport;
+import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
+import de.invesdwin.util.swing.listener.MouseWheelListenerSupport;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
 import de.invesdwin.util.time.fdate.FTimeUnit;
@@ -273,7 +273,7 @@ public class InteractiveChartPanel extends JPanel {
         }
     }
 
-    private final class MouseListenerImpl extends MouseAdapter {
+    private final class MouseListenerImpl extends MouseListenerSupport {
 
         @Override
         public void mouseExited(final MouseEvent e) {
@@ -318,7 +318,7 @@ public class InteractiveChartPanel extends JPanel {
         }
     }
 
-    private final class KeyListenerImpl extends KeyAdapter {
+    private final class KeyListenerImpl extends KeyListenerSupport {
         @Override
         public void keyPressed(final KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD) {
@@ -335,7 +335,7 @@ public class InteractiveChartPanel extends JPanel {
         }
     }
 
-    private final class MouseMotionListenerImpl extends MouseMotionAdapter {
+    private final class MouseMotionListenerImpl extends MouseMotionListenerSupport {
 
         @Override
         public void mouseDragged(final MouseEvent e) {
@@ -371,7 +371,7 @@ public class InteractiveChartPanel extends JPanel {
 
     }
 
-    private final class MouseWheelListenerImpl implements MouseWheelListener {
+    private final class MouseWheelListenerImpl extends MouseWheelListenerSupport {
         @Override
         public void mouseWheelMoved(final MouseWheelEvent e) {
             if (new Duration(lastHorizontalScroll).isGreaterThan(SCROLL_LOCK_DURATION)) {
