@@ -26,7 +26,6 @@ import de.invesdwin.util.math.Doubles;
 public class PlotNavigationHelper {
 
     private static final int BUTTON_TIMER_DELAY = 50;
-    private static final double BUTTON_SCROLL_FACTOR = 0.05D;
     private static final float INVISIBLE_ALPHA = 0.0f;
     private static final float VISIBLE_ALPHA = 0.6f;
     private static final float HIGHLIGHTED_ALPHA = 1f;
@@ -303,14 +302,14 @@ public class PlotNavigationHelper {
                 action = new ActionListener() {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        chartPanel.panLeft(BUTTON_SCROLL_FACTOR);
+                        chartPanel.panLeft();
                     }
                 };
             } else if (annotation == panRight) {
                 action = new ActionListener() {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        chartPanel.panRight(BUTTON_SCROLL_FACTOR);
+                        chartPanel.panRight();
                     }
                 };
             } else if (annotation == zoomIn) {

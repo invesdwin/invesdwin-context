@@ -45,9 +45,9 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 public class InteractiveChartPanel extends JPanel {
     //CHECKSTYLE:ON
 
-    public static final double MOUSE_SCROLL_FACTOR = 0.05D;
-    public static final double HOTKEY_SCROLL_FACTOR = 0.1D;
     public static final int MAX_ZOOM_ITEM_COUNT = 10000;
+    private static final double SCROLL_FACTOR = 0.05D;
+    private static final double FASTER_SCROLL_FACTOR = SCROLL_FACTOR * 3D;
     private static final int MIN_ZOOM_ITEM_COUNT = 10;
     private static final Duration SCROLL_LOCK_DURATION = new Duration(250, FTimeUnit.MILLISECONDS);
 
@@ -66,6 +66,7 @@ public class InteractiveChartPanel extends JPanel {
     private final PlotZoomHelper plotZoomHelper;
     private FDate lastHorizontalScroll = FDate.MIN_DATE;
     private FDate lastVerticalScroll = FDate.MIN_DATE;
+    private boolean controlDown = false;
 
     public InteractiveChartPanel(final IndexedDateTimeOHLCDataset dataset) {
         this.dataset = dataset;
@@ -246,7 +247,8 @@ public class InteractiveChartPanel extends JPanel {
         }
     }
 
-    public void panLeft(final double scrollFactor) {
+    public void panLeft() {
+        final double scrollFactor = getScrollFactor(controlDown);
         final Range range = domainAxis.getRange();
         final double length = range.getLength();
         final double newLowerBound = Doubles.max(range.getLowerBound() - length * scrollFactor,
@@ -256,7 +258,8 @@ public class InteractiveChartPanel extends JPanel {
         update();
     }
 
-    public void panRight(final double scrollFactor) {
+    public void panRight() {
+        final double scrollFactor = getScrollFactor(controlDown);
         final Range range = domainAxis.getRange();
         final double length = range.getLength();
         final double newUpperBound = Doubles.min(range.getUpperBound() + length * scrollFactor,
@@ -264,6 +267,16 @@ public class InteractiveChartPanel extends JPanel {
         final Range newRange = new Range(newUpperBound - length, newUpperBound);
         domainAxis.setRange(newRange);
         update();
+    }
+
+    protected double getScrollFactor(final boolean faster) {
+        final double scrollFactor;
+        if (faster) {
+            scrollFactor = FASTER_SCROLL_FACTOR;
+        } else {
+            scrollFactor = SCROLL_FACTOR;
+        }
+        return scrollFactor;
     }
 
     private final class DatasetChangeListenerImpl implements DatasetChangeListener {
@@ -297,10 +310,10 @@ public class InteractiveChartPanel extends JPanel {
             plotNavigationHelper.mousePressed(e);
             if (new Duration(lastVerticalScroll).isGreaterThan(SCROLL_LOCK_DURATION)) {
                 if (e.getButton() == 4) {
-                    panLeft(MOUSE_SCROLL_FACTOR);
+                    panLeft();
                     lastHorizontalScroll = new FDate();
                 } else if (e.getButton() == 5) {
-                    panRight(MOUSE_SCROLL_FACTOR);
+                    panRight();
                     lastHorizontalScroll = new FDate();
                 }
             }
@@ -321,18 +334,25 @@ public class InteractiveChartPanel extends JPanel {
     private final class KeyListenerImpl extends KeyListenerSupport {
         @Override
         public void keyPressed(final KeyEvent e) {
+            controlDown = e.isControlDown();
             if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD) {
                 plotZoomHelper.zoomIn();
             } else if (e.getKeyCode() == KeyEvent.VK_MINUS || e.getKeyCode() == KeyEvent.VK_SUBTRACT) {
                 plotZoomHelper.zoomOut();
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_KP_RIGHT
                     || e.getKeyCode() == KeyEvent.VK_NUMPAD6) {
-                panRight(HOTKEY_SCROLL_FACTOR);
+                panRight();
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_KP_LEFT
                     || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
-                panLeft(HOTKEY_SCROLL_FACTOR);
+                panLeft();
             }
         }
+
+        @Override
+        public void keyReleased(final KeyEvent e) {
+            controlDown = false;
+        }
+
     }
 
     private final class MouseMotionListenerImpl extends MouseMotionListenerSupport {
@@ -377,9 +397,9 @@ public class InteractiveChartPanel extends JPanel {
             if (new Duration(lastHorizontalScroll).isGreaterThan(SCROLL_LOCK_DURATION)) {
                 if (e.isShiftDown()) {
                     if (e.getWheelRotation() > 0) {
-                        panLeft(MOUSE_SCROLL_FACTOR);
+                        panLeft();
                     } else {
-                        panRight(MOUSE_SCROLL_FACTOR);
+                        panRight();
                     }
                 } else {
                     plotZoomHelper.mouseWheelMoved(e);

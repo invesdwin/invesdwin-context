@@ -50,7 +50,6 @@ public class PlotConfigurationHelper {
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
     public static final int VOLUME_BAR_ALPHA = 100;
     public static final int AREA_FILL_ALPHA = 25;
-    private static final String EYE_DROPPER_COLOR_CHOOSER_PANEL_CLASS = "org.jdesktop.swingx.color.EyeDropperColorChooserPanel";
     private static final String VOLUME_ITEM_NAME = "Volume";
 
     private final InteractiveChartPanel chartPanel;
@@ -418,7 +417,8 @@ public class PlotConfigurationHelper {
                                 + "<br>The navigation also works by hotkeys and mouse.</li>");
                 sb.append(
                         "<li><b>Panning</b>: Use left click and drag the mouse anywhere on the chart or use left/right arrow keys on your keyboard to do the same."
-                                + "<br>You can also use horizontal scrolling of your mouse or the shift key combined with your scroll wheel.</li>");
+                                + "<br>You can also use horizontal scrolling of your mouse or the shift key combined with your scroll wheel."
+                                + "<br>By holding down the control key on your keyboard you can make the scrolling faster.</li>");
                 sb.append(
                         "<li><b>Zooming</b>: Use your scroll wheel or +/- keys to zoom. When using the mouse to scroll, the mouse pointer will be used as an anchor.</li>");
                 sb.append(
