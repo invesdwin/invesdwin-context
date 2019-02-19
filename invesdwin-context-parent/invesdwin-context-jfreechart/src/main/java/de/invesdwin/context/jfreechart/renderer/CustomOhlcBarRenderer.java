@@ -1,5 +1,6 @@
 package de.invesdwin.context.jfreechart.renderer;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
@@ -15,10 +16,10 @@ import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.StrokeType;
+import de.invesdwin.context.jfreechart.panel.helper.config.StrokeType;
 
 @NotThreadSafe
-public class CustomOhlcBarRenderer extends HighLowRenderer {
+public class CustomOhlcBarRenderer extends HighLowRenderer implements IUpDownColorRenderer {
 
     private final CustomOhlcCandlestickRenderer candlestickRenderer;
     private double tickLength;
@@ -67,6 +68,28 @@ public class CustomOhlcBarRenderer extends HighLowRenderer {
         setTickLength(stickWidth / 2);
         super.drawItem(g2, state, dataArea, info, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState,
                 pass);
+    }
+
+    @Override
+    public void setUpColor(final Color upColor) {
+        candlestickRenderer.setUpColor(upColor);
+        fireChangeEvent();
+    }
+
+    @Override
+    public Color getUpColor() {
+        return candlestickRenderer.getUpColor();
+    }
+
+    @Override
+    public void setDownColor(final Color downColor) {
+        candlestickRenderer.setDownColor(downColor);
+        fireChangeEvent();
+    }
+
+    @Override
+    public Color getDownColor() {
+        return candlestickRenderer.getDownColor();
     }
 
 }

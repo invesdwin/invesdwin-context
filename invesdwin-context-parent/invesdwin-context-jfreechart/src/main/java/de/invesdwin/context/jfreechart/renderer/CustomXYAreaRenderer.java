@@ -38,7 +38,7 @@ import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.StrokeType;
+import de.invesdwin.context.jfreechart.panel.helper.config.StrokeType;
 
 @NotThreadSafe
 public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {

@@ -12,6 +12,8 @@ import java.util.StringTokenizer;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jfree.data.xy.OHLCDataItem;
 
@@ -81,7 +83,14 @@ public class CandlestickDemo extends JFrame {
 
     //CHECKSTYLE:OFF
     public static void main(final String[] args) {
+        System.setProperty("jdk.gtk.version", "2");
         //CHECKSTYLE:ON
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException e) {
+            throw new RuntimeException(e);
+        }
         new CandlestickDemo().setVisible(true);
     }
 }

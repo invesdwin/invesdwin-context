@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper;
+package de.invesdwin.context.jfreechart.panel.helper.config;
 
 import java.awt.Color;
 
@@ -15,7 +15,7 @@ import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 @Immutable
-public enum SeriesRendererType {
+public enum SeriesRendererType implements IRendererType {
     Line {
         @Override
         public XYItemRenderer newRenderer(final StrokeType strokeType, final Color color) {
@@ -24,6 +24,11 @@ public enum SeriesRendererType {
             renderer.setSeriesFillPaint(0, color);
             renderer.setSeriesStroke(0, strokeType.getStroke());
             return renderer;
+        }
+
+        @Override
+        public boolean isStrokeConfigurable() {
+            return true;
         }
     },
     Step {
@@ -34,6 +39,11 @@ public enum SeriesRendererType {
             renderer.setSeriesFillPaint(0, color);
             renderer.setSeriesStroke(0, strokeType.getStroke());
             return renderer;
+        }
+
+        @Override
+        public boolean isStrokeConfigurable() {
+            return true;
         }
     },
     Area {
@@ -46,6 +56,11 @@ public enum SeriesRendererType {
             renderer.setSeriesFillPaint(0, colorAlpha);
             renderer.setSeriesStroke(0, strokeType.getStroke());
             return renderer;
+        }
+
+        @Override
+        public boolean isStrokeConfigurable() {
+            return true;
         }
     },
     Column {
@@ -60,6 +75,11 @@ public enum SeriesRendererType {
             renderer.setDrawBarOutline(false);
             return renderer;
         }
+
+        @Override
+        public boolean isStrokeConfigurable() {
+            return false;
+        }
     },
     Histogram {
         @Override
@@ -72,6 +92,11 @@ public enum SeriesRendererType {
             renderer.setSeriesStroke(0, strokeType.getStroke());
             renderer.setDrawBarOutline(false);
             return renderer;
+        }
+
+        @Override
+        public boolean isStrokeConfigurable() {
+            return false;
         }
     };
     private static final double HISTOGRAM_MARGIN = 0.80D;
@@ -95,5 +120,20 @@ public enum SeriesRendererType {
             }
         }
         throw UnknownArgumentException.newInstance(Class.class, unwrapped.getClass());
+    }
+
+    @Override
+    public boolean isUpColorConfigurable() {
+        return false;
+    }
+
+    @Override
+    public boolean isDownColorConfigurable() {
+        return false;
+    }
+
+    @Override
+    public boolean isColorConfigurable() {
+        return true;
     }
 }

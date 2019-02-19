@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper;
+package de.invesdwin.context.jfreechart.panel.helper.legend;
 
 import java.awt.Color;
 import java.awt.Font;

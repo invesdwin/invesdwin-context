@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper;
+package de.invesdwin.context.jfreechart.panel.helper.legend;
 
 import javax.annotation.concurrent.Immutable;
 

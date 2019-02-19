@@ -1,14 +1,11 @@
 package de.invesdwin.context.jfreechart.renderer;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -26,14 +23,12 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.util.PaintUtils;
-import org.jfree.chart.util.PublicCloneable;
-import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.Range;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.PlotConfigurationHelper;
-import de.invesdwin.context.jfreechart.panel.helper.StrokeType;
+import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.StrokeType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 /**
@@ -47,7 +42,7 @@ import de.invesdwin.util.error.UnknownArgumentException;
 //CHECKSTYLE:OFF
 @NotThreadSafe
 public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
-        implements XYItemRenderer, Cloneable, PublicCloneable, Serializable {
+        implements XYItemRenderer, IUpDownColorRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
 
@@ -72,12 +67,12 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
     /**
      * The paint used to fill the candle when the price moved up from open to close.
      */
-    private transient Paint upPaint;
+    private Color upColor;
 
     /**
      * The paint used to fill the candle when the price moved down from open to close.
      */
-    private transient Paint downPaint;
+    private Color downColor;
 
     /**
      * A flag that controls whether or not the renderer's outline paint is used to draw the outline of the candlestick.
@@ -105,11 +100,11 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
     public CustomOhlcCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
-        this.upPaint = PlotConfigurationHelper.DEFAULT_UP_COLOR;
-        this.downPaint = PlotConfigurationHelper.DEFAULT_DOWN_COLOR;
+        this.upColor = PlotConfigurationHelper.DEFAULT_UP_COLOR;
+        this.downColor = PlotConfigurationHelper.DEFAULT_DOWN_COLOR;
         this.useOutlinePaint = false; // false preserves the old behaviour
                                       // prior to introducing this flag
-        setSeriesPaint(0, upPaint);
+        setSeriesPaint(0, upColor);
         setSeriesStroke(0, StrokeType.Solid.getStroke());
         this.dataset = dataset;
     }
@@ -152,10 +147,11 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
      *
      * @return The paint (possibly <code>null</code>).
      *
-     * @see #setUpPaint(Paint)
+     * @see #setUpColor(Paint)
      */
-    public Paint getUpPaint() {
-        return this.upPaint;
+    @Override
+    public Color getUpColor() {
+        return this.upColor;
     }
 
     /**
@@ -165,10 +161,11 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
      * @param paint
      *            the paint (<code>null</code> permitted).
      *
-     * @see #getUpPaint()
+     * @see #getUpColor()
      */
-    public void setUpPaint(final Paint paint) {
-        this.upPaint = paint;
+    @Override
+    public void setUpColor(final Color upColor) {
+        this.upColor = upColor;
         fireChangeEvent();
     }
 
@@ -177,10 +174,11 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
      *
      * @return The paint (possibly <code>null</code>).
      *
-     * @see #setDownPaint(Paint)
+     * @see #setDownColor(Paint)
      */
-    public Paint getDownPaint() {
-        return this.downPaint;
+    @Override
+    public Color getDownColor() {
+        return this.downColor;
     }
 
     /**
@@ -190,8 +188,9 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
      * @param paint
      *            The paint (<code>null</code> permitted).
      */
-    public void setDownPaint(final Paint paint) {
-        this.downPaint = paint;
+    @Override
+    public void setDownColor(final Color downColor) {
+        this.downColor = downColor;
         fireChangeEvent();
     }
 
@@ -398,15 +397,15 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             hotspot = new Rectangle2D.Double(xx - stickWidth / 2, base, stickWidth, length);
         }
         if (yClose > yOpen) {
-            if (this.upPaint != null) {
-                g2.setPaint(this.upPaint);
+            if (this.upColor != null) {
+                g2.setPaint(this.upColor);
             } else {
                 g2.setPaint(p);
             }
             g2.fill(body);
         } else {
-            if (this.downPaint != null) {
-                g2.setPaint(this.downPaint);
+            if (this.downColor != null) {
+                g2.setPaint(this.downColor);
             } else {
                 g2.setPaint(p);
             }
@@ -474,9 +473,9 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
 
         //return the same color as that used to fill the candle
         if (isUpCandle) {
-            return getUpPaint();
+            return getUpColor();
         } else {
-            return getDownPaint();
+            return getDownColor();
         }
     }
 
@@ -497,10 +496,10 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             return false;
         }
         final CustomOhlcCandlestickRenderer that = (CustomOhlcCandlestickRenderer) obj;
-        if (!PaintUtils.equal(this.upPaint, that.upPaint)) {
+        if (!PaintUtils.equal(this.upColor, that.upColor)) {
             return false;
         }
-        if (!PaintUtils.equal(this.downPaint, that.downPaint)) {
+        if (!PaintUtils.equal(this.downColor, that.downColor)) {
             return false;
         }
         if (this.maxCandleWidthInMilliseconds != that.maxCandleWidthInMilliseconds) {
@@ -526,38 +525,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
-    }
-
-    /**
-     * Provides serialization support.
-     *
-     * @param stream
-     *            the output stream.
-     *
-     * @throws IOException
-     *             if there is an I/O error.
-     */
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-        stream.defaultWriteObject();
-        SerialUtils.writePaint(this.upPaint, stream);
-        SerialUtils.writePaint(this.downPaint, stream);
-    }
-
-    /**
-     * Provides serialization support.
-     *
-     * @param stream
-     *            the input stream.
-     *
-     * @throws IOException
-     *             if there is an I/O error.
-     * @throws ClassNotFoundException
-     *             if there is a classpath problem.
-     */
-    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
-        this.upPaint = SerialUtils.readPaint(stream);
-        this.downPaint = SerialUtils.readPaint(stream);
     }
 
 }
