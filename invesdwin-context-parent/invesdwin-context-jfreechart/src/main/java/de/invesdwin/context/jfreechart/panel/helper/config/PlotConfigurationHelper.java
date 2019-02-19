@@ -10,21 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.ButtonGroup;
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.colorchooser.AbstractColorChooserPanel;
-import javax.swing.colorchooser.ColorChooserComponentFactory;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -42,11 +37,10 @@ import de.invesdwin.context.jfreechart.renderer.CustomOhlcCandlestickRenderer;
 import de.invesdwin.context.jfreechart.renderer.CustomVolumeBarRenderer;
 import de.invesdwin.context.jfreechart.renderer.CustomXYAreaRenderer;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
-import de.invesdwin.util.concurrent.MutableReference;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
-import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.swing.Dialogs;
 
 @NotThreadSafe
 public class PlotConfigurationHelper {
@@ -398,37 +392,7 @@ public class PlotConfigurationHelper {
     }
 
     protected Color showColorChooserDialog(final String name, final Color initialColor) {
-        final JColorChooser pane = new JColorChooser(initialColor);
-        pane.setChooserPanels(ColorChooserComponentFactory.getDefaultChooserPanels());
-        if (Reflections.classExists(EYE_DROPPER_COLOR_CHOOSER_PANEL_CLASS)) {
-            final Class<Object> eyeDropperPanelClass = Reflections.classForName(EYE_DROPPER_COLOR_CHOOSER_PANEL_CLASS);
-            try {
-                final AbstractColorChooserPanel eyeDropperPanel = (AbstractColorChooserPanel) eyeDropperPanelClass
-                        .getDeclaredConstructor()
-                        .newInstance();
-                pane.addChooserPanel(eyeDropperPanel);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        for (final AbstractColorChooserPanel ccPanel : pane.getChooserPanels()) {
-            ccPanel.setColorTransparencySelectionEnabled(true);
-        }
-        final MutableReference<Color> selectedColor = new MutableReference<>();
-        selectedColor.set(initialColor);
-        final JDialog dialog = JColorChooser.createDialog(chartPanel, name, true, pane, new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent actionEvent) {
-                final Color color = pane.getColor();
-                if (color != null) {
-                    selectedColor.set(color);
-                }
-            }
-        }, null);
-        dialog.setVisible(true);
-
-        return selectedColor.get();
+        return Dialogs.showColorChooserDialog(chartPanel, name, initialColor, true);
     }
 
     private void initHelpItem() {
@@ -465,8 +429,7 @@ public class PlotConfigurationHelper {
                                 + "<br>Right click multiple times to remove the crosshair or just use the settings navigation button on the bottom of the chart.</li>");
                 sb.append("</ul>");
                 sb.append("</html>");
-                javax.swing.JOptionPane.showMessageDialog(chartPanel, sb.toString(), "Help",
-                        javax.swing.JOptionPane.PLAIN_MESSAGE);
+                Dialogs.showMessageDialog(chartPanel, sb.toString(), "Help", Dialogs.PLAIN_MESSAGE);
             }
         });
     }
