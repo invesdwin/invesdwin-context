@@ -32,6 +32,7 @@ import de.invesdwin.context.jfreechart.panel.helper.PlotCrosshairHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotLegendHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotNavigationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotResizeHelper;
+import de.invesdwin.context.jfreechart.panel.helper.PlotZoomHelper;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
 import de.invesdwin.util.math.Doubles;
@@ -62,6 +63,7 @@ public class InteractiveChartPanel extends JPanel {
     private final PlotLegendHelper plotLegendHelper;
     private final PlotNavigationHelper plotNavigationHelper;
     private final PlotConfigurationHelper plotConfigurationHelper;
+    private final PlotZoomHelper plotZoomHelper;
     private FDate lastHorizontalScroll = FDate.MIN_DATE;
     private FDate lastVerticalScroll = FDate.MIN_DATE;
 
@@ -73,6 +75,7 @@ public class InteractiveChartPanel extends JPanel {
         this.plotLegendHelper = new PlotLegendHelper(this);
         this.plotNavigationHelper = new PlotNavigationHelper(this);
         this.plotConfigurationHelper = new PlotConfigurationHelper(this);
+        this.plotZoomHelper = new PlotZoomHelper(this);
 
         domainAxis = new NumberAxis();
         domainAxis.setAutoRange(true);
@@ -97,9 +100,6 @@ public class InteractiveChartPanel extends JPanel {
         };
 
         chartPanel.setAllowedRangeGap(2);
-        chartPanel.setMouseZoomable(false);
-        chartPanel.setRangeZoomable(false);
-        chartPanel.setDomainZoomable(true);
         chartPanel.addMouseWheelListener(new MouseWheelListenerImpl());
         chartPanel.addMouseMotionListener(new MouseMotionListenerImpl());
         chartPanel.addKeyListener(new KeyListenerImpl());
@@ -133,6 +133,10 @@ public class InteractiveChartPanel extends JPanel {
 
     public PlotConfigurationHelper getPlotConfigurationHelper() {
         return plotConfigurationHelper;
+    }
+
+    public PlotZoomHelper getPlotZoomHelper() {
+        return plotZoomHelper;
     }
 
     protected int initRangeAxisDecimalDigits() {
@@ -242,16 +246,6 @@ public class InteractiveChartPanel extends JPanel {
         }
     }
 
-    public void zoomOut() {
-        chartPanel.zoomOutDomain(-1, -1);
-        update();
-    }
-
-    public void zoomIn() {
-        chartPanel.zoomInDomain(-1, -1);
-        update();
-    }
-
     public void panLeft(final double scrollFactor) {
         final Range range = domainAxis.getRange();
         final double length = range.getLength();
@@ -328,9 +322,9 @@ public class InteractiveChartPanel extends JPanel {
         @Override
         public void keyPressed(final KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD) {
-                zoomIn();
+                plotZoomHelper.zoomIn();
             } else if (e.getKeyCode() == KeyEvent.VK_MINUS || e.getKeyCode() == KeyEvent.VK_SUBTRACT) {
-                zoomOut();
+                plotZoomHelper.zoomOut();
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_KP_RIGHT
                     || e.getKeyCode() == KeyEvent.VK_NUMPAD6) {
                 panRight(HOTKEY_SCROLL_FACTOR);
@@ -388,11 +382,7 @@ public class InteractiveChartPanel extends JPanel {
                         panRight(MOUSE_SCROLL_FACTOR);
                     }
                 } else {
-                    if (e.getWheelRotation() > 0) {
-                        zoomOut();
-                    } else {
-                        zoomIn();
-                    }
+                    plotZoomHelper.mouseWheelMoved(e);
                 }
                 lastVerticalScroll = new FDate();
             }

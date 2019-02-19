@@ -317,14 +317,14 @@ public class PlotNavigationHelper {
                 action = new ActionListener() {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        chartPanel.zoomIn();
+                        chartPanel.getPlotZoomHelper().zoomIn();
                     }
                 };
             } else if (annotation == zoomOut) {
                 action = new ActionListener() {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        chartPanel.zoomOut();
+                        chartPanel.getPlotZoomHelper().zoomOut();
                     }
                 };
             } else {

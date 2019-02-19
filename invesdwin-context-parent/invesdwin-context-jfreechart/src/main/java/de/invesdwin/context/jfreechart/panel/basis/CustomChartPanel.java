@@ -11,7 +11,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Transparency;
@@ -22,12 +21,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ResourceBundle;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -50,9 +43,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.plot.Zoomable;
-import org.jfree.chart.util.Args;
 import org.jfree.chart.util.ResourceBundleWrapper;
-import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.Range;
 
 /**
@@ -63,8 +54,8 @@ import org.jfree.data.Range;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class CustomChartPanel extends JPanel implements ChartChangeListener, ChartProgressListener, MouseListener,
-        MouseMotionListener, Printable, Serializable {
+public class CustomChartPanel extends JPanel
+        implements ChartChangeListener, ChartProgressListener, MouseListener, MouseMotionListener {
 
     public static final Cursor DEFAULT_CURSOR = Cursor.getDefaultCursor();
     public static final Cursor MOVE_CURSOR = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
@@ -147,30 +138,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     /** The scale factor used to draw the chart. */
     private double scaleY;
 
-    /** The plot orientation. */
-    private PlotOrientation orientation = PlotOrientation.VERTICAL;
-
-    /** A flag that controls whether or not domain zooming is enabled. */
-    private boolean domainZoomable = false;
-
-    /** A flag that controls whether or not range zooming is enabled. */
-    private boolean rangeZoomable = false;
-
-    /**
-     * The zoom rectangle starting point (selected by the user with a mouse click). This is a point on the screen, not
-     * the chart (which may have been scaled up or down to fit the panel).
-     */
-    private Point2D zoomPoint = null;
-
-    /** The zoom rectangle (selected by the user with the mouse). */
-    private transient Rectangle2D zoomRectangle = null;
-
-    /** Controls if the zoom rectangle is drawn as an outline or filled. */
-    private boolean fillZoomRectangle = true;
-
-    /** The minimum distance required to drag the mouse to trigger a zoom. */
-    private int zoomTriggerDistance;
-
     /** A flag that controls whether or not horizontal tracing is enabled. */
     private boolean horizontalAxisTrace = false;
 
@@ -203,34 +170,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
     /** Own dismiss tooltip delay to be used in this chart panel. */
     private int ownToolTipDismissDelay;
-
-    /** The factor used to zoom in on an axis range. */
-    private double zoomInFactor = 0.9;
-
-    /** The factor used to zoom out on an axis range. */
-    private double zoomOutFactor = 1.1;
-
-    /**
-     * A flag that controls whether zoom operations are centred on the current anchor point, or the centre point of the
-     * relevant axis.
-     *
-     * @since 1.0.7
-     */
-    private boolean zoomAroundAnchor;
-
-    /**
-     * The paint used to draw the zoom rectangle outline.
-     *
-     * @since 1.0.13
-     */
-    private transient Paint zoomOutlinePaint;
-
-    /**
-     * The zoom fill paint (should use transparency).
-     *
-     * @since 1.0.13
-     */
-    private transient Paint zoomFillPaint;
 
     /** The resourceBundle for the localization. */
     protected static ResourceBundle localizationResources = ResourceBundleWrapper
@@ -322,7 +261,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         this.minimumDrawHeight = minimumDrawHeight;
         this.maximumDrawWidth = maximumDrawWidth;
         this.maximumDrawHeight = maximumDrawHeight;
-        this.zoomTriggerDistance = DEFAULT_ZOOM_TRIGGER_DISTANCE;
 
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         enableEvents(AWTEvent.MOUSE_MOTION_EVENT_MASK);
@@ -336,10 +274,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         this.ownToolTipInitialDelay = ttm.getInitialDelay();
         this.ownToolTipDismissDelay = ttm.getDismissDelay();
         this.ownToolTipReshowDelay = ttm.getReshowDelay();
-
-        this.zoomAroundAnchor = false;
-        this.zoomOutlinePaint = Color.blue;
-        this.zoomFillPaint = new Color(0, 0, 255, 63);
     }
 
     /**
@@ -369,18 +303,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
         if (chart != null) {
             this.chart.addChangeListener(this);
             this.chart.addProgressListener(this);
-            final Plot plot = chart.getPlot();
-            this.domainZoomable = false;
-            this.rangeZoomable = false;
-            if (plot instanceof Zoomable) {
-                final Zoomable z = (Zoomable) plot;
-                this.domainZoomable = z.isDomainZoomable();
-                this.rangeZoomable = z.isRangeZoomable();
-                this.orientation = z.getOrientation();
-            }
-        } else {
-            this.domainZoomable = false;
-            this.rangeZoomable = false;
         }
         if (this.useBuffer) {
             this.refreshBuffer = true;
@@ -536,123 +458,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * A convenience method that switches on mouse-based zooming.
-     *
-     * @param flag
-     *            <code>true</code> enables zooming and rectangle fill on zoom.
-     */
-    public void setMouseZoomable(final boolean flag) {
-        setMouseZoomable(flag, true);
-    }
-
-    /**
-     * A convenience method that switches on mouse-based zooming.
-     *
-     * @param flag
-     *            <code>true</code> if zooming enabled
-     * @param fillRectangle
-     *            <code>true</code> if zoom rectangle is filled, false if rectangle is shown as outline only.
-     */
-    public void setMouseZoomable(final boolean flag, final boolean fillRectangle) {
-        setDomainZoomable(flag);
-        setRangeZoomable(flag);
-        setFillZoomRectangle(fillRectangle);
-    }
-
-    /**
-     * Returns the flag that determines whether or not zooming is enabled for the domain axis.
-     *
-     * @return A boolean.
-     */
-    public boolean isDomainZoomable() {
-        return this.domainZoomable;
-    }
-
-    /**
-     * Sets the flag that controls whether or not zooming is enabled for the domain axis. A check is made to ensure that
-     * the current plot supports zooming for the domain values.
-     *
-     * @param flag
-     *            <code>true</code> enables zooming if possible.
-     */
-    public void setDomainZoomable(final boolean flag) {
-        if (flag) {
-            final Plot plot = this.chart.getPlot();
-            if (plot instanceof Zoomable) {
-                final Zoomable z = (Zoomable) plot;
-                this.domainZoomable = flag && (z.isDomainZoomable());
-            }
-        } else {
-            this.domainZoomable = false;
-        }
-    }
-
-    /**
-     * Returns the flag that determines whether or not zooming is enabled for the range axis.
-     *
-     * @return A boolean.
-     */
-    public boolean isRangeZoomable() {
-        return this.rangeZoomable;
-    }
-
-    /**
-     * A flag that controls mouse-based zooming on the vertical axis.
-     *
-     * @param flag
-     *            <code>true</code> enables zooming.
-     */
-    public void setRangeZoomable(final boolean flag) {
-        if (flag) {
-            final Plot plot = this.chart.getPlot();
-            if (plot instanceof Zoomable) {
-                final Zoomable z = (Zoomable) plot;
-                this.rangeZoomable = flag && (z.isRangeZoomable());
-            }
-        } else {
-            this.rangeZoomable = false;
-        }
-    }
-
-    /**
-     * Returns the flag that controls whether or not the zoom rectangle is filled when drawn.
-     *
-     * @return A boolean.
-     */
-    public boolean getFillZoomRectangle() {
-        return this.fillZoomRectangle;
-    }
-
-    /**
-     * A flag that controls how the zoom rectangle is drawn.
-     *
-     * @param flag
-     *            <code>true</code> instructs to fill the rectangle on zoom, otherwise it will be outlined.
-     */
-    public void setFillZoomRectangle(final boolean flag) {
-        this.fillZoomRectangle = flag;
-    }
-
-    /**
-     * Returns the zoom trigger distance. This controls how far the mouse must move before a zoom action is triggered.
-     *
-     * @return The distance (in Java2D units).
-     */
-    public int getZoomTriggerDistance() {
-        return this.zoomTriggerDistance;
-    }
-
-    /**
-     * Sets the zoom trigger distance. This controls how far the mouse must move before a zoom action is triggered.
-     *
-     * @param distance
-     *            the distance (in Java2D units).
-     */
-    public void setZoomTriggerDistance(final int distance) {
-        this.zoomTriggerDistance = distance;
-    }
-
-    /**
      * Returns the flag that controls whether or not a horizontal axis trace line is drawn over the plot area at the
      * current mouse location.
      *
@@ -728,92 +533,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
      */
     protected void setVerticalTraceLine(final Line2D line) {
         this.verticalTraceLine = line;
-    }
-
-    /**
-     * Returns the flag that controls whether or not zoom operations are centered around the current anchor point.
-     *
-     * @return A boolean.
-     *
-     * @since 1.0.7
-     *
-     * @see #setZoomAroundAnchor(boolean)
-     */
-    public boolean getZoomAroundAnchor() {
-        return this.zoomAroundAnchor;
-    }
-
-    /**
-     * Sets the flag that controls whether or not zoom operations are centered around the current anchor point.
-     *
-     * @param zoomAroundAnchor
-     *            the new flag value.
-     *
-     * @since 1.0.7
-     *
-     * @see #getZoomAroundAnchor()
-     */
-    public void setZoomAroundAnchor(final boolean zoomAroundAnchor) {
-        this.zoomAroundAnchor = zoomAroundAnchor;
-    }
-
-    /**
-     * Returns the zoom rectangle fill paint.
-     *
-     * @return The zoom rectangle fill paint (never <code>null</code>).
-     *
-     * @see #setZoomFillPaint(java.awt.Paint)
-     * @see #setFillZoomRectangle(boolean)
-     *
-     * @since 1.0.13
-     */
-    public Paint getZoomFillPaint() {
-        return this.zoomFillPaint;
-    }
-
-    /**
-     * Sets the zoom rectangle fill paint.
-     *
-     * @param paint
-     *            the paint (<code>null</code> not permitted).
-     *
-     * @see #getZoomFillPaint()
-     * @see #getFillZoomRectangle()
-     *
-     * @since 1.0.13
-     */
-    public void setZoomFillPaint(final Paint paint) {
-        Args.nullNotPermitted(paint, "paint");
-        this.zoomFillPaint = paint;
-    }
-
-    /**
-     * Returns the zoom rectangle outline paint.
-     *
-     * @return The zoom rectangle outline paint (never <code>null</code>).
-     *
-     * @see #setZoomOutlinePaint(java.awt.Paint)
-     * @see #setFillZoomRectangle(boolean)
-     *
-     * @since 1.0.13
-     */
-    public Paint getZoomOutlinePaint() {
-        return this.zoomOutlinePaint;
-    }
-
-    /**
-     * Sets the zoom rectangle outline paint.
-     *
-     * @param paint
-     *            the paint (<code>null</code> not permitted).
-     *
-     * @see #getZoomOutlinePaint()
-     * @see #getFillZoomRectangle()
-     *
-     * @since 1.0.13
-     */
-    public void setZoomOutlinePaint(final Paint paint) {
-        this.zoomOutlinePaint = paint;
     }
 
     private int allowedRangeGap = 5;
@@ -1068,11 +787,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
         }
 
-        // redraw the zoom rectangle (if present) - if useBuffer is false,
-        // we use XOR so we can XOR the rectangle away again without redrawing
-        // the chart
-        drawZoomRectangle(g2, !this.useBuffer);
-
         g2.dispose();
 
         this.anchor = null;
@@ -1089,11 +803,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     @Override
     public void chartChanged(final ChartChangeEvent event) {
         this.refreshBuffer = true;
-        final Plot plot = this.chart.getPlot();
-        if (plot instanceof Zoomable) {
-            final Zoomable z = (Zoomable) plot;
-            this.orientation = z.getOrientation();
-        }
         repaint();
     }
 
@@ -1188,25 +897,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * Returns a point based on (x, y) but constrained to be within the bounds of the given rectangle. This method could
-     * be moved to JCommon.
-     *
-     * @param x
-     *            the x-coordinate.
-     * @param y
-     *            the y-coordinate.
-     * @param area
-     *            the rectangle (<code>null</code> not permitted).
-     *
-     * @return A point within the rectangle.
-     */
-    private Point2D getPointInRectangle(final int x, final int y, final Rectangle2D area) {
-        final double xx = Math.max(area.getMinX(), Math.min(x, area.getMaxX()));
-        final double yy = Math.max(area.getMinY(), Math.min(y, area.getMaxY()));
-        return new Point2D.Double(xx, yy);
-    }
-
-    /**
      * Handles a 'mouse dragged' event.
      *
      * @param e
@@ -1246,56 +936,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             this.chart.getPlot().setNotify(old);
             return;
         }
-
-        // if no initial zoom point was set, ignore dragging...
-        if (this.zoomPoint == null) {
-            return;
-        }
-        final Graphics2D g2 = (Graphics2D) getGraphics();
-
-        // erase the previous zoom rectangle (if any).  We only need to do
-        // this is we are using XOR mode, which we do when we're not using
-        // the buffer (if there is a buffer, then at the end of this method we
-        // just trigger a repaint)
-        if (!this.useBuffer) {
-            drawZoomRectangle(g2, true);
-        }
-
-        boolean hZoom, vZoom;
-        if (this.orientation == PlotOrientation.HORIZONTAL) {
-            hZoom = this.rangeZoomable;
-            vZoom = this.domainZoomable;
-        } else {
-            hZoom = this.domainZoomable;
-            vZoom = this.rangeZoomable;
-        }
-        final Rectangle2D scaledDataArea = getScreenDataArea((int) this.zoomPoint.getX(), (int) this.zoomPoint.getY());
-        if (hZoom && vZoom) {
-            // selected rectangle shouldn't extend outside the data area...
-            final double xmax = Math.min(e.getX(), scaledDataArea.getMaxX());
-            final double ymax = Math.min(e.getY(), scaledDataArea.getMaxY());
-            this.zoomRectangle = new Rectangle2D.Double(this.zoomPoint.getX(), this.zoomPoint.getY(),
-                    xmax - this.zoomPoint.getX(), ymax - this.zoomPoint.getY());
-        } else if (hZoom) {
-            final double xmax = Math.min(e.getX(), scaledDataArea.getMaxX());
-            this.zoomRectangle = new Rectangle2D.Double(this.zoomPoint.getX(), scaledDataArea.getMinY(),
-                    xmax - this.zoomPoint.getX(), scaledDataArea.getHeight());
-        } else if (vZoom) {
-            final double ymax = Math.min(e.getY(), scaledDataArea.getMaxY());
-            this.zoomRectangle = new Rectangle2D.Double(scaledDataArea.getMinX(), this.zoomPoint.getY(),
-                    scaledDataArea.getWidth(), ymax - this.zoomPoint.getY());
-        }
-
-        // Draw the new zoom rectangle...
-        if (this.useBuffer) {
-            repaint();
-        } else {
-            // with no buffer, we use XOR to draw the rectangle "over" the
-            // chart...
-            drawZoomRectangle(g2, true);
-        }
-        g2.dispose();
-
     }
 
     public boolean isPanning() {
@@ -1319,67 +959,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             setCursor(DEFAULT_CURSOR);
         }
 
-        else if (this.zoomRectangle != null) {
-            boolean hZoom, vZoom;
-            if (this.orientation == PlotOrientation.HORIZONTAL) {
-                hZoom = this.rangeZoomable;
-                vZoom = this.domainZoomable;
-            } else {
-                hZoom = this.domainZoomable;
-                vZoom = this.rangeZoomable;
-            }
-
-            final boolean zoomTrigger1 = hZoom
-                    && Math.abs(e.getX() - this.zoomPoint.getX()) >= this.zoomTriggerDistance;
-            final boolean zoomTrigger2 = vZoom
-                    && Math.abs(e.getY() - this.zoomPoint.getY()) >= this.zoomTriggerDistance;
-            if (zoomTrigger1 || zoomTrigger2) {
-                if ((hZoom && (e.getX() < this.zoomPoint.getX())) || (vZoom && (e.getY() < this.zoomPoint.getY()))) {
-                    restoreAutoBounds();
-                } else {
-                    double x, y, w, h;
-                    final Rectangle2D screenDataArea = getScreenDataArea((int) this.zoomPoint.getX(),
-                            (int) this.zoomPoint.getY());
-                    final double maxX = screenDataArea.getMaxX();
-                    final double maxY = screenDataArea.getMaxY();
-                    // for mouseReleased event, (horizontalZoom || verticalZoom)
-                    // will be true, so we can just test for either being false;
-                    // otherwise both are true
-                    if (!vZoom) {
-                        x = this.zoomPoint.getX();
-                        y = screenDataArea.getMinY();
-                        w = Math.min(this.zoomRectangle.getWidth(), maxX - this.zoomPoint.getX());
-                        h = screenDataArea.getHeight();
-                    } else if (!hZoom) {
-                        x = screenDataArea.getMinX();
-                        y = this.zoomPoint.getY();
-                        w = screenDataArea.getWidth();
-                        h = Math.min(this.zoomRectangle.getHeight(), maxY - this.zoomPoint.getY());
-                    } else {
-                        x = this.zoomPoint.getX();
-                        y = this.zoomPoint.getY();
-                        w = Math.min(this.zoomRectangle.getWidth(), maxX - this.zoomPoint.getX());
-                        h = Math.min(this.zoomRectangle.getHeight(), maxY - this.zoomPoint.getY());
-                    }
-                    final Rectangle2D zoomArea = new Rectangle2D.Double(x, y, w, h);
-                    zoom(zoomArea);
-                }
-                this.zoomPoint = null;
-                this.zoomRectangle = null;
-            } else {
-                // erase the zoom rectangle
-                final Graphics2D g2 = (Graphics2D) getGraphics();
-                if (this.useBuffer) {
-                    repaint();
-                } else {
-                    drawZoomRectangle(g2, true);
-                }
-                g2.dispose();
-                this.zoomPoint = null;
-                this.zoomRectangle = null;
-            }
-
-        }
     }
 
     /**
@@ -1422,192 +1001,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * Zooms in on an anchor point (specified in screen coordinate space).
-     *
-     * @param x
-     *            the x value (in screen coordinates).
-     * @param y
-     *            the y value (in screen coordinates).
-     */
-    public void zoomInBoth(final double x, final double y) {
-        final Plot plot = this.chart.getPlot();
-        if (plot == null) {
-            return;
-        }
-        // here we tweak the notify flag on the plot so that only
-        // one notification happens even though we update multiple
-        // axes...
-        final boolean savedNotify = plot.isNotify();
-        plot.setNotify(false);
-        zoomInDomain(x, y);
-        zoomInRange(x, y);
-        plot.setNotify(savedNotify);
-    }
-
-    /**
-     * Decreases the length of the domain axis, centered about the given coordinate on the screen. The length of the
-     * domain axis is reduced by the value of {@link #getZoomInFactor()}.
-     *
-     * @param x
-     *            the x coordinate (in screen coordinates).
-     * @param y
-     *            the y-coordinate (in screen coordinates).
-     */
-    public void zoomInDomain(final double x, final double y) {
-        final Plot plot = this.chart.getPlot();
-        if (plot instanceof Zoomable) {
-            // here we tweak the notify flag on the plot so that only
-            // one notification happens even though we update multiple
-            // axes...
-            final boolean savedNotify = plot.isNotify();
-            plot.setNotify(false);
-            final Zoomable z = (Zoomable) plot;
-            z.zoomDomainAxes(this.zoomInFactor, this.info.getPlotInfo(),
-                    translateScreenToJava2D(new Point((int) x, (int) y)), this.zoomAroundAnchor);
-            plot.setNotify(savedNotify);
-        }
-    }
-
-    /**
-     * Decreases the length of the range axis, centered about the given coordinate on the screen. The length of the
-     * range axis is reduced by the value of {@link #getZoomInFactor()}.
-     *
-     * @param x
-     *            the x-coordinate (in screen coordinates).
-     * @param y
-     *            the y coordinate (in screen coordinates).
-     */
-    public void zoomInRange(final double x, final double y) {
-        final Plot plot = this.chart.getPlot();
-        if (plot instanceof Zoomable) {
-            // here we tweak the notify flag on the plot so that only
-            // one notification happens even though we update multiple
-            // axes...
-            final boolean savedNotify = plot.isNotify();
-            plot.setNotify(false);
-            final Zoomable z = (Zoomable) plot;
-            z.zoomRangeAxes(this.zoomInFactor, this.info.getPlotInfo(),
-                    translateScreenToJava2D(new Point((int) x, (int) y)), this.zoomAroundAnchor);
-            plot.setNotify(savedNotify);
-        }
-    }
-
-    /**
-     * Zooms out on an anchor point (specified in screen coordinate space).
-     *
-     * @param x
-     *            the x value (in screen coordinates).
-     * @param y
-     *            the y value (in screen coordinates).
-     */
-    public void zoomOutBoth(final double x, final double y) {
-        final Plot plot = this.chart.getPlot();
-        if (plot == null) {
-            return;
-        }
-        // here we tweak the notify flag on the plot so that only
-        // one notification happens even though we update multiple
-        // axes...
-        final boolean savedNotify = plot.isNotify();
-        plot.setNotify(false);
-        zoomOutDomain(x, y);
-        zoomOutRange(x, y);
-        plot.setNotify(savedNotify);
-    }
-
-    /**
-     * Increases the length of the domain axis, centered about the given coordinate on the screen. The length of the
-     * domain axis is increased by the value of {@link #getZoomOutFactor()}.
-     *
-     * @param x
-     *            the x coordinate (in screen coordinates).
-     * @param y
-     *            the y-coordinate (in screen coordinates).
-     */
-    public void zoomOutDomain(final double x, final double y) {
-        final Plot plot = this.chart.getPlot();
-        if (plot instanceof Zoomable) {
-            // here we tweak the notify flag on the plot so that only
-            // one notification happens even though we update multiple
-            // axes...
-            final boolean savedNotify = plot.isNotify();
-            plot.setNotify(false);
-            final Zoomable z = (Zoomable) plot;
-            z.zoomDomainAxes(this.zoomOutFactor, this.info.getPlotInfo(),
-                    translateScreenToJava2D(new Point((int) x, (int) y)), this.zoomAroundAnchor);
-            plot.setNotify(savedNotify);
-        }
-    }
-
-    /**
-     * Increases the length the range axis, centered about the given coordinate on the screen. The length of the range
-     * axis is increased by the value of {@link #getZoomOutFactor()}.
-     *
-     * @param x
-     *            the x coordinate (in screen coordinates).
-     * @param y
-     *            the y-coordinate (in screen coordinates).
-     */
-    public void zoomOutRange(final double x, final double y) {
-        final Plot plot = this.chart.getPlot();
-        if (plot instanceof Zoomable) {
-            // here we tweak the notify flag on the plot so that only
-            // one notification happens even though we update multiple
-            // axes...
-            final boolean savedNotify = plot.isNotify();
-            plot.setNotify(false);
-            final Zoomable z = (Zoomable) plot;
-            z.zoomRangeAxes(this.zoomOutFactor, this.info.getPlotInfo(),
-                    translateScreenToJava2D(new Point((int) x, (int) y)), this.zoomAroundAnchor);
-            plot.setNotify(savedNotify);
-        }
-    }
-
-    /**
-     * Zooms in on a selected region.
-     *
-     * @param selection
-     *            the selected region.
-     */
-    public void zoom(final Rectangle2D selection) {
-
-        // get the origin of the zoom selection in the Java2D space used for
-        // drawing the chart (that is, before any scaling to fit the panel)
-        final Point2D selectOrigin = translateScreenToJava2D(
-                new Point((int) Math.ceil(selection.getX()), (int) Math.ceil(selection.getY())));
-        final PlotRenderingInfo plotInfo = this.info.getPlotInfo();
-        final Rectangle2D scaledDataArea = getScreenDataArea((int) selection.getCenterX(),
-                (int) selection.getCenterY());
-        if ((selection.getHeight() > 0) && (selection.getWidth() > 0)) {
-
-            final double hLower = (selection.getMinX() - scaledDataArea.getMinX()) / scaledDataArea.getWidth();
-            final double hUpper = (selection.getMaxX() - scaledDataArea.getMinX()) / scaledDataArea.getWidth();
-            final double vLower = (scaledDataArea.getMaxY() - selection.getMaxY()) / scaledDataArea.getHeight();
-            final double vUpper = (scaledDataArea.getMaxY() - selection.getMinY()) / scaledDataArea.getHeight();
-
-            final Plot p = this.chart.getPlot();
-            if (p instanceof Zoomable) {
-                // here we tweak the notify flag on the plot so that only
-                // one notification happens even though we update multiple
-                // axes...
-                final boolean savedNotify = p.isNotify();
-                p.setNotify(false);
-                final Zoomable z = (Zoomable) p;
-                if (z.getOrientation() == PlotOrientation.HORIZONTAL) {
-                    z.zoomDomainAxes(vLower, vUpper, plotInfo, selectOrigin);
-                    z.zoomRangeAxes(hLower, hUpper, plotInfo, selectOrigin);
-                } else {
-                    z.zoomDomainAxes(hLower, hUpper, plotInfo, selectOrigin);
-                    z.zoomRangeAxes(vLower, vUpper, plotInfo, selectOrigin);
-                }
-                p.setNotify(savedNotify);
-            }
-
-        }
-
-    }
-
-    /**
      * Restores the auto-range calculation on both axes.
      */
     public void restoreAutoBounds() {
@@ -1638,7 +1031,7 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             final boolean savedNotify = plot.isNotify();
             plot.setNotify(false);
             // we need to guard against this.zoomPoint being null
-            final Point2D zp = (this.zoomPoint != null ? this.zoomPoint : new Point());
+            final Point2D zp = new Point();
             z.zoomDomainAxes(0.0, this.info.getPlotInfo(), zp);
             plot.setNotify(savedNotify);
         }
@@ -1657,7 +1050,7 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
             final boolean savedNotify = plot.isNotify();
             plot.setNotify(false);
             // we need to guard against this.zoomPoint being null
-            final Point2D zp = (this.zoomPoint != null ? this.zoomPoint : new Point());
+            final Point2D zp = new Point();
             z.zoomRangeAxes(0.0, this.info.getPlotInfo(), zp);
             plot.setNotify(savedNotify);
         }
@@ -1778,81 +1171,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
     }
 
     /**
-     * Returns the zoom in factor.
-     *
-     * @return The zoom in factor.
-     *
-     * @see #setZoomInFactor(double)
-     */
-    public double getZoomInFactor() {
-        return this.zoomInFactor;
-    }
-
-    /**
-     * Sets the zoom in factor.
-     *
-     * @param factor
-     *            the factor.
-     *
-     * @see #getZoomInFactor()
-     */
-    public void setZoomInFactor(final double factor) {
-        this.zoomInFactor = factor;
-    }
-
-    /**
-     * Returns the zoom out factor.
-     *
-     * @return The zoom out factor.
-     *
-     * @see #setZoomOutFactor(double)
-     */
-    public double getZoomOutFactor() {
-        return this.zoomOutFactor;
-    }
-
-    /**
-     * Sets the zoom out factor.
-     *
-     * @param factor
-     *            the factor.
-     *
-     * @see #getZoomOutFactor()
-     */
-    public void setZoomOutFactor(final double factor) {
-        this.zoomOutFactor = factor;
-    }
-
-    /**
-     * Draws zoom rectangle (if present). The drawing is performed in XOR mode, therefore when this method is called
-     * twice in a row, the second call will completely restore the state of the canvas.
-     *
-     * @param g2
-     *            the graphics device.
-     * @param xor
-     *            use XOR for drawing?
-     */
-    private void drawZoomRectangle(final Graphics2D g2, final boolean xor) {
-        if (this.zoomRectangle != null) {
-            if (xor) {
-                // Set XOR mode to draw the zoom rectangle
-                g2.setXORMode(Color.gray);
-            }
-            if (this.fillZoomRectangle) {
-                g2.setPaint(this.zoomFillPaint);
-                g2.fill(this.zoomRectangle);
-            } else {
-                g2.setPaint(this.zoomOutlinePaint);
-                g2.draw(this.zoomRectangle);
-            }
-            if (xor) {
-                // Reset to the default 'overwrite' mode
-                g2.setPaintMode();
-            }
-        }
-    }
-
-    /**
      * Draws a vertical line used to trace the mouse position to the horizontal axis.
      *
      * @param g2
@@ -1906,72 +1224,6 @@ public class CustomChartPanel extends JPanel implements ChartChangeListener, Cha
 
         // Reset to the default 'overwrite' mode
         g2.setPaintMode();
-    }
-
-    /**
-     * Prints the chart on a single page.
-     *
-     * @param g
-     *            the graphics context.
-     * @param pf
-     *            the page format to use.
-     * @param pageIndex
-     *            the index of the page. If not <code>0</code>, nothing gets print.
-     *
-     * @return The result of printing.
-     */
-    @Override
-    public int print(final Graphics g, final PageFormat pf, final int pageIndex) {
-
-        if (pageIndex != 0) {
-            return NO_SUCH_PAGE;
-        }
-        final Graphics2D g2 = (Graphics2D) g;
-        final double x = pf.getImageableX();
-        final double y = pf.getImageableY();
-        final double w = pf.getImageableWidth();
-        final double h = pf.getImageableHeight();
-        this.chart.draw(g2, new Rectangle2D.Double(x, y, w, h), this.anchor, null);
-        return PAGE_EXISTS;
-
-    }
-
-    /**
-     * Provides serialization support.
-     *
-     * @param stream
-     *            the output stream.
-     *
-     * @throws IOException
-     *             if there is an I/O error.
-     */
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-        stream.defaultWriteObject();
-        SerialUtils.writePaint(this.zoomFillPaint, stream);
-        SerialUtils.writePaint(this.zoomOutlinePaint, stream);
-    }
-
-    /**
-     * Provides serialization support.
-     *
-     * @param stream
-     *            the input stream.
-     *
-     * @throws IOException
-     *             if there is an I/O error.
-     * @throws ClassNotFoundException
-     *             if there is a classpath problem.
-     */
-    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        stream.defaultReadObject();
-        this.zoomFillPaint = SerialUtils.readPaint(stream);
-        this.zoomOutlinePaint = SerialUtils.readPaint(stream);
-
-        // register as a listener with sub-components...
-        if (this.chart != null) {
-            this.chart.addChangeListener(this);
-        }
-
     }
 
 }
