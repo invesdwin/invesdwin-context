@@ -8,6 +8,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 
+import de.invesdwin.context.jfreechart.panel.helper.StrokeType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 @NotThreadSafe
@@ -25,6 +26,7 @@ public class CustomVolumeBarRenderer extends XYBarRenderer {
         setShadowVisible(false);
         setSeriesPaint(0, candlestickRenderer.getSeriesPaint(0));
         setSeriesFillPaint(0, candlestickRenderer.getSeriesFillPaint(0));
+        setSeriesStroke(0, StrokeType.Solid.getStroke());
         setDrawBarOutline(false);
 
         this.upColor = (Color) candlestickRenderer.getUpPaint();

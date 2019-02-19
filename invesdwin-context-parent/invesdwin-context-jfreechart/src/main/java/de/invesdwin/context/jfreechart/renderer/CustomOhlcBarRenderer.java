@@ -15,6 +15,8 @@ import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.panel.helper.StrokeType;
+
 @NotThreadSafe
 public class CustomOhlcBarRenderer extends HighLowRenderer {
 
@@ -23,6 +25,7 @@ public class CustomOhlcBarRenderer extends HighLowRenderer {
 
     public CustomOhlcBarRenderer(final CustomOhlcCandlestickRenderer candlestickRenderer) {
         this.candlestickRenderer = candlestickRenderer;
+        setSeriesStroke(0, StrokeType.Solid.getStroke());
     }
 
     @Override

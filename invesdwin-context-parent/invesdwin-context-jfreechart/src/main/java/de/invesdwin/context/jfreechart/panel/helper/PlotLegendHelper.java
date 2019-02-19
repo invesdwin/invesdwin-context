@@ -207,7 +207,7 @@ public class PlotLegendHelper {
                     highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
                 }
                 final int subplotIndex = chartPanel.getCombinedPlot().getSubplotIndex(mouseX, mouseY);
-                highlightedLegendInfo = new HighlightedLegendInfo(subplotIndex, plot, title, datasetIndex);
+                highlightedLegendInfo = new HighlightedLegendInfo(chartPanel, subplotIndex, plot, title, datasetIndex);
                 title.setBackgroundPaint(HIGHLIGHTED_LEGEND_BACKGROUND_PAINT);
                 chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
             }
@@ -347,7 +347,8 @@ public class PlotLegendHelper {
                 XYPlots.removeDataset(fromPlot, fromDatasetIndex);
                 updatePlots(fromPlot, toPlot);
                 highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
-                dragStart = new HighlightedLegendInfo(toSubplotIndex, toPlot, getTitle(toPlot), toDatasetIndex);
+                dragStart = new HighlightedLegendInfo(chartPanel, toSubplotIndex, toPlot, getTitle(toPlot),
+                        toDatasetIndex);
                 dragStart.getTitle().setBackgroundPaint(HIGHLIGHTED_LEGEND_BACKGROUND_PAINT);
                 highlightedLegendInfo = dragStart;
             }
@@ -398,6 +399,13 @@ public class PlotLegendHelper {
 
     public boolean isHighlighting() {
         return dragStart != null || highlightedLegendInfo != null;
+    }
+
+    public HighlightedLegendInfo getHighlightedLegendInfo() {
+        if (dragStart != null) {
+            return null;
+        }
+        return highlightedLegendInfo;
     }
 
     public void setDatasetTrashable(final Dataset dataset, final boolean trashable) {

@@ -38,6 +38,8 @@ import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.panel.helper.StrokeType;
+
 @NotThreadSafe
 public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {
 
@@ -123,6 +125,8 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
         area.closePath();
         this.legendArea = area;
         this.gradientTransformer = new StandardGradientPaintTransformer();
+
+        setSeriesStroke(0, StrokeType.Solid.getStroke());
     }
 
     /**

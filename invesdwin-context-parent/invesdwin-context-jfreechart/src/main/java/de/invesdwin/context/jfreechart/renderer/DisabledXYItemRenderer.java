@@ -2,6 +2,8 @@ package de.invesdwin.context.jfreechart.renderer;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -36,5 +38,59 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
             final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
             final int pass) {}
     //CHECKSTYLE:ON
+
+    public static XYItemRenderer maybeUnwrap(final XYItemRenderer renderer) {
+        if (renderer instanceof DisabledXYItemRenderer) {
+            final DisabledXYItemRenderer cRenderer = (DisabledXYItemRenderer) renderer;
+            return cRenderer.getEnabledRenderer();
+        } else {
+            return renderer;
+        }
+    }
+
+    @Override
+    public void setSeriesStroke(final int series, final Stroke stroke, final boolean notify) {
+        enabledRenderer.setSeriesStroke(series, stroke, notify);
+    }
+
+    @Override
+    public void setSeriesStroke(final int series, final Stroke stroke) {
+        enabledRenderer.setSeriesStroke(series, stroke);
+    }
+
+    @Override
+    public Stroke getSeriesStroke(final int series) {
+        return enabledRenderer.getSeriesStroke(series);
+    }
+
+    @Override
+    public void setSeriesPaint(final int series, final Paint paint, final boolean notify) {
+        enabledRenderer.setSeriesPaint(series, paint, notify);
+    }
+
+    @Override
+    public void setSeriesPaint(final int series, final Paint paint) {
+        enabledRenderer.setSeriesPaint(series, paint);
+    }
+
+    @Override
+    public Paint getSeriesPaint(final int series) {
+        return enabledRenderer.getSeriesPaint(series);
+    }
+
+    @Override
+    public void setSeriesFillPaint(final int series, final Paint paint, final boolean notify) {
+        enabledRenderer.setSeriesFillPaint(series, paint, notify);
+    }
+
+    @Override
+    public void setSeriesFillPaint(final int series, final Paint paint) {
+        enabledRenderer.setSeriesFillPaint(series, paint);
+    }
+
+    @Override
+    public Paint getSeriesFillPaint(final int series) {
+        return enabledRenderer.getSeriesFillPaint(series);
+    }
 
 }

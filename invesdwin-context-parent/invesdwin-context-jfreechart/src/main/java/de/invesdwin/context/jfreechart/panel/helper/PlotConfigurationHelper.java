@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.panel.helper;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -9,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.ButtonGroup;
@@ -42,8 +45,8 @@ public class PlotConfigurationHelper {
     public static final Color DEFAULT_DOWN_COLOR = Colors.fromHex("#EF5350");
     public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
-    private static final int VOLUME_ALPHA = 100;
-    private static final int AREA_FILL_ALPHA = 25;
+    public static final int VOLUME_BAR_ALPHA = 100;
+    public static final int AREA_FILL_ALPHA = 25;
 
     private final InteractiveChartPanel chartPanel;
     private final JPopupMenu popupMenu;
@@ -59,6 +62,15 @@ public class PlotConfigurationHelper {
     private final CustomXYAreaRenderer areaRenderer;
     private final StandardXYItemRenderer lineRenderer;
     private final XYStepRenderer stepLineRenderer;
+
+    private final Set<String> volumeSeriesKeys = new HashSet<>();
+
+    private JMenuItem titleItem;
+    private JMenu priceRendererItem;
+    private JMenu seriesRendererItem;
+    private JMenuItem copyToClipboardItem;
+    private JMenuItem saveAsPNGItem;
+    private HighlightedLegendInfo highlighted;
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -126,7 +138,7 @@ public class PlotConfigurationHelper {
         this.upColor = upColor;
 
         candlestickRenderer.setUpPaint(upColor);
-        final Color upColorAlpha = new Color(upColor.getRed(), upColor.getGreen(), upColor.getBlue(), VOLUME_ALPHA);
+        final Color upColorAlpha = new Color(upColor.getRed(), upColor.getGreen(), upColor.getBlue(), VOLUME_BAR_ALPHA);
         volumeBarRenderer.setUpColor(upColorAlpha);
     }
 
@@ -139,7 +151,7 @@ public class PlotConfigurationHelper {
 
         candlestickRenderer.setDownPaint(downColor);
         final Color downColorAlpha = new Color(downColor.getRed(), downColor.getGreen(), downColor.getBlue(),
-                VOLUME_ALPHA);
+                VOLUME_BAR_ALPHA);
         volumeBarRenderer.setDownColor(downColorAlpha);
     }
 
@@ -152,6 +164,7 @@ public class PlotConfigurationHelper {
 
         this.lineRenderer.setSeriesPaint(0, priceColor);
         this.areaRenderer.setSeriesPaint(0, priceColor);
+        this.volumeBarRenderer.setSeriesPaint(0, priceColor);
         this.stepLineRenderer.setSeriesPaint(0, priceColor);
         final Color priceColorAlpha = new Color(priceColor.getRed(), priceColor.getGreen(), priceColor.getBlue(),
                 AREA_FILL_ALPHA);
@@ -160,30 +173,14 @@ public class PlotConfigurationHelper {
 
     protected JPopupMenu createPopupMenu() {
 
-        final JPopupMenu result = new JPopupMenu("Chart Configuration:");
-        result.addPopupMenuListener(new PopupMenuListener() {
-            @Override
-            public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
-                chartPanel.getPlotNavigationHelper().mouseExited();
-            }
+        titleItem = new JMenuItem("");
+        titleItem.setEnabled(false);
 
-            @Override
-            public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
-                //only the first popup should have the crosshair visible
-                chartPanel.mouseExited();
-            }
-
-            @Override
-            public void popupMenuCanceled(final PopupMenuEvent e) {}
-        });
-
-        //price renderer
-        final JMenu priceRendererItem = new JMenu("Price Renderer");
-        result.add(priceRendererItem);
-
+        priceRendererItem = new JMenu("Renderer");
         final ButtonGroup priceRendererGroup = new ButtonGroup();
         for (final PriceRendererType type : PriceRendererType.values()) {
-            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.name());
+            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
+            item.setName(type.name());
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
@@ -192,32 +189,100 @@ public class PlotConfigurationHelper {
             });
             priceRendererGroup.add(item);
             priceRendererItem.add(item);
-            if (priceRendererType == type) {
-                item.setSelected(true);
-            }
         }
 
-        //copy
-        final JMenuItem copyItem = new JMenuItem("Copy To Clipboard");
-        copyItem.addActionListener(new ActionListener() {
+        seriesRendererItem = new JMenu("Renderer");
+        final ButtonGroup seriesRendererGroup = new ButtonGroup();
+        for (final SeriesRendererType type : SeriesRendererType.values()) {
+            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
+            item.setName(type.name());
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    final XYItemRenderer renderer = highlighted.getRenderer();
+                    if (type == SeriesRendererType.Column && volumeSeriesKeys.contains(highlighted.getSeriesKey())) {
+                        final CustomVolumeBarRenderer newRenderer = getVolumeBarRenderer();
+                        newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
+                        highlighted.setRenderer(newRenderer);
+                    } else {
+                        final StrokeType strokeType = StrokeType.valueOf(renderer.getSeriesStroke(0));
+                        final Color color = (Color) renderer.getSeriesPaint(0);
+                        highlighted.setRenderer(type.newRenderer(strokeType, color));
+                    }
+                }
+            });
+            seriesRendererGroup.add(item);
+            seriesRendererItem.add(item);
+        }
+
+        copyToClipboardItem = new JMenuItem("Copy To Clipboard");
+        copyToClipboardItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 copyToClipboard();
             }
         });
-        result.add(copyItem);
 
-        //save
-        final JMenuItem pngItem = new JMenuItem("Save As PNG...");
-        pngItem.addActionListener(new ActionListener() {
+        saveAsPNGItem = new JMenuItem("Save As PNG...");
+        saveAsPNGItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 saveAsPNG();
             }
         });
-        result.add(pngItem);
 
-        return result;
+        final JPopupMenu menu = new JPopupMenu();
+        menu.addPopupMenuListener(new PopupMenuListener() {
+
+            @Override
+            public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
+                menu.removeAll();
+                highlighted = chartPanel.getPlotLegendHelper().getHighlightedLegendInfo();
+                final JMenu rendererItem;
+                if (highlighted == null || highlighted.isPriceSeries()) {
+                    titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
+                    rendererItem = priceRendererItem;
+                    for (final Component component : priceRendererItem.getMenuComponents()) {
+                        final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                        if (menuItem.getName().equals(priceRendererType.name())) {
+                            menuItem.setSelected(true);
+                        }
+                    }
+                } else {
+                    if (highlighted.getRenderer() == getVolumeBarRenderer()) {
+                        volumeSeriesKeys.add(highlighted.getSeriesKey());
+                    }
+                    titleItem.setText(highlighted.getSeriesKey());
+                    rendererItem = seriesRendererItem;
+                    final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(highlighted.getRenderer());
+                    for (final Component component : seriesRendererItem.getMenuComponents()) {
+                        final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                        if (menuItem.getName().equals(seriesRendererType.name())) {
+                            menuItem.setSelected(true);
+                        }
+                    }
+                }
+                menu.add(titleItem);
+                menu.add(rendererItem);
+                menu.addSeparator();
+                menu.add(copyToClipboardItem);
+                menu.add(saveAsPNGItem);
+
+                chartPanel.getPlotNavigationHelper().mouseExited();
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuCanceled(final PopupMenuEvent e) {
+                highlighted = null;
+                //only the first popup should have the crosshair visible
+                chartPanel.mouseExited();
+            }
+        });
+
+        return menu;
 
     }
 

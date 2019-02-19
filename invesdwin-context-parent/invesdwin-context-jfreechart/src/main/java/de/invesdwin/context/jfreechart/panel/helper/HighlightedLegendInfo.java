@@ -3,19 +3,25 @@ package de.invesdwin.context.jfreechart.panel.helper;
 import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
+import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 
 @Immutable
 public class HighlightedLegendInfo {
 
+    private final InteractiveChartPanel chartPanel;
     private final int subplotIndex;
     private final XYPlot plot;
     private final CustomLegendTitle title;
     private final int datasetIndex;
 
-    public HighlightedLegendInfo(final int subplotIndex, final XYPlot plot, final CustomLegendTitle title,
-            final int datasetIndex) {
+    public HighlightedLegendInfo(final InteractiveChartPanel chartPanel, final int subplotIndex, final XYPlot plot,
+            final CustomLegendTitle title, final int datasetIndex) {
+        this.chartPanel = chartPanel;
         this.subplotIndex = subplotIndex;
         this.plot = plot;
         this.title = title;
@@ -36,6 +42,26 @@ public class HighlightedLegendInfo {
 
     public int getDatasetIndex() {
         return datasetIndex;
+    }
+
+    public String getSeriesKey() {
+        return String.valueOf(getDataset().getSeriesKey(0));
+    }
+
+    public boolean isPriceSeries() {
+        return chartPanel.getDataset() == DisabledXYDataset.maybeUnwrap(getDataset());
+    }
+
+    public XYDataset getDataset() {
+        return plot.getDataset(datasetIndex);
+    }
+
+    public XYItemRenderer getRenderer() {
+        return plot.getRenderer(datasetIndex);
+    }
+
+    public void setRenderer(final XYItemRenderer renderer) {
+        plot.setRenderer(datasetIndex, renderer);
     }
 
 }
