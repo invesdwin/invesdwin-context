@@ -87,17 +87,17 @@ public class PlotConfigurationHelper {
 
     public void setPriceRendererType(final PriceRendererType priceRendererType) {
         if (priceRendererType != this.priceRendererType) {
-            chartPanel.getOhlcPlot().setRenderer(0, newPriceRenderer(priceRendererType));
+            chartPanel.getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
             chartPanel.update();
         }
         this.priceRendererType = priceRendererType;
     }
 
-    public XYItemRenderer newPriceRenderer() {
-        return newPriceRenderer(priceRendererType);
+    public XYItemRenderer getPriceRenderer() {
+        return getPriceRenderer(priceRendererType);
     }
 
-    public XYItemRenderer newPriceRenderer(final PriceRendererType priceRendererType) {
+    public XYItemRenderer getPriceRenderer(final PriceRendererType priceRendererType) {
         switch (priceRendererType) {
         case Area:
             return areaRenderer;

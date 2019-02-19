@@ -181,7 +181,7 @@ public class InteractiveChartPanel extends JPanel {
     protected void initPlots() {
         final int precision = initRangeAxisDecimalDigits();
         ohlcPlot = new XYPlot(dataset, domainAxis, XYPlots.newRangeAxis(precision),
-                plotConfigurationHelper.newPriceRenderer());
+                plotConfigurationHelper.getPriceRenderer());
         ohlcPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(ohlcPlot);
         dataset.setPlot(ohlcPlot);
