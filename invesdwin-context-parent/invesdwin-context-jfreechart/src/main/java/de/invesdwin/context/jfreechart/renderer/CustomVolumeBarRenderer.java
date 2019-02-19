@@ -11,13 +11,13 @@ import org.jfree.chart.renderer.xy.XYBarRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 @NotThreadSafe
-public class VolumeRenderer extends XYBarRenderer {
+public class CustomVolumeBarRenderer extends XYBarRenderer {
 
-    private final CustomCandlestickRenderer candlestickRenderer;
-    private final Paint upPaint;
-    private final Paint downPaint;
+    private final CustomOhlcCandlestickRenderer candlestickRenderer;
+    private Color upColor;
+    private Color downColor;
 
-    public VolumeRenderer(final CustomCandlestickRenderer candlestickRenderer) {
+    public CustomVolumeBarRenderer(final CustomOhlcCandlestickRenderer candlestickRenderer) {
         super(0.25f);
         this.candlestickRenderer = candlestickRenderer;
 
@@ -27,19 +27,33 @@ public class VolumeRenderer extends XYBarRenderer {
         setSeriesFillPaint(0, candlestickRenderer.getSeriesFillPaint(0));
         setDrawBarOutline(false);
 
-        final Color upColor = (Color) candlestickRenderer.getUpPaint();
-        this.upPaint = new Color(upColor.getRed(), upColor.getGreen(), upColor.getBlue(), 100);
-        final Color downColor = (Color) candlestickRenderer.getDownPaint();
-        this.downPaint = new Color(downColor.getRed(), downColor.getGreen(), downColor.getBlue(), 100);
+        this.upColor = (Color) candlestickRenderer.getUpPaint();
+        this.downColor = (Color) candlestickRenderer.getDownPaint();
+    }
+
+    public void setUpColor(final Color upColor) {
+        this.upColor = upColor;
+    }
+
+    public Color getUpColor() {
+        return upColor;
+    }
+
+    public void setDownColor(final Color downColor) {
+        this.downColor = downColor;
+    }
+
+    public Color getDownColor() {
+        return downColor;
     }
 
     @Override
     public Paint getItemPaint(final int row, final int column) {
         final Paint itemPaint = candlestickRenderer.getItemPaint(row, column);
         if (itemPaint == candlestickRenderer.getUpPaint()) {
-            return upPaint;
+            return upColor;
         } else if (itemPaint == candlestickRenderer.getDownPaint()) {
-            return downPaint;
+            return downColor;
         } else {
             throw UnknownArgumentException.newInstance(Paint.class, itemPaint);
         }

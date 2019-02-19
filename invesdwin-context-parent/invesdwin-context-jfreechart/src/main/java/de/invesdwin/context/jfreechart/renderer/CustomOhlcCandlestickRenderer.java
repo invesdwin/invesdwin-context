@@ -1,8 +1,5 @@
 package de.invesdwin.context.jfreechart.renderer;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
@@ -35,7 +32,8 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.util.lang.Colors;
+import de.invesdwin.context.jfreechart.panel.helper.PlotConfigurationHelper;
+import de.invesdwin.util.error.UnknownArgumentException;
 
 /**
  * A renderer that draws candlesticks on an {@link XYPlot} (requires a {@link OHLCDataset}). The example shown here is
@@ -47,12 +45,12 @@ import de.invesdwin.util.lang.Colors;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class CustomCandlestickRenderer extends AbstractXYItemRenderer
+public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         implements XYItemRenderer, Cloneable, PublicCloneable, Serializable {
 
-    private static final Color DEFAULT_DOWN_PAINT = Colors.fromHex("#EF5350");
+    private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
 
-    private static final Color DEFAULT_UP_PAINT = Colors.fromHex("#26A69A");
+    private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;
 
     /** For serialization. */
     private static final long serialVersionUID = 50390395841817121L;
@@ -61,13 +59,8 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
      * The number (generally between 0.0 and 1.0) by which the available space automatically calculated for the candles
      * will be multiplied to determine the actual width to use.
      */
-    private double autoWidthFactor = 4.5 / 7;
-
-    /** The minimum gap between one candle and the next */
-    private double autoWidthGap = 0.0;
-
-    /** The candle width. */
-    private double candleWidth;
+    private final double autoWidthFactor = 4.5 / 7;
+    private final double autoWidthFactorSmall = 0.9;
 
     /** The maximum candlewidth in milliseconds. */
     private double maxCandleWidthInMilliseconds = 1000.0 * 60.0 * 60.0 * 20.0;
@@ -85,12 +78,6 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
      */
     private transient Paint downPaint;
 
-    /** A flag controlling whether or not volume bars are drawn on the chart. */
-    private boolean drawVolume;
-
-    /** Temporary storage for the maximum volume. */
-    private transient double maxVolume;
-
     /**
      * A flag that controls whether or not the renderer's outline paint is used to draw the outline of the candlestick.
      * The default value is <code>false</code> to avoid a change of behaviour for existing code.
@@ -104,42 +91,21 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
     /**
      * Creates a new renderer for candlestick charts.
      */
-    public CustomCandlestickRenderer(final OHLCDataset dataset) {
-        this(dataset, -1.0);
+    public CustomOhlcCandlestickRenderer(final OHLCDataset dataset) {
+        this(dataset, new HighLowItemLabelGenerator());
     }
 
     /**
      * Creates a new renderer for candlestick charts.
-     * <P>
-     * Use -1 for the candle width if you prefer the width to be calculated automatically.
      *
-     * @param candleWidth
-     *            The candle width.
-     */
-    public CustomCandlestickRenderer(final OHLCDataset dataset, final double candleWidth) {
-        this(dataset, candleWidth, true, new HighLowItemLabelGenerator());
-    }
-
-    /**
-     * Creates a new renderer for candlestick charts.
-     * <P>
-     * Use -1 for the candle width if you prefer the width to be calculated automatically.
-     *
-     * @param candleWidth
-     *            the candle width.
-     * @param drawVolume
-     *            a flag indicating whether or not volume bars should be drawn.
      * @param toolTipGenerator
      *            the tool tip generator. <code>null</code> is none.
      */
-    public CustomCandlestickRenderer(final OHLCDataset dataset, final double candleWidth, final boolean drawVolume,
-            final XYToolTipGenerator toolTipGenerator) {
+    public CustomOhlcCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
-        this.candleWidth = candleWidth;
-        this.drawVolume = drawVolume;
-        this.upPaint = DEFAULT_UP_PAINT;
-        this.downPaint = DEFAULT_DOWN_PAINT;
+        this.upPaint = PlotConfigurationHelper.DEFAULT_UP_COLOR;
+        this.downPaint = PlotConfigurationHelper.DEFAULT_DOWN_COLOR;
         this.useOutlinePaint = false; // false preserves the old behaviour
                                       // prior to introducing this flag
         setSeriesPaint(0, upPaint);
@@ -148,37 +114,6 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
 
     public OHLCDataset getDataset() {
         return dataset;
-    }
-
-    /**
-     * Returns the width of each candle.
-     *
-     * @return The candle width.
-     *
-     * @see #setCandleWidth(double)
-     */
-    public double getCandleWidth() {
-        return this.candleWidth;
-    }
-
-    /**
-     * Sets the candle width and sends a {@link RendererChangeEvent} to all registered listeners.
-     * <P>
-     * If you set the width to a negative value, the renderer will calculate the candle width automatically based on the
-     * space available on the chart.
-     *
-     * @param width
-     *            The width.
-     * @see #setAutoWidthMethod(int)
-     * @see #setAutoWidthGap(double)
-     * @see #setAutoWidthFactor(double)
-     * @see #setMaxCandleWidthInMilliseconds(double)
-     */
-    public void setCandleWidth(final double width) {
-        if (width != this.candleWidth) {
-            this.candleWidth = width;
-            fireChangeEvent();
-        }
     }
 
     /**
@@ -208,69 +143,6 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
     public void setMaxCandleWidthInMilliseconds(final double millis) {
         this.maxCandleWidthInMilliseconds = millis;
         fireChangeEvent();
-    }
-
-    /**
-     * Returns the factor by which the available space automatically calculated for the candles will be multiplied to
-     * determine the actual width to use.
-     *
-     * @return The width factor (generally between 0.0 and 1.0).
-     *
-     * @see #setAutoWidthFactor(double)
-     */
-    public double getAutoWidthFactor() {
-        return this.autoWidthFactor;
-    }
-
-    /**
-     * Sets the factor by which the available space automatically calculated for the candles will be multiplied to
-     * determine the actual width to use.
-     *
-     * @param autoWidthFactor
-     *            The width factor (generally between 0.0 and 1.0).
-     *
-     * @see #getAutoWidthFactor()
-     * @see #setCandleWidth(double)
-     * @see #setAutoWidthMethod(int)
-     * @see #setAutoWidthGap(double)
-     * @see #setMaxCandleWidthInMilliseconds(double)
-     */
-    public void setAutoWidthFactor(final double autoWidthFactor) {
-        if (this.autoWidthFactor != autoWidthFactor) {
-            this.autoWidthFactor = autoWidthFactor;
-            fireChangeEvent();
-        }
-    }
-
-    /**
-     * Returns the amount of space to leave on the left and right of each candle when automatically calculating widths.
-     *
-     * @return The gap.
-     *
-     * @see #setAutoWidthGap(double)
-     */
-    public double getAutoWidthGap() {
-        return this.autoWidthGap;
-    }
-
-    /**
-     * Sets the amount of space to leave on the left and right of each candle when automatically calculating widths and
-     * sends a {@link RendererChangeEvent} to all registered listeners.
-     *
-     * @param autoWidthGap
-     *            The gap.
-     *
-     * @see #getAutoWidthGap()
-     * @see #setCandleWidth(double)
-     * @see #setAutoWidthMethod(int)
-     * @see #setAutoWidthFactor(double)
-     * @see #setMaxCandleWidthInMilliseconds(double)
-     */
-    public void setAutoWidthGap(final double autoWidthGap) {
-        if (this.autoWidthGap != autoWidthGap) {
-            this.autoWidthGap = autoWidthGap;
-            fireChangeEvent();
-        }
     }
 
     /**
@@ -319,35 +191,6 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
     public void setDownPaint(final Paint paint) {
         this.downPaint = paint;
         fireChangeEvent();
-    }
-
-    /**
-     * Returns a flag indicating whether or not volume bars are drawn on the chart.
-     *
-     * @return A boolean.
-     *
-     * @since 1.0.5
-     *
-     * @see #setDrawVolume(boolean)
-     */
-    public boolean getDrawVolume() {
-        return this.drawVolume;
-    }
-
-    /**
-     * Sets a flag that controls whether or not volume bars are drawn in the background and sends a
-     * {@link RendererChangeEvent} to all registered listeners.
-     *
-     * @param flag
-     *            the flag.
-     *
-     * @see #getDrawVolume()
-     */
-    public void setDrawVolume(final boolean flag) {
-        if (this.drawVolume != flag) {
-            this.drawVolume = flag;
-            fireChangeEvent();
-        }
     }
 
     /**
@@ -428,22 +271,15 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
         // Absolute value, since the relative x
         // positions are reversed for horizontal orientation
 
-        // calculate the highest volume in the dataset...
-        if (this.drawVolume) {
-            final OHLCDataset highLowDataset = (OHLCDataset) dataset;
-            this.maxVolume = 0.0;
-            for (int series = 0; series < highLowDataset.getSeriesCount(); series++) {
-                for (int item = 0; item < highLowDataset.getItemCount(series); item++) {
-                    final double volume = highLowDataset.getVolumeValue(series, item);
-                    if (volume > this.maxVolume) {
-                        this.maxVolume = volume;
-                    }
-
-                }
-            }
-        }
-
         return new XYItemRendererState(info);
+    }
+
+    public double getAutoWidthFactor() {
+        return autoWidthFactor;
+    }
+
+    public double getAutoWidthFactorSmall() {
+        return autoWidthFactorSmall;
     }
 
     /**
@@ -480,15 +316,7 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
             final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
             final int pass) {
 
-        boolean horiz;
-        final PlotOrientation orientation = plot.getOrientation();
-        if (orientation == PlotOrientation.HORIZONTAL) {
-            horiz = true;
-        } else if (orientation == PlotOrientation.VERTICAL) {
-            horiz = false;
-        } else {
-            return;
-        }
+        final boolean horiz = isHorizontal(plot);
 
         // setup for collecting optional entity info...
         EntityCollection entities = null;
@@ -513,27 +341,7 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
         final double yyOpen = rangeAxis.valueToJava2D(yOpen, dataArea, edge);
         final double yyClose = rangeAxis.valueToJava2D(yClose, dataArea, edge);
 
-        double volumeWidth;
-        double stickWidth;
-        if (this.candleWidth > 0) {
-            // These are deliberately not bounded to minimums/maxCandleWidth to
-            //  retain old behaviour.
-            volumeWidth = this.candleWidth;
-            stickWidth = this.candleWidth;
-        } else {
-            double xxWidth = 0;
-            final int itemCount = state.getLastItemIndex() - state.getFirstItemIndex();
-            if (horiz) {
-                xxWidth = dataArea.getHeight() / itemCount;
-            } else {
-                xxWidth = dataArea.getWidth() / itemCount;
-            }
-            xxWidth -= 2 * this.autoWidthGap;
-            xxWidth *= this.autoWidthFactor;
-            xxWidth = Math.min(xxWidth, this.maxCandleWidth);
-            volumeWidth = Math.max(Math.min(0.0001, this.maxCandleWidth), xxWidth);
-            stickWidth = Math.max(Math.min(0.0003, this.maxCandleWidth), xxWidth);
-        }
+        final double stickWidth = calculateStickWidth(state, dataArea, horiz);
 
         final Paint p = getItemPaint(series, item);
         Paint outlinePaint = null;
@@ -543,34 +351,6 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
         final Stroke s = getItemStroke(series, item);
 
         g2.setStroke(s);
-
-        if (this.drawVolume) {
-            final int volume = (int) highLowData.getVolumeValue(series, item);
-            final double volumeHeight = volume / this.maxVolume;
-
-            double min, max;
-            if (horiz) {
-                min = dataArea.getMinX();
-                max = dataArea.getMaxX();
-            } else {
-                min = dataArea.getMinY();
-                max = dataArea.getMaxY();
-            }
-
-            final double zzVolume = volumeHeight * (max - min);
-
-            g2.setPaint(p);
-            final Composite originalComposite = g2.getComposite();
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-
-            if (horiz) {
-                g2.fill(new Rectangle2D.Double(min, xx - volumeWidth / 2, zzVolume, volumeWidth));
-            } else {
-                g2.fill(new Rectangle2D.Double(xx - volumeWidth / 2, max - zzVolume, volumeWidth, zzVolume));
-            }
-
-            g2.setComposite(originalComposite);
-        }
 
         if (this.useOutlinePaint) {
             g2.setPaint(outlinePaint);
@@ -644,6 +424,44 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
 
     }
 
+    public boolean isHorizontal(final XYPlot plot) {
+        final boolean horiz;
+        final PlotOrientation orientation = plot.getOrientation();
+        if (orientation == PlotOrientation.HORIZONTAL) {
+            horiz = true;
+        } else if (orientation == PlotOrientation.VERTICAL) {
+            horiz = false;
+        } else {
+            throw UnknownArgumentException.newInstance(PlotOrientation.class, orientation);
+        }
+        return horiz;
+    }
+
+    public double calculateStickWidth(final XYItemRendererState state, final Rectangle2D dataArea,
+            final boolean horiz) {
+        double stickWidth;
+        double xxWidth = 0;
+        final int itemCount = state.getLastItemIndex() - state.getFirstItemIndex();
+        if (horiz) {
+            xxWidth = dataArea.getHeight() / itemCount;
+        } else {
+            xxWidth = dataArea.getWidth() / itemCount;
+        }
+        if (itemCount > SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS) {
+            xxWidth *= autoWidthFactor;
+        } else if (itemCount > SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS) {
+            final double autoWidthFactorDifference = autoWidthFactorSmall - autoWidthFactor;
+            final double itemDifference = itemCount / SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS;
+            final double autoWidthFactorScaled = autoWidthFactorSmall - autoWidthFactorDifference * itemDifference;
+            xxWidth *= autoWidthFactorScaled;
+        } else {
+            xxWidth *= autoWidthFactorSmall;
+        }
+        xxWidth = Math.min(xxWidth, this.maxCandleWidth);
+        stickWidth = Math.max(Math.min(0.0003, this.maxCandleWidth), xxWidth);
+        return stickWidth;
+    }
+
     @Override
     public Paint getItemPaint(final int row, final int column) {
         //determine up or down candle
@@ -673,29 +491,20 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CustomCandlestickRenderer)) {
+        if (!(obj instanceof CustomOhlcCandlestickRenderer)) {
             return false;
         }
-        final CustomCandlestickRenderer that = (CustomCandlestickRenderer) obj;
-        if (this.candleWidth != that.candleWidth) {
-            return false;
-        }
+        final CustomOhlcCandlestickRenderer that = (CustomOhlcCandlestickRenderer) obj;
         if (!PaintUtils.equal(this.upPaint, that.upPaint)) {
             return false;
         }
         if (!PaintUtils.equal(this.downPaint, that.downPaint)) {
             return false;
         }
-        if (this.drawVolume != that.drawVolume) {
-            return false;
-        }
         if (this.maxCandleWidthInMilliseconds != that.maxCandleWidthInMilliseconds) {
             return false;
         }
         if (this.autoWidthFactor != that.autoWidthFactor) {
-            return false;
-        }
-        if (this.autoWidthGap != that.autoWidthGap) {
             return false;
         }
         if (this.useOutlinePaint != that.useOutlinePaint) {
@@ -747,20 +556,6 @@ public class CustomCandlestickRenderer extends AbstractXYItemRenderer
         stream.defaultReadObject();
         this.upPaint = SerialUtils.readPaint(stream);
         this.downPaint = SerialUtils.readPaint(stream);
-    }
-
-    // --- DEPRECATED CODE ----------------------------------------------------
-
-    /**
-     * Returns a flag indicating whether or not volume bars are drawn on the chart.
-     *
-     * @return <code>true</code> if volume bars are drawn on the chart.
-     *
-     * @deprecated As of 1.0.5, you should use the {@link #getDrawVolume()} method.
-     */
-    @Deprecated
-    public boolean drawVolume() {
-        return this.drawVolume;
     }
 
 }

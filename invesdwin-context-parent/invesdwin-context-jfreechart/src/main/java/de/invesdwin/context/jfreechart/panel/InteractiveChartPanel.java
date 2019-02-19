@@ -33,7 +33,6 @@ import de.invesdwin.context.jfreechart.panel.helper.PlotLegendHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotNavigationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.PlotResizeHelper;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
-import de.invesdwin.context.jfreechart.renderer.CustomCandlestickRenderer;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
 import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.time.duration.Duration;
@@ -58,17 +57,22 @@ public class InteractiveChartPanel extends JPanel {
     private final JFreeChart chart;
     private final CustomChartPanel chartPanel;
     private final IndexedDateTimeNumberFormat domainAxisFormat;
-    private final PlotResizeHelper plotResizeHelper = new PlotResizeHelper(this);
-    private final PlotCrosshairHelper plotCrosshairHelper = new PlotCrosshairHelper(this);
-    private final PlotLegendHelper plotLegendHelper = new PlotLegendHelper(this);
-    private final PlotNavigationHelper plotNavigationHelper = new PlotNavigationHelper(this);
-    private final PlotConfigurationHelper plotConfigurationHelper = new PlotConfigurationHelper(this);
-    private CustomCandlestickRenderer candlestickRenderer;
+    private final PlotResizeHelper plotResizeHelper;
+    private final PlotCrosshairHelper plotCrosshairHelper;
+    private final PlotLegendHelper plotLegendHelper;
+    private final PlotNavigationHelper plotNavigationHelper;
+    private final PlotConfigurationHelper plotConfigurationHelper;
     private FDate lastHorizontalScroll = FDate.MIN_DATE;
     private FDate lastVerticalScroll = FDate.MIN_DATE;
 
     public InteractiveChartPanel(final IndexedDateTimeOHLCDataset dataset) {
         this.dataset = dataset;
+
+        this.plotResizeHelper = new PlotResizeHelper(this);
+        this.plotCrosshairHelper = new PlotCrosshairHelper(this);
+        this.plotLegendHelper = new PlotLegendHelper(this);
+        this.plotNavigationHelper = new PlotNavigationHelper(this);
+        this.plotConfigurationHelper = new PlotConfigurationHelper(this);
 
         domainAxis = new NumberAxis();
         domainAxis.setAutoRange(true);
@@ -131,10 +135,6 @@ public class InteractiveChartPanel extends JPanel {
         return plotConfigurationHelper;
     }
 
-    public CustomCandlestickRenderer getCandlestickRenderer() {
-        return candlestickRenderer;
-    }
-
     protected int initRangeAxisDecimalDigits() {
         return 2;
     }
@@ -175,11 +175,9 @@ public class InteractiveChartPanel extends JPanel {
     }
 
     protected void initPlots() {
-        candlestickRenderer = new CustomCandlestickRenderer(dataset);
-        candlestickRenderer.setDrawVolume(false);
-        candlestickRenderer.setDataBoundsIncludesVisibleSeriesOnly(true);
         final int precision = initRangeAxisDecimalDigits();
-        ohlcPlot = new XYPlot(dataset, domainAxis, XYPlots.newRangeAxis(precision), candlestickRenderer);
+        ohlcPlot = new XYPlot(dataset, domainAxis, XYPlots.newRangeAxis(precision),
+                plotConfigurationHelper.newPriceRenderer());
         ohlcPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(ohlcPlot);
         dataset.setPlot(ohlcPlot);

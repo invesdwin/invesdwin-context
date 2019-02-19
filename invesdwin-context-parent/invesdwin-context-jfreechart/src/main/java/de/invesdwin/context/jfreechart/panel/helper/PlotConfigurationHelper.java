@@ -1,5 +1,6 @@
 package de.invesdwin.context.jfreechart.panel.helper;
 
+import java.awt.Color;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -10,37 +11,156 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartUtils;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
+import de.invesdwin.context.jfreechart.renderer.CustomOhlcBarRenderer;
+import de.invesdwin.context.jfreechart.renderer.CustomOhlcCandlestickRenderer;
+import de.invesdwin.context.jfreechart.renderer.CustomVolumeBarRenderer;
+import de.invesdwin.context.jfreechart.renderer.CustomXYAreaRenderer;
+import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
 public class PlotConfigurationHelper {
 
+    public static final Color DEFAULT_DOWN_COLOR = Colors.fromHex("#EF5350");
+    public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
+    public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
+    private static final int VOLUME_ALPHA = 100;
+    private static final int AREA_FILL_ALPHA = 25;
+
     private final InteractiveChartPanel chartPanel;
     private final JPopupMenu popupMenu;
+
+    private PriceRendererType priceRendererType = PriceRendererType.Candlesticks;
+    private Color upColor;
+    private Color downColor;
+    private Color priceColor;
+
+    private final CustomOhlcCandlestickRenderer candlestickRenderer;
+    private final CustomOhlcBarRenderer barsRenderer;
+    private final CustomVolumeBarRenderer volumeBarRenderer;
+    private final CustomXYAreaRenderer areaRenderer;
+    private final StandardXYItemRenderer lineRenderer;
+    private final XYStepRenderer stepLineRenderer;
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
         this.popupMenu = createPopupMenu();
+
+        this.candlestickRenderer = new CustomOhlcCandlestickRenderer(chartPanel.getDataset());
+        this.barsRenderer = new CustomOhlcBarRenderer(candlestickRenderer);
+        this.volumeBarRenderer = new CustomVolumeBarRenderer(candlestickRenderer);
+        this.areaRenderer = new CustomXYAreaRenderer();
+
+        this.lineRenderer = new StandardXYItemRenderer();
+        this.stepLineRenderer = new XYStepRenderer();
+
+        setUpColor(DEFAULT_UP_COLOR);
+        setDownColor(DEFAULT_DOWN_COLOR);
+        setPriceColor(DEFAULT_PRICE_COLOR);
     }
 
     public JPopupMenu getPopupMenu() {
         return this.popupMenu;
     }
 
+    public PriceRendererType getPriceRendererType() {
+        return priceRendererType;
+    }
+
+    public void setPriceRendererType(final PriceRendererType priceRendererType) {
+        if (priceRendererType != this.priceRendererType) {
+            chartPanel.getOhlcPlot().setRenderer(0, newPriceRenderer(priceRendererType));
+            chartPanel.update();
+        }
+        this.priceRendererType = priceRendererType;
+    }
+
+    public XYItemRenderer newPriceRenderer() {
+        return newPriceRenderer(priceRendererType);
+    }
+
+    public XYItemRenderer newPriceRenderer(final PriceRendererType priceRendererType) {
+        switch (priceRendererType) {
+        case Area:
+            return areaRenderer;
+        case Line:
+            return lineRenderer;
+        case Step:
+            return stepLineRenderer;
+        case Bars:
+            return barsRenderer;
+        case Candlesticks:
+            return candlestickRenderer;
+        default:
+            throw UnknownArgumentException.newInstance(PriceRendererType.class, priceRendererType);
+        }
+    }
+
+    public CustomVolumeBarRenderer getVolumeBarRenderer() {
+        return volumeBarRenderer;
+    }
+
+    public Color getUpColor() {
+        return upColor;
+    }
+
+    public void setUpColor(final Color upColor) {
+        this.upColor = upColor;
+
+        candlestickRenderer.setUpPaint(upColor);
+        final Color upColorAlpha = new Color(upColor.getRed(), upColor.getGreen(), upColor.getBlue(), VOLUME_ALPHA);
+        volumeBarRenderer.setUpColor(upColorAlpha);
+    }
+
+    public Color getDownColor() {
+        return downColor;
+    }
+
+    public void setDownColor(final Color downColor) {
+        this.downColor = downColor;
+
+        candlestickRenderer.setDownPaint(downColor);
+        final Color downColorAlpha = new Color(downColor.getRed(), downColor.getGreen(), downColor.getBlue(),
+                VOLUME_ALPHA);
+        volumeBarRenderer.setDownColor(downColorAlpha);
+    }
+
+    public Color getPriceColor() {
+        return priceColor;
+    }
+
+    public void setPriceColor(final Color priceColor) {
+        this.priceColor = priceColor;
+
+        this.lineRenderer.setSeriesPaint(0, priceColor);
+        this.areaRenderer.setSeriesPaint(0, priceColor);
+        this.stepLineRenderer.setSeriesPaint(0, priceColor);
+        final Color priceColorAlpha = new Color(priceColor.getRed(), priceColor.getGreen(), priceColor.getBlue(),
+                AREA_FILL_ALPHA);
+        this.areaRenderer.setSeriesFillPaint(0, priceColorAlpha);
+    }
+
     protected JPopupMenu createPopupMenu() {
 
-        final JPopupMenu result = new JPopupMenu("Chart:");
+        final JPopupMenu result = new JPopupMenu("Chart Configuration:");
         result.addPopupMenuListener(new PopupMenuListener() {
             @Override
             public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
@@ -56,6 +176,26 @@ public class PlotConfigurationHelper {
             @Override
             public void popupMenuCanceled(final PopupMenuEvent e) {}
         });
+
+        //price renderer
+        final JMenu priceRendererItem = new JMenu("Price Renderer");
+        result.add(priceRendererItem);
+
+        final ButtonGroup priceRendererGroup = new ButtonGroup();
+        for (final PriceRendererType type : PriceRendererType.values()) {
+            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.name());
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    setPriceRendererType(type);
+                }
+            });
+            priceRendererGroup.add(item);
+            priceRendererItem.add(item);
+            if (priceRendererType == type) {
+                item.setSelected(true);
+            }
+        }
 
         //copy
         final JMenuItem copyItem = new JMenuItem("Copy To Clipboard");
