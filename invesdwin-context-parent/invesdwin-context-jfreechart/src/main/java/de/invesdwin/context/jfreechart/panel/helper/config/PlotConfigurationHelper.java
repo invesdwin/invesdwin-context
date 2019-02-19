@@ -397,16 +397,15 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final StringBuilder sb = new StringBuilder();
-                sb.append("<html><h3>Usage:</h3>");
+                sb.append("<html><h2>Usage:</h2>");
                 sb.append("<ul>");
                 sb.append("<li><b>Show/Hide Series</b>: Left click a series legend to show/hide that series.</li>");
                 sb.append(
                         "<li><b>Series Display Settings</b>: Right click a series legend to get a context menu to modify its display settings."
                                 + "<br>You can modify the renderer (series type), stroke (line style) and colors.</li>");
-                sb.append(
-                        "<li><b>Series Realignment</b>: Drag and drop a series legend to move it to a different plot pane."
-                                + "<br>The green pane will add a new plot. The red trash pane will remove the series (only visible if the series is actually trashable)."
-                                + "<br>You can combine multiple series into one plot pane. Empty plots will be removed automatically which is displayed in red as well.</li>");
+                sb.append("<li><b>Moving Series</b>: Drag and drop a series legend to move it to a different plot pane."
+                        + "<br>The green pane will add a new plot. The red trash pane will remove the series (only visible if the series is actually trashable)."
+                        + "<br>You can combine multiple series into one plot pane. Empty plots will be removed automatically which is displayed in red as well.</li>");
                 sb.append(
                         "<li><b>Plot Pane Resizing</b>: Drag and drop a divider between two plot panes to change the size of those plots.</li>");
                 sb.append(
