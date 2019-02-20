@@ -3,6 +3,7 @@ package de.invesdwin.context.jfreechart.panel.helper.config;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Insets;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
@@ -39,17 +40,20 @@ import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.math.decimal.scaled.Percent;
+import de.invesdwin.util.math.decimal.scaled.PercentScale;
 import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.PopupMenuListenerSupport;
 
 @NotThreadSafe
 public class PlotConfigurationHelper {
 
+    public static final Stroke DEFAULT_STROKE = LineStyleType.Solid.getStroke(LineWidthType._2);
+
     public static final Color DEFAULT_DOWN_COLOR = Colors.fromHex("#EF5350");
     public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
-    public static final int VOLUME_BAR_ALPHA = 100;
-    public static final int AREA_FILL_ALPHA = 25;
+    public static final Percent VOLUME_ALPHA_MODIFICATION = new Percent(-50D, PercentScale.PERCENT);
     private static final String VOLUME_ITEM_NAME = "Volume";
 
     private final InteractiveChartPanel chartPanel;
@@ -73,7 +77,8 @@ public class PlotConfigurationHelper {
     private JMenu priceRendererItem;
     private JMenu seriesRendererItem;
     private JMenuItem volumeRendererItem;
-    private JMenuItem strokeItem;
+    private JMenuItem lineStyleItem;
+    private JMenuItem lineWidthItem;
     private JMenuItem upColorItem;
     private JMenuItem downColorItem;
     private JMenuItem colorItem;
@@ -81,6 +86,10 @@ public class PlotConfigurationHelper {
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
     private HighlightedLegendInfo highlighted;
+
+    private JMenuItem showSeriesItem;
+
+    private JMenuItem hideSeriesItem;
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -148,8 +157,7 @@ public class PlotConfigurationHelper {
         this.upColor = upColor;
 
         candlestickRenderer.setUpColor(upColor);
-        final Color upColorAlpha = new Color(upColor.getRed(), upColor.getGreen(), upColor.getBlue(), VOLUME_BAR_ALPHA);
-        volumeRenderer.setUpColor(upColorAlpha);
+        volumeRenderer.setUpColor(Colors.modifyAlphaBy(upColor, VOLUME_ALPHA_MODIFICATION));
     }
 
     public Color getDownColor() {
@@ -160,9 +168,7 @@ public class PlotConfigurationHelper {
         this.downColor = downColor;
 
         candlestickRenderer.setDownColor(downColor);
-        final Color downColorAlpha = new Color(downColor.getRed(), downColor.getGreen(), downColor.getBlue(),
-                VOLUME_BAR_ALPHA);
-        volumeRenderer.setDownColor(downColorAlpha);
+        volumeRenderer.setDownColor(Colors.modifyAlphaBy(downColor, VOLUME_ALPHA_MODIFICATION));
     }
 
     public Color getPriceColor() {
@@ -176,9 +182,6 @@ public class PlotConfigurationHelper {
         this.areaRenderer.setSeriesPaint(0, priceColor);
         this.volumeRenderer.setSeriesPaint(0, priceColor);
         this.stepLineRenderer.setSeriesPaint(0, priceColor);
-        final Color priceColorAlpha = new Color(priceColor.getRed(), priceColor.getGreen(), priceColor.getBlue(),
-                AREA_FILL_ALPHA);
-        this.areaRenderer.setSeriesFillPaint(0, priceColorAlpha);
     }
 
     private void initPopupMenu() {
@@ -187,8 +190,9 @@ public class PlotConfigurationHelper {
         titleItem.setEnabled(false);
 
         initRendererItems();
-        initStrokeItem();
+        initStrokeItems();
         initColorItems();
+        initShowHideSeriesItems();
         initExportItems();
         initHelpItem();
 
@@ -200,52 +204,12 @@ public class PlotConfigurationHelper {
                 popupMenu.removeAll();
                 highlighted = chartPanel.getPlotLegendHelper().getHighlightedLegendInfo();
                 if (highlighted != null) {
-                    final JMenu rendererItem;
-                    if (highlighted.isPriceSeries()) {
-                        titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
-                        rendererItem = priceRendererItem;
-                        for (final Component component : priceRendererItem.getMenuComponents()) {
-                            final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                            if (menuItem.getName().equals(priceRendererType.name())) {
-                                menuItem.setSelected(true);
-                            }
-                        }
-                        strokeItem.setVisible(priceRendererType.isStrokeConfigurable());
-                        upColorItem.setVisible(priceRendererType.isUpColorConfigurable());
-                        downColorItem.setVisible(priceRendererType.isDownColorConfigurable());
-                        colorItem.setVisible(priceRendererType.isColorConfigurable());
+                    if (highlighted.isHidden()) {
+                        popupMenu.add(titleItem);
+                        popupMenu.add(showSeriesItem);
                     } else {
-                        final boolean volumeSeries = isVolumeSeries(highlighted);
-                        volumeRendererItem.setVisible(volumeSeries);
-                        titleItem.setText(highlighted.getSeriesKey());
-                        rendererItem = seriesRendererItem;
-                        final XYItemRenderer renderer = highlighted.getRenderer();
-                        if (renderer == getVolumeRenderer()) {
-                            volumeRendererItem.setSelected(true);
-                            strokeItem.setVisible(false);
-                            upColorItem.setVisible(true);
-                            downColorItem.setVisible(true);
-                            colorItem.setVisible(false);
-                        } else {
-                            final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(renderer);
-                            for (final Component component : seriesRendererItem.getMenuComponents()) {
-                                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                                if (menuItem.getName().equals(seriesRendererType.name())) {
-                                    menuItem.setSelected(true);
-                                }
-                            }
-                            strokeItem.setVisible(seriesRendererType.isStrokeConfigurable());
-                            upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
-                            downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
-                            colorItem.setVisible(seriesRendererType.isColorConfigurable());
-                        }
+                        addSeriesConfigMenuItems();
                     }
-                    popupMenu.add(titleItem);
-                    popupMenu.add(rendererItem);
-                    popupMenu.add(strokeItem);
-                    popupMenu.add(upColorItem);
-                    popupMenu.add(downColorItem);
-                    popupMenu.add(colorItem);
                 } else {
                     popupMenu.add(copyToClipboardItem);
                     popupMenu.add(saveAsPNGItem);
@@ -253,6 +217,65 @@ public class PlotConfigurationHelper {
                 }
 
                 chartPanel.getPlotNavigationHelper().mouseExited();
+            }
+
+            private void addSeriesConfigMenuItems() {
+                final JMenu rendererItem;
+                if (highlighted.isPriceSeries()) {
+                    titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
+                    rendererItem = priceRendererItem;
+                    for (final Component component : priceRendererItem.getMenuComponents()) {
+                        final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                        if (menuItem.getName().equals(priceRendererType.name())) {
+                            menuItem.setSelected(true);
+                        }
+                    }
+                    lineStyleItem.setVisible(priceRendererType.isStrokeConfigurable());
+                    lineWidthItem.setVisible(priceRendererType.isStrokeConfigurable());
+                    upColorItem.setVisible(priceRendererType.isUpColorConfigurable());
+                    downColorItem.setVisible(priceRendererType.isDownColorConfigurable());
+                    colorItem.setVisible(priceRendererType.isColorConfigurable());
+                } else {
+                    final boolean volumeSeries = isVolumeSeries(highlighted);
+                    volumeRendererItem.setVisible(volumeSeries);
+                    titleItem.setText(highlighted.getSeriesKey());
+                    rendererItem = seriesRendererItem;
+                    final XYItemRenderer renderer = highlighted.getRenderer();
+                    if (renderer == getVolumeRenderer()) {
+                        volumeRendererItem.setSelected(true);
+                        lineStyleItem.setVisible(false);
+                        lineWidthItem.setVisible(false);
+                        upColorItem.setVisible(true);
+                        downColorItem.setVisible(true);
+                        colorItem.setVisible(false);
+                    } else {
+                        final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(renderer);
+                        for (final Component component : seriesRendererItem.getMenuComponents()) {
+                            final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                            if (menuItem.getName().equals(seriesRendererType.name())) {
+                                menuItem.setSelected(true);
+                            }
+                        }
+                        lineStyleItem.setVisible(seriesRendererType.isStrokeConfigurable());
+                        lineWidthItem.setVisible(seriesRendererType.isStrokeConfigurable());
+                        upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
+                        downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
+                        colorItem.setVisible(seriesRendererType.isColorConfigurable());
+                    }
+                }
+                popupMenu.add(titleItem);
+                popupMenu.add(rendererItem);
+                popupMenu.add(lineStyleItem);
+                popupMenu.add(lineWidthItem);
+                popupMenu.add(upColorItem);
+                popupMenu.add(downColorItem);
+                popupMenu.add(colorItem);
+                popupMenu.add(hideSeriesItem);
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
+                chartPanel.getPlotLegendHelper().disableHighlighting();
             }
 
             @Override
@@ -265,8 +288,26 @@ public class PlotConfigurationHelper {
 
     }
 
+    private void initShowHideSeriesItems() {
+        showSeriesItem = new JMenuItem("Show Series");
+        showSeriesItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                highlighted.setHidden(false);
+            }
+        });
+
+        hideSeriesItem = new JMenuItem("Hide Series");
+        hideSeriesItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                highlighted.setHidden(true);
+            }
+        });
+    }
+
     private void initRendererItems() {
-        priceRendererItem = new JMenu("Renderer");
+        priceRendererItem = new JMenu("Series Type");
         final ButtonGroup priceRendererGroup = new ButtonGroup();
         for (final PriceRendererType type : PriceRendererType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
@@ -281,7 +322,7 @@ public class PlotConfigurationHelper {
             priceRendererItem.add(item);
         }
 
-        seriesRendererItem = new JMenu("Renderer");
+        seriesRendererItem = new JMenu("Series Type");
         final ButtonGroup seriesRendererGroup = new ButtonGroup();
         volumeRendererItem = new JRadioButtonMenuItem(VOLUME_ITEM_NAME);
         volumeRendererItem.setName(VOLUME_ITEM_NAME);
@@ -303,33 +344,52 @@ public class PlotConfigurationHelper {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
                     final XYItemRenderer renderer = highlighted.getRenderer();
-                    final StrokeType strokeType = StrokeType.valueOf(renderer.getSeriesStroke(0));
+                    final Stroke stroke = renderer.getSeriesStroke(0);
+                    final LineStyleType lineStyleType = LineStyleType.valueOf(stroke);
+                    final LineWidthType lineWidthType = LineWidthType.valueOf(stroke);
                     final Color color = (Color) renderer.getSeriesPaint(0);
-                    highlighted.setRenderer(type.newRenderer(strokeType, color));
+                    highlighted.setRenderer(type.newRenderer(lineStyleType, lineWidthType, color));
                 }
             });
             seriesRendererGroup.add(item);
             seriesRendererItem.add(item);
         }
-        System.out.println(
-                "TODO fix stroke painting, automatically set fill paint or make it configurable for area, reset button for settings");
+        System.out.println("TODO reset button for settings");
     }
 
-    private void initStrokeItem() {
-        final ButtonGroup strokeRendererGroup = new ButtonGroup();
-        strokeItem = new JMenu("Stroke");
-        for (final StrokeType type : StrokeType.values()) {
+    private void initStrokeItems() {
+        final ButtonGroup lineStyleGroup = new ButtonGroup();
+        lineStyleItem = new JMenu("Line Style");
+        for (final LineStyleType type : LineStyleType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
                     final XYItemRenderer renderer = highlighted.getRenderer();
-                    renderer.setSeriesStroke(0, type.getStroke());
+                    final Stroke stroke = renderer.getSeriesStroke(0);
+                    renderer.setSeriesStroke(0, type.getStroke(stroke));
                 }
             });
-            strokeRendererGroup.add(item);
-            strokeItem.add(item);
+            lineStyleGroup.add(item);
+            lineStyleItem.add(item);
+        }
+
+        final ButtonGroup lineWidthGroup = new ButtonGroup();
+        lineWidthItem = new JMenu("Line Width");
+        for (final LineWidthType type : LineWidthType.values()) {
+            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
+            item.setName(type.name());
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    final XYItemRenderer renderer = highlighted.getRenderer();
+                    final Stroke stroke = renderer.getSeriesStroke(0);
+                    renderer.setSeriesStroke(0, type.getStroke(stroke));
+                }
+            });
+            lineWidthGroup.add(item);
+            lineWidthItem.add(item);
         }
     }
 
@@ -402,7 +462,7 @@ public class PlotConfigurationHelper {
                 sb.append("<li><b>Show/Hide Series</b>: Left click a series legend to show/hide that series.</li>");
                 sb.append(
                         "<li><b>Series Display Settings</b>: Right click a series legend to get a context menu to modify its display settings."
-                                + "<br>You can modify the renderer (series type), stroke (line style) and colors.</li>");
+                                + "<br>You can modify the series type, line style, line width and colors. The settings differ depending on the selected series type.</li>");
                 sb.append("<li><b>Moving Series</b>: Drag and drop a series legend to move it to a different plot pane."
                         + "<br>The green pane will add a new plot. The red trash pane will remove the series (only visible if the series is actually trashable)."
                         + "<br>You can combine multiple series into one plot pane. Empty plots will be removed automatically which is displayed in red as well.</li>");

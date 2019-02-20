@@ -28,7 +28,6 @@ import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
-import de.invesdwin.context.jfreechart.panel.helper.config.StrokeType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 /**
@@ -105,7 +104,7 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         this.useOutlinePaint = false; // false preserves the old behaviour
                                       // prior to introducing this flag
         setSeriesPaint(0, upColor);
-        setSeriesStroke(0, StrokeType.Solid.getStroke());
+        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_STROKE);
         this.dataset = dataset;
     }
 

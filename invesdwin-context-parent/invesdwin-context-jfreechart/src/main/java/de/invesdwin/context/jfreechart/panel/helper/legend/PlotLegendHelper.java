@@ -244,6 +244,7 @@ public class PlotLegendHelper {
     }
 
     public void mouseReleased(final MouseEvent e) {
+        mouseMoved(e);
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
         }
@@ -272,15 +273,7 @@ public class PlotLegendHelper {
                 final XYPlot plot = plotSource.getPlot();
                 final int datasetIndex = getDatasetIndexForDataset(plot, dataset);
                 final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
-                if (renderer instanceof DisabledXYItemRenderer) {
-                    final DisabledXYItemRenderer cRenderer = (DisabledXYItemRenderer) renderer;
-                    plot.setRenderer(datasetIndex, cRenderer.getEnabledRenderer());
-                    final DisabledXYDataset cDataset = (DisabledXYDataset) dataset;
-                    plot.setDataset(datasetIndex, cDataset.getEnabledDataset());
-                } else {
-                    plot.setRenderer(datasetIndex, new DisabledXYItemRenderer(renderer));
-                    plot.setDataset(datasetIndex, new DisabledXYDataset(dataset));
-                }
+                setDatasetHidden(plot, datasetIndex, !(renderer instanceof DisabledXYItemRenderer));
                 XYPlots.updateRangeAxisPrecision(plot);
                 EventDispatchThreadUtil.invokeLater(new Runnable() {
                     @Override
@@ -293,7 +286,22 @@ public class PlotLegendHelper {
         }
     }
 
+    public static void setDatasetHidden(final XYPlot plot, final int datasetIndex, final boolean hidden) {
+        final XYDataset dataset = plot.getDataset(datasetIndex);
+        final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
+        if (!hidden) {
+            final DisabledXYItemRenderer cRenderer = (DisabledXYItemRenderer) renderer;
+            plot.setRenderer(datasetIndex, cRenderer.getEnabledRenderer());
+            final DisabledXYDataset cDataset = (DisabledXYDataset) dataset;
+            plot.setDataset(datasetIndex, cDataset.getEnabledDataset());
+        } else {
+            plot.setRenderer(datasetIndex, new DisabledXYItemRenderer(renderer));
+            plot.setDataset(datasetIndex, new DisabledXYDataset(dataset));
+        }
+    }
+
     public void mousePressed(final MouseEvent e) {
+        mouseMoved(e);
         if (e.getButton() != MouseEvent.BUTTON1) {
             return;
         }

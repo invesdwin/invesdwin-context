@@ -13,6 +13,10 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSource 
     private final IPlotSource plotSource;
 
     public DisabledXYDataset(final XYDataset enabledDataset) {
+        if (enabledDataset instanceof DisabledXYDataset) {
+            throw new IllegalArgumentException(
+                    "enabledDataset should not be an instance of " + DisabledXYDataset.class.getSimpleName());
+        }
         this.enabledDataset = enabledDataset;
         this.plotSource = (IPlotSource) enabledDataset;
     }

@@ -9,6 +9,7 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
+import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 
 @Immutable
 public class HighlightedLegendInfo {
@@ -62,6 +63,14 @@ public class HighlightedLegendInfo {
 
     public void setRenderer(final XYItemRenderer renderer) {
         plot.setRenderer(datasetIndex, renderer);
+    }
+
+    public boolean isHidden() {
+        return getRenderer() instanceof DisabledXYItemRenderer;
+    }
+
+    public void setHidden(final boolean hidden) {
+        PlotLegendHelper.setDatasetHidden(plot, datasetIndex, hidden);
     }
 
 }

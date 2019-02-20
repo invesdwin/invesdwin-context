@@ -38,7 +38,7 @@ import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.StrokeType;
+import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 
 @NotThreadSafe
 public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {
@@ -126,7 +126,7 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
         this.legendArea = area;
         this.gradientTransformer = new StandardGradientPaintTransformer();
 
-        setSeriesStroke(0, StrokeType.Solid.getStroke());
+        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_STROKE);
     }
 
     /**
@@ -521,5 +521,35 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
     private void writeObject(final ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         SerialUtils.writeShape(this.legendArea, stream);
+    }
+
+    @Override
+    public void setSeriesPaint(final int series, final Paint paint) {
+        super.setSeriesPaint(series, paint);
+        super.setSeriesFillPaint(series, paint);
+    }
+
+    @Override
+    public void setSeriesPaint(final int series, final Paint paint, final boolean notify) {
+        super.setSeriesPaint(series, paint, notify);
+        super.setSeriesFillPaint(series, paint, notify);
+    }
+
+    /**
+     * The series paint is also set as the fill paint.
+     */
+    @Deprecated
+    @Override
+    public void setSeriesFillPaint(final int series, final Paint paint) {
+        super.setSeriesFillPaint(series, paint);
+    }
+
+    /**
+     * The series paint is also set as the fill paint.
+     */
+    @Deprecated
+    @Override
+    public void setSeriesFillPaint(final int series, final Paint paint, final boolean notify) {
+        super.setSeriesFillPaint(series, paint, notify);
     }
 }

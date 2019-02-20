@@ -23,6 +23,10 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
     private final XYItemRenderer enabledRenderer;
 
     public DisabledXYItemRenderer(final XYItemRenderer enabledRenderer) {
+        if (enabledRenderer instanceof DisabledXYItemRenderer) {
+            throw new IllegalArgumentException(
+                    "enabledRenderer should not be an instance of " + DisabledXYItemRenderer.class.getSimpleName());
+        }
         this.enabledRenderer = enabledRenderer;
         setSeriesPaint(0, new Color(0, 0, 0, 0));
     }

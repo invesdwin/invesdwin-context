@@ -18,11 +18,12 @@ import de.invesdwin.util.error.UnknownArgumentException;
 public enum SeriesRendererType implements IRendererType {
     Line {
         @Override
-        public XYItemRenderer newRenderer(final StrokeType strokeType, final Color color) {
+        public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
+                final Color color) {
             final StandardXYItemRenderer renderer = new StandardXYItemRenderer();
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
-            renderer.setSeriesStroke(0, strokeType.getStroke());
+            renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             return renderer;
         }
 
@@ -33,11 +34,12 @@ public enum SeriesRendererType implements IRendererType {
     },
     Step {
         @Override
-        public XYItemRenderer newRenderer(final StrokeType strokeType, final Color color) {
+        public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
+                final Color color) {
             final XYStepRenderer renderer = new XYStepRenderer();
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
-            renderer.setSeriesStroke(0, strokeType.getStroke());
+            renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             return renderer;
         }
 
@@ -48,13 +50,11 @@ public enum SeriesRendererType implements IRendererType {
     },
     Area {
         @Override
-        public XYItemRenderer newRenderer(final StrokeType strokeType, final Color color) {
+        public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
+                final Color color) {
             final CustomXYAreaRenderer renderer = new CustomXYAreaRenderer();
             renderer.setSeriesPaint(0, color);
-            final Color colorAlpha = new Color(color.getRed(), color.getGreen(), color.getBlue(),
-                    PlotConfigurationHelper.AREA_FILL_ALPHA);
-            renderer.setSeriesFillPaint(0, colorAlpha);
-            renderer.setSeriesStroke(0, strokeType.getStroke());
+            renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             return renderer;
         }
 
@@ -65,13 +65,14 @@ public enum SeriesRendererType implements IRendererType {
     },
     Column {
         @Override
-        public XYItemRenderer newRenderer(final StrokeType strokeType, final Color color) {
+        public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
+                final Color color) {
             final XYBarRenderer renderer = new XYBarRenderer();
             renderer.setBarPainter(new StandardXYBarPainter());
             renderer.setShadowVisible(false);
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
-            renderer.setSeriesStroke(0, strokeType.getStroke());
+            renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setDrawBarOutline(false);
             return renderer;
         }
@@ -83,13 +84,14 @@ public enum SeriesRendererType implements IRendererType {
     },
     Histogram {
         @Override
-        public XYItemRenderer newRenderer(final StrokeType strokeType, final Color color) {
+        public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
+                final Color color) {
             final XYBarRenderer renderer = new XYBarRenderer(HISTOGRAM_MARGIN);
             renderer.setBarPainter(new StandardXYBarPainter());
             renderer.setShadowVisible(false);
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
-            renderer.setSeriesStroke(0, strokeType.getStroke());
+            renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setDrawBarOutline(false);
             return renderer;
         }
@@ -101,7 +103,7 @@ public enum SeriesRendererType implements IRendererType {
     };
     private static final double HISTOGRAM_MARGIN = 0.80D;
 
-    public abstract XYItemRenderer newRenderer(StrokeType strokeType, Color color);
+    public abstract XYItemRenderer newRenderer(LineStyleType strokeType, LineWidthType lineWidthType, Color color);
 
     public static SeriesRendererType valueOf(final XYItemRenderer renderer) {
         final XYItemRenderer unwrapped = DisabledXYItemRenderer.maybeUnwrap(renderer);
