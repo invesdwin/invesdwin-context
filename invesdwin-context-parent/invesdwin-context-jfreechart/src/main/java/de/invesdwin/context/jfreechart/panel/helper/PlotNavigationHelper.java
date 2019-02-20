@@ -302,14 +302,14 @@ public class PlotNavigationHelper {
                 action = new ActionListener() {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        chartPanel.panLeft();
+                        chartPanel.getPlotPanHelper().panLeft();
                     }
                 };
             } else if (annotation == panRight) {
                 action = new ActionListener() {
                     @Override
                     public void actionPerformed(final ActionEvent e) {
-                        chartPanel.panRight();
+                        chartPanel.getPlotPanHelper().panRight();
                     }
                 };
             } else if (annotation == zoomIn) {
