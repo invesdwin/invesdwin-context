@@ -26,7 +26,7 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
         setShadowVisible(false);
         setSeriesPaint(0, candlestickRenderer.getSeriesPaint(0));
         setSeriesFillPaint(0, candlestickRenderer.getSeriesFillPaint(0));
-        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_STROKE);
+        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
         setDrawBarOutline(false);
 
         this.upColor = candlestickRenderer.getUpColor();

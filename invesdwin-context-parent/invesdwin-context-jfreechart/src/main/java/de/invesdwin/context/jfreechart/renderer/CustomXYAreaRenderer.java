@@ -126,7 +126,7 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
         this.legendArea = area;
         this.gradientTransformer = new StandardGradientPaintTransformer();
 
-        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_STROKE);
+        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
     }
 
     /**

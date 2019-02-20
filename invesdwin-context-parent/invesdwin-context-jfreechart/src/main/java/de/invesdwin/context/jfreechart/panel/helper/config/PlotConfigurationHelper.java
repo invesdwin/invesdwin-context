@@ -37,23 +37,24 @@ import de.invesdwin.context.jfreechart.renderer.CustomOhlcCandlestickRenderer;
 import de.invesdwin.context.jfreechart.renderer.CustomVolumeBarRenderer;
 import de.invesdwin.context.jfreechart.renderer.CustomXYAreaRenderer;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;
 import de.invesdwin.util.swing.Dialogs;
+import de.invesdwin.util.swing.listener.IColorChooserListener;
 import de.invesdwin.util.swing.listener.PopupMenuListenerSupport;
 
 @NotThreadSafe
 public class PlotConfigurationHelper {
 
-    public static final Stroke DEFAULT_STROKE = LineStyleType.Solid.getStroke(LineWidthType._2);
-
     public static final Color DEFAULT_DOWN_COLOR = Colors.fromHex("#EF5350");
     public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
-    public static final Percent VOLUME_ALPHA_MODIFICATION = new Percent(-50D, PercentScale.PERCENT);
+    public static final Stroke DEFAULT_PRICE_STROKE = LineStyleType.Solid.getStroke(LineWidthType._2);
+    public static final Percent VOLUME_TRANSPARENCY = new Percent(50D, PercentScale.PERCENT);
     private static final String VOLUME_ITEM_NAME = "Volume";
 
     private final InteractiveChartPanel chartPanel;
@@ -62,6 +63,7 @@ public class PlotConfigurationHelper {
     private Color upColor;
     private Color downColor;
     private Color priceColor;
+    private Stroke priceStroke;
 
     private final CustomOhlcCandlestickRenderer candlestickRenderer;
     private final CustomOhlcBarRenderer barsRenderer;
@@ -77,8 +79,8 @@ public class PlotConfigurationHelper {
     private JMenu priceRendererItem;
     private JMenu seriesRendererItem;
     private JMenuItem volumeRendererItem;
-    private JMenuItem lineStyleItem;
-    private JMenuItem lineWidthItem;
+    private JMenu lineStyleItem;
+    private JMenu lineWidthItem;
     private JMenuItem upColorItem;
     private JMenuItem downColorItem;
     private JMenuItem colorItem;
@@ -106,6 +108,7 @@ public class PlotConfigurationHelper {
         setUpColor(DEFAULT_UP_COLOR);
         setDownColor(DEFAULT_DOWN_COLOR);
         setPriceColor(DEFAULT_PRICE_COLOR);
+        setPriceStroke(DEFAULT_PRICE_STROKE);
     }
 
     public JPopupMenu getPopupMenu() {
@@ -118,7 +121,11 @@ public class PlotConfigurationHelper {
 
     public void setPriceRendererType(final PriceRendererType priceRendererType) {
         if (priceRendererType != this.priceRendererType) {
-            chartPanel.getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
+            final XYItemRenderer renderer = chartPanel.getOhlcPlot().getRenderer(0);
+            final XYItemRenderer newRenderer = getPriceRenderer(priceRendererType);
+            newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
+            newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
+            chartPanel.getOhlcPlot().setRenderer(0, newRenderer);
             chartPanel.update();
         }
         this.priceRendererType = priceRendererType;
@@ -157,7 +164,7 @@ public class PlotConfigurationHelper {
         this.upColor = upColor;
 
         candlestickRenderer.setUpColor(upColor);
-        volumeRenderer.setUpColor(Colors.modifyAlphaBy(upColor, VOLUME_ALPHA_MODIFICATION));
+        volumeRenderer.setUpColor(Colors.setTransparency(upColor, VOLUME_TRANSPARENCY));
     }
 
     public Color getDownColor() {
@@ -168,7 +175,7 @@ public class PlotConfigurationHelper {
         this.downColor = downColor;
 
         candlestickRenderer.setDownColor(downColor);
-        volumeRenderer.setDownColor(Colors.modifyAlphaBy(downColor, VOLUME_ALPHA_MODIFICATION));
+        volumeRenderer.setDownColor(Colors.setTransparency(downColor, VOLUME_TRANSPARENCY));
     }
 
     public Color getPriceColor() {
@@ -178,10 +185,25 @@ public class PlotConfigurationHelper {
     public void setPriceColor(final Color priceColor) {
         this.priceColor = priceColor;
 
+        this.candlestickRenderer.setSeriesPaint(0, priceColor);
+        this.barsRenderer.setSeriesPaint(0, priceColor);
         this.lineRenderer.setSeriesPaint(0, priceColor);
         this.areaRenderer.setSeriesPaint(0, priceColor);
         this.volumeRenderer.setSeriesPaint(0, priceColor);
         this.stepLineRenderer.setSeriesPaint(0, priceColor);
+    }
+
+    public void setPriceStroke(final LineStyleType lineStyleType, final LineWidthType lineWidthType) {
+        this.priceStroke = lineStyleType.getStroke(lineWidthType);
+    }
+
+    public void setPriceStroke(final Stroke priceStroke) {
+        Assertions.checkNotNull(LineStyleType.valueOf(priceStroke));
+        this.priceStroke = priceStroke;
+    }
+
+    public Stroke getPriceStroke() {
+        return priceStroke;
     }
 
     private void initPopupMenu() {
@@ -220,51 +242,22 @@ public class PlotConfigurationHelper {
             }
 
             private void addSeriesConfigMenuItems() {
-                final JMenu rendererItem;
                 if (highlighted.isPriceSeries()) {
                     titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
-                    rendererItem = priceRendererItem;
-                    for (final Component component : priceRendererItem.getMenuComponents()) {
-                        final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                        if (menuItem.getName().equals(priceRendererType.name())) {
-                            menuItem.setSelected(true);
-                        }
-                    }
-                    lineStyleItem.setVisible(priceRendererType.isStrokeConfigurable());
-                    lineWidthItem.setVisible(priceRendererType.isStrokeConfigurable());
-                    upColorItem.setVisible(priceRendererType.isUpColorConfigurable());
-                    downColorItem.setVisible(priceRendererType.isDownColorConfigurable());
-                    colorItem.setVisible(priceRendererType.isColorConfigurable());
+                    priceRendererItem.setVisible(true);
+                    seriesRendererItem.setVisible(false);
                 } else {
                     final boolean volumeSeries = isVolumeSeries(highlighted);
                     volumeRendererItem.setVisible(volumeSeries);
                     titleItem.setText(highlighted.getSeriesKey());
-                    rendererItem = seriesRendererItem;
-                    final XYItemRenderer renderer = highlighted.getRenderer();
-                    if (renderer == getVolumeRenderer()) {
-                        volumeRendererItem.setSelected(true);
-                        lineStyleItem.setVisible(false);
-                        lineWidthItem.setVisible(false);
-                        upColorItem.setVisible(true);
-                        downColorItem.setVisible(true);
-                        colorItem.setVisible(false);
-                    } else {
-                        final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(renderer);
-                        for (final Component component : seriesRendererItem.getMenuComponents()) {
-                            final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                            if (menuItem.getName().equals(seriesRendererType.name())) {
-                                menuItem.setSelected(true);
-                            }
-                        }
-                        lineStyleItem.setVisible(seriesRendererType.isStrokeConfigurable());
-                        lineWidthItem.setVisible(seriesRendererType.isStrokeConfigurable());
-                        upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
-                        downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
-                        colorItem.setVisible(seriesRendererType.isColorConfigurable());
-                    }
+                    priceRendererItem.setVisible(false);
+                    seriesRendererItem.setVisible(true);
                 }
+                updateRendererVisibility();
+                updateLineMenuItemVisibility();
                 popupMenu.add(titleItem);
-                popupMenu.add(rendererItem);
+                popupMenu.add(priceRendererItem);
+                popupMenu.add(seriesRendererItem);
                 popupMenu.add(lineStyleItem);
                 popupMenu.add(lineWidthItem);
                 popupMenu.add(upColorItem);
@@ -286,6 +279,69 @@ public class PlotConfigurationHelper {
             }
         });
 
+    }
+
+    private void updateRendererVisibility() {
+        if (priceRendererItem.isVisible()) {
+            for (final Component component : priceRendererItem.getMenuComponents()) {
+                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                if (menuItem.getName().equals(priceRendererType.name())) {
+                    menuItem.setSelected(true);
+                }
+            }
+            lineStyleItem.setVisible(priceRendererType.isStrokeConfigurable());
+            lineWidthItem.setVisible(priceRendererType.isStrokeConfigurable());
+            upColorItem.setVisible(priceRendererType.isUpColorConfigurable());
+            downColorItem.setVisible(priceRendererType.isDownColorConfigurable());
+            colorItem.setVisible(priceRendererType.isColorConfigurable());
+        }
+        if (seriesRendererItem.isVisible()) {
+            final XYItemRenderer renderer = highlighted.getRenderer();
+            if (renderer == getVolumeRenderer()) {
+                volumeRendererItem.setSelected(true);
+                lineStyleItem.setVisible(false);
+                lineWidthItem.setVisible(false);
+                upColorItem.setVisible(true);
+                downColorItem.setVisible(true);
+                colorItem.setVisible(false);
+            } else {
+                final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(renderer);
+                for (final Component component : seriesRendererItem.getMenuComponents()) {
+                    final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                    if (menuItem.getName().equals(seriesRendererType.name())) {
+                        menuItem.setSelected(true);
+                    }
+                }
+                lineStyleItem.setVisible(seriesRendererType.isStrokeConfigurable());
+                lineWidthItem.setVisible(seriesRendererType.isStrokeConfigurable());
+                upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
+                downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
+                colorItem.setVisible(seriesRendererType.isColorConfigurable());
+            }
+        }
+    }
+
+    private void updateLineMenuItemVisibility() {
+        if (lineStyleItem.isVisible()) {
+            final XYItemRenderer renderer = highlighted.getRenderer();
+            final LineStyleType lineStyleType = LineStyleType.valueOf(renderer.getSeriesStroke(0));
+            for (final Component component : lineStyleItem.getMenuComponents()) {
+                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                if (menuItem.getName().equals(lineStyleType.name())) {
+                    menuItem.setSelected(true);
+                }
+            }
+        }
+        if (lineWidthItem.isVisible()) {
+            final XYItemRenderer renderer = highlighted.getRenderer();
+            final LineWidthType lineWidthType = LineWidthType.valueOf(renderer.getSeriesStroke(0));
+            for (final Component component : lineWidthItem.getMenuComponents()) {
+                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                if (menuItem.getName().equals(lineWidthType.name())) {
+                    menuItem.setSelected(true);
+                }
+            }
+        }
     }
 
     private void initShowHideSeriesItems() {
@@ -327,17 +383,21 @@ public class PlotConfigurationHelper {
         volumeRendererItem = new JRadioButtonMenuItem(VOLUME_ITEM_NAME);
         volumeRendererItem.setName(VOLUME_ITEM_NAME);
         volumeRendererItem.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final XYItemRenderer renderer = highlighted.getRenderer();
                 final CustomVolumeBarRenderer newRenderer = getVolumeRenderer();
                 newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
+                newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
                 highlighted.setRenderer(newRenderer);
             }
         });
         seriesRendererGroup.add(volumeRendererItem);
         seriesRendererItem.add(volumeRendererItem);
-        for (final SeriesRendererType type : SeriesRendererType.values()) {
+        for (
+
+        final SeriesRendererType type : SeriesRendererType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
             item.addActionListener(new ActionListener() {
@@ -381,12 +441,14 @@ public class PlotConfigurationHelper {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
             item.addActionListener(new ActionListener() {
+
                 @Override
                 public void actionPerformed(final ActionEvent e) {
                     final XYItemRenderer renderer = highlighted.getRenderer();
                     final Stroke stroke = renderer.getSeriesStroke(0);
                     renderer.setSeriesStroke(0, type.getStroke(stroke));
                 }
+
             });
             lineWidthGroup.add(item);
             lineWidthItem.add(item);
@@ -417,10 +479,22 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final IUpDownColorRenderer renderer = (IUpDownColorRenderer) highlighted.getRenderer();
-                final Color newUpColor = showColorChooserDialog("Up Color", renderer.getUpColor());
-                if (newUpColor != null) {
-                    renderer.setUpColor(newUpColor);
-                }
+                showColorChooserDialog("Up Color", renderer.getUpColor(), new IColorChooserListener() {
+                    @Override
+                    public void change(final Color initialColor, final Color newColor) {
+                        renderer.setUpColor(newColor);
+                    }
+
+                    @Override
+                    public void ok(final Color initialColor, final Color acceptedColor) {
+                        renderer.setUpColor(acceptedColor);
+                    }
+
+                    @Override
+                    public void cancel(final Color initialColor, final Color cancelledColor) {
+                        renderer.setUpColor(initialColor);
+                    }
+                });
             }
         });
         downColorItem = new JMenuItem("Change Down Color");
@@ -428,10 +502,22 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final IUpDownColorRenderer renderer = (IUpDownColorRenderer) highlighted.getRenderer();
-                final Color newDownColor = showColorChooserDialog("Down Color", renderer.getDownColor());
-                if (newDownColor != null) {
-                    renderer.setDownColor(newDownColor);
-                }
+                showColorChooserDialog("Down Color", renderer.getDownColor(), new IColorChooserListener() {
+                    @Override
+                    public void change(final Color initialColor, final Color newColor) {
+                        renderer.setDownColor(newColor);
+                    }
+
+                    @Override
+                    public void ok(final Color initialColor, final Color acceptedColor) {
+                        renderer.setDownColor(acceptedColor);
+                    }
+
+                    @Override
+                    public void cancel(final Color initialColor, final Color cancelledColor) {
+                        renderer.setDownColor(initialColor);
+                    }
+                });
             }
         });
         colorItem = new JMenuItem("Change Color");
@@ -439,16 +525,29 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final XYItemRenderer renderer = highlighted.getRenderer();
-                final Color newColor = showColorChooserDialog("Color", (Color) renderer.getSeriesPaint(0));
-                if (newColor != null) {
-                    renderer.setSeriesPaint(0, newColor);
-                }
+                showColorChooserDialog("Color", (Color) renderer.getSeriesPaint(0), new IColorChooserListener() {
+                    @Override
+                    public void change(final Color initialColor, final Color newColor) {
+                        renderer.setSeriesPaint(0, newColor);
+                    }
+
+                    @Override
+                    public void ok(final Color initialColor, final Color acceptedColor) {
+                        renderer.setSeriesPaint(0, acceptedColor);
+                    }
+
+                    @Override
+                    public void cancel(final Color initialColor, final Color cancelledColor) {
+                        renderer.setSeriesPaint(0, initialColor);
+                    }
+                });
             }
         });
     }
 
-    protected Color showColorChooserDialog(final String name, final Color initialColor) {
-        return Dialogs.showColorChooserDialog(chartPanel, name, initialColor, true);
+    protected void showColorChooserDialog(final String name, final Color initialColor,
+            final IColorChooserListener listener) {
+        Dialogs.showColorChooserDialog(chartPanel, name, initialColor, true, listener);
     }
 
     private void initHelpItem() {

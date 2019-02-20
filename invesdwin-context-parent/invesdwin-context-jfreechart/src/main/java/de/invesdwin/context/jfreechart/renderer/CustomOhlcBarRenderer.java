@@ -3,6 +3,7 @@ package de.invesdwin.context.jfreechart.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -21,12 +22,13 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelp
 @NotThreadSafe
 public class CustomOhlcBarRenderer extends HighLowRenderer implements IUpDownColorRenderer {
 
+    private static final float STROKE_SCALING_MIN_WIDTH = 0.5F;
     private final CustomOhlcCandlestickRenderer candlestickRenderer;
     private double tickLength;
 
     public CustomOhlcBarRenderer(final CustomOhlcCandlestickRenderer candlestickRenderer) {
         this.candlestickRenderer = candlestickRenderer;
-        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_STROKE);
+        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
     }
 
     @Override
@@ -65,9 +67,15 @@ public class CustomOhlcBarRenderer extends HighLowRenderer implements IUpDownCol
 
         final boolean horiz = candlestickRenderer.isHorizontal(plot);
         final double stickWidth = candlestickRenderer.calculateStickWidth(state, dataArea, horiz);
+        candlestickRenderer.calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH);
         setTickLength(stickWidth / 2);
         super.drawItem(g2, state, dataArea, info, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState,
                 pass);
+    }
+
+    @Override
+    public Stroke getItemStroke(final int row, final int column) {
+        return candlestickRenderer.getItemStroke(row, column);
     }
 
     @Override
