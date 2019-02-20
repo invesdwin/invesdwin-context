@@ -463,7 +463,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             final float itemDifference = itemCount / (STROKE_SCALING_MAX_ITEMS);
             strokeWidth = Floats.max(strokeScalingMinWidth,
                     STROKE_SCALING_MAX_WIDTH - widthDifference * itemDifference);
-            System.out.println(itemCount + " " + widthDifference + " " + itemDifference + " -> " + strokeWidth);
         }
         this.itemStroke = new BasicStroke(strokeWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
     }
