@@ -255,13 +255,17 @@ public class PlotLegendHelper {
             dragStart = null;
             dragged = false;
             chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
-            for (int datasetIndex = 0; datasetIndex < trashPlot.getDatasetCount(); datasetIndex++) {
-                final String seriesKey = String.valueOf(trashPlot.getDataset(datasetIndex).getSeriesKey(0));
-                chartPanel.getPlotConfigurationHelper().removeSeries(seriesKey);
+            if (trashPlot != null) {
+                for (int datasetIndex = 0; datasetIndex < trashPlot.getDatasetCount(); datasetIndex++) {
+                    final String seriesKey = String.valueOf(trashPlot.getDataset(datasetIndex).getSeriesKey(0));
+                    chartPanel.getPlotConfigurationHelper().removeSeries(seriesKey);
+                }
+                trashPlot = null;
             }
-            trashPlot = null;
-            chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
-            emptyPlot = null;
+            if (emptyPlot != null) {
+                chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
+                emptyPlot = null;
+            }
         }
     }
 
