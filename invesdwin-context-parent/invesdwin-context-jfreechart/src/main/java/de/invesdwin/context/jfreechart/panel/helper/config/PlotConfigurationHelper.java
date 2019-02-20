@@ -659,7 +659,8 @@ public class PlotConfigurationHelper {
                 sb.append(
                         "<li><b>Series Display Settings</b>: Right click a series legend to get a context menu to modify its display settings."
                                 + "<br>You can modify the series type, line style, line width and colors. The settings differ depending on the selected series type."
-                                + "<br>You can also show/hide series using the context menu, though only visible series can be modified in style.</li>");
+                                + "<br>You can also show/hide series using the context menu, though only visible series can be modified in style."
+                                + "<br>The series style settings can also be reset to their initial values using the context menu.</li>");
                 sb.append("<li><b>Moving Series</b>: Drag and drop a series legend to move it to a different plot pane."
                         + "<br>The green pane will add a new plot. The red trash pane will remove the series (only visible if the series is actually trashable)."
                         + "<br>You can combine multiple series into one plot pane. Empty plots will be removed automatically which is displayed in red as well.</li>");
