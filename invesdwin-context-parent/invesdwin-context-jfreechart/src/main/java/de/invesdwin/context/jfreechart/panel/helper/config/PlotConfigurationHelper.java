@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -55,11 +57,11 @@ public class PlotConfigurationHelper {
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
     public static final Stroke DEFAULT_PRICE_STROKE = LineStyleType.Solid.getStroke(LineWidthType._2);
     public static final Percent VOLUME_TRANSPARENCY = new Percent(50D, PercentScale.PERCENT);
-    private static final String VOLUME_ITEM_NAME = "Volume";
+    public static final PriceRendererType DEFAULT_PRICE_RENDERER_TYPE = PriceRendererType.Candlestick;
 
     private final InteractiveChartPanel chartPanel;
 
-    private PriceRendererType priceRendererType = PriceRendererType.Candlestick;
+    private PriceRendererType priceRendererType = DEFAULT_PRICE_RENDERER_TYPE;
     private Color upColor;
     private Color downColor;
     private Color priceColor;
@@ -73,6 +75,7 @@ public class PlotConfigurationHelper {
     private final XYStepRenderer stepLineRenderer;
 
     private final Set<String> volumeSeriesKeys = new HashSet<>();
+    private final Map<String, InitialSeriesSettings> seriesKey_initialSeriesSettings = new HashMap<>();
 
     private JPopupMenu popupMenu;
     private JMenuItem titleItem;
@@ -92,6 +95,7 @@ public class PlotConfigurationHelper {
     private JMenuItem showSeriesItem;
 
     private JMenuItem hideSeriesItem;
+    private JMenuItem resetSeriesItem;
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -214,6 +218,7 @@ public class PlotConfigurationHelper {
         initRendererItems();
         initStrokeItems();
         initColorItems();
+        initResetItem();
         initShowHideSeriesItems();
         initExportItems();
         initHelpItem();
@@ -248,6 +253,10 @@ public class PlotConfigurationHelper {
                     seriesRendererItem.setVisible(false);
                 } else {
                     final boolean volumeSeries = isVolumeSeries(highlighted);
+                    if (!volumeSeries && !seriesKey_initialSeriesSettings.containsKey(highlighted.getSeriesKey())) {
+                        seriesKey_initialSeriesSettings.put(highlighted.getSeriesKey(),
+                                new InitialSeriesSettings(highlighted.getRenderer()));
+                    }
                     volumeRendererItem.setVisible(volumeSeries);
                     titleItem.setText(highlighted.getSeriesKey());
                     priceRendererItem.setVisible(false);
@@ -256,6 +265,7 @@ public class PlotConfigurationHelper {
                 updateRendererVisibility();
                 updateLineMenuItemVisibility();
                 popupMenu.add(titleItem);
+                popupMenu.addSeparator();
                 popupMenu.add(priceRendererItem);
                 popupMenu.add(seriesRendererItem);
                 popupMenu.add(lineStyleItem);
@@ -263,6 +273,8 @@ public class PlotConfigurationHelper {
                 popupMenu.add(upColorItem);
                 popupMenu.add(downColorItem);
                 popupMenu.add(colorItem);
+                popupMenu.add(resetSeriesItem);
+                popupMenu.addSeparator();
                 popupMenu.add(hideSeriesItem);
             }
 
@@ -279,6 +291,26 @@ public class PlotConfigurationHelper {
             }
         });
 
+    }
+
+    private void initResetItem() {
+        resetSeriesItem = new JMenuItem("Reset Style");
+        resetSeriesItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                if (highlighted.isPriceSeries()) {
+                    setPriceRendererType(DEFAULT_PRICE_RENDERER_TYPE);
+                    setUpColor(getUpColor());
+                    setDownColor(getDownColor());
+                    setPriceColor(getPriceColor());
+                    setPriceStroke(getPriceStroke());
+                } else {
+                    final InitialSeriesSettings initialSeriesSettings = seriesKey_initialSeriesSettings
+                            .get(highlighted.getSeriesKey());
+                    initialSeriesSettings.reset(highlighted);
+                }
+            }
+        });
     }
 
     private void updateRendererVisibility() {
@@ -384,6 +416,7 @@ public class PlotConfigurationHelper {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
             item.addActionListener(new ActionListener() {
+
                 @Override
                 public void actionPerformed(final ActionEvent e) {
                     final XYItemRenderer renderer = highlighted.getRenderer();
@@ -397,8 +430,8 @@ public class PlotConfigurationHelper {
             seriesRendererGroup.add(item);
             seriesRendererItem.add(item);
         }
-        volumeRendererItem = new JRadioButtonMenuItem(VOLUME_ITEM_NAME);
-        volumeRendererItem.setName(VOLUME_ITEM_NAME);
+        volumeRendererItem = new JRadioButtonMenuItem("Volume");
+        volumeRendererItem.setName("Volume");
         volumeRendererItem.addActionListener(new ActionListener() {
 
             @Override
@@ -412,7 +445,6 @@ public class PlotConfigurationHelper {
         });
         seriesRendererGroup.add(volumeRendererItem);
         seriesRendererItem.add(volumeRendererItem);
-        System.out.println("TODO reset button for settings");
     }
 
     private void initStrokeItems() {
@@ -647,4 +679,8 @@ public class PlotConfigurationHelper {
         return popupMenu.isShowing();
     }
 
+    public void removeSeries(final String seriesKey) {
+        seriesKey_initialSeriesSettings.remove(seriesKey);
+        volumeSeriesKeys.remove(seriesKey);
+    }
 }

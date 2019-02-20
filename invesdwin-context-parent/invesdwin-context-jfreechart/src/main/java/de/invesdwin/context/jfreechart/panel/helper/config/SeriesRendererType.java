@@ -103,7 +103,7 @@ public enum SeriesRendererType implements IRendererType {
     };
     private static final double HISTOGRAM_MARGIN = 0.80D;
 
-    public abstract XYItemRenderer newRenderer(LineStyleType strokeType, LineWidthType lineWidthType, Color color);
+    public abstract XYItemRenderer newRenderer(LineStyleType lineStyleType, LineWidthType lineWidthType, Color color);
 
     public static SeriesRendererType valueOf(final XYItemRenderer renderer) {
         final XYItemRenderer unwrapped = DisabledXYItemRenderer.maybeUnwrap(renderer);
