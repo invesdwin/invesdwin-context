@@ -28,7 +28,12 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return true;
         }
     },
@@ -44,7 +49,12 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return true;
         }
     },
@@ -59,7 +69,12 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return true;
         }
     },
@@ -78,7 +93,12 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return false;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return false;
         }
     },
@@ -97,7 +117,12 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return false;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return false;
         }
     };

@@ -125,14 +125,18 @@ public class PlotConfigurationHelper {
 
     public void setPriceRendererType(final PriceRendererType priceRendererType) {
         if (priceRendererType != this.priceRendererType) {
-            final XYItemRenderer renderer = chartPanel.getOhlcPlot().getRenderer(0);
-            final XYItemRenderer newRenderer = getPriceRenderer(priceRendererType);
-            newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
-            newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
-            chartPanel.getOhlcPlot().setRenderer(0, newRenderer);
+            updatePriceRendererType(priceRendererType);
             chartPanel.update();
         }
         this.priceRendererType = priceRendererType;
+    }
+
+    private void updatePriceRendererType(final PriceRendererType priceRendererType) {
+        final XYItemRenderer renderer = chartPanel.getOhlcPlot().getRenderer(0);
+        final XYItemRenderer newRenderer = getPriceRenderer(priceRendererType);
+        newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
+        newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
+        chartPanel.getOhlcPlot().setRenderer(0, newRenderer);
     }
 
     public XYItemRenderer getPriceRenderer() {
@@ -383,8 +387,8 @@ public class PlotConfigurationHelper {
                     menuItem.setSelected(true);
                 }
             }
-            lineStyleItem.setVisible(rendererType.isStrokeConfigurable());
-            lineWidthItem.setVisible(rendererType.isStrokeConfigurable());
+            lineStyleItem.setVisible(rendererType.isLineStyleConfigurable());
+            lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
             upColorItem.setVisible(rendererType.isUpColorConfigurable());
             downColorItem.setVisible(rendererType.isDownColorConfigurable());
             colorItem.setVisible(rendererType.isColorConfigurable());
@@ -406,8 +410,8 @@ public class PlotConfigurationHelper {
                         menuItem.setSelected(true);
                     }
                 }
-                lineStyleItem.setVisible(seriesRendererType.isStrokeConfigurable());
-                lineWidthItem.setVisible(seriesRendererType.isStrokeConfigurable());
+                lineStyleItem.setVisible(seriesRendererType.isLineStyleConfigurable());
+                lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
                 upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
                 downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
                 colorItem.setVisible(seriesRendererType.isColorConfigurable());
@@ -465,7 +469,7 @@ public class PlotConfigurationHelper {
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    chartPanel.getOhlcPlot().setRenderer(0, getPriceRenderer(type));
+                    updatePriceRendererType(type);
                 }
             });
             priceRendererGroup.add(item);

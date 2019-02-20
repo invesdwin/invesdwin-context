@@ -15,7 +15,7 @@ import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 @NotThreadSafe
 public class PlotZoomHelper {
 
-    private static final int MAX_ZOOM_ITEM_COUNT = 10000;
+    public static final int MAX_ZOOM_ITEM_COUNT = 10000;
     private static final int MIN_ZOOM_ITEM_COUNT = 10;
 
     private static final double ZOOM_FACTOR = 0.1D;

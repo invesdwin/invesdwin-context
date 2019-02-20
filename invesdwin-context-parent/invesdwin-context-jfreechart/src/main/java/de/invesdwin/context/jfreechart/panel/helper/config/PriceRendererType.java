@@ -6,7 +6,12 @@ import javax.annotation.concurrent.NotThreadSafe;
 public enum PriceRendererType implements IRendererType {
     Line {
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return true;
         }
 
@@ -27,7 +32,12 @@ public enum PriceRendererType implements IRendererType {
     },
     Step {
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return true;
         }
 
@@ -48,7 +58,12 @@ public enum PriceRendererType implements IRendererType {
     },
     Area {
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
             return true;
         }
 
@@ -69,8 +84,13 @@ public enum PriceRendererType implements IRendererType {
     },
     OHLC {
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
             return false;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
+            return true;
         }
 
         @Override
@@ -90,8 +110,13 @@ public enum PriceRendererType implements IRendererType {
     },
     Candlestick {
         @Override
-        public boolean isStrokeConfigurable() {
+        public boolean isLineStyleConfigurable() {
             return false;
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
+            return true;
         }
 
         @Override

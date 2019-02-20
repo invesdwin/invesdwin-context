@@ -2,7 +2,9 @@ package de.invesdwin.context.jfreechart.panel.helper.config;
 
 public interface IRendererType {
 
-    boolean isStrokeConfigurable();
+    boolean isLineStyleConfigurable();
+
+    boolean isLineWidthConfigurable();
 
     boolean isUpColorConfigurable();
 

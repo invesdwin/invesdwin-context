@@ -49,7 +49,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
     private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;
 
     private static final float STROKE_SCALING_MIN_WIDTH = 0.3f;
-    private static final float STROKE_SCALING_MAX_WIDTH = 2f;
     private static final float STROKE_SCALING_MIN_ITEMS = 200;
     private static final float STROKE_SCALING_MAX_ITEMS = 2500;
 
@@ -349,6 +348,7 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         final double yyOpen = rangeAxis.valueToJava2D(yOpen, dataArea, edge);
         final double yyClose = rangeAxis.valueToJava2D(yClose, dataArea, edge);
 
+        calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH, getSeriesStroke(0));
         final double stickWidth = calculateStickWidth(state, dataArea, horiz);
 
         final Paint p = getItemPaint(series, item);
@@ -356,7 +356,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         if (this.useOutlinePaint) {
             outlinePaint = getItemOutlinePaint(series, item);
         }
-        calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH);
         final Stroke s = getItemStroke(series, item);
 
         g2.setStroke(s);
@@ -419,12 +418,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             }
             g2.fill(body);
         }
-        if (this.useOutlinePaint) {
-            g2.setPaint(outlinePaint);
-        } else {
-            g2.setPaint(p);
-        }
-        g2.draw(body);
 
         // add an entity for the item...
         if (entities != null) {
@@ -451,18 +444,21 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         return horiz;
     }
 
-    public void calculateItemStroke(final XYItemRendererState state, final float strokeScalingMinWidth) {
+    public void calculateItemStroke(final XYItemRendererState state, final float strokeScalingMinWidth,
+            final Stroke seriesStroke) {
+        final BasicStroke cStroke = (BasicStroke) seriesStroke;
+        final float strokeScalingMaxWidth = cStroke.getLineWidth();
+
         final int itemCount = state.getLastItemIndex() - state.getFirstItemIndex();
         final float strokeWidth;
         if (itemCount > STROKE_SCALING_MAX_ITEMS) {
             strokeWidth = strokeScalingMinWidth;
         } else if (itemCount <= STROKE_SCALING_MIN_ITEMS) {
-            strokeWidth = STROKE_SCALING_MAX_WIDTH;
+            strokeWidth = strokeScalingMaxWidth;
         } else {
-            final float widthDifference = STROKE_SCALING_MAX_WIDTH - strokeScalingMinWidth;
+            final float widthDifference = strokeScalingMaxWidth - strokeScalingMinWidth;
             final float itemDifference = itemCount / (STROKE_SCALING_MAX_ITEMS);
-            strokeWidth = Floats.max(strokeScalingMinWidth,
-                    STROKE_SCALING_MAX_WIDTH - widthDifference * itemDifference);
+            strokeWidth = Floats.max(strokeScalingMinWidth, strokeScalingMaxWidth - widthDifference * itemDifference);
         }
         this.itemStroke = new BasicStroke(strokeWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
     }
@@ -481,6 +477,8 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             //add a dynamic gap to remove the body on lots of items
             xxWidth -= 2 * (itemCount / 1000D);
         }
+
+        xxWidth -= itemStroke.getLineWidth() - 1D;
         if (itemCount > SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS) {
             xxWidth *= autoWidthFactor;
         } else if (itemCount > SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS) {

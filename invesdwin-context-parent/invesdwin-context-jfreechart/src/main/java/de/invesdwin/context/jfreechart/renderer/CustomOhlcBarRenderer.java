@@ -67,7 +67,7 @@ public class CustomOhlcBarRenderer extends HighLowRenderer implements IUpDownCol
 
         final boolean horiz = candlestickRenderer.isHorizontal(plot);
         final double stickWidth = candlestickRenderer.calculateStickWidth(state, dataArea, horiz);
-        candlestickRenderer.calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH);
+        candlestickRenderer.calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH, getSeriesStroke(0));
         setTickLength(stickWidth / 2);
         super.drawItem(g2, state, dataArea, info, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState,
                 pass);
