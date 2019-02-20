@@ -78,14 +78,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
      */
     private Color downColor;
 
-    /**
-     * A flag that controls whether or not the renderer's outline paint is used to draw the outline of the candlestick.
-     * The default value is <code>false</code> to avoid a change of behaviour for existing code.
-     *
-     * @since 1.0.5
-     */
-    private boolean useOutlinePaint;
-
     private final OHLCDataset dataset;
 
     private BasicStroke itemStroke;
@@ -108,8 +100,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         setDefaultToolTipGenerator(toolTipGenerator);
         this.upColor = PlotConfigurationHelper.DEFAULT_UP_COLOR;
         this.downColor = PlotConfigurationHelper.DEFAULT_DOWN_COLOR;
-        this.useOutlinePaint = false; // false preserves the old behaviour
-                                      // prior to introducing this flag
         setSeriesPaint(0, upColor);
         setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
         this.dataset = dataset;
@@ -198,38 +188,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
     public void setDownColor(final Color downColor) {
         this.downColor = downColor;
         fireChangeEvent();
-    }
-
-    /**
-     * Returns the flag that controls whether or not the renderer's outline paint is used to draw the candlestick
-     * outline. The default value is <code>false</code>.
-     *
-     * @return A boolean.
-     *
-     * @since 1.0.5
-     *
-     * @see #setUseOutlinePaint(boolean)
-     */
-    public boolean getUseOutlinePaint() {
-        return this.useOutlinePaint;
-    }
-
-    /**
-     * Sets the flag that controls whether or not the renderer's outline paint is used to draw the candlestick outline,
-     * and sends a {@link RendererChangeEvent} to all registered listeners.
-     *
-     * @param use
-     *            the new flag value.
-     *
-     * @since 1.0.5
-     *
-     * @see #getUseOutlinePaint()
-     */
-    public void setUseOutlinePaint(final boolean use) {
-        if (this.useOutlinePaint != use) {
-            this.useOutlinePaint = use;
-            fireChangeEvent();
-        }
     }
 
     /**
@@ -352,19 +310,10 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         final double stickWidth = calculateStickWidth(state, dataArea, horiz);
 
         final Paint p = getItemPaint(series, item);
-        Paint outlinePaint = null;
-        if (this.useOutlinePaint) {
-            outlinePaint = getItemOutlinePaint(series, item);
-        }
         final Stroke s = getItemStroke(series, item);
 
         g2.setStroke(s);
-
-        if (this.useOutlinePaint) {
-            g2.setPaint(outlinePaint);
-        } else {
-            g2.setPaint(p);
-        }
+        g2.setPaint(p);
 
         final double yyMaxOpenClose = Math.max(yyOpen, yyClose);
         final double yyMinOpenClose = Math.min(yyOpen, yyClose);
@@ -537,9 +486,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             return false;
         }
         if (this.autoWidthFactor != that.autoWidthFactor) {
-            return false;
-        }
-        if (this.useOutlinePaint != that.useOutlinePaint) {
             return false;
         }
         return super.equals(obj);
