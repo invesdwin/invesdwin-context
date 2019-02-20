@@ -427,7 +427,6 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
             xxWidth -= 2 * (itemCount / 1000D);
         }
 
-        xxWidth -= itemStroke.getLineWidth() - 1D;
         if (itemCount > SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS) {
             xxWidth *= autoWidthFactor;
         } else if (itemCount > SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS) {

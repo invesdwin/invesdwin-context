@@ -55,7 +55,7 @@ public class PlotConfigurationHelper {
     public static final Color DEFAULT_DOWN_COLOR = Colors.fromHex("#EF5350");
     public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
-    public static final Stroke DEFAULT_PRICE_STROKE = LineStyleType.Solid.getStroke(LineWidthType._2);
+    public static final Stroke DEFAULT_PRICE_STROKE = LineStyleType.Solid.getStroke(LineWidthType._1);
     public static final Percent VOLUME_TRANSPARENCY = new Percent(50D, PercentScale.PERCENT);
     public static final PriceRendererType DEFAULT_PRICE_RENDERER_TYPE = PriceRendererType.Candlestick;
 
