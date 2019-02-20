@@ -257,8 +257,11 @@ public class PlotLegendHelper {
             chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
             if (trashPlot != null) {
                 for (int datasetIndex = 0; datasetIndex < trashPlot.getDatasetCount(); datasetIndex++) {
-                    final String seriesKey = String.valueOf(trashPlot.getDataset(datasetIndex).getSeriesKey(0));
-                    chartPanel.getPlotConfigurationHelper().removeSeries(seriesKey);
+                    final XYDataset dataset = trashPlot.getDataset(datasetIndex);
+                    if (dataset != null) {
+                        final String seriesKey = String.valueOf(dataset.getSeriesKey(0));
+                        chartPanel.getPlotConfigurationHelper().removeSeries(seriesKey);
+                    }
                 }
                 trashPlot = null;
             }
