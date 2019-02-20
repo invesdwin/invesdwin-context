@@ -59,7 +59,7 @@ public class PlotConfigurationHelper {
 
     private final InteractiveChartPanel chartPanel;
 
-    private PriceRendererType priceRendererType = PriceRendererType.Candlesticks;
+    private PriceRendererType priceRendererType = PriceRendererType.Candlestick;
     private Color upColor;
     private Color downColor;
     private Color priceColor;
@@ -143,9 +143,9 @@ public class PlotConfigurationHelper {
             return lineRenderer;
         case Step:
             return stepLineRenderer;
-        case Bars:
+        case OHLC:
             return barsRenderer;
-        case Candlesticks:
+        case Candlestick:
             return candlestickRenderer;
         default:
             throw UnknownArgumentException.newInstance(PriceRendererType.class, priceRendererType);
@@ -380,24 +380,7 @@ public class PlotConfigurationHelper {
 
         seriesRendererItem = new JMenu("Series Type");
         final ButtonGroup seriesRendererGroup = new ButtonGroup();
-        volumeRendererItem = new JRadioButtonMenuItem(VOLUME_ITEM_NAME);
-        volumeRendererItem.setName(VOLUME_ITEM_NAME);
-        volumeRendererItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final XYItemRenderer renderer = highlighted.getRenderer();
-                final CustomVolumeBarRenderer newRenderer = getVolumeRenderer();
-                newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
-                newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
-                highlighted.setRenderer(newRenderer);
-            }
-        });
-        seriesRendererGroup.add(volumeRendererItem);
-        seriesRendererItem.add(volumeRendererItem);
-        for (
-
-        final SeriesRendererType type : SeriesRendererType.values()) {
+        for (final SeriesRendererType type : SeriesRendererType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
             item.addActionListener(new ActionListener() {
@@ -414,6 +397,21 @@ public class PlotConfigurationHelper {
             seriesRendererGroup.add(item);
             seriesRendererItem.add(item);
         }
+        volumeRendererItem = new JRadioButtonMenuItem(VOLUME_ITEM_NAME);
+        volumeRendererItem.setName(VOLUME_ITEM_NAME);
+        volumeRendererItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final XYItemRenderer renderer = highlighted.getRenderer();
+                final CustomVolumeBarRenderer newRenderer = getVolumeRenderer();
+                newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
+                newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
+                highlighted.setRenderer(newRenderer);
+            }
+        });
+        seriesRendererGroup.add(volumeRendererItem);
+        seriesRendererItem.add(volumeRendererItem);
         System.out.println("TODO reset button for settings");
     }
 

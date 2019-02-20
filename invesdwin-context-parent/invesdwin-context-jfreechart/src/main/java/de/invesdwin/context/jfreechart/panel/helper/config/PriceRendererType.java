@@ -4,48 +4,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 @NotThreadSafe
 public enum PriceRendererType implements IRendererType {
-    Candlesticks {
-        @Override
-        public boolean isStrokeConfigurable() {
-            return false;
-        }
-
-        @Override
-        public boolean isUpColorConfigurable() {
-            return true;
-        }
-
-        @Override
-        public boolean isDownColorConfigurable() {
-            return true;
-        }
-
-        @Override
-        public boolean isColorConfigurable() {
-            return false;
-        }
-    },
-    Bars {
-        @Override
-        public boolean isStrokeConfigurable() {
-            return false;
-        }
-
-        @Override
-        public boolean isUpColorConfigurable() {
-            return true;
-        }
-
-        @Override
-        public boolean isDownColorConfigurable() {
-            return true;
-        }
-
-        @Override
-        public boolean isColorConfigurable() {
-            return false;
-        }
-    },
     Line {
         @Override
         public boolean isStrokeConfigurable() {
@@ -107,6 +65,48 @@ public enum PriceRendererType implements IRendererType {
         @Override
         public boolean isColorConfigurable() {
             return true;
+        }
+    },
+    OHLC {
+        @Override
+        public boolean isStrokeConfigurable() {
+            return false;
+        }
+
+        @Override
+        public boolean isUpColorConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isDownColorConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isColorConfigurable() {
+            return false;
+        }
+    },
+    Candlestick {
+        @Override
+        public boolean isStrokeConfigurable() {
+            return false;
+        }
+
+        @Override
+        public boolean isUpColorConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isDownColorConfigurable() {
+            return true;
+        }
+
+        @Override
+        public boolean isColorConfigurable() {
+            return false;
         }
     };
 
