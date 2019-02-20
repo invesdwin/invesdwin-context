@@ -459,10 +459,12 @@ public class PlotConfigurationHelper {
                 final StringBuilder sb = new StringBuilder();
                 sb.append("<html><h2>Usage:</h2>");
                 sb.append("<ul>");
-                sb.append("<li><b>Show/Hide Series</b>: Left click a series legend to show/hide that series.</li>");
+                sb.append("<li><b>Show/Hide Series</b>: Left click a series legend to show/hide that series."
+                        + "<br>Or you can also use the series diplay settings context menu for that.</li>");
                 sb.append(
                         "<li><b>Series Display Settings</b>: Right click a series legend to get a context menu to modify its display settings."
-                                + "<br>You can modify the series type, line style, line width and colors. The settings differ depending on the selected series type.</li>");
+                                + "<br>You can modify the series type, line style, line width and colors. The settings differ depending on the selected series type."
+                                + "<br>You can also show/hide series using the context menu, though only visible series can be modified in style.</li>");
                 sb.append("<li><b>Moving Series</b>: Drag and drop a series legend to move it to a different plot pane."
                         + "<br>The green pane will add a new plot. The red trash pane will remove the series (only visible if the series is actually trashable)."
                         + "<br>You can combine multiple series into one plot pane. Empty plots will be removed automatically which is displayed in red as well.</li>");
@@ -475,9 +477,9 @@ public class PlotConfigurationHelper {
                         "<li><b>Navigation</b>: Move the mouse to the bottom center of the chart to show navigation buttons."
                                 + "<br>The navigation also works by hotkeys and mouse.</li>");
                 sb.append(
-                        "<li><b>Panning</b>: Use left click and drag the mouse anywhere on the chart or use left/right arrow keys on your keyboard to do the same."
+                        "<li><b>Panning</b>: Use left click and drag the mouse anywhere on the chart or use left/right arrow keys on your keyboard to pan the data."
                                 + "<br>You can also use horizontal scrolling of your mouse or the shift key combined with your scroll wheel."
-                                + "<br>By holding down the control key on your keyboard you can make the scrolling faster.</li>");
+                                + "<br>By holding down the control key on your keyboard you can make the panning faster.</li>");
                 sb.append(
                         "<li><b>Zooming</b>: Use your scroll wheel or +/- keys to zoom. When using the mouse to scroll, the mouse pointer will be used as an anchor.</li>");
                 sb.append(
