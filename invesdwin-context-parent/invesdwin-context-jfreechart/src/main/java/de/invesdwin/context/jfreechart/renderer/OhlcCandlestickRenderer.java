@@ -28,7 +28,7 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Floats;
 
@@ -42,8 +42,7 @@ import de.invesdwin.util.math.Floats;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class OhlcCandlestickRenderer extends AbstractXYItemRenderer
-        implements XYItemRenderer, IUpDownColorRenderer {
+public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements XYItemRenderer, IUpDownColorRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
     private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;
@@ -98,10 +97,10 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer
     public OhlcCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
-        this.upColor = PlotConfigurationHelper.DEFAULT_UP_COLOR;
-        this.downColor = PlotConfigurationHelper.DEFAULT_DOWN_COLOR;
+        this.upColor = PriceInitialSettings.DEFAULT_UP_COLOR;
+        this.downColor = PriceInitialSettings.DEFAULT_DOWN_COLOR;
         setSeriesPaint(0, upColor);
-        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
+        setSeriesStroke(0, PriceInitialSettings.DEFAULT_PRICE_STROKE);
         this.dataset = dataset;
     }
 

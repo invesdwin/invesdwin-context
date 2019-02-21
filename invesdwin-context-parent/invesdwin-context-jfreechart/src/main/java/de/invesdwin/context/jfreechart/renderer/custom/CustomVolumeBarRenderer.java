@@ -8,9 +8,10 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
+import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.renderer.OhlcCandlestickRenderer;
@@ -30,18 +31,18 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
 
     public CustomVolumeBarRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
         super(0.25f);
-        this.candlestickRenderer = (OhlcCandlestickRenderer) plotConfigurationHelper
-                .getPriceRenderer(PriceRendererType.Candlestick);
+        final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
+        this.candlestickRenderer = (OhlcCandlestickRenderer) config.getPriceRenderer(PriceRendererType.Candlestick);
 
         setBarPainter(new StandardXYBarPainter());
         setShadowVisible(false);
-        setSeriesPaint(0, plotConfigurationHelper.getSeriesColor());
-        setSeriesFillPaint(0, plotConfigurationHelper.getSeriesColor());
-        setSeriesStroke(0, plotConfigurationHelper.getSeriesStroke());
+        setSeriesPaint(0, config.getSeriesColor());
+        setSeriesFillPaint(0, config.getSeriesColor());
+        setSeriesStroke(0, config.getSeriesStroke());
         setDrawBarOutline(false);
 
-        this.upColor = Colors.setTransparency(plotConfigurationHelper.getUpColor(), DEFAULT_VOLUME_TRANSPARENCY);
-        this.downColor = Colors.setTransparency(plotConfigurationHelper.getDownColor(), DEFAULT_VOLUME_TRANSPARENCY);
+        this.upColor = Colors.setTransparency(config.getUpColor(), DEFAULT_VOLUME_TRANSPARENCY);
+        this.downColor = Colors.setTransparency(config.getDownColor(), DEFAULT_VOLUME_TRANSPARENCY);
     }
 
     @Override

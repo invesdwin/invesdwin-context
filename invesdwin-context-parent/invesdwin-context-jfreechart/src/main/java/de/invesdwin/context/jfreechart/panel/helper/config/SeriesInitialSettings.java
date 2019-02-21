@@ -46,14 +46,14 @@ public class SeriesInitialSettings {
         rendererType.reset(highlighted, this);
     }
 
-    public IRendererType getInitialRendererType() {
+    public IRendererType getRendererType() {
         return rendererType;
     }
 
-    public IRendererType getRendererType(final HighlightedLegendInfo highlighted) {
+    public IRendererType getCurrentRendererType(final HighlightedLegendInfo highlighted) {
         final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(highlighted.getRenderer());
         if (seriesRendererType == SeriesRendererType.Custom) {
-            return getInitialRendererType();
+            return getRendererType();
         } else {
             return seriesRendererType;
         }

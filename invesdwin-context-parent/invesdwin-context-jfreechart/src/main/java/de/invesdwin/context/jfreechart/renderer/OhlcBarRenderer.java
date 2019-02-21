@@ -17,7 +17,7 @@ import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 
 @NotThreadSafe
 public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRenderer {
@@ -28,7 +28,7 @@ public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRend
 
     public OhlcBarRenderer(final OhlcCandlestickRenderer candlestickRenderer) {
         this.candlestickRenderer = candlestickRenderer;
-        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
+        setSeriesStroke(0, PriceInitialSettings.DEFAULT_PRICE_STROKE);
     }
 
     @Override

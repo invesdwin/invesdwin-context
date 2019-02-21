@@ -38,7 +38,7 @@ import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 
 /**
  * Instead of drawing an outline, this one draws a line so that at start and end of series the line does not go to zero.
@@ -132,7 +132,7 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
         this.legendArea = area;
         this.gradientTransformer = new StandardGradientPaintTransformer();
 
-        setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
+        setSeriesStroke(0, PriceInitialSettings.DEFAULT_PRICE_STROKE);
     }
 
     /**
