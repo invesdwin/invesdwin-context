@@ -89,16 +89,6 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
     }
 
     @Override
-    public boolean isUpColorConfigurable() {
-        return true;
-    }
-
-    @Override
-    public boolean isDownColorConfigurable() {
-        return true;
-    }
-
-    @Override
     public boolean isPriceColorConfigurable() {
         return false;
     }
