@@ -40,8 +40,14 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 
+/**
+ * Instead of drawing an outline, this one draws a line so that at start and end of series the line does not go to zero.
+ * 
+ * @author subes
+ *
+ */
 @NotThreadSafe
-public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {
+public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {
 
     /**
      * A state object used by this renderer.
@@ -92,7 +98,7 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
      * @param type
      *            the type of the renderer.
      */
-    public CustomXYAreaRenderer() {
+    public XYAreaLineRenderer() {
         this(null, null);
     }
 
@@ -107,7 +113,7 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
      * @param urlGenerator
      *            the URL generator ({@code null} permitted).
      */
-    public CustomXYAreaRenderer(final XYToolTipGenerator toolTipGenerator, final XYURLGenerator urlGenerator) {
+    public XYAreaLineRenderer(final XYToolTipGenerator toolTipGenerator, final XYURLGenerator urlGenerator) {
 
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
@@ -441,7 +447,7 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        final CustomXYAreaRenderer clone = (CustomXYAreaRenderer) super.clone();
+        final XYAreaLineRenderer clone = (XYAreaLineRenderer) super.clone();
         clone.legendArea = ShapeUtils.clone(this.legendArea);
         return clone;
     }
@@ -461,10 +467,10 @@ public class CustomXYAreaRenderer extends AbstractXYItemRenderer implements XYIt
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CustomXYAreaRenderer)) {
+        if (!(obj instanceof XYAreaLineRenderer)) {
             return false;
         }
-        final CustomXYAreaRenderer that = (CustomXYAreaRenderer) obj;
+        final XYAreaLineRenderer that = (XYAreaLineRenderer) obj;
         if (this.plotArea != that.plotArea) {
             return false;
         }

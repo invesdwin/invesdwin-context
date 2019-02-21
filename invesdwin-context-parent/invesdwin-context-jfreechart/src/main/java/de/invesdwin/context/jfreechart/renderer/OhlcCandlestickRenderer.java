@@ -42,7 +42,7 @@ import de.invesdwin.util.math.Floats;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
+public class OhlcCandlestickRenderer extends AbstractXYItemRenderer
         implements XYItemRenderer, IUpDownColorRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
@@ -85,7 +85,7 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
     /**
      * Creates a new renderer for candlestick charts.
      */
-    public CustomOhlcCandlestickRenderer(final OHLCDataset dataset) {
+    public OhlcCandlestickRenderer(final OHLCDataset dataset) {
         this(dataset, new HighLowItemLabelGenerator());
     }
 
@@ -95,7 +95,7 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
      * @param toolTipGenerator
      *            the tool tip generator. <code>null</code> is none.
      */
-    public CustomOhlcCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
+    public OhlcCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
         this.upColor = PlotConfigurationHelper.DEFAULT_UP_COLOR;
@@ -471,10 +471,10 @@ public class CustomOhlcCandlestickRenderer extends AbstractXYItemRenderer
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof CustomOhlcCandlestickRenderer)) {
+        if (!(obj instanceof OhlcCandlestickRenderer)) {
             return false;
         }
-        final CustomOhlcCandlestickRenderer that = (CustomOhlcCandlestickRenderer) obj;
+        final OhlcCandlestickRenderer that = (OhlcCandlestickRenderer) obj;
         if (!PaintUtils.equal(this.upColor, that.upColor)) {
             return false;
         }

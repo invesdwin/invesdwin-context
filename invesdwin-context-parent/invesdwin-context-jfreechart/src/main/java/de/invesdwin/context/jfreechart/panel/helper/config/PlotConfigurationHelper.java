@@ -12,9 +12,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.ButtonGroup;
@@ -34,17 +32,15 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
-import de.invesdwin.context.jfreechart.renderer.CustomOhlcBarRenderer;
-import de.invesdwin.context.jfreechart.renderer.CustomOhlcCandlestickRenderer;
-import de.invesdwin.context.jfreechart.renderer.CustomVolumeBarRenderer;
-import de.invesdwin.context.jfreechart.renderer.CustomXYAreaRenderer;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
+import de.invesdwin.context.jfreechart.renderer.OhlcBarRenderer;
+import de.invesdwin.context.jfreechart.renderer.OhlcCandlestickRenderer;
+import de.invesdwin.context.jfreechart.renderer.XYAreaLineRenderer;
+import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.lang.Strings;
-import de.invesdwin.util.math.decimal.scaled.Percent;
-import de.invesdwin.util.math.decimal.scaled.PercentScale;
 import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.IColorChooserListener;
 import de.invesdwin.util.swing.listener.PopupMenuListenerSupport;
@@ -56,7 +52,6 @@ public class PlotConfigurationHelper {
     public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
     public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
     public static final Stroke DEFAULT_PRICE_STROKE = LineStyleType.Solid.getStroke(LineWidthType._1);
-    public static final Percent VOLUME_TRANSPARENCY = new Percent(50D, PercentScale.PERCENT);
     public static final PriceRendererType DEFAULT_PRICE_RENDERER_TYPE = PriceRendererType.Candlestick;
 
     private final InteractiveChartPanel chartPanel;
@@ -71,21 +66,19 @@ public class PlotConfigurationHelper {
     private Color priceColor;
     private Stroke priceStroke;
 
-    private final CustomOhlcCandlestickRenderer candlestickRenderer;
-    private final CustomOhlcBarRenderer barsRenderer;
-    private final CustomVolumeBarRenderer volumeRenderer;
-    private final CustomXYAreaRenderer areaRenderer;
+    private final OhlcCandlestickRenderer candlestickRenderer;
+    private final OhlcBarRenderer barsRenderer;
+    private final XYAreaLineRenderer areaRenderer;
     private final StandardXYItemRenderer lineRenderer;
     private final XYStepRenderer stepLineRenderer;
 
-    private final Set<String> volumeSeriesKeys = new HashSet<>();
     private final Map<String, InitialSeriesSettings> seriesKey_initialSeriesSettings = new HashMap<>();
 
     private JPopupMenu popupMenu;
     private JMenuItem titleItem;
     private JMenu priceRendererItem;
     private JMenu seriesRendererItem;
-    private JMenuItem volumeRendererItem;
+    private JMenuItem customRendererItem;
     private JMenu lineStyleItem;
     private JMenu lineWidthItem;
     private JMenuItem upColorItem;
@@ -105,10 +98,9 @@ public class PlotConfigurationHelper {
         this.chartPanel = chartPanel;
         initPopupMenu();
 
-        this.candlestickRenderer = new CustomOhlcCandlestickRenderer(chartPanel.getDataset());
-        this.barsRenderer = new CustomOhlcBarRenderer(candlestickRenderer);
-        this.volumeRenderer = new CustomVolumeBarRenderer(candlestickRenderer);
-        this.areaRenderer = new CustomXYAreaRenderer();
+        this.candlestickRenderer = new OhlcCandlestickRenderer(chartPanel.getDataset());
+        this.barsRenderer = new OhlcBarRenderer(candlestickRenderer);
+        this.areaRenderer = new XYAreaLineRenderer();
 
         this.lineRenderer = new StandardXYItemRenderer();
         this.stepLineRenderer = new XYStepRenderer();
@@ -180,10 +172,6 @@ public class PlotConfigurationHelper {
         }
     }
 
-    public CustomVolumeBarRenderer getVolumeRenderer() {
-        return volumeRenderer;
-    }
-
     public Color getUpColor() {
         return upColor;
     }
@@ -191,16 +179,7 @@ public class PlotConfigurationHelper {
     public void setUpColor(final Color upColor) {
         this.upColor = upColor;
 
-        updateUpColorPrice();
-        updateUpColorVolume();
-    }
-
-    private void updateUpColorPrice() {
         candlestickRenderer.setUpColor(upColor);
-    }
-
-    private void updateUpColorVolume() {
-        volumeRenderer.setUpColor(Colors.setTransparency(upColor, VOLUME_TRANSPARENCY));
     }
 
     public Color getDownColor() {
@@ -209,16 +188,6 @@ public class PlotConfigurationHelper {
 
     public void setDownColor(final Color downColor) {
         this.downColor = downColor;
-
-        updateDownColorPrice();
-        updateDownColorVolume();
-    }
-
-    private void updateDownColorVolume() {
-        volumeRenderer.setDownColor(Colors.setTransparency(downColor, VOLUME_TRANSPARENCY));
-    }
-
-    private void updateDownColorPrice() {
         candlestickRenderer.setDownColor(downColor);
     }
 
@@ -229,15 +198,6 @@ public class PlotConfigurationHelper {
     public void setPriceColor(final Color priceColor) {
         this.priceColor = priceColor;
 
-        updatePriceColorPrice();
-        updatePriceColorVolume();
-    }
-
-    private void updatePriceColorVolume() {
-        this.volumeRenderer.setSeriesPaint(0, priceColor);
-    }
-
-    private void updatePriceColorPrice() {
         this.candlestickRenderer.setSeriesPaint(0, priceColor);
         this.barsRenderer.setSeriesPaint(0, priceColor);
         this.lineRenderer.setSeriesPaint(0, priceColor);
@@ -248,15 +208,6 @@ public class PlotConfigurationHelper {
     public void setPriceStroke(final LineStyleType lineStyleType, final LineWidthType lineWidthType) {
         this.priceStroke = lineStyleType.getStroke(lineWidthType);
 
-        updatePriceStrokePrice();
-        updatePriceStrokeVolume();
-    }
-
-    private void updatePriceStrokeVolume() {
-        this.volumeRenderer.setSeriesStroke(0, priceStroke);
-    }
-
-    private void updatePriceStrokePrice() {
         this.candlestickRenderer.setSeriesStroke(0, priceStroke);
         this.barsRenderer.setSeriesStroke(0, priceStroke);
         this.lineRenderer.setSeriesStroke(0, priceStroke);
@@ -315,12 +266,15 @@ public class PlotConfigurationHelper {
                     priceRendererItem.setVisible(true);
                     seriesRendererItem.setVisible(false);
                 } else {
-                    final boolean volumeSeries = isVolumeSeries(highlighted);
-                    if (!volumeSeries && !seriesKey_initialSeriesSettings.containsKey(highlighted.getSeriesKey())) {
-                        seriesKey_initialSeriesSettings.put(highlighted.getSeriesKey(),
-                                new InitialSeriesSettings(highlighted.getRenderer()));
+                    final InitialSeriesSettings initialSeriesSettings = getOrCreateInitialSeriesSettings();
+                    if (initialSeriesSettings.isCustomSeriesType()) {
+                        final ICustomRendererType customRendererType = (ICustomRendererType) initialSeriesSettings
+                                .getInitialRendererType();
+                        customRendererItem.setVisible(true);
+                        customRendererItem.setText(customRendererType.getName());
+                    } else {
+                        customRendererItem.setVisible(false);
                     }
-                    volumeRendererItem.setVisible(volumeSeries);
                     titleItem.setText(highlighted.getSeriesKey());
                     priceRendererItem.setVisible(false);
                     seriesRendererItem.setVisible(true);
@@ -356,27 +310,32 @@ public class PlotConfigurationHelper {
 
     }
 
+    private InitialSeriesSettings getOrCreateInitialSeriesSettings() {
+        InitialSeriesSettings initialSeriesSettings = seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
+        if (initialSeriesSettings == null) {
+            initialSeriesSettings = new InitialSeriesSettings(highlighted.getRenderer());
+            seriesKey_initialSeriesSettings.put(highlighted.getSeriesKey(), initialSeriesSettings);
+        }
+        return initialSeriesSettings;
+    }
+
+    private InitialSeriesSettings getInitialSeriesSettings() {
+        return seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
+    }
+
     private void initResetItem() {
         resetSeriesItem = new JMenuItem("Reset Style");
         resetSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 if (highlighted.isPriceSeries()) {
-                    updateUpColorPrice();
-                    updateDownColorPrice();
-                    updatePriceColorPrice();
-                    updatePriceStrokePrice();
+                    candlestickRenderer.setUpColor(upColor);
+                    candlestickRenderer.setDownColor(downColor);
+                    candlestickRenderer.setSeriesPaint(0, priceColor);
+                    candlestickRenderer.setSeriesStroke(0, priceStroke);
                     chartPanel.getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
-                } else if (isVolumeSeries(highlighted)) {
-                    updateDownColorVolume();
-                    updateUpColorVolume();
-                    updatePriceColorVolume();
-                    updatePriceStrokeVolume();
-                    highlighted.setRenderer(volumeRenderer);
                 } else {
-                    final InitialSeriesSettings initialSeriesSettings = seriesKey_initialSeriesSettings
-                            .get(highlighted.getSeriesKey());
-                    initialSeriesSettings.reset(highlighted);
+                    getInitialSeriesSettings().reset(highlighted);
                 }
             }
         });
@@ -395,31 +354,21 @@ public class PlotConfigurationHelper {
             lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
             upColorItem.setVisible(rendererType.isUpColorConfigurable());
             downColorItem.setVisible(rendererType.isDownColorConfigurable());
-            colorItem.setVisible(rendererType.isColorConfigurable());
+            colorItem.setVisible(rendererType.isPriceColorConfigurable());
         }
         if (seriesRendererItem.isVisible()) {
-            final XYItemRenderer renderer = highlighted.getRenderer();
-            if (renderer == getVolumeRenderer()) {
-                volumeRendererItem.setSelected(true);
-                lineStyleItem.setVisible(false);
-                lineWidthItem.setVisible(false);
-                upColorItem.setVisible(true);
-                downColorItem.setVisible(true);
-                colorItem.setVisible(false);
-            } else {
-                final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(renderer);
-                for (final Component component : seriesRendererItem.getMenuComponents()) {
-                    final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                    if (menuItem.getName().equals(seriesRendererType.name())) {
-                        menuItem.setSelected(true);
-                    }
+            final IRendererType seriesRendererType = getInitialSeriesSettings().getRendererType(highlighted);
+            for (final Component component : seriesRendererItem.getMenuComponents()) {
+                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
+                if (menuItem.getName().equals(seriesRendererType.getSeriesRendererType().name())) {
+                    menuItem.setSelected(true);
                 }
-                lineStyleItem.setVisible(seriesRendererType.isLineStyleConfigurable());
-                lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
-                upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
-                downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
-                colorItem.setVisible(seriesRendererType.isColorConfigurable());
             }
+            lineStyleItem.setVisible(seriesRendererType.isLineStyleConfigurable());
+            lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
+            upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
+            downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
+            colorItem.setVisible(seriesRendererType.isPriceColorConfigurable());
         }
     }
 
@@ -483,6 +432,9 @@ public class PlotConfigurationHelper {
         seriesRendererItem = new JMenu("Series Type");
         final ButtonGroup seriesRendererGroup = new ButtonGroup();
         for (final SeriesRendererType type : SeriesRendererType.values()) {
+            if (type == SeriesRendererType.Custom) {
+                continue;
+            }
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
             item.addActionListener(new ActionListener() {
@@ -500,21 +452,22 @@ public class PlotConfigurationHelper {
             seriesRendererGroup.add(item);
             seriesRendererItem.add(item);
         }
-        volumeRendererItem = new JRadioButtonMenuItem("Volume");
-        volumeRendererItem.setName("Volume");
-        volumeRendererItem.addActionListener(new ActionListener() {
+        customRendererItem = new JRadioButtonMenuItem(SeriesRendererType.Custom.toString());
+        customRendererItem.setName(SeriesRendererType.Custom.name());
+        customRendererItem.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final XYItemRenderer renderer = highlighted.getRenderer();
-                final CustomVolumeBarRenderer newRenderer = getVolumeRenderer();
-                newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
-                newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
-                highlighted.setRenderer(newRenderer);
+                final ICustomRendererType customRenderer = (ICustomRendererType) getInitialSeriesSettings()
+                        .getInitialRendererType();
+                customRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
+                customRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
+                highlighted.setRenderer(customRenderer);
             }
         });
-        seriesRendererGroup.add(volumeRendererItem);
-        seriesRendererItem.add(volumeRendererItem);
+        seriesRendererGroup.add(customRendererItem);
+        seriesRendererItem.add(customRendererItem);
     }
 
     private void initStrokeItems() {
@@ -692,14 +645,6 @@ public class PlotConfigurationHelper {
         });
     }
 
-    private boolean isVolumeSeries(final HighlightedLegendInfo highlighted) {
-        if (highlighted.getRenderer() == getVolumeRenderer()) {
-            volumeSeriesKeys.add(highlighted.getSeriesKey());
-            return true;
-        }
-        return volumeSeriesKeys.contains(highlighted.getSeriesKey());
-    }
-
     public void displayPopupMenu(final int x, final int y) {
         this.popupMenu.show(chartPanel, x, y);
     }
@@ -752,6 +697,5 @@ public class PlotConfigurationHelper {
 
     public void removeSeries(final String seriesKey) {
         seriesKey_initialSeriesSettings.remove(seriesKey);
-        volumeSeriesKeys.remove(seriesKey);
     }
 }

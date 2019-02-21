@@ -2,6 +2,8 @@ package de.invesdwin.context.jfreechart.panel.helper.config;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+
 @NotThreadSafe
 public enum PriceRendererType implements IRendererType {
     Line {
@@ -26,7 +28,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isColorConfigurable() {
+        public boolean isPriceColorConfigurable() {
             return true;
         }
     },
@@ -52,7 +54,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isColorConfigurable() {
+        public boolean isPriceColorConfigurable() {
             return true;
         }
     },
@@ -78,7 +80,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isColorConfigurable() {
+        public boolean isPriceColorConfigurable() {
             return true;
         }
     },
@@ -104,7 +106,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isColorConfigurable() {
+        public boolean isPriceColorConfigurable() {
             return false;
         }
     },
@@ -130,9 +132,19 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isColorConfigurable() {
+        public boolean isPriceColorConfigurable() {
             return false;
         }
     };
+
+    @Override
+    public void reset(final HighlightedLegendInfo highlighted, final InitialSeriesSettings initialSettings) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SeriesRendererType getSeriesRendererType() {
+        throw new UnsupportedOperationException();
+    }
 
 }

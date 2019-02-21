@@ -20,13 +20,13 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 
 @NotThreadSafe
-public class CustomOhlcBarRenderer extends HighLowRenderer implements IUpDownColorRenderer {
+public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRenderer {
 
     private static final float STROKE_SCALING_MIN_WIDTH = 0.5F;
-    private final CustomOhlcCandlestickRenderer candlestickRenderer;
+    private final OhlcCandlestickRenderer candlestickRenderer;
     private double tickLength;
 
-    public CustomOhlcBarRenderer(final CustomOhlcCandlestickRenderer candlestickRenderer) {
+    public OhlcBarRenderer(final OhlcCandlestickRenderer candlestickRenderer) {
         this.candlestickRenderer = candlestickRenderer;
         setSeriesStroke(0, PlotConfigurationHelper.DEFAULT_PRICE_STROKE);
     }

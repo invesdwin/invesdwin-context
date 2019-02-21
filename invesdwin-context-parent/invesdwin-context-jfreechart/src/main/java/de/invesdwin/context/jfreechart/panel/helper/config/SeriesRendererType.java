@@ -10,8 +10,10 @@ import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 
-import de.invesdwin.context.jfreechart.renderer.CustomXYAreaRenderer;
+import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.renderer.XYAreaLineRenderer;
+import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 @Immutable
@@ -62,7 +64,7 @@ public enum SeriesRendererType implements IRendererType {
         @Override
         public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
                 final Color color) {
-            final CustomXYAreaRenderer renderer = new CustomXYAreaRenderer();
+            final XYAreaLineRenderer renderer = new XYAreaLineRenderer();
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             return renderer;
@@ -125,6 +127,38 @@ public enum SeriesRendererType implements IRendererType {
         public boolean isLineWidthConfigurable() {
             return false;
         }
+    },
+    Custom {
+        @Override
+        public boolean isLineStyleConfigurable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isLineWidthConfigurable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
+                final Color color) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isPriceColorConfigurable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isDownColorConfigurable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isUpColorConfigurable() {
+            throw new UnsupportedOperationException();
+        }
     };
     private static final double HISTOGRAM_MARGIN = 0.80D;
 
@@ -132,11 +166,13 @@ public enum SeriesRendererType implements IRendererType {
 
     public static SeriesRendererType valueOf(final XYItemRenderer renderer) {
         final XYItemRenderer unwrapped = DisabledXYItemRenderer.maybeUnwrap(renderer);
-        if (unwrapped instanceof StandardXYItemRenderer) {
+        if (unwrapped instanceof ICustomRendererType) {
+            return SeriesRendererType.Custom;
+        } else if (unwrapped instanceof StandardXYItemRenderer) {
             return SeriesRendererType.Line;
         } else if (unwrapped instanceof XYStepRenderer) {
             return SeriesRendererType.Step;
-        } else if (unwrapped instanceof CustomXYAreaRenderer) {
+        } else if (unwrapped instanceof XYAreaLineRenderer) {
             return SeriesRendererType.Area;
         } else if (unwrapped instanceof XYBarRenderer) {
             final XYBarRenderer cRenderer = (XYBarRenderer) unwrapped;
@@ -160,7 +196,19 @@ public enum SeriesRendererType implements IRendererType {
     }
 
     @Override
-    public boolean isColorConfigurable() {
+    public boolean isPriceColorConfigurable() {
         return true;
+    }
+
+    @Override
+    public void reset(final HighlightedLegendInfo highlighted, final InitialSeriesSettings initialSettings) {
+        final XYItemRenderer newRenderer = newRenderer(initialSettings.getLineStyleType(),
+                initialSettings.getLineWidthType(), initialSettings.getPriceColor());
+        highlighted.setRenderer(newRenderer);
+    }
+
+    @Override
+    public SeriesRendererType getSeriesRendererType() {
+        return this;
     }
 }
