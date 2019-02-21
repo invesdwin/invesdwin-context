@@ -28,7 +28,7 @@ public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRend
 
     public OhlcBarRenderer(final OhlcCandlestickRenderer candlestickRenderer) {
         this.candlestickRenderer = candlestickRenderer;
-        setSeriesStroke(0, PriceInitialSettings.DEFAULT_PRICE_STROKE);
+        setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
     }
 
     @Override

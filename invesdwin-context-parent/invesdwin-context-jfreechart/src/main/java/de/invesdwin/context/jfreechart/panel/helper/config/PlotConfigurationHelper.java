@@ -71,11 +71,10 @@ public class PlotConfigurationHelper {
         initPopupMenu();
 
         priceInitialSettings = new PriceInitialSettings(this);
-        priceInitialSettings.reset();
     }
 
     public JPopupMenu getPopupMenu() {
-        return this.popupMenu;
+        return popupMenu;
     }
 
     public InteractiveChartPanel getChartPanel() {

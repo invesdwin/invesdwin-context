@@ -21,8 +21,8 @@ public class PriceInitialSettings {
 
     public static final Color DEFAULT_DOWN_COLOR = Colors.fromHex("#EF5350");
     public static final Color DEFAULT_UP_COLOR = Colors.fromHex("#26A69A");
-    public static final Color DEFAULT_PRICE_COLOR = Colors.fromHex("#3C78D8");
-    public static final Stroke DEFAULT_PRICE_STROKE = LineStyleType.Solid.getStroke(LineWidthType._1);
+    public static final Color DEFAULT_SERIES_COLOR = Colors.fromHex("#3C78D8");
+    public static final Stroke DEFAULT_SERIES_STROKE = LineStyleType.Solid.getStroke(LineWidthType._1);
     public static final PriceRendererType DEFAULT_PRICE_RENDERER_TYPE = PriceRendererType.Candlestick;
 
     private final PlotConfigurationHelper plotConfigurationHelper;
@@ -49,9 +49,13 @@ public class PriceInitialSettings {
         this.candlestickRenderer = new OhlcCandlestickRenderer(plotConfigurationHelper.getChartPanel().getDataset());
         this.barsRenderer = new OhlcBarRenderer(candlestickRenderer);
         this.areaRenderer = new XYAreaLineRenderer();
-
         this.lineRenderer = new StandardXYItemRenderer();
         this.stepLineRenderer = new XYStepRenderer();
+
+        setUpColor(DEFAULT_UP_COLOR);
+        setDownColor(DEFAULT_DOWN_COLOR);
+        setSeriesColor(DEFAULT_SERIES_COLOR);
+        setSeriesStroke(DEFAULT_SERIES_STROKE);
     }
 
     public PriceRendererType getPriceRendererType() {
@@ -168,9 +172,7 @@ public class PriceInitialSettings {
         candlestickRenderer.setDownColor(downColor);
         candlestickRenderer.setSeriesPaint(0, seriesColor);
         candlestickRenderer.setSeriesStroke(0, seriesStroke);
-        plotConfigurationHelper.getChartPanel()
-                .getOhlcPlot()
-                .setRenderer(0, getPriceRenderer(priceRendererType));
+        plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
     }
 
     public PriceRendererType getCurrentPriceRendererType() {

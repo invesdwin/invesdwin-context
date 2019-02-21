@@ -132,7 +132,7 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
         this.legendArea = area;
         this.gradientTransformer = new StandardGradientPaintTransformer();
 
-        setSeriesStroke(0, PriceInitialSettings.DEFAULT_PRICE_STROKE);
+        setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
     }
 
     /**

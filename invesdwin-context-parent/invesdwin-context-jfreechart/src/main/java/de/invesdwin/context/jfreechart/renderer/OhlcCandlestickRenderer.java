@@ -100,7 +100,7 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
         this.upColor = PriceInitialSettings.DEFAULT_UP_COLOR;
         this.downColor = PriceInitialSettings.DEFAULT_DOWN_COLOR;
         setSeriesPaint(0, upColor);
-        setSeriesStroke(0, PriceInitialSettings.DEFAULT_PRICE_STROKE);
+        setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
         this.dataset = dataset;
     }
 
