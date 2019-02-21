@@ -495,13 +495,13 @@ public class PlotConfigurationHelper {
                                 + "<br>The series style settings can also be reset to their initial values. If the series is removable, you can remove it here too."
                                 + "<br>You can also show/hide the series using the context menu, though only non hidden series can be modified in style.</li>");
                 sb.append(
-                        "<li><b>Plot Pane Resizing</b>: Drag and drop a divider between two plot panes to change the size of those plots.</li>");
+                        "<li><b>Plot Pane Resizing</b>: Drag and drop a divider between two plot panes to change the size of those.</li>");
                 sb.append(
                         "<li><b>Crosshair</b>: Move the mouse around with see the selected series values displayed in the series legends."
                                 + "<br>If there is no crosshair visible, the latest values will be shown in the series legends.</li>");
                 sb.append(
                         "<li><b>Navigation</b>: Move the mouse to the bottom center of the chart to show navigation buttons."
-                                + "<br>The navigation also works by hotkeys and mouse:");
+                                + "<br>This allows you to pan, zoom and reset the view. The navigation also works by hotkeys and mouse:");
                 sb.append("<ul>");
                 sb.append(
                         "<li><b>Panning</b>: Use left click and drag the mouse anywhere on the chart or use left/right arrow keys on your keyboard to pan the data."
