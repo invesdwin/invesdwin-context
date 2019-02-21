@@ -72,7 +72,7 @@ public class PlotConfigurationHelper {
     private final StandardXYItemRenderer lineRenderer;
     private final XYStepRenderer stepLineRenderer;
 
-    private final Map<String, SeriesInitialSettings> seriesKey_initialSeriesSettings = new HashMap<>();
+    private final Map<String, SeriesInitialSettings> seriesKey_initialSettings = new HashMap<>();
 
     private JPopupMenu popupMenu;
     private JMenuItem titleItem;
@@ -271,7 +271,7 @@ public class PlotConfigurationHelper {
                     priceRendererItem.setVisible(true);
                     seriesRendererItem.setVisible(false);
                 } else {
-                    final SeriesInitialSettings initialSeriesSettings = getOrCreateInitialSeriesSettings();
+                    final SeriesInitialSettings initialSeriesSettings = getOrCreateSeriesInitialSettings();
                     if (initialSeriesSettings.isCustomSeriesType()) {
                         final ICustomRendererType customRendererType = (ICustomRendererType) initialSeriesSettings
                                 .getInitialRendererType();
@@ -318,17 +318,17 @@ public class PlotConfigurationHelper {
 
     }
 
-    private SeriesInitialSettings getOrCreateInitialSeriesSettings() {
-        SeriesInitialSettings initialSeriesSettings = seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
+    private SeriesInitialSettings getOrCreateSeriesInitialSettings() {
+        SeriesInitialSettings initialSeriesSettings = seriesKey_initialSettings.get(highlighted.getSeriesKey());
         if (initialSeriesSettings == null) {
             initialSeriesSettings = new SeriesInitialSettings(highlighted.getRenderer());
-            seriesKey_initialSeriesSettings.put(highlighted.getSeriesKey(), initialSeriesSettings);
+            seriesKey_initialSettings.put(highlighted.getSeriesKey(), initialSeriesSettings);
         }
         return initialSeriesSettings;
     }
 
-    private SeriesInitialSettings getInitialSeriesSettings() {
-        return seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
+    private SeriesInitialSettings getSeriesInitialSettings() {
+        return seriesKey_initialSettings.get(highlighted.getSeriesKey());
     }
 
     private void initResetStyleItem() {
@@ -343,7 +343,7 @@ public class PlotConfigurationHelper {
                     candlestickRenderer.setSeriesStroke(0, seriesStroke);
                     chartPanel.getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
                 } else {
-                    getInitialSeriesSettings().reset(highlighted);
+                    getSeriesInitialSettings().reset(highlighted);
                 }
             }
         });
@@ -365,7 +365,7 @@ public class PlotConfigurationHelper {
             colorItem.setVisible(rendererType.isSeriesColorConfigurable());
         }
         if (seriesRendererItem.isVisible()) {
-            final IRendererType seriesRendererType = getInitialSeriesSettings().getRendererType(highlighted);
+            final IRendererType seriesRendererType = getSeriesInitialSettings().getRendererType(highlighted);
             for (final Component component : seriesRendererItem.getMenuComponents()) {
                 final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
                 if (menuItem.getName().equals(seriesRendererType.getSeriesRendererType().name())) {
@@ -475,7 +475,7 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final XYItemRenderer renderer = highlighted.getRenderer();
-                final ICustomRendererType customRenderer = (ICustomRendererType) getInitialSeriesSettings()
+                final ICustomRendererType customRenderer = (ICustomRendererType) getSeriesInitialSettings()
                         .getInitialRendererType();
                 customRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
                 customRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
@@ -715,6 +715,6 @@ public class PlotConfigurationHelper {
     }
 
     public void removeInitialSeriesSettings(final String seriesKey) {
-        seriesKey_initialSeriesSettings.remove(seriesKey);
+        seriesKey_initialSettings.remove(seriesKey);
     }
 }
