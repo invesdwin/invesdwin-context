@@ -63,7 +63,7 @@ public class PlotConfigurationHelper {
 
     /*
      * the renderers can diverge from these settings using the context menu configuration, though a reset will use these
-     * values here again
+     * values here again. using the setters will override the context menu configuration
      */
     private PriceRendererType priceRendererType = DEFAULT_PRICE_RENDERER_TYPE;
     private Color upColor;
