@@ -86,7 +86,7 @@ public class InteractiveChartPanel extends JPanel {
         combinedPlot.setDomainPannable(true);
 
         dataset.addChangeListener(new DatasetChangeListenerImpl());
-        plotLegendHelper.setDatasetTrashable(dataset, false);
+        plotLegendHelper.setDatasetRemovable(dataset, false);
 
         initPlots();
         chart = new JFreeChart(null, null, combinedPlot, false);

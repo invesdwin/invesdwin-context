@@ -9,7 +9,9 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
+import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
+import de.invesdwin.util.assertions.Assertions;
 
 @Immutable
 public class HighlightedLegendInfo {
@@ -71,6 +73,17 @@ public class HighlightedLegendInfo {
 
     public void setHidden(final boolean hidden) {
         PlotLegendHelper.setDatasetHidden(plot, datasetIndex, hidden);
+    }
+
+    public boolean isRemovable() {
+        return chartPanel.getPlotLegendHelper().isDatasetRemovable(getDataset());
+    }
+
+    public void removeSeries() {
+        Assertions.checkTrue(isRemovable());
+        chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(getSeriesKey());
+        XYPlots.removeDataset(plot, datasetIndex);
+        chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
     }
 
 }

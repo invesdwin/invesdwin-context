@@ -63,7 +63,7 @@ public class PlotLegendHelper {
     private final XYIconAnnotation removeAnnotation;
     private final XYIconAnnotation trashAnnotation;
 
-    private final Set<Dataset> nonTrashableDatasets = Collections
+    private final Set<Dataset> nonRemovableDatasets = Collections
             .newSetFromMap(new IdentityHashMap<Dataset, Boolean>());
 
     public PlotLegendHelper(final InteractiveChartPanel chartPanel) {
@@ -260,7 +260,7 @@ public class PlotLegendHelper {
                     final XYDataset dataset = trashPlot.getDataset(datasetIndex);
                     if (dataset != null) {
                         final String seriesKey = String.valueOf(dataset.getSeriesKey(0));
-                        chartPanel.getPlotConfigurationHelper().removeSeries(seriesKey);
+                        chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(seriesKey);
                     }
                 }
                 trashPlot = null;
@@ -342,7 +342,7 @@ public class PlotLegendHelper {
                 chartPanel.getCombinedPlot().add(emptyPlot, EMPTY_PLOT_WEIGHT);
 
                 final XYDataset dataset = dragStart.getPlot().getDataset(dragStart.getDatasetIndex());
-                if (!isDatasetTrashable(dataset)) {
+                if (isDatasetRemovable(dataset)) {
                     trashPlot = chartPanel.getCombinedPlot().getTrashPlot();
                     trashPlot.addAnnotation(trashAnnotation);
                     trashPlot.setBackgroundPaint(REMOVE_BACKGROUND_COLOR);
@@ -427,20 +427,20 @@ public class PlotLegendHelper {
         return highlightedLegendInfo;
     }
 
-    public void setDatasetTrashable(final Dataset dataset, final boolean trashable) {
+    public void setDatasetRemovable(final Dataset dataset, final boolean removable) {
         if (dataset instanceof DisabledXYDataset) {
             throw new IllegalArgumentException(
                     "dataset should not be an instance of " + DisabledXYDataset.class.getSimpleName());
         }
-        if (trashable) {
-            nonTrashableDatasets.remove(dataset);
+        if (removable) {
+            nonRemovableDatasets.remove(dataset);
         } else {
-            nonTrashableDatasets.add(dataset);
+            nonRemovableDatasets.add(dataset);
         }
     }
 
-    public boolean isDatasetTrashable(final XYDataset dataset) {
-        return nonTrashableDatasets.contains(DisabledXYDataset.maybeUnwrap(dataset));
+    public boolean isDatasetRemovable(final XYDataset dataset) {
+        return !nonRemovableDatasets.contains(DisabledXYDataset.maybeUnwrap(dataset));
     }
 
 }
