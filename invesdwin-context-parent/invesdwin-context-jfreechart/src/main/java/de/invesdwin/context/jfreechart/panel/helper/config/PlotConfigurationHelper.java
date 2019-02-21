@@ -319,12 +319,12 @@ public class PlotConfigurationHelper {
     }
 
     private SeriesInitialSettings getOrCreateSeriesInitialSettings() {
-        SeriesInitialSettings initialSeriesSettings = seriesKey_initialSettings.get(highlighted.getSeriesKey());
-        if (initialSeriesSettings == null) {
-            initialSeriesSettings = new SeriesInitialSettings(highlighted.getRenderer());
-            seriesKey_initialSettings.put(highlighted.getSeriesKey(), initialSeriesSettings);
+        SeriesInitialSettings seriesInitialSettings = seriesKey_initialSettings.get(highlighted.getSeriesKey());
+        if (seriesInitialSettings == null) {
+            seriesInitialSettings = new SeriesInitialSettings(highlighted.getRenderer());
+            seriesKey_initialSettings.put(highlighted.getSeriesKey(), seriesInitialSettings);
         }
-        return initialSeriesSettings;
+        return seriesInitialSettings;
     }
 
     private SeriesInitialSettings getSeriesInitialSettings() {
