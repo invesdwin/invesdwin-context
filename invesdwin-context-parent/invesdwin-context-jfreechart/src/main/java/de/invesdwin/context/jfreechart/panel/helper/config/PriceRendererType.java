@@ -28,7 +28,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isPriceColorConfigurable() {
+        public boolean isSeriesColorConfigurable() {
             return true;
         }
     },
@@ -54,7 +54,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isPriceColorConfigurable() {
+        public boolean isSeriesColorConfigurable() {
             return true;
         }
     },
@@ -80,7 +80,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isPriceColorConfigurable() {
+        public boolean isSeriesColorConfigurable() {
             return true;
         }
     },
@@ -106,7 +106,7 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isPriceColorConfigurable() {
+        public boolean isSeriesColorConfigurable() {
             return false;
         }
     },
@@ -132,13 +132,13 @@ public enum PriceRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isPriceColorConfigurable() {
+        public boolean isSeriesColorConfigurable() {
             return false;
         }
     };
 
     @Override
-    public void reset(final HighlightedLegendInfo highlighted, final InitialSeriesSettings initialSettings) {
+    public void reset(final HighlightedLegendInfo highlighted, final SeriesInitialSettings initialSettings) {
         throw new UnsupportedOperationException();
     }
 

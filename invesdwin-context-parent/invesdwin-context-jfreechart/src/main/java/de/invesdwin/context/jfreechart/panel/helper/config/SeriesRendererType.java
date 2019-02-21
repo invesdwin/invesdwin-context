@@ -146,7 +146,7 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public boolean isPriceColorConfigurable() {
+        public boolean isSeriesColorConfigurable() {
             throw new UnsupportedOperationException();
         }
 
@@ -196,14 +196,14 @@ public enum SeriesRendererType implements IRendererType {
     }
 
     @Override
-    public boolean isPriceColorConfigurable() {
+    public boolean isSeriesColorConfigurable() {
         return true;
     }
 
     @Override
-    public void reset(final HighlightedLegendInfo highlighted, final InitialSeriesSettings initialSettings) {
+    public void reset(final HighlightedLegendInfo highlighted, final SeriesInitialSettings initialSettings) {
         final XYItemRenderer newRenderer = newRenderer(initialSettings.getLineStyleType(),
-                initialSettings.getLineWidthType(), initialSettings.getPriceColor());
+                initialSettings.getLineWidthType(), initialSettings.getSeriesColor());
         highlighted.setRenderer(newRenderer);
     }
 

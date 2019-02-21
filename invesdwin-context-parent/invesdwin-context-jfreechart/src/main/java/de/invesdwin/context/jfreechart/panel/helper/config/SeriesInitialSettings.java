@@ -12,23 +12,23 @@ import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
 
 @NotThreadSafe
-public class InitialSeriesSettings {
+public class SeriesInitialSettings {
 
     private final IRendererType rendererType;
-    private final Color priceColor;
+    private final Color seriesColor;
     private final Color upColor;
     private final Color downColor;
     private final LineStyleType lineStyleType;
     private final LineWidthType lineWidthType;
 
-    public InitialSeriesSettings(final XYItemRenderer initialRenderer) {
+    public SeriesInitialSettings(final XYItemRenderer initialRenderer) {
         final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(initialRenderer);
         if (seriesRendererType == SeriesRendererType.Custom) {
             rendererType = (ICustomRendererType) initialRenderer;
         } else {
             rendererType = seriesRendererType;
         }
-        priceColor = (Color) initialRenderer.getSeriesPaint(0);
+        seriesColor = (Color) initialRenderer.getSeriesPaint(0);
         if (initialRenderer instanceof IUpDownColorRenderer) {
             final IUpDownColorRenderer cRenderer = (IUpDownColorRenderer) initialRenderer;
             upColor = cRenderer.getUpColor();
@@ -63,8 +63,8 @@ public class InitialSeriesSettings {
         return rendererType instanceof ICustomRendererType;
     }
 
-    public Color getPriceColor() {
-        return priceColor;
+    public Color getSeriesColor() {
+        return seriesColor;
     }
 
     public Color getUpColor() {
@@ -83,7 +83,7 @@ public class InitialSeriesSettings {
         return lineWidthType;
     }
 
-    public Stroke getPriceStroke() {
+    public Stroke getSeriesStroke() {
         return lineStyleType.getStroke(lineWidthType);
     }
 

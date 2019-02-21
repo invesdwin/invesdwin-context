@@ -8,7 +8,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.InitialSeriesSettings;
+import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
@@ -35,9 +35,9 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
 
         setBarPainter(new StandardXYBarPainter());
         setShadowVisible(false);
-        setSeriesPaint(0, plotConfigurationHelper.getPriceColor());
-        setSeriesFillPaint(0, plotConfigurationHelper.getPriceColor());
-        setSeriesStroke(0, plotConfigurationHelper.getPriceStroke());
+        setSeriesPaint(0, plotConfigurationHelper.getSeriesColor());
+        setSeriesFillPaint(0, plotConfigurationHelper.getSeriesColor());
+        setSeriesStroke(0, plotConfigurationHelper.getSeriesStroke());
         setDrawBarOutline(false);
 
         this.upColor = Colors.setTransparency(plotConfigurationHelper.getUpColor(), DEFAULT_VOLUME_TRANSPARENCY);
@@ -89,16 +89,16 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
     }
 
     @Override
-    public boolean isPriceColorConfigurable() {
+    public boolean isSeriesColorConfigurable() {
         return false;
     }
 
     @Override
-    public void reset(final HighlightedLegendInfo highlighted, final InitialSeriesSettings initialSettings) {
+    public void reset(final HighlightedLegendInfo highlighted, final SeriesInitialSettings initialSettings) {
         setUpColor(initialSettings.getUpColor());
         setDownColor(initialSettings.getDownColor());
-        setSeriesPaint(0, initialSettings.getPriceColor());
-        setSeriesStroke(0, initialSettings.getPriceStroke());
+        setSeriesPaint(0, initialSettings.getSeriesColor());
+        setSeriesStroke(0, initialSettings.getSeriesStroke());
         highlighted.setRenderer(this);
     }
 

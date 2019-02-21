@@ -63,8 +63,8 @@ public class PlotConfigurationHelper {
     private PriceRendererType priceRendererType = DEFAULT_PRICE_RENDERER_TYPE;
     private Color upColor;
     private Color downColor;
-    private Color priceColor;
-    private Stroke priceStroke;
+    private Color seriesColor;
+    private Stroke seriesStroke;
 
     private final OhlcCandlestickRenderer candlestickRenderer;
     private final OhlcBarRenderer barsRenderer;
@@ -72,7 +72,7 @@ public class PlotConfigurationHelper {
     private final StandardXYItemRenderer lineRenderer;
     private final XYStepRenderer stepLineRenderer;
 
-    private final Map<String, InitialSeriesSettings> seriesKey_initialSeriesSettings = new HashMap<>();
+    private final Map<String, SeriesInitialSettings> seriesKey_initialSeriesSettings = new HashMap<>();
 
     private JPopupMenu popupMenu;
     private JMenuItem titleItem;
@@ -108,8 +108,8 @@ public class PlotConfigurationHelper {
 
         setUpColor(DEFAULT_UP_COLOR);
         setDownColor(DEFAULT_DOWN_COLOR);
-        setPriceColor(DEFAULT_PRICE_COLOR);
-        setPriceStroke(DEFAULT_PRICE_STROKE);
+        setSeriesColor(DEFAULT_PRICE_COLOR);
+        setSeriesStroke(DEFAULT_PRICE_STROKE);
     }
 
     public JPopupMenu getPopupMenu() {
@@ -192,37 +192,37 @@ public class PlotConfigurationHelper {
         candlestickRenderer.setDownColor(downColor);
     }
 
-    public Color getPriceColor() {
-        return priceColor;
+    public Color getSeriesColor() {
+        return seriesColor;
     }
 
-    public void setPriceColor(final Color priceColor) {
-        this.priceColor = priceColor;
+    public void setSeriesColor(final Color seriesColor) {
+        this.seriesColor = seriesColor;
 
-        this.candlestickRenderer.setSeriesPaint(0, priceColor);
-        this.barsRenderer.setSeriesPaint(0, priceColor);
-        this.lineRenderer.setSeriesPaint(0, priceColor);
-        this.areaRenderer.setSeriesPaint(0, priceColor);
-        this.stepLineRenderer.setSeriesPaint(0, priceColor);
+        this.candlestickRenderer.setSeriesPaint(0, seriesColor);
+        this.barsRenderer.setSeriesPaint(0, seriesColor);
+        this.lineRenderer.setSeriesPaint(0, seriesColor);
+        this.areaRenderer.setSeriesPaint(0, seriesColor);
+        this.stepLineRenderer.setSeriesPaint(0, seriesColor);
     }
 
-    public void setPriceStroke(final LineStyleType lineStyleType, final LineWidthType lineWidthType) {
-        this.priceStroke = lineStyleType.getStroke(lineWidthType);
+    public void setSeriesStroke(final LineStyleType lineStyleType, final LineWidthType lineWidthType) {
+        this.seriesStroke = lineStyleType.getStroke(lineWidthType);
 
-        this.candlestickRenderer.setSeriesStroke(0, priceStroke);
-        this.barsRenderer.setSeriesStroke(0, priceStroke);
-        this.lineRenderer.setSeriesStroke(0, priceStroke);
-        this.areaRenderer.setSeriesStroke(0, priceStroke);
-        this.stepLineRenderer.setSeriesStroke(0, priceStroke);
+        this.candlestickRenderer.setSeriesStroke(0, seriesStroke);
+        this.barsRenderer.setSeriesStroke(0, seriesStroke);
+        this.lineRenderer.setSeriesStroke(0, seriesStroke);
+        this.areaRenderer.setSeriesStroke(0, seriesStroke);
+        this.stepLineRenderer.setSeriesStroke(0, seriesStroke);
     }
 
-    public void setPriceStroke(final Stroke priceStroke) {
-        Assertions.checkNotNull(LineStyleType.valueOf(priceStroke));
-        this.priceStroke = priceStroke;
+    public void setSeriesStroke(final Stroke seriesStroke) {
+        Assertions.checkNotNull(LineStyleType.valueOf(seriesStroke));
+        this.seriesStroke = seriesStroke;
     }
 
-    public Stroke getPriceStroke() {
-        return priceStroke;
+    public Stroke getSeriesStroke() {
+        return seriesStroke;
     }
 
     private void initPopupMenu() {
@@ -271,7 +271,7 @@ public class PlotConfigurationHelper {
                     priceRendererItem.setVisible(true);
                     seriesRendererItem.setVisible(false);
                 } else {
-                    final InitialSeriesSettings initialSeriesSettings = getOrCreateInitialSeriesSettings();
+                    final SeriesInitialSettings initialSeriesSettings = getOrCreateInitialSeriesSettings();
                     if (initialSeriesSettings.isCustomSeriesType()) {
                         final ICustomRendererType customRendererType = (ICustomRendererType) initialSeriesSettings
                                 .getInitialRendererType();
@@ -318,16 +318,16 @@ public class PlotConfigurationHelper {
 
     }
 
-    private InitialSeriesSettings getOrCreateInitialSeriesSettings() {
-        InitialSeriesSettings initialSeriesSettings = seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
+    private SeriesInitialSettings getOrCreateInitialSeriesSettings() {
+        SeriesInitialSettings initialSeriesSettings = seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
         if (initialSeriesSettings == null) {
-            initialSeriesSettings = new InitialSeriesSettings(highlighted.getRenderer());
+            initialSeriesSettings = new SeriesInitialSettings(highlighted.getRenderer());
             seriesKey_initialSeriesSettings.put(highlighted.getSeriesKey(), initialSeriesSettings);
         }
         return initialSeriesSettings;
     }
 
-    private InitialSeriesSettings getInitialSeriesSettings() {
+    private SeriesInitialSettings getInitialSeriesSettings() {
         return seriesKey_initialSeriesSettings.get(highlighted.getSeriesKey());
     }
 
@@ -339,8 +339,8 @@ public class PlotConfigurationHelper {
                 if (highlighted.isPriceSeries()) {
                     candlestickRenderer.setUpColor(upColor);
                     candlestickRenderer.setDownColor(downColor);
-                    candlestickRenderer.setSeriesPaint(0, priceColor);
-                    candlestickRenderer.setSeriesStroke(0, priceStroke);
+                    candlestickRenderer.setSeriesPaint(0, seriesColor);
+                    candlestickRenderer.setSeriesStroke(0, seriesStroke);
                     chartPanel.getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
                 } else {
                     getInitialSeriesSettings().reset(highlighted);
@@ -362,7 +362,7 @@ public class PlotConfigurationHelper {
             lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
             upColorItem.setVisible(rendererType.isUpColorConfigurable());
             downColorItem.setVisible(rendererType.isDownColorConfigurable());
-            colorItem.setVisible(rendererType.isPriceColorConfigurable());
+            colorItem.setVisible(rendererType.isSeriesColorConfigurable());
         }
         if (seriesRendererItem.isVisible()) {
             final IRendererType seriesRendererType = getInitialSeriesSettings().getRendererType(highlighted);
@@ -376,7 +376,7 @@ public class PlotConfigurationHelper {
             lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
             upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
             downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
-            colorItem.setVisible(seriesRendererType.isPriceColorConfigurable());
+            colorItem.setVisible(seriesRendererType.isSeriesColorConfigurable());
         }
     }
 

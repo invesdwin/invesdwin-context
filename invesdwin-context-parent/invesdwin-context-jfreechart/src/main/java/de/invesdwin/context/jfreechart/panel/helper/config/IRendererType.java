@@ -20,8 +20,8 @@ public interface IRendererType {
      */
     boolean isDownColorConfigurable();
 
-    boolean isPriceColorConfigurable();
+    boolean isSeriesColorConfigurable();
 
-    void reset(HighlightedLegendInfo highlighted, InitialSeriesSettings initialSettings);
+    void reset(HighlightedLegendInfo highlighted, SeriesInitialSettings initialSettings);
 
 }
