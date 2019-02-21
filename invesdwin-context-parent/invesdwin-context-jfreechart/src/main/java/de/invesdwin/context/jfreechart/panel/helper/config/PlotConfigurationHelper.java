@@ -258,6 +258,7 @@ public class PlotConfigurationHelper {
                 } else {
                     popupMenu.add(copyToClipboardItem);
                     popupMenu.add(saveAsPNGItem);
+                    popupMenu.addSeparator();
                     popupMenu.add(helpItem);
                 }
 
@@ -429,7 +430,7 @@ public class PlotConfigurationHelper {
     }
 
     private void initRendererItems() {
-        priceRendererItem = new JMenu("Series Type");
+        priceRendererItem = new JMenu("Change Series Type");
         final ButtonGroup priceRendererGroup = new ButtonGroup();
         for (final PriceRendererType type : PriceRendererType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
@@ -444,7 +445,7 @@ public class PlotConfigurationHelper {
             priceRendererItem.add(item);
         }
 
-        seriesRendererItem = new JMenu("Series Type");
+        seriesRendererItem = new JMenu("Change Series Type");
         final ButtonGroup seriesRendererGroup = new ButtonGroup();
         for (final SeriesRendererType type : SeriesRendererType.values()) {
             if (type == SeriesRendererType.Custom) {
@@ -487,7 +488,7 @@ public class PlotConfigurationHelper {
 
     private void initStrokeItems() {
         final ButtonGroup lineStyleGroup = new ButtonGroup();
-        lineStyleItem = new JMenu("Line Style");
+        lineStyleItem = new JMenu("Change Line Style");
         for (final LineStyleType type : LineStyleType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
@@ -504,7 +505,7 @@ public class PlotConfigurationHelper {
         }
 
         final ButtonGroup lineWidthGroup = new ButtonGroup();
-        lineWidthItem = new JMenu("Line Width");
+        lineWidthItem = new JMenu("Change Line Width");
         for (final LineWidthType type : LineWidthType.values()) {
             final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
             item.setName(type.name());
