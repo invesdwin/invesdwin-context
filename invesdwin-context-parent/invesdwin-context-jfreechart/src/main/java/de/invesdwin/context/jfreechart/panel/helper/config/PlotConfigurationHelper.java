@@ -61,6 +61,10 @@ public class PlotConfigurationHelper {
 
     private final InteractiveChartPanel chartPanel;
 
+    /*
+     * the renderers can diverge from these settings using the context menu configuration, though a reset will use these
+     * values here again
+     */
     private PriceRendererType priceRendererType = DEFAULT_PRICE_RENDERER_TYPE;
     private Color upColor;
     private Color downColor;
