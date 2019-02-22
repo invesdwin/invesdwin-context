@@ -57,6 +57,7 @@ The following lifecycle hooks are available, which can either just be added to a
 - **IShutdownHook**: allows to do some cleanup tasks when the application is stopped (note that this won't work on [SIGKILL](https://en.wikipedia.org/wiki/Unix_signal#SIGKILL)). E.g. deleting some temp/cache files.
 - **IErrHook**: provides means to be notified when an error gets logged in the Err class or by the uncaught exception handler. E.g. to show the error in a swing message box of a desktop application.
 - **IStub**: to hook into the test lifecycle to implement stubs/mocks which can customize the application context, do file system cleanup after tests, setup additional test infrastructure and so on. Please note that IStub beans are removed from the `ApplicationContext` during bootstrap when running in production mode, so they can safely be put into your modules `src/main/java` without having to worry about if they are only executed inside of tests. This convention of making modules test-aware also does not require you to add test-jar maven dependencies, which themselves won't get transitive dependencies resolved in Maven and might introduce some unwanted stubs that you only need for testing the actual module itself.
+- **IReinitializationHook**: allows to be notified when a `MergedContext` gets reinitialized during test execution. Useful to do some cleanup of lock files and such while that happens. First initialization will not be notified here, since `IStartupHook` is for that purpose.
 
 ## Tools
 
