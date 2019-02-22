@@ -25,7 +25,7 @@ import org.springframework.test.context.support.GenericXmlContextLoader;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.hook.PreStartupHookManager;
-import de.invesdwin.context.beans.hook.StartupHookManager;
+import de.invesdwin.context.beans.hook.ReinitializationHookManager;
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
@@ -67,7 +67,7 @@ public class TestContextLoader implements ContextLoader {
     }
 
     protected List<PositionedResource> configureContextLocations() throws Exception {
-        StartupHookManager.reinitializationStarted();
+        ReinitializationHookManager.reinitializationStarted();
         final TestContext premergedContext = new TestContext(PreMergedContext.getInstance(true));
         final List<PositionedResource> preMergedContexts = PreMergedContext.collectMergedContexts();
         currentTest.setUpContextLocations(preMergedContexts);
@@ -148,7 +148,7 @@ public class TestContextLoader implements ContextLoader {
             if (FIRST_INITIALIZATION.getAndSet(false)) {
                 MergedContext.logBootstrapFinished();
             }
-            StartupHookManager.reinitializationFinished();
+            ReinitializationHookManager.reinitializationFinished();
             return ctx;
         } catch (final Throwable t) {
             try {
@@ -156,7 +156,7 @@ public class TestContextLoader implements ContextLoader {
                 for (final IStub hook : getTestHooks(PreMergedContext.getInstance())) {
                     hook.tearDownOnce(currentTest);
                 }
-                StartupHookManager.reinitializationFailed();
+                ReinitializationHookManager.reinitializationFailed();
             } catch (final Throwable tInner) {
                 Err.process(tInner);
             }

@@ -36,13 +36,48 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
 
     private static final StartupHookManager INSTANCE = new StartupHookManager();
     @GuardedBy("INSTANCE")
-    private static final Set<IStartupHook> STARTUP_HOOKS = new HashSet<IStartupHook>();
+    private static final Set<IStartupHook> REGISTERED_HOOKS = new HashSet<IStartupHook>();
     @GuardedBy("INSTANCE")
     private static boolean alreadyStarted;
     @GuardedBy("INSTANCE")
     private static List<IStartupHook> queuedHooksForContextReinitialization;
-    @GuardedBy("INSTANCE")
-    private static final Set<IReinitializationHook> REINITIALIZATION_HOOKS = new HashSet();
+
+    static {
+        ReinitializationHookManager.register(new IReinitializationHook() {
+            @Override
+            public void reinitializationStarted() {
+                synchronized (INSTANCE) {
+                    if (alreadyStarted) {
+                        Assertions.assertThat(queuedHooksForContextReinitialization).isNull();
+                        queuedHooksForContextReinitialization = new ArrayList<IStartupHook>();
+                    }
+                }
+            }
+
+            @Override
+            public void reinitializationFinished() {
+                synchronized (INSTANCE) {
+                    if (queuedHooksForContextReinitialization != null) {
+                        for (final IStartupHook hook : queuedHooksForContextReinitialization) {
+                            try {
+                                hook.startup();
+                            } catch (final Exception e) {
+                                throw Err.process(e);
+                            }
+                        }
+                        queuedHooksForContextReinitialization = null;
+                    }
+                }
+            }
+
+            @Override
+            public void reinitializationFailed() {
+                synchronized (INSTANCE) {
+                    queuedHooksForContextReinitialization = null;
+                }
+            }
+        });
+    }
 
     private StartupHookManager() {}
 
@@ -64,60 +99,12 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
         }
     }
 
-    public static void reinitializationStarted() {
-        synchronized (INSTANCE) {
-            if (alreadyStarted) {
-                Assertions.assertThat(queuedHooksForContextReinitialization).isNull();
-                queuedHooksForContextReinitialization = new ArrayList<IStartupHook>();
-                for (final IReinitializationHook hook : REINITIALIZATION_HOOKS) {
-                    hook.reinitializationStarted();
-                }
-            }
-        }
-    }
-
-    public static void reinitializationFinished() {
-        synchronized (INSTANCE) {
-            for (final IReinitializationHook hook : REINITIALIZATION_HOOKS) {
-                hook.reinitializationFinished();
-            }
-            if (queuedHooksForContextReinitialization != null) {
-                for (final IStartupHook hook : queuedHooksForContextReinitialization) {
-                    try {
-                        hook.startup();
-                    } catch (final Exception e) {
-                        throw Err.process(e);
-                    }
-                }
-                queuedHooksForContextReinitialization = null;
-            }
-        }
-    }
-
-    public static void reinitializationFailed() {
-        synchronized (INSTANCE) {
-            for (final IReinitializationHook hook : REINITIALIZATION_HOOKS) {
-                hook.reinitializationFailed();
-            }
-            queuedHooksForContextReinitialization = null;
-        }
-    }
-
     public static void register(final IStartupHook hook) {
         synchronized (INSTANCE) {
             Assertions.assertThat(alreadyStarted)
                     .as("%s cannot be registered after application start!", IStartupHook.class.getSimpleName())
                     .isFalse();
-            Assertions.assertThat(STARTUP_HOOKS.add(hook)).as("Hook [%s] has already been registered!", hook).isTrue();
-        }
-    }
-
-    public static void register(final IReinitializationHook hook) {
-        synchronized (INSTANCE) {
-            Assertions.assertThat(alreadyStarted)
-                    .as("%s cannot be registered after application start!", IStartupHook.class.getSimpleName())
-                    .isFalse();
-            Assertions.assertThat(REINITIALIZATION_HOOKS.add(hook))
+            Assertions.assertThat(REGISTERED_HOOKS.add(hook))
                     .as("Hook [%s] has already been registered!", hook)
                     .isTrue();
         }
@@ -127,12 +114,6 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
     public void setApplicationContext(final ApplicationContext applicationContext) {
         synchronized (INSTANCE) {
             for (final IStartupHook hook : applicationContext.getBeansOfType(IStartupHook.class).values()) {
-                if (!alreadyStarted) {
-                    register(hook);
-                }
-            }
-            for (final IReinitializationHook hook : applicationContext.getBeansOfType(IReinitializationHook.class)
-                    .values()) {
                 if (!alreadyStarted) {
                     register(hook);
                 }
@@ -149,7 +130,7 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
             final WrappedExecutorService executor = Executors.newFixedThreadPool(getClass().getSimpleName(),
                     Math.max(10, Executors.getCpuThreadPoolCount() * 2));
             final List<Future<?>> blockingHooks = new ArrayList<Future<?>>();
-            for (final IStartupHook hook : STARTUP_HOOKS) {
+            for (final IStartupHook hook : REGISTERED_HOOKS) {
                 final Runnable task = new Runnable() {
                     @Override
                     public void run() {
@@ -188,6 +169,12 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    public static boolean isAlreadyStarted() {
+        synchronized (INSTANCE) {
+            return alreadyStarted;
+        }
     }
 
 }

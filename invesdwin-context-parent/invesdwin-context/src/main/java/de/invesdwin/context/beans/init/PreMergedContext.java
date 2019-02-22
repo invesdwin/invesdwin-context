@@ -17,6 +17,7 @@ import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.context.beans.hook.StartupHookManager;
 import de.invesdwin.context.beans.init.locations.IContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
@@ -38,6 +39,7 @@ public final class PreMergedContext extends ADelegateContext {
             try {
                 PlatformInitializerProperties.getInitializer().initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
+                Assertions.assertThat(StartupHookManager.isAlreadyStarted()).isFalse();
                 //reload initializer after instrumentation was done, since a hook might have changed the initializer
                 final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
                 //needs to happen after properties have been loaded
@@ -116,8 +118,8 @@ public final class PreMergedContext extends ADelegateContext {
      */
     private static void disableConfigurationAnnotationProcessing(final ConfigurableApplicationContext ctx) {
         Assertions.assertThat(ctx).isInstanceOf(BeanDefinitionRegistry.class);
-        final String[] matches = ctx.getBeanFactory().getBeanNamesForType(ConfigurationClassPostProcessor.class, false,
-                false);
+        final String[] matches = ctx.getBeanFactory()
+                .getBeanNamesForType(ConfigurationClassPostProcessor.class, false, false);
         final BeanDefinitionRegistry beanDefinitionRegistry = (BeanDefinitionRegistry) ctx;
         for (final String beanName : matches) {
             beanDefinitionRegistry.removeBeanDefinition(beanName);
