@@ -313,7 +313,6 @@ public class PlotLegendHelper {
             plot.setRenderer(datasetIndex, new DisabledXYItemRenderer(renderer));
         }
         XYPlots.updateRangeAxes(plot);
-        chartPanel.getChart().fireChartChanged();
     }
 
     public void mousePressed(final MouseEvent e) {
