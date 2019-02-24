@@ -285,7 +285,6 @@ public class PlotLegendHelper {
                 final int datasetIndex = getDatasetIndexForDataset(plot, dataset);
                 final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
                 setDatasetHidden(plot, datasetIndex, !(renderer instanceof DisabledXYItemRenderer));
-                XYPlots.updateRangeAxisPrecision(plot);
                 EventDispatchThreadUtil.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -309,6 +308,7 @@ public class PlotLegendHelper {
             plot.setRenderer(datasetIndex, new DisabledXYItemRenderer(renderer));
             plot.setDataset(datasetIndex, new DisabledXYDataset(dataset));
         }
+        XYPlots.updateRangeAxes(plot);
     }
 
     public void mousePressed(final MouseEvent e) {
@@ -336,7 +336,7 @@ public class PlotLegendHelper {
             final int toSubplotIndex = chartPanel.getCombinedPlot().getSubplotIndex(mouseX, mouseY);
             if (!dragged) {
                 dragged = true;
-                emptyPlot = chartPanel.newPlot(0);
+                emptyPlot = chartPanel.newPlot();
                 emptyPlot.addAnnotation(addAnnotation);
                 emptyPlot.setBackgroundPaint(ADD_BACKGROUND_COLOR);
                 chartPanel.getCombinedPlot().add(emptyPlot, EMPTY_PLOT_WEIGHT);
@@ -361,8 +361,6 @@ public class PlotLegendHelper {
                 plotSource.setPlot(toPlot);
                 toPlot.setDataset(toDatasetIndex, dataset);
                 toPlot.setRenderer(toDatasetIndex, fromPlot.getRenderer(fromDatasetIndex));
-                toPlot.mapDatasetToDomainAxis(toDatasetIndex, 0);
-                toPlot.mapDatasetToRangeAxis(toDatasetIndex, 0);
                 XYPlots.removeDataset(fromPlot, fromDatasetIndex);
                 updatePlots(fromPlot, toPlot);
                 highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
@@ -396,10 +394,10 @@ public class PlotLegendHelper {
         }
 
         if (fromPlot != trashPlot) {
-            XYPlots.updateRangeAxisPrecision(fromPlot);
+            XYPlots.updateRangeAxes(fromPlot);
         }
         if (toPlot != trashPlot) {
-            XYPlots.updateRangeAxisPrecision(toPlot);
+            XYPlots.updateRangeAxes(toPlot);
         }
     }
 

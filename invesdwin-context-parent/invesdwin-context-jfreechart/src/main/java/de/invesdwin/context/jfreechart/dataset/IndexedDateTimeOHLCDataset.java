@@ -15,6 +15,7 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset implements IInde
 
     private XYPlot plot;
     private int precision;
+    private String rangeAxisId;
 
     public IndexedDateTimeOHLCDataset(final Comparable<?> key, final List<OHLCDataItem> data) {
         super(key, data);
@@ -52,5 +53,15 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset implements IInde
     @Override
     public void setPrecision(final int precision) {
         this.precision = precision;
+    }
+
+    @Override
+    public String getRangeAxisId() {
+        return rangeAxisId;
+    }
+
+    @Override
+    public void setRangeAxisId(final String rangeAxisId) {
+        this.rangeAxisId = rangeAxisId;
     }
 }

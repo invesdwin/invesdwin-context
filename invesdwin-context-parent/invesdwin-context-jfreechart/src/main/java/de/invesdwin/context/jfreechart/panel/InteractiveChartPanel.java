@@ -145,6 +145,10 @@ public class InteractiveChartPanel extends JPanel {
         return 2;
     }
 
+    protected String initRangeAxisId() {
+        return "";
+    }
+
     public int getAllowedRangeGap() {
         return chartPanel.getAllowedRangeGap();
     }
@@ -185,16 +189,16 @@ public class InteractiveChartPanel extends JPanel {
     }
 
     protected void initPlots() {
-        final int precision = initRangeAxisDecimalDigits();
-        ohlcPlot = new XYPlot(dataset, domainAxis, XYPlots.newRangeAxis(precision),
+        ohlcPlot = new XYPlot(dataset, domainAxis, XYPlots.newRangeAxis(0, false),
                 plotConfigurationHelper.getPriceInitialSettings().getPriceRenderer());
         ohlcPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(ohlcPlot);
         dataset.setPlot(ohlcPlot);
-        dataset.setPrecision(precision);
+        dataset.setPrecision(initRangeAxisDecimalDigits());
+        dataset.setRangeAxisId(initRangeAxisId());
         //give main plot twice the weight
         combinedPlot.add(ohlcPlot, CustomCombinedDomainXYPlot.MAIN_PLOT_WEIGHT);
-        XYPlots.updateRangeAxisPrecision(ohlcPlot);
+        XYPlots.updateRangeAxes(ohlcPlot);
     }
 
     public void update() {
@@ -207,7 +211,7 @@ public class InteractiveChartPanel extends JPanel {
     private void configureRangeAxis() {
         final List<XYPlot> plots = combinedPlot.getSubplots();
         for (final XYPlot plot : plots) {
-            plot.getRangeAxis().configure();
+            XYPlots.configureRangeAxes(plot);
         }
     }
 
@@ -364,8 +368,8 @@ public class InteractiveChartPanel extends JPanel {
         return ohlcPlot;
     }
 
-    public XYPlot newPlot(final int precision) {
-        final NumberAxis rangeAxis = XYPlots.newRangeAxis(precision);
+    public XYPlot newPlot() {
+        final NumberAxis rangeAxis = XYPlots.newRangeAxis(0, false);
         final XYPlot newPlot = new XYPlot(null, null, rangeAxis, null);
         newPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(newPlot);

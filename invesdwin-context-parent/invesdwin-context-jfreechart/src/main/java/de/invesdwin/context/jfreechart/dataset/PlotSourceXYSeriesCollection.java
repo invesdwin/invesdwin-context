@@ -10,6 +10,7 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
 
     private XYPlot plot;
     private int precision;
+    private String rangeAxisId;
 
     @Override
     public XYPlot getPlot() {
@@ -29,6 +30,16 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     @Override
     public void setPrecision(final int precision) {
         this.precision = precision;
+    }
+
+    @Override
+    public String getRangeAxisId() {
+        return rangeAxisId;
+    }
+
+    @Override
+    public void setRangeAxisId(final String rangeAxisId) {
+        this.rangeAxisId = rangeAxisId;
     }
 
 }

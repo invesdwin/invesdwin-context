@@ -79,4 +79,14 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSource 
         }
     }
 
+    @Override
+    public String getRangeAxisId() {
+        return plotSource.getRangeAxisId();
+    }
+
+    @Override
+    public void setRangeAxisId(final String rangeAxisId) {
+        plotSource.setRangeAxisId(rangeAxisId);
+    }
+
 }

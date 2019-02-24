@@ -83,6 +83,7 @@ public class HighlightedLegendInfo {
         Assertions.checkTrue(isRemovable());
         chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(getSeriesKey());
         XYPlots.removeDataset(plot, datasetIndex);
+        XYPlots.updateRangeAxes(plot);
         chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
     }
 

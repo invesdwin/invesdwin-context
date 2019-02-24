@@ -12,4 +12,8 @@ public interface IPlotSource {
 
     void setPrecision(int precision);
 
+    String getRangeAxisId();
+
+    void setRangeAxisId(String rangeAxisId);
+
 }

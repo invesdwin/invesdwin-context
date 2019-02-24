@@ -30,7 +30,7 @@ public class CustomCombinedDomainXYPlot extends CombinedDomainXYPlot {
     public CustomCombinedDomainXYPlot(final InteractiveChartPanel chartPanel) {
         super(chartPanel.getDomainAxis());
         this.chartPanel = chartPanel;
-        trashPlot = chartPanel.newPlot(0);
+        trashPlot = chartPanel.newPlot();
         trashPlot.getRangeAxis().setVisible(false);
         trashPlot.setDomainGridlinesVisible(false);
         trashPlot.setRangeGridlinesVisible(false);
@@ -59,6 +59,10 @@ public class CustomCombinedDomainXYPlot extends CombinedDomainXYPlot {
     @Override
     public List<XYPlot> getSubplots() {
         return super.getSubplots();
+    }
+
+    public XYPlot getMainPlot() {
+        return getSubplots().get(1);
     }
 
     public boolean isSubplotVisible(final XYPlot plot) {
