@@ -97,7 +97,11 @@ public class PlotLegendHelper {
                         return label;
                     }
                     final IPlotSource plotSource = (IPlotSource) dataset;
-                    final NumberAxis rangeAxis = (NumberAxis) plotSource.getPlot().getRangeAxis();
+                    final XYPlot plot = plotSource.getPlot();
+                    if (plot == chartPanel.getCombinedPlot().getTrashPlot()) {
+                        return label;
+                    }
+                    final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxisForDataset(item.getDatasetIndex());
                     final NumberFormat rangeAxisFormat = rangeAxis.getNumberFormatOverride();
                     if (dataset instanceof OHLCDataset) {
                         final OHLCDataset ohlc = (OHLCDataset) dataset;

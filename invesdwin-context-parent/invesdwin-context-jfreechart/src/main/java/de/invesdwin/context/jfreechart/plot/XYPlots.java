@@ -57,7 +57,7 @@ public final class XYPlots {
         }
         removeRangeAxes(plot);
         if (rangeAxisId_data.isEmpty()) {
-            plot.setRangeAxis(newRangeAxis(0, false));
+            plot.setRangeAxis(newRangeAxis(0, false, false));
         } else {
             int countVisibleRangeAxes = 0;
             //first add the visible range axis, right=0 and left=1
@@ -79,10 +79,9 @@ public final class XYPlots {
 
     private static void addRangeAxis(final XYPlot plot, final int countVisibleRangeAxes,
             final RangeAxisData rangeAxisData) {
-        final NumberAxis rangeAxis = newRangeAxis(rangeAxisData.getPrecision(), rangeAxisData.isVisible());
-        if (countVisibleRangeAxes > 2) {
-            rangeAxis.setVisible(false);
-        }
+        final boolean visible = rangeAxisData.isVisible() && countVisibleRangeAxes <= 2;
+        final boolean autorange = rangeAxisData.isVisible();
+        final NumberAxis rangeAxis = newRangeAxis(rangeAxisData.getPrecision(), visible, autorange);
         plot.setRangeAxis(rangeAxisData.getRangeAxisIndex(), rangeAxis);
         for (final int datasetIndex : rangeAxisData.getDatasetIndexes()) {
             plot.mapDatasetToDomainAxis(datasetIndex, 0);
@@ -107,14 +106,14 @@ public final class XYPlots {
         }
     }
 
-    public static NumberAxis newRangeAxis(final int precision, final boolean visible) {
+    public static NumberAxis newRangeAxis(final int precision, final boolean visible, final boolean autorange) {
         final NumberAxis rangeAxis = new NumberAxis();
         rangeAxis.setAutoRangeIncludesZero(false);
         rangeAxis.setNumberFormatOverride(Decimal
                 .newDecimalFormatInstance(PercentScale.RATE.getFormat(Percent.ZERO_PERCENT, false, precision, false)));
         rangeAxis.setVisible(visible);
-        rangeAxis.setAutoRange(visible);
-        if (!visible) {
+        rangeAxis.setAutoRange(autorange);
+        if (!autorange) {
             rangeAxis.setRange(0, 1);
         }
         return rangeAxis;
