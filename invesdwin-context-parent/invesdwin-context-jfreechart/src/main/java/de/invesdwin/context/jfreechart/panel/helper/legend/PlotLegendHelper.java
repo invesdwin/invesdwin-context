@@ -202,7 +202,7 @@ public class PlotLegendHelper {
             final IPlotSource plotSource = (IPlotSource) dataset;
             final XYPlot plot = plotSource.getPlot();
             final CustomLegendTitle title = getTitle(plot);
-            final int datasetIndex = getDatasetIndexForDataset(plot, dataset);
+            final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
             if (highlightedLegendInfo == null || highlightedLegendInfo.getTitle() != title
                     || highlightedLegendInfo.getDatasetIndex() != datasetIndex) {
                 //CHECKSTYLE:OFF
@@ -220,24 +220,6 @@ public class PlotLegendHelper {
         if (!updated) {
             disableHighlighting();
         }
-    }
-
-    private int getDatasetIndexForDataset(final XYPlot plot, final Dataset dataset) {
-        for (int datasetIndex = 0; datasetIndex <= plot.getDatasetCount(); datasetIndex++) {
-            final XYDataset potentialDataset = plot.getDataset(datasetIndex);
-            if (potentialDataset != null) {
-                if (potentialDataset == dataset) {
-                    return datasetIndex;
-                }
-                if (potentialDataset instanceof DisabledXYDataset) {
-                    final DisabledXYDataset cPotentialDataset = (DisabledXYDataset) potentialDataset;
-                    if (cPotentialDataset.getEnabledDataset() == dataset) {
-                        return datasetIndex;
-                    }
-                }
-            }
-        }
-        throw new IllegalStateException("No datasetIndex found for dataset");
     }
 
     public void disableHighlighting() {
@@ -286,7 +268,7 @@ public class PlotLegendHelper {
             if (dataset instanceof IPlotSource) {
                 final IPlotSource plotSource = (IPlotSource) dataset;
                 final XYPlot plot = plotSource.getPlot();
-                final int datasetIndex = getDatasetIndexForDataset(plot, dataset);
+                final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
                 final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
                 setDatasetHidden(plot, datasetIndex, !(renderer instanceof DisabledXYItemRenderer));
                 EventDispatchThreadUtil.invokeLater(new Runnable() {

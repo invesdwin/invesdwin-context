@@ -38,6 +38,7 @@ import org.jfree.chart.util.Args;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
+import org.jfree.data.Range;
 import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataset;
 
@@ -298,7 +299,7 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
      *            the dataset.
      * @param series
      *            the series index (zero-based).
-     * @param item
+     * @param item1
      *            the item index (zero-based).
      * @param crosshairState
      *            crosshair information for the plot ({@code null} permitted).
@@ -309,11 +310,11 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
     @Override
     public void drawItem(final Graphics2D g2, final XYItemRendererState state, final Rectangle2D dataArea,
             final PlotRenderingInfo info, final XYPlot plot, final ValueAxis domainAxis, final ValueAxis rangeAxis,
-            final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
+            final XYDataset dataset, final int series, final int item1, final CrosshairState crosshairState,
             final int pass) {
         //CHECKSTYLE:ON
 
-        if (!getItemVisible(series, item)) {
+        if (!getItemVisible(series, item1)) {
             return;
         }
         final XYAreaRendererState areaState = (XYAreaRendererState) state;
@@ -322,35 +323,37 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         final Color downColor;
         // get the data point...
         final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
-        final ListXYSeriesOHLC cSeries = (ListXYSeriesOHLC) cDataset.getSeries(series);
+        final ListXYSeriesOHLC cSeries = cDataset.getSeries(series);
         final List<XYDataItemOHLC> data = cSeries.getData();
-        final OHLCDataItem item0 = data.get(Math.max(item - 1, 0)).asOHLC();
-        final OHLCDataItem item1 = data.get(item).asOHLC();
+        final int item0 = Math.max(item1 - 1, 0);
+        final OHLCDataItem cItem0 = data.get(item0).asOHLC();
+        final OHLCDataItem cItem1 = data.get(item1).asOHLC();
         final int lastItem = data.size() - 1;
-        final OHLCDataItem item2 = data.get(Math.min(item + 1, lastItem)).asOHLC();
+        final int item2 = Math.min(item1 + 1, lastItem);
+        final OHLCDataItem cItem2 = data.get(item2).asOHLC();
 
-        final double x1 = item1.getDate().getTime();
-        if (Double.isNaN(item1.getClose().doubleValue())) {
+        final double x1 = dataset.getXValue(series, item1);
+        if (Double.isNaN(cItem1.getClose().doubleValue())) {
             upColor = INVISIBLE_COLOR;
             downColor = INVISIBLE_COLOR;
         } else {
             upColor = getUpColor();
             downColor = getDownColor();
         }
-        final double x0 = item0.getDate().getTime();
-        final double x2 = item2.getDate().getTime();
+        final double x0 = dataset.getXValue(series, item0);
+        final double x2 = dataset.getXValue(series, item2);
 
-        drawLine(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState, x0, convert(item0.getClose()), x1,
-                convert(item1.getClose()), dataset);
-        drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.profit, x0,
-                convert(item0.getHigh()), x1, convert(item1.getHigh()), x2, convert(item2.getHigh()), dataset,
+        drawLine(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState, x0, convert(cItem0.getClose()),
+                x1, convert(cItem1.getClose()), dataset);
+        drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.profit, x0,
+                convert(cItem0.getHigh()), x1, convert(cItem1.getHigh()), x2, convert(cItem2.getHigh()), dataset,
                 crosshairState, state, upColor);
-        drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, x0, convert(item0.getLow()),
-                x1, convert(item1.getLow()), x2, convert(item2.getLow()), dataset, crosshairState, state, downColor);
+        drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.loss, x0, convert(cItem0.getLow()),
+                x1, convert(cItem1.getLow()), x2, convert(cItem2.getLow()), dataset, crosshairState, state, downColor);
 
         // Check if the item is the last item for the series.
         // and number of items > 0.  We can't draw an area for a single point.
-        if (getPlotArea() && item > 0 && item == lastItem) {
+        if (getPlotArea() && item1 > 0 && item1 == lastItem) {
             closeArea(g2, dataArea, plot, domainAxis, rangeAxis, upColor, x1, areaState.profit);
             closeArea(g2, dataArea, plot, domainAxis, rangeAxis, downColor, x1, areaState.loss);
         }
@@ -581,6 +584,12 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
     private void writeObject(final ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         SerialUtils.writeShape(this.legendArea, stream);
+    }
+
+    @Override
+    public Range findRangeBounds(final XYDataset dataset) {
+        //include interval per default
+        return super.findRangeBounds(dataset, true);
     }
 
 }

@@ -8,6 +8,7 @@ import javax.annotation.concurrent.Immutable;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.general.Dataset;
+import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.dataset.IPlotSource;
@@ -136,6 +137,24 @@ public final class XYPlots {
         }
         plot.setDataset(lastDatasetIndex, null);
         plot.setRenderer(lastDatasetIndex, null);
+    }
+
+    public static int getDatasetIndexForDataset(final XYPlot plot, final Dataset dataset) {
+        for (int datasetIndex = 0; datasetIndex <= plot.getDatasetCount(); datasetIndex++) {
+            final XYDataset potentialDataset = plot.getDataset(datasetIndex);
+            if (potentialDataset != null) {
+                if (potentialDataset == dataset) {
+                    return datasetIndex;
+                }
+                if (potentialDataset instanceof DisabledXYDataset) {
+                    final DisabledXYDataset cPotentialDataset = (DisabledXYDataset) potentialDataset;
+                    if (cPotentialDataset.getEnabledDataset() == dataset) {
+                        return datasetIndex;
+                    }
+                }
+            }
+        }
+        throw new IllegalStateException("No datasetIndex found for dataset");
     }
 
 }
