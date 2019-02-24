@@ -296,19 +296,20 @@ public class PlotLegendHelper {
         }
     }
 
-    public static void setDatasetHidden(final XYPlot plot, final int datasetIndex, final boolean hidden) {
+    public void setDatasetHidden(final XYPlot plot, final int datasetIndex, final boolean hidden) {
         final XYDataset dataset = plot.getDataset(datasetIndex);
         final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
         if (!hidden) {
-            final DisabledXYItemRenderer cRenderer = (DisabledXYItemRenderer) renderer;
-            plot.setRenderer(datasetIndex, cRenderer.getEnabledRenderer());
             final DisabledXYDataset cDataset = (DisabledXYDataset) dataset;
             plot.setDataset(datasetIndex, cDataset.getEnabledDataset());
+            final DisabledXYItemRenderer cRenderer = (DisabledXYItemRenderer) renderer;
+            plot.setRenderer(datasetIndex, cRenderer.getEnabledRenderer());
         } else {
-            plot.setRenderer(datasetIndex, new DisabledXYItemRenderer(renderer));
             plot.setDataset(datasetIndex, new DisabledXYDataset(dataset));
+            plot.setRenderer(datasetIndex, new DisabledXYItemRenderer(renderer));
         }
         XYPlots.updateRangeAxes(plot);
+        chartPanel.getChart().fireChartChanged();
     }
 
     public void mousePressed(final MouseEvent e) {

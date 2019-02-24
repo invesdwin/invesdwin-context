@@ -72,7 +72,7 @@ public class HighlightedLegendInfo {
     }
 
     public void setHidden(final boolean hidden) {
-        PlotLegendHelper.setDatasetHidden(plot, datasetIndex, hidden);
+        chartPanel.getPlotLegendHelper().setDatasetHidden(plot, datasetIndex, hidden);
     }
 
     public boolean isRemovable() {

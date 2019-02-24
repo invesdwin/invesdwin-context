@@ -59,8 +59,15 @@ public final class XYPlots {
         if (rangeAxisId_data.isEmpty()) {
             plot.setRangeAxis(newRangeAxis(0, false));
         } else {
+            int countVisibleRangeAxes = 0;
             for (final RangeAxisData rangeAxisData : rangeAxisId_data.values()) {
                 final NumberAxis rangeAxis = newRangeAxis(rangeAxisData.getPrecision(), rangeAxisData.isVisible());
+                if (rangeAxisData.isVisible()) {
+                    countVisibleRangeAxes++;
+                }
+                if (countVisibleRangeAxes > 2) {
+                    rangeAxis.setVisible(false);
+                }
                 plot.setRangeAxis(rangeAxisData.getRangeAxisIndex(), rangeAxis);
                 for (final int datasetIndex : rangeAxisData.getDatasetIndexes()) {
                     plot.mapDatasetToDomainAxis(datasetIndex, 0);
@@ -91,7 +98,6 @@ public final class XYPlots {
     public static NumberAxis newRangeAxis(final int precision, final boolean visible) {
         final NumberAxis rangeAxis = new NumberAxis();
         rangeAxis.setAutoRangeIncludesZero(false);
-        rangeAxis.setAutoRange(true);
         rangeAxis.setNumberFormatOverride(Decimal
                 .newDecimalFormatInstance(PercentScale.RATE.getFormat(Percent.ZERO_PERCENT, false, precision, false)));
         rangeAxis.setVisible(visible);
