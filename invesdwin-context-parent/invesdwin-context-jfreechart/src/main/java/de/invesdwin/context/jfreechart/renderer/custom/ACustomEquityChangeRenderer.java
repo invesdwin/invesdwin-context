@@ -50,6 +50,10 @@ import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
 import de.invesdwin.util.math.Doubles;
 
+/**
+ * High is Profit, Low is Drawdown and Close is EquityChange.
+ * 
+ */
 @NotThreadSafe
 public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         implements XYItemRenderer, PublicCloneable, IUpDownColorRenderer {

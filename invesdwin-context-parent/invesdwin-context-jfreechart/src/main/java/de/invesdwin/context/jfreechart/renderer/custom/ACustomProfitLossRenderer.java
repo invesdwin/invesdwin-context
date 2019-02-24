@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -37,12 +38,20 @@ import org.jfree.chart.util.Args;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
+import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.dataset.PlotSourceXYSeriesCollection;
+import de.invesdwin.context.jfreechart.dataset.basis.ListXYSeriesOHLC;
+import de.invesdwin.context.jfreechart.dataset.basis.XYDataItemOHLC;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
+import de.invesdwin.util.math.Doubles;
 
+/**
+ * Low is Loss, Close is Profit.
+ */
 @NotThreadSafe
 public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
         implements XYItemRenderer, PublicCloneable, IUpDownColorRenderer {
@@ -303,11 +312,11 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
     @Override
     public void drawItem(final Graphics2D g2, final XYItemRendererState state, final Rectangle2D dataArea,
             final PlotRenderingInfo info, final XYPlot plot, final ValueAxis domainAxis, final ValueAxis rangeAxis,
-            final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
+            final XYDataset dataset, final int series, final int item1, final CrosshairState crosshairState,
             final int pass) {
         //CHECKSTYLE:ON
 
-        if (!getItemVisible(series, item)) {
+        if (!getItemVisible(series, item1)) {
             return;
         }
         final XYAreaRendererState areaState = (XYAreaRendererState) state;
@@ -315,103 +324,75 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
         final Color upColor;
         final Color downColor;
         // get the data point...
-        final double x1 = dataset.getXValue(series, item);
-        double y1 = dataset.getYValue(series, item);
-        if (Double.isNaN(y1)) {
-            y1 = 0.0;
+        final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
+        final ListXYSeriesOHLC cSeries = cDataset.getSeries(series);
+        final List<XYDataItemOHLC> data = cSeries.getData();
+        final int item0 = Math.max(item1 - 1, 0);
+        final OHLCDataItem cItem0 = data.get(item0).asOHLC();
+        final OHLCDataItem cItem1 = data.get(item1).asOHLC();
+        final int lastItem = data.size() - 1;
+        final int item2 = Math.min(item1 + 1, lastItem);
+        final OHLCDataItem cItem2 = data.get(item2).asOHLC();
+
+        final double x1 = dataset.getXValue(series, item1);
+        if (Double.isNaN(cItem1.getClose().doubleValue())) {
             upColor = INVISIBLE_COLOR;
             downColor = INVISIBLE_COLOR;
         } else {
             upColor = getUpColor();
             downColor = getDownColor();
         }
-        final double x0 = dataset.getXValue(series, Math.max(item - 1, 0));
-        double y0 = dataset.getYValue(series, Math.max(item - 1, 0));
-        if (Double.isNaN(y0)) {
-            y0 = 0.0;
-        }
-        final int itemCount = dataset.getItemCount(series);
-        final double x2 = dataset.getXValue(series, Math.min(item + 1, itemCount - 1));
-        double y2 = dataset.getYValue(series, Math.min(item + 1, itemCount - 1));
-        if (Double.isNaN(y2)) {
-            y2 = 0.0;
-        }
+        final double x0 = dataset.getXValue(series, item0);
+        final double x2 = dataset.getXValue(series, item2);
 
-        if (y0 >= 0 && y1 >= 0) {
-            //profit to profit
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.profit, itemCount, x0, y0,
-                    x1, y1, x2, y2, dataset, crosshairState, state, upColor);
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, itemCount, x0, 0D,
-                    x1, 0D, x2, 0D, dataset, crosshairState, state, INVISIBLE_COLOR);
-        } else if (y0 < 0 && y1 < 0) {
-            //loss to loss
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, itemCount, x0, y0,
-                    x1, y1, x2, y2, dataset, crosshairState, state, downColor);
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.profit, itemCount, x0, 0D,
-                    x1, 0D, x2, 0D, dataset, crosshairState, state, INVISIBLE_COLOR);
-        } else if (y0 >= 0 && y1 < 0) {
-            //profit to loss
-            //profit x0 -> xHalf is y0 -> 0 is upColor
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.profit, itemCount, x0, y0,
-                    x1, 0D, x1, 0D, dataset, crosshairState, state, upColor);
-            //loss x0 -> xHalf is 0 -> 0 is invisible
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, itemCount, x0, 0D,
-                    x1, 0D, x1, 0D, dataset, crosshairState, state, INVISIBLE_COLOR);
-            //loss x0 -> xHalf is 0 -> y1 is downColor
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, itemCount, x1, 0D,
-                    x1, y1, x2, y2, dataset, crosshairState, state, downColor);
-        } else if (y0 < 0 && y1 >= 0) {
-            //loss to profit
-            //loss x0 -> xHalf is y0 -> 0 is upColor
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, itemCount, x0, y0,
-                    x1, 0D, x1, 0D, dataset, crosshairState, state, downColor);
-            //loss xHalf -> x1 is 0 -> 0 is invisible
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.loss, itemCount, x1, 0D,
-                    x1, 0D, x1, 0D, dataset, crosshairState, state, INVISIBLE_COLOR);
-            //loss x0 -> xHalf is 0 -> 0 is invisible
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.profit, itemCount, x0, 0D,
-                    x1, 0D, x1, 0D, dataset, crosshairState, state, INVISIBLE_COLOR);
-            //loss x0 -> xHalf is 0 -> y1 is downColor
-            drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item, areaState.profit, itemCount, x1, 0D,
-                    x1, y1, x2, y2, dataset, crosshairState, state, upColor);
-        } else {
-            throw new IllegalStateException("Unknown condition!");
-        }
+        //profit to profit
+        drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.profit, x0,
+                convert(cItem0.getClose()), x1, convert(cItem1.getClose()), x2, convert(cItem2.getClose()), dataset,
+                crosshairState, state, upColor);
+        drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.loss, x0,
+                convert(cItem0.getLow()), x1, convert(cItem1.getLow()), x2, convert(cItem2.getLow()), dataset,
+                crosshairState, state, upColor);
 
         // Check if the item is the last item for the series.
         // and number of items > 0.  We can't draw an area for a single point.
-        if (getPlotArea() && item > 0 && item == (itemCount - 1)) {
-
-            final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
-            final double transZero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
-
-            final PlotOrientation orientation = plot.getOrientation();
-            if (orientation == PlotOrientation.VERTICAL) {
-                // Add the last point (x,0)
-                lineTo(areaState.profit.area, transX1, transZero);
-                lineTo(areaState.loss.area, transX1, transZero);
-                areaState.profit.area.closePath();
-                areaState.loss.area.closePath();
-            } else if (orientation == PlotOrientation.HORIZONTAL) {
-                // Add the last point (x,0)
-                lineTo(areaState.profit.area, transZero, transX1);
-                lineTo(areaState.loss.area, transZero, transX1);
-                areaState.profit.area.closePath();
-                areaState.loss.area.closePath();
-            }
-
-            g2.setPaint(upColor);
-            g2.fill(areaState.profit.area);
-            g2.setPaint(downColor);
-            g2.fill(areaState.loss.area);
+        if (getPlotArea() && item1 > 0 && item1 == lastItem) {
+            closeArea(g2, dataArea, plot, domainAxis, rangeAxis, upColor, x1, areaState.profit);
+            closeArea(g2, dataArea, plot, domainAxis, rangeAxis, downColor, x1, areaState.loss);
         }
+    }
+
+    private double convert(final Number value) {
+        return Doubles.nanToZero(value.doubleValue());
+    }
+
+    //CHECKSTYLE:OFF
+    private void closeArea(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
+            final ValueAxis domainAxis, final ValueAxis rangeAxis, final Color upColor, final double x1,
+            final XYAreaRendererStateData areaStateData) {
+        //CHECKSTYLE:ON
+        final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
+        final double transZero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
+
+        final PlotOrientation orientation = plot.getOrientation();
+        if (orientation == PlotOrientation.VERTICAL) {
+            // Add the last point (x,0)
+            lineTo(areaStateData.area, transX1, transZero);
+            areaStateData.area.closePath();
+        } else if (orientation == PlotOrientation.HORIZONTAL) {
+            // Add the last point (x,0)
+            lineTo(areaStateData.area, transZero, transX1);
+            areaStateData.area.closePath();
+        }
+
+        g2.setPaint(upColor);
+        g2.fill(areaStateData.area);
     }
 
     //CHECKSTYLE:OFF
     private void drawProfitLoss(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
             final ValueAxis domainAxis, final ValueAxis rangeAxis, final int series, final int item,
-            final XYAreaRendererStateData areaStateData, final int itemCount, final double x0, final double y0,
-            final double x1, final double y1, final double x2, final double y2, final XYDataset dataset,
+            final XYAreaRendererStateData areaStateData, final double x0, final double y0, final double x1,
+            final double y1, final double x2, final double y2, final XYDataset dataset,
             final CrosshairState crosshairState, final RendererState state, final Paint paint) {
         //CHECKSTYLE:ON
 
