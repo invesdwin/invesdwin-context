@@ -23,25 +23,26 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
  *
  */
 @NotThreadSafe
-public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implements ICustomRendererType {
+public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer implements ICustomRendererType {
 
-    public static final Percent TRANSPARENCY = new Percent(50, PercentScale.PERCENT);
-    public static final Color DOWN_COLOR = Colors.fromHex("#CC0000");
-    public static final Color UP_COLOR = Colors.fromHex("#38761D");
+    public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
+    public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
+    private static final Percent AREA_TRANSPARENCY = new Percent(90, PercentScale.PERCENT);
+    private static final Percent LINE_TRANSPARENCY = new Percent(30, PercentScale.PERCENT);
 
     private final XYDataset dataset;
     private Color upColor;
     private Color downColor;
 
-    public CustomProfitLossRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
+    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
         this.dataset = dataset;
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
 
-        setSeriesPaint(0, Colors.setTransparency(UP_COLOR, TRANSPARENCY));
+        setSeriesPaint(0, Colors.setTransparency(UP_COLOR, LINE_TRANSPARENCY));
         setSeriesStroke(0, config.getSeriesStroke());
 
-        this.upColor = Colors.setTransparency(UP_COLOR, TRANSPARENCY);
-        this.downColor = Colors.setTransparency(DOWN_COLOR, TRANSPARENCY);
+        this.upColor = Colors.setTransparency(UP_COLOR, AREA_TRANSPARENCY);
+        this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implemen
 
     @Override
     public boolean isSeriesColorConfigurable() {
-        return false;
+        return true;
     }
 
     @Override

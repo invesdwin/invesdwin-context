@@ -3,7 +3,10 @@ package de.invesdwin.context.jfreechart.dataset;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import de.invesdwin.context.jfreechart.dataset.basis.ListXYSeriesOHLC;
 
 @NotThreadSafe
 public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements IPlotSource {
@@ -40,6 +43,19 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     @Override
     public void setRangeAxisId(final String rangeAxisId) {
         this.rangeAxisId = rangeAxisId;
+    }
+
+    @Deprecated
+    @Override
+    public void addSeries(final XYSeries series) {
+        if (!(series instanceof ListXYSeriesOHLC)) {
+            throw new IllegalArgumentException("series must be of type: " + ListXYSeriesOHLC.class.getSimpleName());
+        }
+        super.addSeries(series);
+    }
+
+    public void addSeries(final ListXYSeriesOHLC series) {
+        super.addSeries(series);
     }
 
 }

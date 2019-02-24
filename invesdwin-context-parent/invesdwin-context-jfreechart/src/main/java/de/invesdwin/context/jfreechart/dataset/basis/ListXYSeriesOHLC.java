@@ -13,7 +13,7 @@ import org.jfree.data.xy.XYSeries;
 import de.invesdwin.util.lang.Reflections;
 
 @NotThreadSafe
-public class ListXYSeries extends XYSeries {
+public class ListXYSeriesOHLC extends XYSeries {
 
     private static final MethodHandle MH_MINX_SETTER;
     private static final MethodHandle MH_MAXX_SETTER;
@@ -39,12 +39,12 @@ public class ListXYSeries extends XYSeries {
         }
     }
 
-    public ListXYSeries(final Comparable<?> key) {
+    public ListXYSeriesOHLC(final Comparable<?> key) {
         super(key, false, false);
     }
 
     @SuppressWarnings("unchecked")
-    public List<XYDataItem> getData() {
+    public List<XYDataItemOHLC> getData() {
         return data;
     }
 
@@ -80,7 +80,7 @@ public class ListXYSeries extends XYSeries {
         }
     }
 
-    public void updateBoundsForAddedItem(final XYDataItem item) {
+    public void updateBoundsForAddedItem(final XYDataItemOHLC item) {
         final double x = item.getXValue();
         setMinX(minIgnoreNaN(getMinX(), x));
         setMaxX(maxIgnoreNaN(getMaxX(), x));
@@ -109,6 +109,76 @@ public class ListXYSeries extends XYSeries {
             return a;
         }
         return Math.max(a, b);
+    }
+
+    @Deprecated
+    @Override
+    public void add(final double x, final double y) {
+        throw newUseGetDataException();
+    }
+
+    private UnsupportedOperationException newUseGetDataException() {
+        return new UnsupportedOperationException("Use getData().add(...) instead");
+    }
+
+    @Deprecated
+    @Override
+    public void add(final double x, final double y, final boolean notify) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public void add(final double x, final Number y) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public void add(final double x, final Number y, final boolean notify) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public void add(final Number x, final Number y) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public void add(final Number x, final Number y, final boolean notify) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public void add(final XYDataItem item) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public void add(final XYDataItem item, final boolean notify) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public XYDataItem addOrUpdate(final double x, final double y) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public XYDataItem addOrUpdate(final Number x, final Number y) {
+        throw newUseGetDataException();
+    }
+
+    @Deprecated
+    @Override
+    public XYDataItem addOrUpdate(final XYDataItem item) {
+        throw newUseGetDataException();
     }
 
 }

@@ -54,7 +54,7 @@ public class PlotConfigurationHelper {
     private JMenu lineWidthItem;
     private JMenuItem upColorItem;
     private JMenuItem downColorItem;
-    private JMenuItem colorItem;
+    private JMenuItem seriesColorItem;
     private JMenuItem resetStyleItem;
     private HighlightedLegendInfo highlighted;
 
@@ -154,7 +154,7 @@ public class PlotConfigurationHelper {
                 popupMenu.add(lineWidthItem);
                 popupMenu.add(upColorItem);
                 popupMenu.add(downColorItem);
-                popupMenu.add(colorItem);
+                popupMenu.add(seriesColorItem);
                 popupMenu.add(resetStyleItem);
                 popupMenu.addSeparator();
                 if (highlighted.isRemovable()) {
@@ -218,7 +218,7 @@ public class PlotConfigurationHelper {
             lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
             upColorItem.setVisible(rendererType.isUpColorConfigurable());
             downColorItem.setVisible(rendererType.isDownColorConfigurable());
-            colorItem.setVisible(rendererType.isSeriesColorConfigurable());
+            seriesColorItem.setVisible(rendererType.isSeriesColorConfigurable());
         }
         if (seriesRendererItem.isVisible()) {
             final IRendererType seriesRendererType = getSeriesInitialSettings().getCurrentRendererType(highlighted);
@@ -232,7 +232,7 @@ public class PlotConfigurationHelper {
             lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
             upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
             downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
-            colorItem.setVisible(seriesRendererType.isSeriesColorConfigurable());
+            seriesColorItem.setVisible(seriesRendererType.isSeriesColorConfigurable());
         }
     }
 
@@ -445,12 +445,12 @@ public class PlotConfigurationHelper {
                 });
             }
         });
-        colorItem = new JMenuItem("Change Color");
-        colorItem.addActionListener(new ActionListener() {
+        seriesColorItem = new JMenuItem("Change Series Color");
+        seriesColorItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final XYItemRenderer renderer = highlighted.getRenderer();
-                showColorChooserDialog("Color", (Color) renderer.getSeriesPaint(0), new IColorChooserListener() {
+                showColorChooserDialog("Series Color", (Color) renderer.getSeriesPaint(0), new IColorChooserListener() {
                     @Override
                     public void change(final Color initialColor, final Color newColor) {
                         renderer.setSeriesPaint(0, newColor);
