@@ -20,6 +20,8 @@ import org.jfree.data.xy.XYDataset;
 @NotThreadSafe
 public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
 
+    public static final Color INVISIBLE_COLOR = new Color(0, 0, 0, 0);
+
     private final XYItemRenderer enabledRenderer;
 
     public DisabledXYItemRenderer(final XYItemRenderer enabledRenderer) {
@@ -28,7 +30,6 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
                     "enabledRenderer should not be an instance of " + DisabledXYItemRenderer.class.getSimpleName());
         }
         this.enabledRenderer = enabledRenderer;
-        setSeriesPaint(0, new Color(0, 0, 0, 0));
     }
 
     public XYItemRenderer getEnabledRenderer() {
@@ -95,6 +96,11 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
     @Override
     public Paint getSeriesFillPaint(final int series) {
         return enabledRenderer.getSeriesFillPaint(series);
+    }
+
+    @Override
+    public Paint getItemPaint(final int row, final int column) {
+        return INVISIBLE_COLOR;
     }
 
 }
