@@ -60,21 +60,33 @@ public final class XYPlots {
             plot.setRangeAxis(newRangeAxis(0, false));
         } else {
             int countVisibleRangeAxes = 0;
+            //first add the visible range axis, right=0 and left=1
             for (final RangeAxisData rangeAxisData : rangeAxisId_data.values()) {
-                final NumberAxis rangeAxis = newRangeAxis(rangeAxisData.getPrecision(), rangeAxisData.isVisible());
                 if (rangeAxisData.isVisible()) {
                     countVisibleRangeAxes++;
+                    addRangeAxis(plot, countVisibleRangeAxes, rangeAxisData);
                 }
-                if (countVisibleRangeAxes > 2) {
-                    rangeAxis.setVisible(false);
-                }
-                plot.setRangeAxis(rangeAxisData.getRangeAxisIndex(), rangeAxis);
-                for (final int datasetIndex : rangeAxisData.getDatasetIndexes()) {
-                    plot.mapDatasetToDomainAxis(datasetIndex, 0);
-                    plot.mapDatasetToRangeAxis(datasetIndex, rangeAxisData.getRangeAxisIndex());
+            }
+            //then the rest are the invisible ones
+            for (final RangeAxisData rangeAxisData : rangeAxisId_data.values()) {
+                if (!rangeAxisData.isVisible()) {
+                    addRangeAxis(plot, countVisibleRangeAxes, rangeAxisData);
                 }
             }
             configureRangeAxes(plot);
+        }
+    }
+
+    private static void addRangeAxis(final XYPlot plot, final int countVisibleRangeAxes,
+            final RangeAxisData rangeAxisData) {
+        final NumberAxis rangeAxis = newRangeAxis(rangeAxisData.getPrecision(), rangeAxisData.isVisible());
+        if (countVisibleRangeAxes > 2) {
+            rangeAxis.setVisible(false);
+        }
+        plot.setRangeAxis(rangeAxisData.getRangeAxisIndex(), rangeAxis);
+        for (final int datasetIndex : rangeAxisData.getDatasetIndexes()) {
+            plot.mapDatasetToDomainAxis(datasetIndex, 0);
+            plot.mapDatasetToRangeAxis(datasetIndex, rangeAxisData.getRangeAxisIndex());
         }
     }
 

@@ -8,7 +8,6 @@ import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.text.NumberFormat;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -23,6 +22,7 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.TextAnchor;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 
 @NotThreadSafe
 public class PlotCrosshairHelper {
@@ -35,7 +35,8 @@ public class PlotCrosshairHelper {
     private final InteractiveChartPanel chartPanel;
     private final ValueMarker domainCrosshairMarker;
     private final ValueMarker lastDomainCrosshairMarker;
-    private final ValueMarker rangeCrosshairMarker;
+    private final ValueMarker rangeCrosshairMarkerRight;
+    private final ValueMarker rangeCrosshairMarkerLeft;
     private int crosshairLastMouseX;
     private int crosshairLastMouseY;
 
@@ -54,13 +55,20 @@ public class PlotCrosshairHelper {
         } catch (final CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-        rangeCrosshairMarker = new ValueMarker(0D);
-        rangeCrosshairMarker.setStroke(CROSSHAIR_STROKE);
-        rangeCrosshairMarker.setPaint(CROSSHAIR_COLOR);
-        rangeCrosshairMarker.setLabelPaint(CROSSHAIR_COLOR);
-        rangeCrosshairMarker.setLabelAnchor(RectangleAnchor.RIGHT);
-        rangeCrosshairMarker.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
-        rangeCrosshairMarker.setLabelOffset(new RectangleInsets(0, 0, 1, 1));
+        rangeCrosshairMarkerRight = new ValueMarker(0D);
+        rangeCrosshairMarkerRight.setStroke(CROSSHAIR_STROKE);
+        rangeCrosshairMarkerRight.setPaint(CROSSHAIR_COLOR);
+        rangeCrosshairMarkerRight.setLabelPaint(CROSSHAIR_COLOR);
+        rangeCrosshairMarkerRight.setLabelAnchor(RectangleAnchor.RIGHT);
+        rangeCrosshairMarkerRight.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+        rangeCrosshairMarkerRight.setLabelOffset(new RectangleInsets(0, 0, 1, 1));
+        rangeCrosshairMarkerLeft = new ValueMarker(0D);
+        rangeCrosshairMarkerLeft.setStroke(CROSSHAIR_STROKE);
+        rangeCrosshairMarkerLeft.setPaint(DisabledXYItemRenderer.INVISIBLE_COLOR);
+        rangeCrosshairMarkerLeft.setLabelPaint(CROSSHAIR_COLOR);
+        rangeCrosshairMarkerLeft.setLabelAnchor(RectangleAnchor.LEFT);
+        rangeCrosshairMarkerLeft.setLabelTextAnchor(TextAnchor.TOP_LEFT);
+        rangeCrosshairMarkerLeft.setLabelOffset(new RectangleInsets(0, 1, 1, 0));
     }
 
     public ValueMarker getDomainCrosshairMarker() {
@@ -106,18 +114,33 @@ public class PlotCrosshairHelper {
                     plot.setDomainCrosshairLockedOnData(true); //our marker for enabled crosshair
                 }
                 if (subplotIndex == i) {
-                    final double yy = plot.getRangeAxis()
-                            .java2DToValue(mousePoint.getY(), panelArea, plot.getRangeAxisEdge());
-                    rangeCrosshairMarker.setValue(yy);
-                    final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-                    if (rangeAxis.isTickLabelsVisible()) {
-                        final NumberFormat rangeAxisFormat = rangeAxis.getNumberFormatOverride();
-                        rangeCrosshairMarker.setLabel(rangeAxisFormat.format(yy));
+                    final NumberAxis rangeAxisRight = (NumberAxis) plot.getRangeAxis();
+                    final double yyRight = rangeAxisRight.java2DToValue(mousePoint.getY(), panelArea,
+                            plot.getRangeAxisEdge());
+                    rangeCrosshairMarkerRight.setValue(yyRight);
+                    if (rangeAxisRight.isTickLabelsVisible()) {
+                        rangeCrosshairMarkerRight.setLabel(rangeAxisRight.getNumberFormatOverride().format(yyRight));
+                        final NumberAxis rangeAxisLeft = (NumberAxis) plot.getRangeAxis(1);
+                        if (rangeAxisLeft != null) {
+                            rangeCrosshairMarkerLeft.setValue(yyRight);
+                            final double yyLeft = rangeAxisLeft.java2DToValue(mousePoint.getY(), panelArea,
+                                    plot.getRangeAxisEdge(1));
+                            rangeCrosshairMarkerLeft.setLabel(rangeAxisLeft.getNumberFormatOverride().format(yyLeft));
+                        } else {
+                            rangeCrosshairMarkerLeft.setValue(-1);
+                            rangeCrosshairMarkerLeft.setLabel(null);
+                        }
                     } else {
-                        rangeCrosshairMarker.setLabel(null);
+                        rangeCrosshairMarkerRight.setLabel(null);
+                        rangeCrosshairMarkerRight.setValue(-1D);
+                        rangeCrosshairMarkerLeft.setLabel(null);
+                        rangeCrosshairMarkerLeft.setValue(-1D);
                     }
                     if (!plot.isRangeCrosshairLockedOnData()) {
-                        plot.addRangeMarker(rangeCrosshairMarker);
+                        plot.addRangeMarker(rangeCrosshairMarkerRight);
+                        if (rangeCrosshairMarkerLeft.getLabel() != null) {
+                            plot.addRangeMarker(rangeCrosshairMarkerLeft);
+                        }
                         plot.setRangeCrosshairLockedOnData(true); //our marker for enabled crosshair
                     }
                     chartPanel.setCursor(CROSSHAIR_CURSOR);
@@ -143,7 +166,8 @@ public class PlotCrosshairHelper {
             disableCrosshair(subplot);
         }
 
-        rangeCrosshairMarker.setValue(-1D);
+        rangeCrosshairMarkerRight.setValue(-1D);
+        rangeCrosshairMarkerLeft.setValue(-1D);
         domainCrosshairMarker.setValue(-1D);
         lastDomainCrosshairMarker.setValue(-1D);
     }
@@ -157,7 +181,8 @@ public class PlotCrosshairHelper {
 
     private void disableRangeCrosshair(final XYPlot subplot) {
         subplot.setRangeCrosshairLockedOnData(false);
-        subplot.removeRangeMarker(rangeCrosshairMarker);
+        subplot.removeRangeMarker(rangeCrosshairMarkerRight);
+        subplot.removeRangeMarker(rangeCrosshairMarkerLeft);
     }
 
     public void datasetChanged() {
