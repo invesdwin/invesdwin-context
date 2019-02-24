@@ -37,12 +37,23 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
         setBarPainter(new StandardXYBarPainter());
         setShadowVisible(false);
         setSeriesPaint(0, config.getSeriesColor());
-        setSeriesFillPaint(0, config.getSeriesColor());
         setSeriesStroke(0, config.getSeriesStroke());
         setDrawBarOutline(false);
 
         this.upColor = Colors.setTransparency(config.getUpColor(), DEFAULT_VOLUME_TRANSPARENCY);
         this.downColor = Colors.setTransparency(config.getDownColor(), DEFAULT_VOLUME_TRANSPARENCY);
+    }
+
+    @Override
+    public Paint getItemPaint(final int row, final int column) {
+        final Paint itemPaint = candlestickRenderer.getItemPaint(row, column);
+        if (itemPaint == candlestickRenderer.getUpColor()) {
+            return upColor;
+        } else if (itemPaint == candlestickRenderer.getDownColor()) {
+            return downColor;
+        } else {
+            throw UnknownArgumentException.newInstance(Paint.class, itemPaint);
+        }
     }
 
     @Override
@@ -65,18 +76,6 @@ public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownCol
     @Override
     public Color getDownColor() {
         return downColor;
-    }
-
-    @Override
-    public Paint getItemPaint(final int row, final int column) {
-        final Paint itemPaint = candlestickRenderer.getItemPaint(row, column);
-        if (itemPaint == candlestickRenderer.getUpColor()) {
-            return upColor;
-        } else if (itemPaint == candlestickRenderer.getDownColor()) {
-            return downColor;
-        } else {
-            throw UnknownArgumentException.newInstance(Paint.class, itemPaint);
-        }
     }
 
     @Override
