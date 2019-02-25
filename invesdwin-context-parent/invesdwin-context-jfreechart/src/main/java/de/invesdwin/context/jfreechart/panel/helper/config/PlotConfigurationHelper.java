@@ -52,9 +52,9 @@ public class PlotConfigurationHelper {
     private JMenuItem customRendererItem;
     private JMenu lineStyleItem;
     private JMenu lineWidthItem;
+    private JMenuItem seriesColorItem;
     private JMenuItem upColorItem;
     private JMenuItem downColorItem;
-    private JMenuItem seriesColorItem;
     private JMenuItem resetStyleItem;
     private HighlightedLegendInfo highlighted;
 
@@ -152,9 +152,9 @@ public class PlotConfigurationHelper {
                 popupMenu.add(seriesRendererItem);
                 popupMenu.add(lineStyleItem);
                 popupMenu.add(lineWidthItem);
+                popupMenu.add(seriesColorItem);
                 popupMenu.add(upColorItem);
                 popupMenu.add(downColorItem);
-                popupMenu.add(seriesColorItem);
                 popupMenu.add(resetStyleItem);
                 popupMenu.addSeparator();
                 if (highlighted.isRemovable()) {
@@ -216,9 +216,9 @@ public class PlotConfigurationHelper {
             }
             lineStyleItem.setVisible(rendererType.isLineStyleConfigurable());
             lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
+            seriesColorItem.setVisible(rendererType.isSeriesColorConfigurable());
             upColorItem.setVisible(rendererType.isUpColorConfigurable());
             downColorItem.setVisible(rendererType.isDownColorConfigurable());
-            seriesColorItem.setVisible(rendererType.isSeriesColorConfigurable());
         }
         if (seriesRendererItem.isVisible()) {
             final IRendererType seriesRendererType = getSeriesInitialSettings().getCurrentRendererType(highlighted);
@@ -230,9 +230,9 @@ public class PlotConfigurationHelper {
             }
             lineStyleItem.setVisible(seriesRendererType.isLineStyleConfigurable());
             lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
+            seriesColorItem.setVisible(seriesRendererType.isSeriesColorConfigurable());
             upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
             downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
-            seriesColorItem.setVisible(seriesRendererType.isSeriesColorConfigurable());
         }
     }
 
@@ -399,6 +399,29 @@ public class PlotConfigurationHelper {
     }
 
     private void initColorItems() {
+        seriesColorItem = new JMenuItem("Change Series Color");
+        seriesColorItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final XYItemRenderer renderer = highlighted.getRenderer();
+                showColorChooserDialog("Series Color", (Color) renderer.getSeriesPaint(0), new IColorChooserListener() {
+                    @Override
+                    public void change(final Color initialColor, final Color newColor) {
+                        renderer.setSeriesPaint(0, newColor);
+                    }
+
+                    @Override
+                    public void ok(final Color initialColor, final Color acceptedColor) {
+                        renderer.setSeriesPaint(0, acceptedColor);
+                    }
+
+                    @Override
+                    public void cancel(final Color initialColor, final Color cancelledColor) {
+                        renderer.setSeriesPaint(0, initialColor);
+                    }
+                });
+            }
+        });
         upColorItem = new JMenuItem("Change Up Color");
         upColorItem.addActionListener(new ActionListener() {
             @Override
@@ -441,29 +464,6 @@ public class PlotConfigurationHelper {
                     @Override
                     public void cancel(final Color initialColor, final Color cancelledColor) {
                         renderer.setDownColor(initialColor);
-                    }
-                });
-            }
-        });
-        seriesColorItem = new JMenuItem("Change Series Color");
-        seriesColorItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final XYItemRenderer renderer = highlighted.getRenderer();
-                showColorChooserDialog("Series Color", (Color) renderer.getSeriesPaint(0), new IColorChooserListener() {
-                    @Override
-                    public void change(final Color initialColor, final Color newColor) {
-                        renderer.setSeriesPaint(0, newColor);
-                    }
-
-                    @Override
-                    public void ok(final Color initialColor, final Color acceptedColor) {
-                        renderer.setSeriesPaint(0, acceptedColor);
-                    }
-
-                    @Override
-                    public void cancel(final Color initialColor, final Color cancelledColor) {
-                        renderer.setSeriesPaint(0, initialColor);
                     }
                 });
             }
