@@ -3,6 +3,7 @@ package de.invesdwin.context.jfreechart.panel;
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.List;
@@ -382,6 +383,11 @@ public class InteractiveChartPanel extends JPanel {
             SwingUtilities.updateComponentTreeUI(plotConfigurationHelper.getPopupMenu());
         }
         super.updateUI();
+    }
+
+    @Override
+    public synchronized void addKeyListener(final KeyListener l) {
+        chartPanel.addKeyListener(l);
     }
 
 }
