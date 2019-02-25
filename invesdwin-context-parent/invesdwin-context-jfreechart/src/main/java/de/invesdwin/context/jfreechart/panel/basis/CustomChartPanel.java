@@ -183,6 +183,8 @@ public class CustomChartPanel extends JPanel
     /** The last mouse position during panning. */
     private Point panLast;
 
+    private int allowedRangeGap = 5;
+
     /**
      * Constructs a panel that displays the specified chart.
      *
@@ -534,8 +536,6 @@ public class CustomChartPanel extends JPanel
     protected void setVerticalTraceLine(final Line2D line) {
         this.verticalTraceLine = line;
     }
-
-    private int allowedRangeGap = 5;
 
     public int getAllowedRangeGap() {
         return allowedRangeGap;

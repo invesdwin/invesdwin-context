@@ -178,13 +178,13 @@ public class InteractiveChartPanel extends JPanel {
     }
 
     public void resetRange() {
-        final Range range = new Range(dataset.getItemCount(0) - initVisibleItemCount(),
+        final Range range = new Range(dataset.getItemCount(0) - getInitialVisibleItemCount(),
                 dataset.getItemCount(0) + chartPanel.getAllowedRangeGap());
         domainAxis.setRange(range);
         update();
     }
 
-    protected int initVisibleItemCount() {
+    public int getInitialVisibleItemCount() {
         return 200;
     }
 
