@@ -6,8 +6,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
-import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.renderer.custom.internal.ACustomEquityChangeRenderer;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
@@ -53,15 +51,6 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
     @Override
     public boolean isSeriesColorConfigurable() {
         return true;
-    }
-
-    @Override
-    public void reset(final HighlightedLegendInfo highlighted, final SeriesInitialSettings initialSettings) {
-        setUpColor(initialSettings.getUpColor());
-        setDownColor(initialSettings.getDownColor());
-        setSeriesPaint(0, initialSettings.getSeriesColor());
-        setSeriesStroke(0, initialSettings.getSeriesStroke());
-        highlighted.setRenderer(this);
     }
 
     @Override

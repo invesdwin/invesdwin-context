@@ -9,8 +9,6 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
-import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 import de.invesdwin.context.jfreechart.renderer.custom.internal.ACustomProfitLossRenderer;
 import de.invesdwin.util.lang.Colors;
@@ -70,15 +68,6 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implemen
     @Override
     public boolean isSeriesColorConfigurable() {
         return false;
-    }
-
-    @Override
-    public void reset(final HighlightedLegendInfo highlighted, final SeriesInitialSettings initialSettings) {
-        setUpColor(initialSettings.getUpColor());
-        setDownColor(initialSettings.getDownColor());
-        setSeriesPaint(0, initialSettings.getSeriesColor());
-        setSeriesStroke(0, initialSettings.getSeriesStroke());
-        highlighted.setRenderer(this);
     }
 
     @Override
