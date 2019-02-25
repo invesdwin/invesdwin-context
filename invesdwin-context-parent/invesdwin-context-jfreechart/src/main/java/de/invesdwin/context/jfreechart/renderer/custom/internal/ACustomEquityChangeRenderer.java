@@ -1,17 +1,17 @@
-package de.invesdwin.context.jfreechart.renderer;
+package de.invesdwin.context.jfreechart.renderer.custom.internal;
 
-import java.awt.GradientPaint;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -26,6 +26,7 @@ import org.jfree.chart.plot.CrosshairState;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.RendererState;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
@@ -36,42 +37,49 @@ import org.jfree.chart.util.Args;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
+import org.jfree.data.Range;
+import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.dataset.PlotSourceXYSeriesCollection;
+import de.invesdwin.context.jfreechart.dataset.basis.ListXYSeriesOHLC;
+import de.invesdwin.context.jfreechart.dataset.basis.XYDataItemOHLC;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
+import de.invesdwin.util.math.Doubles;
 
 /**
- * Instead of drawing an outline, this one draws a line so that at start and end of series the line does not go to zero.
+ * High is Profit, Low is Drawdown and Close is EquityChange.
  * 
- * @author subes
- *
  */
 @NotThreadSafe
-public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {
+public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
+        implements XYItemRenderer, PublicCloneable, IUpDownColorRenderer {
 
-    /**
-     * A state object used by this renderer.
-     */
+    private static final Color INVISIBLE_COLOR = DisabledXYItemRenderer.INVISIBLE_COLOR;
+
     private static final class XYAreaRendererState extends XYItemRendererState {
 
-        /** Working storage for the area under one series. */
-        private GeneralPath area;
-
-        /** Working line that can be recycled. */
+        private final XYAreaRendererStateData profit;
+        private final XYAreaRendererStateData loss;
         private final Line2D line;
 
-        /**
-         * Creates a new state.
-         *
-         * @param info
-         *            the plot rendering info.
-         */
         private XYAreaRendererState(final PlotRenderingInfo info) {
             super(info);
-            this.area = new GeneralPath();
+            this.profit = new XYAreaRendererStateData();
+            this.loss = new XYAreaRendererStateData();
             this.line = new Line2D.Double();
         }
 
+    }
+
+    private static final class XYAreaRendererStateData {
+        private GeneralPath area;
+
+        private XYAreaRendererStateData() {
+            this.area = new GeneralPath();
+        }
     }
 
     /** A flag indicating whether or not lines are drawn between XY points. */
@@ -98,7 +106,7 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
      * @param type
      *            the type of the renderer.
      */
-    public XYAreaLineRenderer() {
+    public ACustomEquityChangeRenderer() {
         this(null, null);
     }
 
@@ -113,7 +121,7 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
      * @param urlGenerator
      *            the URL generator ({@code null} permitted).
      */
-    public XYAreaLineRenderer(final XYToolTipGenerator toolTipGenerator, final XYURLGenerator urlGenerator) {
+    public ACustomEquityChangeRenderer(final XYToolTipGenerator toolTipGenerator, final XYURLGenerator urlGenerator) {
 
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
@@ -294,7 +302,7 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
      *            the dataset.
      * @param series
      *            the series index (zero-based).
-     * @param item
+     * @param item1
      *            the item index (zero-based).
      * @param crosshairState
      *            crosshair information for the plot ({@code null} permitted).
@@ -305,65 +313,129 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
     @Override
     public void drawItem(final Graphics2D g2, final XYItemRendererState state, final Rectangle2D dataArea,
             final PlotRenderingInfo info, final XYPlot plot, final ValueAxis domainAxis, final ValueAxis rangeAxis,
-            final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
+            final XYDataset dataset, final int series, final int item1, final CrosshairState crosshairState,
             final int pass) {
         //CHECKSTYLE:ON
 
-        if (!getItemVisible(series, item)) {
+        if (!getItemVisible(series, item1)) {
             return;
         }
         final XYAreaRendererState areaState = (XYAreaRendererState) state;
 
+        final Color upColor;
+        final Color downColor;
         // get the data point...
-        final double x1 = dataset.getXValue(series, item);
-        double y1 = dataset.getYValue(series, item);
-        if (Double.isNaN(y1)) {
-            y1 = 0.0;
+        final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
+        final ListXYSeriesOHLC cSeries = cDataset.getSeries(series);
+        final List<XYDataItemOHLC> data = cSeries.getData();
+        final int item0 = Math.max(item1 - 1, 0);
+        final OHLCDataItem cItem0 = data.get(item0).asOHLC();
+        final OHLCDataItem cItem1 = data.get(item1).asOHLC();
+
+        final double x1 = dataset.getXValue(series, item1);
+        if (Double.isNaN(cItem1.getClose().doubleValue())) {
+            upColor = INVISIBLE_COLOR;
+            downColor = INVISIBLE_COLOR;
+        } else {
+            upColor = getUpColor();
+            downColor = getDownColor();
         }
+        final double x0 = dataset.getXValue(series, item0);
+
+        drawLine(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState, x0, convert(cItem0.getClose()),
+                x1, convert(cItem1.getClose()), dataset);
+        drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.profit, x1,
+                convert(cItem1.getHigh()), dataset, state, upColor);
+        drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.loss, x1, convert(cItem1.getLow()),
+                dataset, state, downColor);
+
+        // Check if the item is the last item for the series.
+        // and number of items > 0.  We can't draw an area for a single point.
+        if (getPlotArea() && item1 > 0 && item1 == data.size() - 1) {
+            closeArea(g2, dataArea, plot, domainAxis, rangeAxis, upColor, x1, areaState.profit);
+            closeArea(g2, dataArea, plot, domainAxis, rangeAxis, downColor, x1, areaState.loss);
+        }
+    }
+
+    private double convert(final Number value) {
+        return Doubles.nanToZero(value.doubleValue());
+    }
+
+    //CHECKSTYLE:OFF
+    private void closeArea(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
+            final ValueAxis domainAxis, final ValueAxis rangeAxis, final Color upColor, final double x1,
+            final XYAreaRendererStateData areaStateData) {
+        //CHECKSTYLE:ON
+        final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
+        final double transZero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
+
+        final PlotOrientation orientation = plot.getOrientation();
+        if (orientation == PlotOrientation.VERTICAL) {
+            // Add the last point (x,0)
+            lineTo(areaStateData.area, transX1, transZero);
+            areaStateData.area.closePath();
+        } else if (orientation == PlotOrientation.HORIZONTAL) {
+            // Add the last point (x,0)
+            lineTo(areaStateData.area, transZero, transX1);
+            areaStateData.area.closePath();
+        }
+
+        g2.setPaint(upColor);
+        g2.fill(areaStateData.area);
+    }
+
+    //CHECKSTYLE:OFF
+    private void drawArea(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
+            final ValueAxis domainAxis, final ValueAxis rangeAxis, final int series, final int item,
+            final XYAreaRendererStateData areaStateData, final double x1, final double y1, final XYDataset dataset,
+            final RendererState state, final Paint paint) {
+        //CHECKSTYLE:ON
+
         final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
         final double transY1 = rangeAxis.valueToJava2D(y1, dataArea, plot.getRangeAxisEdge());
 
-        // get the previous point and the next point so we can calculate a
-        // "hot spot" for the area (used by the chart entity)...
-        final int itemCount = dataset.getItemCount(series);
-        final double x0 = dataset.getXValue(series, Math.max(item - 1, 0));
-        double y0 = dataset.getYValue(series, Math.max(item - 1, 0));
-        if (Double.isNaN(y0)) {
-            y0 = 0.0;
-        }
-        final double transX0 = domainAxis.valueToJava2D(x0, dataArea, plot.getDomainAxisEdge());
-        final double transY0 = rangeAxis.valueToJava2D(y0, dataArea, plot.getRangeAxisEdge());
-
-        final double x2 = dataset.getXValue(series, Math.min(item + 1, itemCount - 1));
-        double y2 = dataset.getYValue(series, Math.min(item + 1, itemCount - 1));
-        if (Double.isNaN(y2)) {
-            y2 = 0.0;
-        }
-        final double transX2 = domainAxis.valueToJava2D(x2, dataArea, plot.getDomainAxisEdge());
-        final double transY2 = rangeAxis.valueToJava2D(y2, dataArea, plot.getRangeAxisEdge());
-
-        final double transZero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
-
         if (item == 0) { // create a new area polygon for the series
-            areaState.area = new GeneralPath();
+            areaStateData.area = new GeneralPath();
             // the first point is (x, 0)
             final double zero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
             if (plot.getOrientation().isVertical()) {
-                moveTo(areaState.area, transX1, zero);
+                moveTo(areaStateData.area, transX1, zero);
             } else if (plot.getOrientation().isHorizontal()) {
-                moveTo(areaState.area, zero, transX1);
+                moveTo(areaStateData.area, zero, transX1);
             }
         }
 
         // Add each point to Area (x, y)
         if (plot.getOrientation().isVertical()) {
-            lineTo(areaState.area, transX1, transY1);
+            lineTo(areaStateData.area, transX1, transY1);
         } else if (plot.getOrientation().isHorizontal()) {
-            lineTo(areaState.area, transY1, transX1);
+            lineTo(areaStateData.area, transY1, transX1);
+        }
+    }
+
+    //CHECKSTYLE:OFF
+    private void drawLine(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
+            final ValueAxis domainAxis, final ValueAxis rangeAxis, final int series, final int item,
+            final XYAreaRendererState areaState, final double x0, final double y0, final double x1, final double y1,
+            final XYDataset dataset) {
+        //CHECKSTYLE:ON
+
+        final Paint paint;
+        final double yValue = dataset.getYValue(series, item);
+        if (Double.isNaN(yValue)) {
+            paint = INVISIBLE_COLOR;
+        } else {
+            paint = lookupSeriesPaint(series);
         }
 
-        final PlotOrientation orientation = plot.getOrientation();
-        Paint paint = getItemPaint(series, item);
+        final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
+        final double transY1 = rangeAxis.valueToJava2D(y1, dataArea, plot.getRangeAxisEdge());
+
+        // get the previous point and the next point so we can calculate a
+        // "hot spot" for the area (used by the chart entity)...
+        final double transX0 = domainAxis.valueToJava2D(x0, dataArea, plot.getDomainAxisEdge());
+        final double transY0 = rangeAxis.valueToJava2D(y0, dataArea, plot.getRangeAxisEdge());
+
         final Stroke stroke = getItemStroke(series, item);
         g2.setPaint(paint);
         g2.setStroke(stroke);
@@ -379,62 +451,6 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
             }
         }
 
-        // Check if the item is the last item for the series.
-        // and number of items > 0.  We can't draw an area for a single point.
-        if (getPlotArea() && item > 0 && item == (itemCount - 1)) {
-
-            if (orientation == PlotOrientation.VERTICAL) {
-                // Add the last point (x,0)
-                lineTo(areaState.area, transX1, transZero);
-                areaState.area.closePath();
-            } else if (orientation == PlotOrientation.HORIZONTAL) {
-                // Add the last point (x,0)
-                lineTo(areaState.area, transZero, transX1);
-                areaState.area.closePath();
-            }
-
-            paint = lookupSeriesFillPaint(series);
-            if (paint instanceof GradientPaint) {
-                final GradientPaint gp = (GradientPaint) paint;
-                final GradientPaint adjGP = this.gradientTransformer.transform(gp, dataArea);
-                g2.setPaint(adjGP);
-            } else {
-                g2.setPaint(paint);
-            }
-            g2.fill(areaState.area);
-        }
-
-        final int datasetIndex = plot.indexOf(dataset);
-        updateCrosshairValues(crosshairState, x1, y1, datasetIndex, transX1, transY1, orientation);
-
-        // collect entity and tool tip information...
-        final EntityCollection entities = state.getEntityCollection();
-        if (entities != null) {
-            final GeneralPath hotspot = new GeneralPath();
-            if (plot.getOrientation() == PlotOrientation.HORIZONTAL) {
-                moveTo(hotspot, transZero, ((transX0 + transX1) / 2.0));
-                lineTo(hotspot, ((transY0 + transY1) / 2.0), ((transX0 + transX1) / 2.0));
-                lineTo(hotspot, transY1, transX1);
-                lineTo(hotspot, ((transY1 + transY2) / 2.0), ((transX1 + transX2) / 2.0));
-                lineTo(hotspot, transZero, ((transX1 + transX2) / 2.0));
-            } else { // vertical orientation
-                moveTo(hotspot, ((transX0 + transX1) / 2.0), transZero);
-                lineTo(hotspot, ((transX0 + transX1) / 2.0), ((transY0 + transY1) / 2.0));
-                lineTo(hotspot, transX1, transY1);
-                lineTo(hotspot, ((transX1 + transX2) / 2.0), ((transY1 + transY2) / 2.0));
-                lineTo(hotspot, ((transX1 + transX2) / 2.0), transZero);
-            }
-            hotspot.closePath();
-
-            // limit the entity hotspot area to the data area
-            final Area dataAreaHotspot = new Area(hotspot);
-            dataAreaHotspot.intersect(new Area(dataArea));
-
-            if (!dataAreaHotspot.isEmpty()) {
-                addEntity(entities, dataAreaHotspot, dataset, series, item, 0.0, 0.0);
-            }
-        }
-
     }
 
     /**
@@ -447,7 +463,7 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        final XYAreaLineRenderer clone = (XYAreaLineRenderer) super.clone();
+        final ACustomEquityChangeRenderer clone = (ACustomEquityChangeRenderer) super.clone();
         clone.legendArea = ShapeUtils.clone(this.legendArea);
         return clone;
     }
@@ -467,10 +483,10 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof XYAreaLineRenderer)) {
+        if (!(obj instanceof ACustomEquityChangeRenderer)) {
             return false;
         }
-        final XYAreaLineRenderer that = (XYAreaLineRenderer) obj;
+        final ACustomEquityChangeRenderer that = (ACustomEquityChangeRenderer) obj;
         if (this.plotArea != that.plotArea) {
             return false;
         }
@@ -530,32 +546,21 @@ public class XYAreaLineRenderer extends AbstractXYItemRenderer implements XYItem
     }
 
     @Override
-    public void setSeriesPaint(final int series, final Paint paint) {
-        super.setSeriesPaint(series, paint);
-        super.setSeriesFillPaint(series, paint);
+    public Range findRangeBounds(final XYDataset dataset) {
+        //include interval per default
+        return super.findRangeBounds(dataset, true);
     }
 
     @Override
-    public void setSeriesPaint(final int series, final Paint paint, final boolean notify) {
-        super.setSeriesPaint(series, paint, notify);
-        super.setSeriesFillPaint(series, paint, notify);
+    protected void updateCrosshairValues(final CrosshairState crosshairState, final double x, final double y,
+            final int datasetIndex, final double transX, final double transY, final PlotOrientation orientation) {
+        //noop
     }
 
-    /**
-     * The series paint is also set as the fill paint.
-     */
-    @Deprecated
     @Override
-    public void setSeriesFillPaint(final int series, final Paint paint) {
-        super.setSeriesFillPaint(series, paint);
+    protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
+            final int series, final int item, final double entityX, final double entityY) {
+        //noop
     }
 
-    /**
-     * The series paint is also set as the fill paint.
-     */
-    @Deprecated
-    @Override
-    public void setSeriesFillPaint(final int series, final Paint paint, final boolean notify) {
-        super.setSeriesFillPaint(series, paint, notify);
-    }
 }

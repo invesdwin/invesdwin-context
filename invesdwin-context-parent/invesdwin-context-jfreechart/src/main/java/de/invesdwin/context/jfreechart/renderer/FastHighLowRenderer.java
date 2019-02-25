@@ -3,13 +3,16 @@ package de.invesdwin.context.jfreechart.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.plot.CrosshairState;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.HighLowRenderer;
@@ -20,13 +23,13 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 
 @NotThreadSafe
-public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRenderer {
+public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer {
 
     private static final float STROKE_SCALING_MIN_WIDTH = 0.5F;
-    private final OhlcCandlestickRenderer candlestickRenderer;
+    private final FastCandlestickRenderer candlestickRenderer;
     private double tickLength;
 
-    public OhlcBarRenderer(final OhlcCandlestickRenderer candlestickRenderer) {
+    public FastHighLowRenderer(final FastCandlestickRenderer candlestickRenderer) {
         this.candlestickRenderer = candlestickRenderer;
         setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
     }
@@ -69,7 +72,8 @@ public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRend
         final double stickWidth = candlestickRenderer.calculateStickWidth(state, dataArea, horiz);
         candlestickRenderer.calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH, getSeriesStroke(0));
         setTickLength(stickWidth / 2);
-        super.drawItem(g2, state, dataArea, info, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState,
+        //info null to skip entitycollection stuff
+        super.drawItem(g2, state, dataArea, null, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState,
                 pass);
     }
 
@@ -98,6 +102,18 @@ public class OhlcBarRenderer extends HighLowRenderer implements IUpDownColorRend
     @Override
     public Color getDownColor() {
         return candlestickRenderer.getDownColor();
+    }
+
+    @Override
+    protected void updateCrosshairValues(final CrosshairState crosshairState, final double x, final double y,
+            final int datasetIndex, final double transX, final double transY, final PlotOrientation orientation) {
+        //noop
+    }
+
+    @Override
+    protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
+            final int series, final int item, final double entityX, final double entityY) {
+        //noop
     }
 
 }

@@ -8,6 +8,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelp
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.renderer.custom.internal.ACustomEquityChangeRenderer;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;

@@ -5,13 +5,13 @@ import java.awt.Stroke;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYStepRenderer;
 
-import de.invesdwin.context.jfreechart.renderer.OhlcBarRenderer;
-import de.invesdwin.context.jfreechart.renderer.OhlcCandlestickRenderer;
-import de.invesdwin.context.jfreechart.renderer.XYAreaLineRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastCandlestickRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastHighLowRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastStandardXYItemRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastXYAreaRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastXYStepRenderer;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
@@ -27,11 +27,11 @@ public class PriceInitialSettings {
 
     private final PlotConfigurationHelper plotConfigurationHelper;
 
-    private final OhlcCandlestickRenderer candlestickRenderer;
-    private final OhlcBarRenderer barsRenderer;
-    private final XYAreaLineRenderer areaRenderer;
-    private final StandardXYItemRenderer lineRenderer;
-    private final XYStepRenderer stepLineRenderer;
+    private final FastCandlestickRenderer candlestickRenderer;
+    private final FastHighLowRenderer barsRenderer;
+    private final FastXYAreaRenderer areaRenderer;
+    private final FastStandardXYItemRenderer lineRenderer;
+    private final FastXYStepRenderer stepLineRenderer;
 
     /*
      * the renderers can diverge from these settings using the context menu configuration, though a reset will use these
@@ -46,11 +46,11 @@ public class PriceInitialSettings {
     public PriceInitialSettings(final PlotConfigurationHelper plotConfigurationHelper) {
         this.plotConfigurationHelper = plotConfigurationHelper;
 
-        this.candlestickRenderer = new OhlcCandlestickRenderer(plotConfigurationHelper.getChartPanel().getDataset());
-        this.barsRenderer = new OhlcBarRenderer(candlestickRenderer);
-        this.areaRenderer = new XYAreaLineRenderer();
-        this.lineRenderer = new StandardXYItemRenderer();
-        this.stepLineRenderer = new XYStepRenderer();
+        this.candlestickRenderer = new FastCandlestickRenderer(plotConfigurationHelper.getChartPanel().getDataset());
+        this.barsRenderer = new FastHighLowRenderer(candlestickRenderer);
+        this.areaRenderer = new FastXYAreaRenderer();
+        this.lineRenderer = new FastStandardXYItemRenderer();
+        this.stepLineRenderer = new FastXYStepRenderer();
 
         setUpColor(DEFAULT_UP_COLOR);
         setDownColor(DEFAULT_DOWN_COLOR);

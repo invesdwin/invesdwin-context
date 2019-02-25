@@ -1,11 +1,10 @@
-package de.invesdwin.context.jfreechart.renderer.custom;
+package de.invesdwin.context.jfreechart.renderer.custom.internal;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -330,9 +329,6 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
         final int item0 = Math.max(item1 - 1, 0);
         final OHLCDataItem cItem0 = data.get(item0).asOHLC();
         final OHLCDataItem cItem1 = data.get(item1).asOHLC();
-        final int lastItem = data.size() - 1;
-        final int item2 = Math.min(item1 + 1, lastItem);
-        final OHLCDataItem cItem2 = data.get(item2).asOHLC();
 
         final double x1 = dataset.getXValue(series, item1);
         if (Double.isNaN(cItem1.getClose().doubleValue())) {
@@ -343,19 +339,16 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
             downColor = getDownColor();
         }
         final double x0 = dataset.getXValue(series, item0);
-        final double x2 = dataset.getXValue(series, item2);
 
         //profit to profit
         drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.profit, x0,
-                convert(cItem0.getClose()), x1, convert(cItem1.getClose()), x2, convert(cItem2.getClose()), dataset,
-                crosshairState, state, upColor);
+                convert(cItem0.getClose()), x1, convert(cItem1.getClose()), dataset, state, upColor);
         drawProfitLoss(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.loss, x0,
-                convert(cItem0.getLow()), x1, convert(cItem1.getLow()), x2, convert(cItem2.getLow()), dataset,
-                crosshairState, state, upColor);
+                convert(cItem0.getLow()), x1, convert(cItem1.getLow()), dataset, state, upColor);
 
         // Check if the item is the last item for the series.
         // and number of items > 0.  We can't draw an area for a single point.
-        if (getPlotArea() && item1 > 0 && item1 == lastItem) {
+        if (getPlotArea() && item1 > 0 && item1 == data.size() - 1) {
             closeArea(g2, dataArea, plot, domainAxis, rangeAxis, upColor, x1, areaState.profit);
             closeArea(g2, dataArea, plot, domainAxis, rangeAxis, downColor, x1, areaState.loss);
         }
@@ -392,8 +385,7 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
     private void drawProfitLoss(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
             final ValueAxis domainAxis, final ValueAxis rangeAxis, final int series, final int item,
             final XYAreaRendererStateData areaStateData, final double x0, final double y0, final double x1,
-            final double y1, final double x2, final double y2, final XYDataset dataset,
-            final CrosshairState crosshairState, final RendererState state, final Paint paint) {
+            final double y1, final XYDataset dataset, final RendererState state, final Paint paint) {
         //CHECKSTYLE:ON
 
         final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
@@ -403,11 +395,6 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
         // "hot spot" for the area (used by the chart entity)...
         final double transX0 = domainAxis.valueToJava2D(x0, dataArea, plot.getDomainAxisEdge());
         final double transY0 = rangeAxis.valueToJava2D(y0, dataArea, plot.getRangeAxisEdge());
-
-        final double transX2 = domainAxis.valueToJava2D(x2, dataArea, plot.getDomainAxisEdge());
-        final double transY2 = rangeAxis.valueToJava2D(y2, dataArea, plot.getRangeAxisEdge());
-
-        final double transZero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
 
         if (item == 0) { // create a new area polygon for the series
             areaStateData.area = new GeneralPath();
@@ -439,34 +426,6 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
                     areaStateData.line.setLine(transY0, transX0, transY1, transX1);
                 }
                 g2.draw(areaStateData.line);
-            }
-        }
-
-        // collect entity and tool tip information...
-        final EntityCollection entities = state.getEntityCollection();
-        if (entities != null) {
-            final GeneralPath hotspot = new GeneralPath();
-            if (plot.getOrientation() == PlotOrientation.HORIZONTAL) {
-                moveTo(hotspot, transZero, ((transX0 + transX1) / 2.0));
-                lineTo(hotspot, ((transY0 + transY1) / 2.0), ((transX0 + transX1) / 2.0));
-                lineTo(hotspot, transY1, transX1);
-                lineTo(hotspot, ((transY1 + transY2) / 2.0), ((transX1 + transX2) / 2.0));
-                lineTo(hotspot, transZero, ((transX1 + transX2) / 2.0));
-            } else { // vertical orientation
-                moveTo(hotspot, ((transX0 + transX1) / 2.0), transZero);
-                lineTo(hotspot, ((transX0 + transX1) / 2.0), ((transY0 + transY1) / 2.0));
-                lineTo(hotspot, transX1, transY1);
-                lineTo(hotspot, ((transX1 + transX2) / 2.0), ((transY1 + transY2) / 2.0));
-                lineTo(hotspot, ((transX1 + transX2) / 2.0), transZero);
-            }
-            hotspot.closePath();
-
-            // limit the entity hotspot area to the data area
-            final Area dataAreaHotspot = new Area(hotspot);
-            dataAreaHotspot.intersect(new Area(dataArea));
-
-            if (!dataAreaHotspot.isEmpty()) {
-                addEntity(entities, dataAreaHotspot, dataset, series, item, 0.0, 0.0);
             }
         }
     }
@@ -561,6 +520,18 @@ public abstract class ACustomProfitLossRenderer extends AbstractXYItemRenderer
     private void writeObject(final ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         SerialUtils.writeShape(this.legendArea, stream);
+    }
+
+    @Override
+    protected void updateCrosshairValues(final CrosshairState crosshairState, final double x, final double y,
+            final int datasetIndex, final double transX, final double transY, final PlotOrientation orientation) {
+        //noop
+    }
+
+    @Override
+    protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
+            final int series, final int item, final double entityX, final double entityY) {
+        //noop
     }
 
 }

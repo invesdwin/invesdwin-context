@@ -6,33 +6,33 @@ import java.awt.Paint;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.renderer.FastXYBarRenderer;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
-import de.invesdwin.context.jfreechart.renderer.OhlcCandlestickRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastCandlestickRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;
 
 @NotThreadSafe
-public class CustomVolumeBarRenderer extends XYBarRenderer implements IUpDownColorRenderer, ICustomRendererType {
+public class CustomVolumeBarRenderer extends FastXYBarRenderer implements IUpDownColorRenderer, ICustomRendererType {
 
     public static final Percent DEFAULT_VOLUME_TRANSPARENCY = new Percent(50D, PercentScale.PERCENT);
 
-    private final OhlcCandlestickRenderer candlestickRenderer;
+    private final FastCandlestickRenderer candlestickRenderer;
     private Color upColor;
     private Color downColor;
 
     public CustomVolumeBarRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
         super(0.25f);
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
-        this.candlestickRenderer = (OhlcCandlestickRenderer) config.getPriceRenderer(PriceRendererType.Candlestick);
+        this.candlestickRenderer = (FastCandlestickRenderer) config.getPriceRenderer(PriceRendererType.Candlestick);
 
         setBarPainter(new StandardXYBarPainter());
         setShadowVisible(false);

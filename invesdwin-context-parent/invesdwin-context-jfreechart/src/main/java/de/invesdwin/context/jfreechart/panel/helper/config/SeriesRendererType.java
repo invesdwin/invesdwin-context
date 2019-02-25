@@ -12,7 +12,8 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
-import de.invesdwin.context.jfreechart.renderer.XYAreaLineRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastXYBarRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastXYAreaRenderer;
 import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
@@ -64,7 +65,7 @@ public enum SeriesRendererType implements IRendererType {
         @Override
         public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
                 final Color color) {
-            final XYAreaLineRenderer renderer = new XYAreaLineRenderer();
+            final FastXYAreaRenderer renderer = new FastXYAreaRenderer();
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             return renderer;
@@ -84,7 +85,7 @@ public enum SeriesRendererType implements IRendererType {
         @Override
         public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
                 final Color color) {
-            final XYBarRenderer renderer = new XYBarRenderer();
+            final FastXYBarRenderer renderer = new FastXYBarRenderer();
             renderer.setBarPainter(new StandardXYBarPainter());
             renderer.setShadowVisible(false);
             renderer.setSeriesPaint(0, color);
@@ -108,7 +109,7 @@ public enum SeriesRendererType implements IRendererType {
         @Override
         public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
                 final Color color) {
-            final XYBarRenderer renderer = new XYBarRenderer(HISTOGRAM_MARGIN);
+            final FastXYBarRenderer renderer = new FastXYBarRenderer(HISTOGRAM_MARGIN);
             renderer.setBarPainter(new StandardXYBarPainter());
             renderer.setShadowVisible(false);
             renderer.setSeriesPaint(0, color);
@@ -172,7 +173,7 @@ public enum SeriesRendererType implements IRendererType {
             return SeriesRendererType.Line;
         } else if (unwrapped instanceof XYStepRenderer) {
             return SeriesRendererType.Step;
-        } else if (unwrapped instanceof XYAreaLineRenderer) {
+        } else if (unwrapped instanceof FastXYAreaRenderer) {
             return SeriesRendererType.Area;
         } else if (unwrapped instanceof XYBarRenderer) {
             final XYBarRenderer cRenderer = (XYBarRenderer) unwrapped;

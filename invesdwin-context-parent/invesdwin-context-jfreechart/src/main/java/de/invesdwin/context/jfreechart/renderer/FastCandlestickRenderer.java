@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -42,7 +43,7 @@ import de.invesdwin.util.math.Floats;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements XYItemRenderer, IUpDownColorRenderer {
+public class FastCandlestickRenderer extends AbstractXYItemRenderer implements XYItemRenderer, IUpDownColorRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
     private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;
@@ -84,7 +85,7 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
     /**
      * Creates a new renderer for candlestick charts.
      */
-    public OhlcCandlestickRenderer(final OHLCDataset dataset) {
+    public FastCandlestickRenderer(final OHLCDataset dataset) {
         this(dataset, new HighLowItemLabelGenerator());
     }
 
@@ -94,7 +95,7 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
      * @param toolTipGenerator
      *            the tool tip generator. <code>null</code> is none.
      */
-    public OhlcCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
+    public FastCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
         super();
         setDefaultToolTipGenerator(toolTipGenerator);
         this.upColor = PriceInitialSettings.DEFAULT_UP_COLOR;
@@ -282,12 +283,6 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
 
         final boolean horiz = isHorizontal(plot);
 
-        // setup for collecting optional entity info...
-        EntityCollection entities = null;
-        if (info != null) {
-            entities = info.getOwner().getEntityCollection();
-        }
-
         final OHLCDataset highLowData = (OHLCDataset) dataset;
 
         final double x = highLowData.getXValue(series, item);
@@ -339,17 +334,12 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
 
         // draw the body
         Rectangle2D body;
-        Rectangle2D hotspot;
-        final double length = Math.abs(yyHigh - yyLow);
-        final double base = Math.min(yyHigh, yyLow);
         if (horiz) {
             body = new Rectangle2D.Double(yyMinOpenClose, xx - stickWidth / 2, yyMaxOpenClose - yyMinOpenClose,
                     stickWidth);
-            hotspot = new Rectangle2D.Double(base, xx - stickWidth / 2, length, stickWidth);
         } else {
             body = new Rectangle2D.Double(xx - stickWidth / 2, yyMinOpenClose, stickWidth,
                     yyMaxOpenClose - yyMinOpenClose);
-            hotspot = new Rectangle2D.Double(xx - stickWidth / 2, base, stickWidth, length);
         }
         if (yClose > yOpen) {
             if (this.upColor != null) {
@@ -366,12 +356,6 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
             }
             g2.fill(body);
         }
-
-        // add an entity for the item...
-        if (entities != null) {
-            addEntity(entities, hotspot, dataset, series, item, 0.0, 0.0);
-        }
-
     }
 
     @Override
@@ -470,10 +454,10 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof OhlcCandlestickRenderer)) {
+        if (!(obj instanceof FastCandlestickRenderer)) {
             return false;
         }
-        final OhlcCandlestickRenderer that = (OhlcCandlestickRenderer) obj;
+        final FastCandlestickRenderer that = (FastCandlestickRenderer) obj;
         if (!PaintUtils.equal(this.upColor, that.upColor)) {
             return false;
         }
@@ -500,6 +484,18 @@ public class OhlcCandlestickRenderer extends AbstractXYItemRenderer implements X
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    protected void updateCrosshairValues(final CrosshairState crosshairState, final double x, final double y,
+            final int datasetIndex, final double transX, final double transY, final PlotOrientation orientation) {
+        //noop
+    }
+
+    @Override
+    protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
+            final int series, final int item, final double entityX, final double entityY) {
+        //noop
     }
 
 }

@@ -3,13 +3,16 @@ package de.invesdwin.context.jfreechart.renderer;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.plot.CrosshairState;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
@@ -101,6 +104,18 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
     @Override
     public Paint getItemPaint(final int row, final int column) {
         return INVISIBLE_COLOR;
+    }
+
+    @Override
+    protected void updateCrosshairValues(final CrosshairState crosshairState, final double x, final double y,
+            final int datasetIndex, final double transX, final double transY, final PlotOrientation orientation) {
+        //noop
+    }
+
+    @Override
+    protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
+            final int series, final int item, final double entityX, final double entityY) {
+        //noop
     }
 
 }
