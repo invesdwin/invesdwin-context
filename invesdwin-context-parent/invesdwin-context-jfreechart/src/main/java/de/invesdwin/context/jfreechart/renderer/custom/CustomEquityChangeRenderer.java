@@ -1,17 +1,13 @@
 package de.invesdwin.context.jfreechart.renderer.custom;
 
 import java.awt.Color;
-import java.awt.Paint;
 
 import javax.annotation.concurrent.NotThreadSafe;
-
-import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
-import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;
@@ -28,14 +24,12 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
     private static final Percent AREA_TRANSPARENCY = new Percent(90, PercentScale.PERCENT);
-    private static final Percent LINE_TRANSPARENCY = new Percent(30, PercentScale.PERCENT);
+    private static final Percent LINE_TRANSPARENCY = new Percent(80, PercentScale.PERCENT);
 
-    private final XYDataset dataset;
     private Color upColor;
     private Color downColor;
 
-    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
-        this.dataset = dataset;
+    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
 
         setSeriesPaint(0, Colors.setTransparency(UP_COLOR, LINE_TRANSPARENCY));
@@ -43,18 +37,6 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
 
         this.upColor = Colors.setTransparency(UP_COLOR, AREA_TRANSPARENCY);
         this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
-    }
-
-    @Override
-    public Paint getItemPaint(final int row, final int column) {
-        final double yValue = dataset.getYValue(row, column);
-        if (Double.isNaN(yValue)) {
-            return DisabledXYItemRenderer.INVISIBLE_COLOR;
-        } else if (yValue >= 0) {
-            return upColor;
-        } else {
-            return downColor;
-        }
     }
 
     @Override
