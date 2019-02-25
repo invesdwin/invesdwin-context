@@ -5,15 +5,14 @@ import java.awt.Color;
 import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYStepRenderer;
 
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastXYBarRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastStandardXYItemRenderer;
 import de.invesdwin.context.jfreechart.renderer.FastXYAreaRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastXYBarRenderer;
+import de.invesdwin.context.jfreechart.renderer.FastXYStepRenderer;
 import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
@@ -23,7 +22,7 @@ public enum SeriesRendererType implements IRendererType {
         @Override
         public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
                 final Color color) {
-            final StandardXYItemRenderer renderer = new StandardXYItemRenderer();
+            final FastStandardXYItemRenderer renderer = new FastStandardXYItemRenderer();
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
@@ -44,7 +43,7 @@ public enum SeriesRendererType implements IRendererType {
         @Override
         public XYItemRenderer newRenderer(final LineStyleType lineStyleType, final LineWidthType lineWidthType,
                 final Color color) {
-            final XYStepRenderer renderer = new XYStepRenderer();
+            final FastXYStepRenderer renderer = new FastXYStepRenderer();
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
@@ -169,14 +168,14 @@ public enum SeriesRendererType implements IRendererType {
         final XYItemRenderer unwrapped = DisabledXYItemRenderer.maybeUnwrap(renderer);
         if (unwrapped instanceof ICustomRendererType) {
             return SeriesRendererType.Custom;
-        } else if (unwrapped instanceof StandardXYItemRenderer) {
+        } else if (unwrapped instanceof FastStandardXYItemRenderer) {
             return SeriesRendererType.Line;
-        } else if (unwrapped instanceof XYStepRenderer) {
+        } else if (unwrapped instanceof FastXYStepRenderer) {
             return SeriesRendererType.Step;
         } else if (unwrapped instanceof FastXYAreaRenderer) {
             return SeriesRendererType.Area;
-        } else if (unwrapped instanceof XYBarRenderer) {
-            final XYBarRenderer cRenderer = (XYBarRenderer) unwrapped;
+        } else if (unwrapped instanceof FastXYBarRenderer) {
+            final FastXYBarRenderer cRenderer = (FastXYBarRenderer) unwrapped;
             if (cRenderer.getMargin() == HISTOGRAM_MARGIN) {
                 return SeriesRendererType.Histogram;
             } else {
