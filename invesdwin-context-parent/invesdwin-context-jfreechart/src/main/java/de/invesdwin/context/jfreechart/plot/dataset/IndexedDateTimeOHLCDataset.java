@@ -25,6 +25,11 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     }
 
     @Override
+    public Number getX(final int series, final int item) {
+        return getXValue(series, item);
+    }
+
+    @Override
     public double getXValue(final int series, final int item) {
         if (item < 0 || item >= getItemCount(series)) {
             return Double.NaN;
@@ -35,7 +40,7 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     @Override
     public double getXValueAsDateTime(final int series, final int item) {
         final int usedItem = Integers.between(item, 0, getItemCount(series) - 1);
-        return super.getXValue(series, usedItem);
+        return getData().get(usedItem).getDate().getTime();
     }
 
     @Override
