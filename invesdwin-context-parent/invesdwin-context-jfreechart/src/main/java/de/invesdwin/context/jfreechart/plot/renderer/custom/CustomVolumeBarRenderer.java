@@ -6,6 +6,10 @@ import java.awt.Paint;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
+import org.jfree.data.Range;
+import org.jfree.data.xy.XYDataset;
+
+import com.google.common.primitives.Doubles;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
@@ -94,6 +98,13 @@ public class CustomVolumeBarRenderer extends FastXYBarRenderer implements IUpDow
     @Override
     public String getName() {
         return "Volume";
+    }
+
+    @Override
+    protected Range findRangeBounds(final XYDataset dataset, final boolean includeInterval) {
+        final Range range = super.findRangeBounds(dataset, includeInterval);
+        //always include 0
+        return new Range(Doubles.min(0, range.getLowerBound()), range.getUpperBound());
     }
 
 }
