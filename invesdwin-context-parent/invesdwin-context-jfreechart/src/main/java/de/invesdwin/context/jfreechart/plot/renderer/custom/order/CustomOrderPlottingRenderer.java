@@ -30,6 +30,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.CustomProfitLossRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
@@ -42,13 +43,7 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
 
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
-
-    private static final NumberAxis ABSOLUTE_AXIS = new NumberAxis() {
-        @Override
-        public double valueToJava2D(final double value, final Rectangle2D area, final RectangleEdge edge) {
-            return value;
-        }
-    };
+    private static final ValueAxis ABSOLUTE_AXIS = XYPlots.DRAWING_ABSOLUTE_AXIS;
 
     private static final Font FONT = new Font("Verdana", Font.PLAIN, 9);
 

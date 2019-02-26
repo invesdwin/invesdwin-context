@@ -1,5 +1,6 @@
 package de.invesdwin.context.jfreechart.plot;
 
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import javax.annotation.concurrent.Immutable;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.XYDataset;
 
@@ -20,6 +22,13 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
 
 @Immutable
 public final class XYPlots {
+
+    public static final NumberAxis DRAWING_ABSOLUTE_AXIS = new NumberAxis() {
+        @Override
+        public double valueToJava2D(final double value, final Rectangle2D area, final RectangleEdge edge) {
+            return value;
+        }
+    };
 
     private XYPlots() {}
 
