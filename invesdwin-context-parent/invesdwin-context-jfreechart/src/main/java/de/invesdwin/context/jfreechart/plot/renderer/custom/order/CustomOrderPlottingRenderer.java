@@ -138,7 +138,6 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
 
                     final XYLineAnnotation line = new XYLineAnnotation(next.getOpenTimeIndex(), next.getOpenPrice(),
                             closeTimeIndex, next.getClosePrice(), stroke, color);
-                    line.setToolTipText(next.getNote());
                     final int index = getPlot().getIndexOf(this);
                     line.draw(g2, plot, dataArea, domainAxis, rangeAxis, index, info);
                 }
