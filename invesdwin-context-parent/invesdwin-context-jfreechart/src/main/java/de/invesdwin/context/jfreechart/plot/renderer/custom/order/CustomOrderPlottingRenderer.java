@@ -150,6 +150,7 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
             final PlotOrientation orientation = plot.getOrientation();
             final RectangleEdge domainEdge = Plot.resolveDomainAxisLocation(plot.getDomainAxisLocation(), orientation);
             final RectangleEdge rangeEdge = Plot.resolveRangeAxisLocation(plot.getRangeAxisLocation(), orientation);
+            final LineWidthType lineWidth = LineWidthType.valueOf(getSeriesStroke(series));
             final ICloseableIterator<OrderPlottingDataItem> visibleItems = cDataset.getVisibleItems(firstItem, lastItem)
                     .iterator();
             try {
@@ -170,7 +171,7 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
                         lineStyle = LINE_STYLE_DEFAULT;
                     }
 
-                    final Stroke stroke = lineStyle.getStroke(LineWidthType.valueOf(getSeriesStroke(series)));
+                    final Stroke stroke = lineStyle.getStroke(lineWidth);
 
                     final boolean closed = next.isClosed();
                     final double x1 = domainAxis.valueToJava2D(next.getOpenTimeIndex(), dataArea, domainEdge);
