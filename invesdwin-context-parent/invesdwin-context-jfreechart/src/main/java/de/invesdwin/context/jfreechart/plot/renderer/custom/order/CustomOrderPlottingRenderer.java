@@ -97,10 +97,10 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
             final int pass) {
         //CHECKSTYLE:ON
 
-        final int lastItem = dataset.getItemCount(0) - 1;
-        if (item == lastItem) {
-            System.out.println("draw");
-        }
+        //        final int lastItem = dataset.getItemCount(0) - 1;
+        //        if (item == lastItem) {
+        //            System.out.println("draw");
+        //        }
     }
 
 }

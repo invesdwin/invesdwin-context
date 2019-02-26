@@ -93,7 +93,7 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     }
 
     @Override
-    public boolean isLegendValueVisible() {
+    public boolean isLegendValueVisible(final int series, final int item) {
         return false;
     }
 

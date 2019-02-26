@@ -92,9 +92,14 @@ public class PlotLegendHelper {
                     domainMarkerItem = chartPanel.getDataset().getData().size() - 1;
                 }
                 if (domainMarkerItem >= 0) {
-                    final Dataset dataset = item.getDataset();
+                    final XYDataset dataset = (XYDataset) item.getDataset();
+                    final int series = item.getSeriesIndex();
+                    final int lastItem = dataset.getItemCount(series) - 1;
+                    if (domainMarkerItem > lastItem) {
+                        domainMarkerItem = lastItem;
+                    }
                     final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
-                    if (!plotSource.isLegendValueVisible()) {
+                    if (!plotSource.isLegendValueVisible(series, domainMarkerItem)) {
                         return label;
                     }
                     final XYPlot plot = plotSource.getPlot();
@@ -105,32 +110,23 @@ public class PlotLegendHelper {
                     final NumberFormat rangeAxisFormat = rangeAxis.getNumberFormatOverride();
                     if (dataset instanceof OHLCDataset) {
                         final OHLCDataset ohlc = (OHLCDataset) dataset;
-                        if (domainMarkerItem >= ohlc.getItemCount(0)) {
-                            domainMarkerItem = ohlc.getItemCount(0) - 1;
-                        }
                         final StringBuilder sb = new StringBuilder(label);
                         sb.append(" O:");
-                        sb.append(rangeAxisFormat.format(ohlc.getOpen(0, domainMarkerItem)));
+                        sb.append(rangeAxisFormat.format(ohlc.getOpen(series, domainMarkerItem)));
                         sb.append(" H:");
-                        sb.append(rangeAxisFormat.format(ohlc.getHigh(0, domainMarkerItem)));
+                        sb.append(rangeAxisFormat.format(ohlc.getHigh(series, domainMarkerItem)));
                         sb.append(" L:");
-                        sb.append(rangeAxisFormat.format(ohlc.getLow(0, domainMarkerItem)));
+                        sb.append(rangeAxisFormat.format(ohlc.getLow(series, domainMarkerItem)));
                         sb.append(" C:");
-                        sb.append(rangeAxisFormat.format(ohlc.getClose(0, domainMarkerItem)));
+                        sb.append(rangeAxisFormat.format(ohlc.getClose(series, domainMarkerItem)));
                         sb.append(" T:");
                         sb.append(chartPanel.getDomainAxisFormat().format(domainMarkerItem));
                         return sb.toString();
-                    } else if (dataset instanceof XYDataset) {
-                        final XYDataset xy = (XYDataset) dataset;
-                        if (domainMarkerItem >= xy.getItemCount(0)) {
-                            domainMarkerItem = xy.getItemCount(0) - 1;
-                        }
+                    } else {
                         final StringBuilder sb = new StringBuilder(label);
                         sb.append(" ");
-                        sb.append(rangeAxisFormat.format(xy.getYValue(0, domainMarkerItem)));
+                        sb.append(rangeAxisFormat.format(dataset.getYValue(series, domainMarkerItem)));
                         return sb.toString();
-                    } else {
-                        throw UnknownArgumentException.newInstance(Class.class, dataset.getClass());
                     }
                 } else {
                     return label;

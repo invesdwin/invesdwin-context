@@ -115,7 +115,7 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     }
 
     @Override
-    public boolean isLegendValueVisible() {
+    public boolean isLegendValueVisible(final int series, final int item) {
         return true;
     }
 
