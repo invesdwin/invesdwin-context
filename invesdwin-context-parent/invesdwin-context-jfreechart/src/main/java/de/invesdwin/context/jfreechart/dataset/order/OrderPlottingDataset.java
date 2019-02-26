@@ -96,6 +96,7 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
 
     @Override
     public Number getY(final int series, final int item) {
+        //need to return the price here in orger to get axis scaling done properly
         return ohlcDataset.getY(series, item);
     }
 
