@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.plot.renderer.custom;
 
 import java.awt.Color;
+import java.awt.Paint;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -36,6 +37,11 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
 
         this.upColor = Colors.setTransparency(UP_COLOR, AREA_TRANSPARENCY);
         this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
+    }
+
+    @Override
+    public Paint getItemPaint(final int row, final int column) {
+        return upColor;
     }
 
     @Override

@@ -16,12 +16,18 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
+import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.custom.CustomProfitLossRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 
 @NotThreadSafe
 public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
         implements ICustomRendererType, IUpDownColorRenderer {
+
+    public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
+    public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
 
     private static final LineStyleType LINE_STYLE_DEFAULT = LineStyleType.Solid;
     private static final LineStyleType LINE_STYLE_PENDING = LineStyleType.Dashed;
@@ -29,13 +35,19 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
     private static final LineWidthType LINE_WIDTH_DEFAULT = LineWidthType._2;
     private static final LineWidthType LINE_WIDTH_TPSL = LineWidthType._1;
 
-    private static final String COLOR_LOSS = "#CC0000";
-    private static final String COLOR_PROFIT = "#38761D";
-
     private static final String SHAPE_CLOSED = "trend_line";
     private static final String SHAPE_ACTIVE = "horizontal_ray";
+
     private Color upColor;
     private Color downColor;
+
+    public CustomOrderPlottingRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
+        final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
+        setSeriesPaint(0, UP_COLOR);
+        setSeriesStroke(0, config.getSeriesStroke());
+        upColor = UP_COLOR;
+        downColor = DOWN_COLOR;
+    }
 
     @Override
     public boolean isLineStyleConfigurable() {
