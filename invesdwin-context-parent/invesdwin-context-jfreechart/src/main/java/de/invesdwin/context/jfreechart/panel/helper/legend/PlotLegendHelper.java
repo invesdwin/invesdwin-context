@@ -28,7 +28,7 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
-import de.invesdwin.context.jfreechart.dataset.IPlotSource;
+import de.invesdwin.context.jfreechart.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.icon.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
@@ -96,7 +96,7 @@ public class PlotLegendHelper {
                     if (dataset instanceof DisabledXYDataset) {
                         return label;
                     }
-                    final IPlotSource plotSource = (IPlotSource) dataset;
+                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                     final XYPlot plot = plotSource.getPlot();
                     if (plot == chartPanel.getCombinedPlot().getTrashPlot()) {
                         return label;
@@ -141,7 +141,7 @@ public class PlotLegendHelper {
             protected Font newTextFont(final LegendItem item, final Font textFont) {
                 if (highlightedLegendInfo != null
                         && highlightedLegendInfo.getDatasetIndex() == item.getDatasetIndex()) {
-                    final IPlotSource plotSource = (IPlotSource) item.getDataset();
+                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) item.getDataset();
                     if (highlightedLegendInfo.getPlot() == plotSource.getPlot()) {
                         return textFont.deriveFont(Font.ITALIC);
                     }
@@ -157,7 +157,7 @@ public class PlotLegendHelper {
                 }
                 if (domainMarkerItem >= 0) {
                     final Dataset dataset = item.getDataset();
-                    final IPlotSource plotSource = (IPlotSource) dataset;
+                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                     final int datasetIndex = item.getDatasetIndex();
                     final XYItemRenderer renderer = plotSource.getPlot().getRenderer(datasetIndex);
                     if (renderer == null) {
@@ -199,7 +199,7 @@ public class PlotLegendHelper {
         if (entityForPoint instanceof LegendItemEntity) {
             final LegendItemEntity l = (LegendItemEntity) entityForPoint;
             final Dataset dataset = l.getDataset();
-            final IPlotSource plotSource = (IPlotSource) dataset;
+            final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
             final XYPlot plot = plotSource.getPlot();
             final CustomLegendTitle title = getTitle(plot);
             final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
@@ -265,8 +265,8 @@ public class PlotLegendHelper {
         if (entityForPoint instanceof LegendItemEntity) {
             final LegendItemEntity l = (LegendItemEntity) entityForPoint;
             final XYDataset dataset = (XYDataset) l.getDataset();
-            if (dataset instanceof IPlotSource) {
-                final IPlotSource plotSource = (IPlotSource) dataset;
+            if (dataset instanceof IPlotSourceDataset) {
+                final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                 final XYPlot plot = plotSource.getPlot();
                 final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
                 final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
@@ -343,7 +343,7 @@ public class PlotLegendHelper {
                 final int fromDatasetIndex = dragStart.getDatasetIndex();
                 final int toDatasetIndex = XYPlots.getFreeDatasetIndex(toPlot);
                 final XYDataset dataset = fromPlot.getDataset(fromDatasetIndex);
-                final IPlotSource plotSource = (IPlotSource) dataset;
+                final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                 plotSource.setPlot(toPlot);
                 toPlot.setDataset(toDatasetIndex, dataset);
                 toPlot.setRenderer(toDatasetIndex, fromPlot.getRenderer(fromDatasetIndex));

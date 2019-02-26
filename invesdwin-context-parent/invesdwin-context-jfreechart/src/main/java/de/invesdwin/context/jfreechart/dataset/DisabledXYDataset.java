@@ -7,10 +7,10 @@ import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataset;
 
 @Immutable
-public class DisabledXYDataset extends AbstractXYDataset implements IPlotSource {
+public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceDataset {
 
     private final XYDataset enabledDataset;
-    private final IPlotSource plotSource;
+    private final IPlotSourceDataset plotSource;
 
     public DisabledXYDataset(final XYDataset enabledDataset) {
         if (enabledDataset instanceof DisabledXYDataset) {
@@ -18,7 +18,7 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSource 
                     "enabledDataset should not be an instance of " + DisabledXYDataset.class.getSimpleName());
         }
         this.enabledDataset = enabledDataset;
-        this.plotSource = (IPlotSource) enabledDataset;
+        this.plotSource = (IPlotSourceDataset) enabledDataset;
     }
 
     public XYDataset getEnabledDataset() {

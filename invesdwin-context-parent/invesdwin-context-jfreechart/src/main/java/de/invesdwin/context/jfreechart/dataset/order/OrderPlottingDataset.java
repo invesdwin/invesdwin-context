@@ -14,11 +14,11 @@ import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.xy.AbstractXYDataset;
 
 import de.invesdwin.context.jfreechart.dataset.IIndexedDateTimeXYDataset;
-import de.invesdwin.context.jfreechart.dataset.IPlotSource;
+import de.invesdwin.context.jfreechart.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.dataset.IndexedDateTimeOHLCDataset;
 
 @NotThreadSafe
-public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSource, IIndexedDateTimeXYDataset {
+public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSourceDataset, IIndexedDateTimeXYDataset {
 
     private final String seriesKey;
     private final IndexedDateTimeOHLCDataset ohlcDataset;

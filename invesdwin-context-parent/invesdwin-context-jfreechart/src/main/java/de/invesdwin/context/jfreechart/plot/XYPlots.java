@@ -11,7 +11,7 @@ import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
-import de.invesdwin.context.jfreechart.dataset.IPlotSource;
+import de.invesdwin.context.jfreechart.dataset.IPlotSourceDataset;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.scaled.Percent;
@@ -37,7 +37,7 @@ public final class XYPlots {
         for (int datasetIndex = 0; datasetIndex < plot.getDatasetCount(); datasetIndex++) {
             final Dataset dataset = plot.getDataset(datasetIndex);
             if (dataset != null) {
-                final IPlotSource plotSource = (IPlotSource) dataset;
+                final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                 final boolean visible = !(dataset instanceof DisabledXYDataset);
                 String rangeAxisId = plotSource.getRangeAxisId();
                 if (!visible) {

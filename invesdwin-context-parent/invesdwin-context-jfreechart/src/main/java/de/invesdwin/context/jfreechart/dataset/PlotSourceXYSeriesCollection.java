@@ -16,7 +16,7 @@ import de.invesdwin.context.jfreechart.dataset.basis.ListXYSeriesOHLC;
 import de.invesdwin.context.jfreechart.dataset.basis.XYDataItemOHLC;
 
 @NotThreadSafe
-public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements IPlotSource, XYRangeInfo {
+public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements IPlotSourceDataset, XYRangeInfo {
 
     private XYPlot plot;
     private int precision;

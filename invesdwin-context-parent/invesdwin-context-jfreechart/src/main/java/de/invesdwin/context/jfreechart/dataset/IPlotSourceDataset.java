@@ -2,7 +2,7 @@ package de.invesdwin.context.jfreechart.dataset;
 
 import org.jfree.chart.plot.XYPlot;
 
-public interface IPlotSource {
+public interface IPlotSourceDataset {
 
     XYPlot getPlot();
 

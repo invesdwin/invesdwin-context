@@ -13,7 +13,7 @@ import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Integers;
 
 @NotThreadSafe
-public class IndexedDateTimeOHLCDataset extends ListOHLCDataset implements IIndexedDateTimeXYDataset, IPlotSource {
+public class IndexedDateTimeOHLCDataset extends ListOHLCDataset implements IIndexedDateTimeXYDataset, IPlotSourceDataset {
 
     private XYPlot plot;
     private int precision;
