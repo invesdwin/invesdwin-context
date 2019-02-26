@@ -220,10 +220,6 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
     public XYItemRendererState initialise(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
             final XYDataset data, final PlotRenderingInfo info) {
         final XYAreaRendererState state = new XYAreaRendererState(info);
-
-        // in the rendering process, there is special handling for item
-        // zero, so we can't support processing of visible data items only
-        state.setProcessVisibleItemsOnly(false);
         return state;
     }
 
@@ -324,7 +320,6 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
 
         // get the previous point and the next point so we can calculate a
         // "hot spot" for the area (used by the chart entity)...
-        final int itemCount = dataset.getItemCount(series);
         final double x0 = dataset.getXValue(series, Math.max(item - 1, 0));
         double y0 = dataset.getYValue(series, Math.max(item - 1, 0));
         if (Double.isNaN(y0)) {
@@ -335,7 +330,8 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
 
         final double transZero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
 
-        if (item == 0) { // create a new area polygon for the series
+        final int firstItem = state.getFirstItemIndex();
+        if (item == firstItem) { // create a new area polygon for the series
             areaState.area = new GeneralPath();
             // the first point is (x, 0)
             final double zero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
@@ -372,7 +368,7 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
 
         // Check if the item is the last item for the series.
         // and number of items > 0.  We can't draw an area for a single point.
-        if (getPlotArea() && item > 0 && item == (itemCount - 1)) {
+        if (getPlotArea() && item > 0 && item == state.getLastItemIndex()) {
 
             if (orientation == PlotOrientation.VERTICAL) {
                 // Add the last point (x,0)

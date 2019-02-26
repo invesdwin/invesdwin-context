@@ -64,6 +64,7 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         private final XYAreaRendererStateData profit;
         private final XYAreaRendererStateData loss;
         private final Line2D line;
+        private final boolean firstItem = true;
 
         private XYAreaRendererState(final PlotRenderingInfo info) {
             super(info);
@@ -229,10 +230,6 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
     public XYItemRendererState initialise(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
             final XYDataset data, final PlotRenderingInfo info) {
         final XYAreaRendererState state = new XYAreaRendererState(info);
-
-        // in the rendering process, there is special handling for item
-        // zero, so we can't support processing of visible data items only
-        state.setProcessVisibleItemsOnly(false);
         return state;
     }
 
@@ -345,16 +342,17 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         drawLine(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState, x0, convert(cItem0.getClose()),
                 x1, convert(cItem1.getClose()), dataset);
         drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.profit, x1,
-                convert(cItem1.getHigh()), dataset, state, upColor);
+                convert(cItem1.getHigh()), dataset, state, upColor, state.getFirstItemIndex());
         drawArea(g2, dataArea, plot, domainAxis, rangeAxis, series, item1, areaState.loss, x1, convert(cItem1.getLow()),
-                dataset, state, downColor);
+                dataset, state, downColor, state.getFirstItemIndex());
 
         // Check if the item is the last item for the series.
         // and number of items > 0.  We can't draw an area for a single point.
-        if (getPlotArea() && item1 > 0 && item1 == data.size() - 1) {
+        if (getPlotArea() && item1 > 0 && item1 == state.getLastItemIndex()) {
             closeArea(g2, dataArea, plot, domainAxis, rangeAxis, upColor, x1, areaState.profit);
             closeArea(g2, dataArea, plot, domainAxis, rangeAxis, downColor, x1, areaState.loss);
         }
+
     }
 
     private double convert(final Number value) {
@@ -388,13 +386,13 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
     private void drawArea(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
             final ValueAxis domainAxis, final ValueAxis rangeAxis, final int series, final int item,
             final XYAreaRendererStateData areaStateData, final double x1, final double y1, final XYDataset dataset,
-            final RendererState state, final Paint paint) {
+            final RendererState state, final Paint paint, final int firstItem) {
         //CHECKSTYLE:ON
 
         final double transX1 = domainAxis.valueToJava2D(x1, dataArea, plot.getDomainAxisEdge());
         final double transY1 = rangeAxis.valueToJava2D(y1, dataArea, plot.getRangeAxisEdge());
 
-        if (item == 0) { // create a new area polygon for the series
+        if (item == firstItem) { // create a new area polygon for the series
             areaStateData.area = new GeneralPath();
             // the first point is (x, 0)
             final double zero = rangeAxis.valueToJava2D(0.0, dataArea, plot.getRangeAxisEdge());
