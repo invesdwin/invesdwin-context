@@ -9,8 +9,6 @@ import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 
-import com.google.common.primitives.Doubles;
-
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
@@ -19,6 +17,7 @@ import de.invesdwin.context.jfreechart.plot.renderer.FastXYBarRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
+import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;
 
