@@ -20,7 +20,8 @@ import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 
 @NotThreadSafe
-public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer implements ICustomRendererType, IUpDownColorRenderer {
+public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
+        implements ICustomRendererType, IUpDownColorRenderer {
 
     private static final LineStyleType LINE_STYLE_DEFAULT = LineStyleType.Solid;
     private static final LineStyleType LINE_STYLE_PENDING = LineStyleType.Dashed;
@@ -83,6 +84,11 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer implemen
             final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
             final int pass) {
         //CHECKSTYLE:ON
+
+        final int lastItem = dataset.getItemCount(0) - 1;
+        if (item == lastItem) {
+            System.out.println("draw");
+        }
     }
 
 }

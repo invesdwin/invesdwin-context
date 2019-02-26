@@ -20,6 +20,8 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.util.assertions.Assertions;
+
 @NotThreadSafe
 public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
 
@@ -28,6 +30,7 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
     private final XYItemRenderer enabledRenderer;
 
     public DisabledXYItemRenderer(final XYItemRenderer enabledRenderer) {
+        Assertions.checkNotNull(enabledRenderer);
         if (enabledRenderer instanceof DisabledXYItemRenderer) {
             throw new IllegalArgumentException(
                     "enabledRenderer should not be an instance of " + DisabledXYItemRenderer.class.getSimpleName());

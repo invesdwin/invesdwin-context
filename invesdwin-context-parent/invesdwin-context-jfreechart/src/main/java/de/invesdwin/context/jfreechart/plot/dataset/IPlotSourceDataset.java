@@ -16,4 +16,6 @@ public interface IPlotSourceDataset {
 
     void setRangeAxisId(String rangeAxisId);
 
+    boolean isLegendValueVisible();
+
 }

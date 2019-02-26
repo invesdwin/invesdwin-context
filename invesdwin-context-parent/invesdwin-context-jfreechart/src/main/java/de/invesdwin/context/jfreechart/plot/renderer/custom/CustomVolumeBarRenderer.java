@@ -102,6 +102,9 @@ public class CustomVolumeBarRenderer extends FastXYBarRenderer implements IUpDow
     @Override
     protected Range findRangeBounds(final XYDataset dataset, final boolean includeInterval) {
         final Range range = super.findRangeBounds(dataset, includeInterval);
+        if (range == null) {
+            return null;
+        }
         //always include 0
         return new Range(Doubles.min(0, range.getLowerBound()), range.getUpperBound());
     }

@@ -120,4 +120,9 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
         }
     }
 
+    @Override
+    public boolean isLegendValueVisible() {
+        return true;
+    }
+
 }

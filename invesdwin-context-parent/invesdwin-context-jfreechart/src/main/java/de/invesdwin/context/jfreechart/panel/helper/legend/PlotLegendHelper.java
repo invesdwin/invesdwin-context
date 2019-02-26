@@ -93,10 +93,10 @@ public class PlotLegendHelper {
                 }
                 if (domainMarkerItem >= 0) {
                     final Dataset dataset = item.getDataset();
-                    if (dataset instanceof DisabledXYDataset) {
+                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
+                    if (!plotSource.isLegendValueVisible()) {
                         return label;
                     }
-                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                     final XYPlot plot = plotSource.getPlot();
                     if (plot == chartPanel.getCombinedPlot().getTrashPlot()) {
                         return label;
@@ -345,10 +345,14 @@ public class PlotLegendHelper {
                 final XYDataset dataset = fromPlot.getDataset(fromDatasetIndex);
                 final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                 plotSource.setPlot(toPlot);
+                toPlot.setNotify(false);
+                fromPlot.setNotify(false);
                 toPlot.setDataset(toDatasetIndex, dataset);
                 toPlot.setRenderer(toDatasetIndex, fromPlot.getRenderer(fromDatasetIndex));
                 XYPlots.removeDataset(fromPlot, fromDatasetIndex);
                 updatePlots(fromPlot, toPlot);
+                toPlot.setNotify(true);
+                fromPlot.setNotify(true);
                 highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
                 dragStart = new HighlightedLegendInfo(chartPanel, toSubplotIndex, toPlot, getTitle(toPlot),
                         toDatasetIndex);

@@ -6,6 +6,8 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.util.assertions.Assertions;
+
 @Immutable
 public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceDataset {
 
@@ -13,6 +15,7 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     private final IPlotSourceDataset plotSource;
 
     public DisabledXYDataset(final XYDataset enabledDataset) {
+        Assertions.checkNotNull(enabledDataset);
         if (enabledDataset instanceof DisabledXYDataset) {
             throw new IllegalArgumentException(
                     "enabledDataset should not be an instance of " + DisabledXYDataset.class.getSimpleName());
@@ -87,6 +90,11 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     @Override
     public void setRangeAxisId(final String rangeAxisId) {
         plotSource.setRangeAxisId(rangeAxisId);
+    }
+
+    @Override
+    public boolean isLegendValueVisible() {
+        return false;
     }
 
 }

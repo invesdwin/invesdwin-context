@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.general.Dataset;
@@ -82,11 +83,19 @@ public final class XYPlots {
             final RangeAxisData rangeAxisData) {
         final boolean visible = rangeAxisData.isVisible() && countVisibleRangeAxes <= 2;
         final boolean autorange = rangeAxisData.isVisible();
+        final AxisLocation location;
+        final int rangeAxisIndex = rangeAxisData.getRangeAxisIndex();
+        if (countVisibleRangeAxes == 2) {
+            location = AxisLocation.TOP_OR_LEFT;
+        } else {
+            location = AxisLocation.TOP_OR_RIGHT;
+        }
         final NumberAxis rangeAxis = newRangeAxis(rangeAxisData.getPrecision(), visible, autorange);
-        plot.setRangeAxis(rangeAxisData.getRangeAxisIndex(), rangeAxis);
+        plot.setRangeAxis(rangeAxisIndex, rangeAxis);
+        plot.setRangeAxisLocation(rangeAxisIndex, location);
         for (final int datasetIndex : rangeAxisData.getDatasetIndexes()) {
             plot.mapDatasetToDomainAxis(datasetIndex, 0);
-            plot.mapDatasetToRangeAxis(datasetIndex, rangeAxisData.getRangeAxisIndex());
+            plot.mapDatasetToRangeAxis(datasetIndex, rangeAxisIndex);
         }
     }
 
@@ -130,6 +139,8 @@ public final class XYPlots {
     }
 
     public static void removeDataset(final XYPlot plot, final int datasetIndex) {
+        final boolean notifyBefore = plot.isNotify();
+        plot.setNotify(false);
         final int lastDatasetIndex = plot.getDatasetCount() - 1;
         for (int i = datasetIndex; i < lastDatasetIndex; i++) {
             plot.setDataset(i, plot.getDataset(i + 1));
@@ -137,6 +148,7 @@ public final class XYPlots {
         }
         plot.setDataset(lastDatasetIndex, null);
         plot.setRenderer(lastDatasetIndex, null);
+        plot.setNotify(notifyBefore);
     }
 
     public static int getDatasetIndexForDataset(final XYPlot plot, final Dataset dataset) {

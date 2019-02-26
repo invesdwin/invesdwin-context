@@ -13,7 +13,8 @@ import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Integers;
 
 @NotThreadSafe
-public class IndexedDateTimeOHLCDataset extends ListOHLCDataset implements IIndexedDateTimeXYDataset, IPlotSourceDataset {
+public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
+        implements IIndexedDateTimeXYDataset, IPlotSourceDataset {
 
     private XYPlot plot;
     private int precision;
@@ -106,6 +107,11 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset implements IInde
     @Override
     public void setRangeAxisId(final String rangeAxisId) {
         this.rangeAxisId = rangeAxisId;
+    }
+
+    @Override
+    public boolean isLegendValueVisible() {
+        return true;
     }
 
 }

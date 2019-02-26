@@ -128,4 +128,9 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
         orderId_item.remove(orderId);
     }
 
+    @Override
+    public boolean isLegendValueVisible() {
+        return false;
+    }
+
 }
