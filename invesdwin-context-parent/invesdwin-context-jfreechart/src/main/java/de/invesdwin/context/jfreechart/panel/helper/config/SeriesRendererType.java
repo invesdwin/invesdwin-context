@@ -8,12 +8,12 @@ import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
-import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastStandardXYItemRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastXYAreaRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastXYBarRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastXYStepRenderer;
-import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
+import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastStandardXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastXYAreaRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastXYBarRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastXYStepRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 @Immutable

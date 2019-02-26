@@ -20,7 +20,6 @@ import org.jfree.data.Range;
 import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.general.DatasetChangeListener;
 
-import de.invesdwin.context.jfreechart.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.helper.PlotCrosshairHelper;
@@ -32,6 +31,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelp
 import de.invesdwin.context.jfreechart.panel.helper.legend.PlotLegendHelper;
 import de.invesdwin.context.jfreechart.plot.IndexedDateTimeNumberFormat;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
+import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
 import de.invesdwin.util.swing.listener.KeyListenerSupport;
 import de.invesdwin.util.swing.listener.MouseListenerSupport;

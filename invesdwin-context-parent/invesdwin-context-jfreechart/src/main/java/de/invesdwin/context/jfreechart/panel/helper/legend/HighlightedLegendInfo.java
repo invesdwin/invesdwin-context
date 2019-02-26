@@ -6,11 +6,11 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
-import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
+import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.assertions.Assertions;
 
 @Immutable

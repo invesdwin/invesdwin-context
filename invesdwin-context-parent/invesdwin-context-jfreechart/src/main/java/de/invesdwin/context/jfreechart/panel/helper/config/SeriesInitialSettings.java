@@ -8,8 +8,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
-import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
-import de.invesdwin.context.jfreechart.renderer.custom.ICustomRendererType;
+import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 
 @NotThreadSafe
 public class SeriesInitialSettings {

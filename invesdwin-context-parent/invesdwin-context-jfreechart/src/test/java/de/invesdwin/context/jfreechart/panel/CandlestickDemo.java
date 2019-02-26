@@ -17,7 +17,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.jfree.data.xy.OHLCDataItem;
 
-import de.invesdwin.context.jfreechart.dataset.IndexedDateTimeOHLCDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.log.error.Err;
 
 @NotThreadSafe

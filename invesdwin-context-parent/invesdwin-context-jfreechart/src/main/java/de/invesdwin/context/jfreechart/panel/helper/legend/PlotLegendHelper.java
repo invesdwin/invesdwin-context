@@ -27,16 +27,16 @@ import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.aspects.EventDispatchThreadUtil;
-import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
-import de.invesdwin.context.jfreechart.dataset.IPlotSourceDataset;
-import de.invesdwin.context.jfreechart.icon.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
-import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.XYIconAnnotation;
+import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
+import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
 
 @NotThreadSafe

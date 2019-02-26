@@ -7,11 +7,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
-import de.invesdwin.context.jfreechart.renderer.FastCandlestickRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastHighLowRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastStandardXYItemRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastXYAreaRenderer;
-import de.invesdwin.context.jfreechart.renderer.FastXYStepRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastCandlestickRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastHighLowRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastStandardXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastXYAreaRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.FastXYStepRenderer;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;

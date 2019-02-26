@@ -5,7 +5,7 @@ import java.net.URL;
 import javax.annotation.concurrent.Immutable;
 import javax.swing.ImageIcon;
 
-import de.invesdwin.context.jfreechart.icon.AlphaImageIcon;
+import de.invesdwin.util.swing.icon.AlphaImageIcon;
 
 @Immutable
 public enum PlotIcons {

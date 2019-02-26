@@ -22,7 +22,7 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.TextAnchor;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
-import de.invesdwin.context.jfreechart.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 
 @NotThreadSafe
 public class PlotCrosshairHelper {

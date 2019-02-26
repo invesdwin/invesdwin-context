@@ -15,11 +15,11 @@ import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYAnnotationEntity;
 import org.jfree.chart.plot.XYPlot;
 
-import de.invesdwin.context.jfreechart.icon.XYIconAnnotation;
-import de.invesdwin.context.jfreechart.icon.XYIconAnnotationEntity;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
+import de.invesdwin.context.jfreechart.plot.annotation.XYIconAnnotation;
+import de.invesdwin.context.jfreechart.plot.annotation.XYIconAnnotationEntity;
 import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe

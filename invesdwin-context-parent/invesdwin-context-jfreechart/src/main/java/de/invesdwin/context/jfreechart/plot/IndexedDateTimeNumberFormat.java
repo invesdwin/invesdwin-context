@@ -12,7 +12,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.data.Range;
 
-import de.invesdwin.context.jfreechart.dataset.IIndexedDateTimeXYDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.IIndexedDateTimeXYDataset;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
 import de.invesdwin.util.time.fdate.FDates;

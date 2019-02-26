@@ -10,8 +10,8 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.dataset.DisabledXYDataset;
-import de.invesdwin.context.jfreechart.dataset.IPlotSourceDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.scaled.Percent;
