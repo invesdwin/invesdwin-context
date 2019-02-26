@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.Range;
 import org.jfree.data.general.DatasetChangeEvent;
@@ -192,6 +193,7 @@ public class InteractiveChartPanel extends JPanel {
         ohlcPlot = new XYPlot(dataset, domainAxis, XYPlots.newRangeAxis(0, false, false),
                 plotConfigurationHelper.getPriceInitialSettings().getPriceRenderer());
         ohlcPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+        ohlcPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
         plotLegendHelper.addLegendAnnotation(ohlcPlot);
         dataset.setPlot(ohlcPlot);
         dataset.setPrecision(initRangeAxisDecimalDigits());
@@ -371,6 +373,7 @@ public class InteractiveChartPanel extends JPanel {
     public XYPlot newPlot() {
         final NumberAxis rangeAxis = XYPlots.newRangeAxis(0, false, true);
         final XYPlot newPlot = new XYPlot(null, null, rangeAxis, null);
+        newPlot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
         newPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(newPlot);
         return newPlot;
