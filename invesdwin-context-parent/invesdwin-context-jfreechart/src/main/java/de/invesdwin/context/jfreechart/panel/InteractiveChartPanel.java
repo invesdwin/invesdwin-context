@@ -106,7 +106,6 @@ public class InteractiveChartPanel extends JPanel {
 
         new JFreeChartLocaleChanger().process(chart);
 
-        chartPanel.setDisplayToolTips(false);
         chartPanel.addMouseListener(new MouseListenerImpl());
         chartPanel.addMouseWheelListener(new MouseWheelListenerImpl());
         setLayout(new GridLayout());

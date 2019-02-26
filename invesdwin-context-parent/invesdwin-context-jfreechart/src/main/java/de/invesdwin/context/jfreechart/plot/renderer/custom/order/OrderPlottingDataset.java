@@ -16,6 +16,9 @@ import org.jfree.data.xy.AbstractXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IIndexedDateTimeXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
+import de.invesdwin.util.collections.iterable.ASkippingIterable;
+import de.invesdwin.util.collections.iterable.ICloseableIterable;
+import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
 
 @NotThreadSafe
 public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSourceDataset, IIndexedDateTimeXYDataset {
@@ -141,6 +144,15 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     @Override
     public boolean isLegendValueVisible(final int series, final int item) {
         return false;
+    }
+
+    public ICloseableIterable<OrderPlottingDataItem> getVisibleItems(final int firstItem, final int lastItem) {
+        return new ASkippingIterable<OrderPlottingDataItem>(WrapperCloseableIterable.maybeWrap(orderId_item.values())) {
+            @Override
+            protected boolean skip(final OrderPlottingDataItem element) {
+                return element.getOpenTimeIndex() > lastItem || element.getCloseTimeIndex() < firstItem;
+            }
+        };
     }
 
 }

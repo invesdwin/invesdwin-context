@@ -25,7 +25,6 @@ import java.util.ResourceBundle;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JPanel;
-import javax.swing.ToolTipManager;
 
 import org.jfree.chart.ChartMouseListener;
 import org.jfree.chart.ChartRenderingInfo;
@@ -150,27 +149,6 @@ public class CustomChartPanel extends JPanel
     /** A horizontal trace line. */
     private transient Line2D horizontalTraceLine;
 
-    /** A flag that indicates if original tooltip delays are changed. */
-    private boolean ownToolTipDelaysActive;
-
-    /** Original initial tooltip delay of ToolTipManager.sharedInstance(). */
-    private int originalToolTipInitialDelay;
-
-    /** Original reshow tooltip delay of ToolTipManager.sharedInstance(). */
-    private int originalToolTipReshowDelay;
-
-    /** Original dismiss tooltip delay of ToolTipManager.sharedInstance(). */
-    private int originalToolTipDismissDelay;
-
-    /** Own initial tooltip delay to be used in this chart panel. */
-    private int ownToolTipInitialDelay;
-
-    /** Own reshow tooltip delay to be used in this chart panel. */
-    private int ownToolTipReshowDelay;
-
-    /** Own dismiss tooltip delay to be used in this chart panel. */
-    private int ownToolTipDismissDelay;
-
     /** The resourceBundle for the localization. */
     protected static ResourceBundle localizationResources = ResourceBundleWrapper
             .getBundle("org.jfree.chart.LocalizationBundle");
@@ -245,8 +223,6 @@ public class CustomChartPanel extends JPanel
      *            a flag indicating whether or not the print option should be available via the popup menu.
      * @param zoom
      *            a flag indicating whether or not zoom options should be added to the popup menu.
-     * @param tooltips
-     *            a flag indicating whether or not tooltips should be enabled for the chart.
      *
      * @since 1.0.13
      */
@@ -266,16 +242,8 @@ public class CustomChartPanel extends JPanel
 
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         enableEvents(AWTEvent.MOUSE_MOTION_EVENT_MASK);
-        setDisplayToolTips(false);
         addMouseListener(this);
         addMouseMotionListener(this);
-
-        // initialize ChartPanel-specific tool tip delays with
-        // values the from ToolTipManager.sharedInstance()
-        final ToolTipManager ttm = ToolTipManager.sharedInstance();
-        this.ownToolTipInitialDelay = ttm.getInitialDelay();
-        this.ownToolTipDismissDelay = ttm.getDismissDelay();
-        this.ownToolTipReshowDelay = ttm.getReshowDelay();
     }
 
     /**
@@ -546,46 +514,6 @@ public class CustomChartPanel extends JPanel
     }
 
     /**
-     * Switches the display of tooltips for the panel on or off. Note that tooltips can only be displayed if the chart
-     * has been configured to generate tooltip items.
-     *
-     * @param flag
-     *            <code>true</code> to enable tooltips, <code>false</code> to disable tooltips.
-     */
-    public void setDisplayToolTips(final boolean flag) {
-        if (flag) {
-            ToolTipManager.sharedInstance().registerComponent(this);
-        } else {
-            ToolTipManager.sharedInstance().unregisterComponent(this);
-        }
-    }
-
-    /**
-     * Returns a string for the tooltip.
-     *
-     * @param e
-     *            the mouse event.
-     *
-     * @return A tool tip or <code>null</code> if no tooltip is available.
-     */
-    @Override
-    public String getToolTipText(final MouseEvent e) {
-        String result = null;
-        if (this.info != null) {
-            final EntityCollection entities = this.info.getEntityCollection();
-            if (entities != null) {
-                final Insets insets = getInsets();
-                final ChartEntity entity = entities.getEntity((int) ((e.getX() - insets.left) / this.scaleX),
-                        (int) ((e.getY() - insets.top) / this.scaleY));
-                if (entity != null) {
-                    result = entity.getToolTipText();
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
      * Translates a Java2D point on the chart to a screen location.
      *
      * @param java2DPoint
@@ -815,50 +743,6 @@ public class CustomChartPanel extends JPanel
     @Override
     public void chartProgress(final ChartProgressEvent event) {
         // does nothing - override if necessary
-    }
-
-    /**
-     * Handles a 'mouse entered' event. This method changes the tooltip delays of ToolTipManager.sharedInstance() to the
-     * possibly different values set for this chart panel.
-     *
-     * @param e
-     *            the mouse event.
-     */
-    @Override
-    public void mouseEntered(final MouseEvent e) {
-        if (!this.ownToolTipDelaysActive) {
-            final ToolTipManager ttm = ToolTipManager.sharedInstance();
-
-            this.originalToolTipInitialDelay = ttm.getInitialDelay();
-            ttm.setInitialDelay(this.ownToolTipInitialDelay);
-
-            this.originalToolTipReshowDelay = ttm.getReshowDelay();
-            ttm.setReshowDelay(this.ownToolTipReshowDelay);
-
-            this.originalToolTipDismissDelay = ttm.getDismissDelay();
-            ttm.setDismissDelay(this.ownToolTipDismissDelay);
-
-            this.ownToolTipDelaysActive = true;
-        }
-    }
-
-    /**
-     * Handles a 'mouse exited' event. This method resets the tooltip delays of ToolTipManager.sharedInstance() to their
-     * original values in effect before mouseEntered()
-     *
-     * @param e
-     *            the mouse event.
-     */
-    @Override
-    public void mouseExited(final MouseEvent e) {
-        if (this.ownToolTipDelaysActive) {
-            // restore original tooltip dealys
-            final ToolTipManager ttm = ToolTipManager.sharedInstance();
-            ttm.setInitialDelay(this.originalToolTipInitialDelay);
-            ttm.setReshowDelay(this.originalToolTipReshowDelay);
-            ttm.setDismissDelay(this.originalToolTipDismissDelay);
-            this.ownToolTipDelaysActive = false;
-        }
     }
 
     /**
@@ -1101,76 +985,6 @@ public class CustomChartPanel extends JPanel
     }
 
     /**
-     * Returns the initial tooltip delay value used inside this chart panel.
-     *
-     * @return An integer representing the initial delay value, in milliseconds.
-     *
-     * @see javax.swing.ToolTipManager#getInitialDelay()
-     */
-    public int getInitialDelay() {
-        return this.ownToolTipInitialDelay;
-    }
-
-    /**
-     * Returns the reshow tooltip delay value used inside this chart panel.
-     *
-     * @return An integer representing the reshow delay value, in milliseconds.
-     *
-     * @see javax.swing.ToolTipManager#getReshowDelay()
-     */
-    public int getReshowDelay() {
-        return this.ownToolTipReshowDelay;
-    }
-
-    /**
-     * Returns the dismissal tooltip delay value used inside this chart panel.
-     *
-     * @return An integer representing the dismissal delay value, in milliseconds.
-     *
-     * @see javax.swing.ToolTipManager#getDismissDelay()
-     */
-    public int getDismissDelay() {
-        return this.ownToolTipDismissDelay;
-    }
-
-    /**
-     * Specifies the initial delay value for this chart panel.
-     *
-     * @param delay
-     *            the number of milliseconds to delay (after the cursor has paused) before displaying.
-     *
-     * @see javax.swing.ToolTipManager#setInitialDelay(int)
-     */
-    public void setInitialDelay(final int delay) {
-        this.ownToolTipInitialDelay = delay;
-    }
-
-    /**
-     * Specifies the amount of time before the user has to wait initialDelay milliseconds before a tooltip will be
-     * shown.
-     *
-     * @param delay
-     *            time in milliseconds
-     *
-     * @see javax.swing.ToolTipManager#setReshowDelay(int)
-     */
-    public void setReshowDelay(final int delay) {
-        this.ownToolTipReshowDelay = delay;
-    }
-
-    /**
-     * Specifies the dismissal delay value for this chart panel.
-     *
-     * @param delay
-     *            the number of milliseconds to delay before taking away the tooltip
-     *
-     * @see javax.swing.ToolTipManager#setDismissDelay(int)
-     */
-    public void setDismissDelay(final int delay) {
-        this.ownToolTipDismissDelay = delay;
-    }
-
-    /**
      * Draws a vertical line used to trace the mouse position to the horizontal axis.
      *
      * @param g2
@@ -1224,6 +1038,16 @@ public class CustomChartPanel extends JPanel
 
         // Reset to the default 'overwrite' mode
         g2.setPaintMode();
+    }
+
+    @Override
+    public void mouseEntered(final MouseEvent e) {
+        //noop
+    }
+
+    @Override
+    public void mouseExited(final MouseEvent e) {
+        //noop
     }
 
 }

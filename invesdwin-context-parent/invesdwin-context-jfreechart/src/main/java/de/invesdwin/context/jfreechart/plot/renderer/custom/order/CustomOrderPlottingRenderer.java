@@ -2,10 +2,13 @@ package de.invesdwin.context.jfreechart.plot.renderer.custom.order;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
+import java.util.NoSuchElementException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CrosshairState;
 import org.jfree.chart.plot.PlotRenderingInfo;
@@ -21,6 +24,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.CustomProfitLossRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
 
 @NotThreadSafe
 public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
@@ -34,9 +38,6 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
 
     private static final LineWidthType LINE_WIDTH_DEFAULT = LineWidthType._2;
     private static final LineWidthType LINE_WIDTH_TPSL = LineWidthType._1;
-
-    private static final String SHAPE_CLOSED = "trend_line";
-    private static final String SHAPE_ACTIVE = "horizontal_ray";
 
     private Color upColor;
     private Color downColor;
@@ -96,11 +97,55 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
             final XYDataset dataset, final int series, final int item, final CrosshairState crosshairState,
             final int pass) {
         //CHECKSTYLE:ON
+        final int lastItem = state.getLastItemIndex();
+        if (item == lastItem) {
+            final OrderPlottingDataset cDataset = (OrderPlottingDataset) dataset;
+            final int firstItem = state.getFirstItemIndex();
+            final ICloseableIterator<OrderPlottingDataItem> visibleItems = cDataset.getVisibleItems(firstItem, lastItem)
+                    .iterator();
+            try {
+                while (true) {
+                    final OrderPlottingDataItem next = visibleItems.next();
 
-        //        final int lastItem = dataset.getItemCount(0) - 1;
-        //        if (item == lastItem) {
-        //            System.out.println("draw");
-        //        }
+                    final Color color;
+                    if (next.isProfit()) {
+                        color = upColor;
+                    } else {
+                        color = downColor;
+                    }
+
+                    final LineStyleType lineStyle;
+                    if (next.isPending()) {
+                        lineStyle = LINE_STYLE_PENDING;
+                    } else {
+                        lineStyle = LINE_STYLE_DEFAULT;
+                    }
+
+                    final LineWidthType lineWidth;
+                    if (next.isTpsl()) {
+                        lineWidth = LINE_WIDTH_TPSL;
+                    } else {
+                        lineWidth = LINE_WIDTH_DEFAULT;
+                    }
+                    final Stroke stroke = lineStyle.getStroke(lineWidth);
+
+                    final int closeTimeIndex;
+                    if (next.isClosed()) {
+                        closeTimeIndex = next.getCloseTimeIndex();
+                    } else {
+                        closeTimeIndex = ((int) domainAxis.getUpperBound()) + 1;
+                    }
+
+                    final XYLineAnnotation line = new XYLineAnnotation(next.getOpenTimeIndex(), next.getOpenPrice(),
+                            closeTimeIndex, next.getClosePrice(), stroke, color);
+                    line.setToolTipText(next.getNote());
+                    final int index = getPlot().getIndexOf(this);
+                    line.draw(g2, plot, dataArea, domainAxis, rangeAxis, index, info);
+                }
+            } catch (final NoSuchElementException e) {
+                //end reached
+            }
+        }
     }
 
 }
