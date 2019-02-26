@@ -3,6 +3,7 @@ package de.invesdwin.context.jfreechart.plot.renderer.custom.order;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
@@ -42,30 +43,39 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
 
-    private static final NumberAxis ABSOLUTE_DOMAIN_AXIS = new NumberAxis() {
+    private static final NumberAxis ABSOLUTE_AXIS = new NumberAxis() {
         @Override
         public double valueToJava2D(final double value, final Rectangle2D area, final RectangleEdge edge) {
             return value;
         }
     };
 
-    private static final Font FONT = XYTextAnnotation.DEFAULT_FONT.deriveFont(7);
+    private static final Font FONT = new Font("Verdana", Font.PLAIN, 9);
 
     private static final LineStyleType LINE_STYLE_DEFAULT = LineStyleType.Solid;
     private static final LineStyleType LINE_STYLE_PENDING = LineStyleType.Dashed;
 
-    private static final LineWidthType LINE_WIDTH_DEFAULT = LineWidthType._2;
-    private static final LineWidthType LINE_WIDTH_TPSL = LineWidthType._1;
-
+    private final OrderPlottingDataset dataset;
     private Color upColor;
     private Color downColor;
 
-    public CustomOrderPlottingRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
+    public CustomOrderPlottingRenderer(final PlotConfigurationHelper plotConfigurationHelper,
+            final OrderPlottingDataset dataset) {
+        this.dataset = dataset;
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
         setSeriesPaint(0, UP_COLOR);
         setSeriesStroke(0, config.getSeriesStroke());
         upColor = UP_COLOR;
         downColor = DOWN_COLOR;
+    }
+
+    @Override
+    public Paint getItemPaint(final int row, final int column) {
+        if (dataset.isLastTradeProfit()) {
+            return upColor;
+        } else {
+            return downColor;
+        }
     }
 
     @Override
@@ -75,7 +85,7 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
 
     @Override
     public boolean isLineWidthConfigurable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -108,6 +118,21 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
         return downColor;
     }
 
+    @Override
+    public boolean isSeriesRendererTypeConfigurable() {
+        return false;
+    }
+
+    @Override
+    public String getUpColorName() {
+        return "Profit";
+    }
+
+    @Override
+    public String getDownColorName() {
+        return "Loss";
+    }
+
     //CHECKSTYLE:OFF
     @Override
     public void drawItem(final Graphics2D g2, final XYItemRendererState state, final Rectangle2D dataArea,
@@ -124,6 +149,7 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
             final NumberFormat rangeAxisFormat = cRangeAxis.getNumberFormatOverride();
             final PlotOrientation orientation = plot.getOrientation();
             final RectangleEdge domainEdge = Plot.resolveDomainAxisLocation(plot.getDomainAxisLocation(), orientation);
+            final RectangleEdge rangeEdge = Plot.resolveRangeAxisLocation(plot.getRangeAxisLocation(), orientation);
             final ICloseableIterator<OrderPlottingDataItem> visibleItems = cDataset.getVisibleItems(firstItem, lastItem)
                     .iterator();
             try {
@@ -144,13 +170,7 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
                         lineStyle = LINE_STYLE_DEFAULT;
                     }
 
-                    final LineWidthType lineWidth;
-                    if (next.isTpsl()) {
-                        lineWidth = LINE_WIDTH_TPSL;
-                    } else {
-                        lineWidth = LINE_WIDTH_DEFAULT;
-                    }
-                    final Stroke stroke = lineStyle.getStroke(lineWidth);
+                    final Stroke stroke = lineStyle.getStroke(LineWidthType.valueOf(getSeriesStroke(series)));
 
                     final boolean closed = next.isClosed();
                     final double x1 = domainAxis.valueToJava2D(next.getOpenTimeIndex(), dataArea, domainEdge);
@@ -161,27 +181,28 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
                         x2 = dataArea.getMaxX();
                     }
 
-                    final double y1 = next.getOpenPrice();
-                    final double y2 = next.getClosePrice();
+                    final double openPrice = next.getOpenPrice();
+                    final double closePrice = next.getClosePrice();
+
+                    final double y1 = rangeAxis.valueToJava2D(openPrice, dataArea, rangeEdge);
+                    final double y2 = rangeAxis.valueToJava2D(closePrice, dataArea, rangeEdge);
                     final XYLineAnnotation lineAnnotation = new XYLineAnnotation(x1, y1, x2, y2, stroke, color);
-                    lineAnnotation.draw(g2, plot, dataArea, ABSOLUTE_DOMAIN_AXIS, rangeAxis, rendererIndex, info);
+                    lineAnnotation.draw(g2, plot, dataArea, ABSOLUTE_AXIS, ABSOLUTE_AXIS, rendererIndex, info);
 
                     if (!closed) {
                         final String label = next.getLabel();
                         if (Strings.isNotBlank(label)) {
-                            final XYTextAnnotation labelAnnotation = new XYTextAnnotation(label + " ", x2, y2);
+                            final XYTextAnnotation labelAnnotation = new XYTextAnnotation(label + " ", x2, y2 - 1D);
                             labelAnnotation.setPaint(color);
                             labelAnnotation.setFont(FONT);
                             labelAnnotation.setTextAnchor(TextAnchor.BOTTOM_RIGHT);
-                            labelAnnotation.draw(g2, plot, dataArea, ABSOLUTE_DOMAIN_AXIS, rangeAxis, rendererIndex,
-                                    info);
+                            labelAnnotation.draw(g2, plot, dataArea, ABSOLUTE_AXIS, ABSOLUTE_AXIS, rendererIndex, info);
                             final XYTextAnnotation priceAnnotation = new XYTextAnnotation(
-                                    rangeAxisFormat.format(y2) + " ", x2, y2);
+                                    rangeAxisFormat.format(closePrice) + " ", x2, y2 + 1D);
                             priceAnnotation.setPaint(color);
                             priceAnnotation.setFont(FONT);
                             priceAnnotation.setTextAnchor(TextAnchor.TOP_RIGHT);
-                            priceAnnotation.draw(g2, plot, dataArea, ABSOLUTE_DOMAIN_AXIS, rangeAxis, rendererIndex,
-                                    info);
+                            priceAnnotation.draw(g2, plot, dataArea, ABSOLUTE_AXIS, ABSOLUTE_AXIS, rendererIndex, info);
                         }
                     }
                 }

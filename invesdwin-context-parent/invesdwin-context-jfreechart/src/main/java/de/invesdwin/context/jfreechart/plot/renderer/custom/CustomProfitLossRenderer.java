@@ -97,4 +97,14 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implemen
         return downColor;
     }
 
+    @Override
+    public String getUpColorName() {
+        return "Profit";
+    }
+
+    @Override
+    public String getDownColorName() {
+        return "Loss";
+    }
+
 }

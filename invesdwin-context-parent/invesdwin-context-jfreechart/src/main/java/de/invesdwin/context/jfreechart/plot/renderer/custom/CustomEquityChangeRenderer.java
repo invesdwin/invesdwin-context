@@ -41,6 +41,7 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
 
     @Override
     public Paint getItemPaint(final int row, final int column) {
+
         return upColor;
     }
 
@@ -84,6 +85,21 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
     @Override
     public Color getDownColor() {
         return downColor;
+    }
+
+    @Override
+    public String getSeriesColorName() {
+        return "EquityChange";
+    }
+
+    @Override
+    public String getUpColorName() {
+        return "Profit";
+    }
+
+    @Override
+    public String getDownColorName() {
+        return "Drawdown";
     }
 
 }

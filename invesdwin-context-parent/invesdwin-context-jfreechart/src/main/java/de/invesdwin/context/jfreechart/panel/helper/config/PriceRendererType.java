@@ -147,4 +147,9 @@ public enum PriceRendererType implements IRendererType {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isSeriesRendererTypeConfigurable() {
+        throw new UnsupportedOperationException();
+    }
+
 }

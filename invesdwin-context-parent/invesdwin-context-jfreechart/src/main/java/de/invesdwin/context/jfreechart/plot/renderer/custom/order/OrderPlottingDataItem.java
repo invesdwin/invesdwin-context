@@ -12,7 +12,6 @@ public class OrderPlottingDataItem {
     private final boolean closed;
     private final boolean profit;
     private final boolean pending;
-    private final boolean tpsl;
     private final String orderId;
     private final String label;
     private final String note;
@@ -20,7 +19,7 @@ public class OrderPlottingDataItem {
     //CHECKSTYLE:OFF
     public OrderPlottingDataItem(final double openPrice, final int openTimeIndex, final int closeTimeIndex,
             final double closePrice, final boolean closed, final boolean profit, final boolean pending,
-            final boolean tpsl, final String orderId, final String label, final String note) {
+            final String orderId, final String label, final String note) {
         //CHECKSTYLE:ON
         this.openPrice = openPrice;
         this.openTimeIndex = openTimeIndex;
@@ -29,7 +28,6 @@ public class OrderPlottingDataItem {
         this.closed = closed;
         this.profit = profit;
         this.pending = pending;
-        this.tpsl = tpsl;
         this.orderId = orderId;
         this.label = label;
         this.note = note;
@@ -61,10 +59,6 @@ public class OrderPlottingDataItem {
 
     public boolean isPending() {
         return pending;
-    }
-
-    public boolean isTpsl() {
-        return tpsl;
     }
 
     public String getOrderId() {

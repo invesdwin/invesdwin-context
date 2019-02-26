@@ -6,6 +6,8 @@ public interface IRendererType {
 
     SeriesRendererType getSeriesRendererType();
 
+    boolean isSeriesRendererTypeConfigurable();
+
     boolean isLineStyleConfigurable();
 
     boolean isLineWidthConfigurable();
@@ -23,5 +25,17 @@ public interface IRendererType {
     boolean isSeriesColorConfigurable();
 
     void reset(HighlightedLegendInfo highlighted, SeriesInitialSettings initialSettings);
+
+    default String getSeriesColorName() {
+        return "Series";
+    }
+
+    default String getUpColorName() {
+        return "Up";
+    }
+
+    default String getDownColorName() {
+        return "Down";
+    }
 
 }

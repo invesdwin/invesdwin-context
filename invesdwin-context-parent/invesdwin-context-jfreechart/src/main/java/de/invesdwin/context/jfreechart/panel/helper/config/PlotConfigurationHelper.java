@@ -214,26 +214,30 @@ public class PlotConfigurationHelper {
                     menuItem.setSelected(true);
                 }
             }
-            lineStyleItem.setVisible(rendererType.isLineStyleConfigurable());
-            lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
-            seriesColorItem.setVisible(rendererType.isSeriesColorConfigurable());
-            upColorItem.setVisible(rendererType.isUpColorConfigurable());
-            downColorItem.setVisible(rendererType.isDownColorConfigurable());
+            updateStyleVisibility(rendererType);
         }
         if (seriesRendererItem.isVisible()) {
-            final IRendererType seriesRendererType = getSeriesInitialSettings().getCurrentRendererType(highlighted);
+            final IRendererType rendererType = getSeriesInitialSettings().getCurrentRendererType(highlighted);
             for (final Component component : seriesRendererItem.getMenuComponents()) {
                 final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                if (menuItem.getName().equals(seriesRendererType.getSeriesRendererType().name())) {
+                if (menuItem.getName().equals(rendererType.getSeriesRendererType().name())) {
                     menuItem.setSelected(true);
                 }
             }
-            lineStyleItem.setVisible(seriesRendererType.isLineStyleConfigurable());
-            lineWidthItem.setVisible(seriesRendererType.isLineWidthConfigurable());
-            seriesColorItem.setVisible(seriesRendererType.isSeriesColorConfigurable());
-            upColorItem.setVisible(seriesRendererType.isUpColorConfigurable());
-            downColorItem.setVisible(seriesRendererType.isDownColorConfigurable());
+            seriesRendererItem.setVisible(rendererType.isSeriesRendererTypeConfigurable());
+            updateStyleVisibility(rendererType);
         }
+    }
+
+    private void updateStyleVisibility(final IRendererType rendererType) {
+        lineStyleItem.setVisible(rendererType.isLineStyleConfigurable());
+        lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
+        seriesColorItem.setVisible(rendererType.isSeriesColorConfigurable());
+        seriesColorItem.setText("Change " + rendererType.getSeriesColorName() + " Color");
+        upColorItem.setVisible(rendererType.isUpColorConfigurable());
+        upColorItem.setText("Change " + rendererType.getUpColorName() + " Color");
+        downColorItem.setVisible(rendererType.isDownColorConfigurable());
+        downColorItem.setText("Change " + rendererType.getDownColorName() + " Color");
     }
 
     private void updateLineMenuItemVisibility() {
@@ -404,30 +408,35 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final XYItemRenderer renderer = highlighted.getRenderer();
-                showColorChooserDialog("Series Color", (Color) renderer.getSeriesPaint(0), new IColorChooserListener() {
-                    @Override
-                    public void change(final Color initialColor, final Color newColor) {
-                        renderer.setSeriesPaint(0, newColor);
-                    }
+                final String seriesColorName = getSeriesInitialSettings().getCurrentRendererType(highlighted)
+                        .getSeriesColorName();
+                showColorChooserDialog(seriesColorName + " Color", (Color) renderer.getSeriesPaint(0),
+                        new IColorChooserListener() {
+                            @Override
+                            public void change(final Color initialColor, final Color newColor) {
+                                renderer.setSeriesPaint(0, newColor);
+                            }
 
-                    @Override
-                    public void ok(final Color initialColor, final Color acceptedColor) {
-                        renderer.setSeriesPaint(0, acceptedColor);
-                    }
+                            @Override
+                            public void ok(final Color initialColor, final Color acceptedColor) {
+                                renderer.setSeriesPaint(0, acceptedColor);
+                            }
 
-                    @Override
-                    public void cancel(final Color initialColor, final Color cancelledColor) {
-                        renderer.setSeriesPaint(0, initialColor);
-                    }
-                });
+                            @Override
+                            public void cancel(final Color initialColor, final Color cancelledColor) {
+                                renderer.setSeriesPaint(0, initialColor);
+                            }
+                        });
             }
         });
-        upColorItem = new JMenuItem("Change Up Color");
+        upColorItem = new JMenuItem();
         upColorItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final IUpDownColorRenderer renderer = (IUpDownColorRenderer) highlighted.getRenderer();
-                showColorChooserDialog("Up Color", renderer.getUpColor(), new IColorChooserListener() {
+                final String upColorName = getSeriesInitialSettings().getCurrentRendererType(highlighted)
+                        .getUpColorName();
+                showColorChooserDialog(upColorName + " Color", renderer.getUpColor(), new IColorChooserListener() {
                     @Override
                     public void change(final Color initialColor, final Color newColor) {
                         renderer.setUpColor(newColor);
@@ -445,12 +454,14 @@ public class PlotConfigurationHelper {
                 });
             }
         });
-        downColorItem = new JMenuItem("Change Down Color");
+        downColorItem = new JMenuItem();
         downColorItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final IUpDownColorRenderer renderer = (IUpDownColorRenderer) highlighted.getRenderer();
-                showColorChooserDialog("Down Color", renderer.getDownColor(), new IColorChooserListener() {
+                final String downColorName = getSeriesInitialSettings().getCurrentRendererType(highlighted)
+                        .getDownColorName();
+                showColorChooserDialog(downColorName + " Color", renderer.getDownColor(), new IColorChooserListener() {
                     @Override
                     public void change(final Color initialColor, final Color newColor) {
                         renderer.setDownColor(newColor);

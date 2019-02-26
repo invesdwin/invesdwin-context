@@ -13,6 +13,16 @@ public interface ICustomRendererType extends IRendererType, XYItemRenderer {
     String getName();
 
     @Override
+    default boolean isSeriesRendererTypeConfigurable() {
+        return true;
+    }
+
+    @Override
+    default boolean isSeriesColorConfigurable() {
+        return true;
+    }
+
+    @Override
     default SeriesRendererType getSeriesRendererType() {
         return SeriesRendererType.Custom;
     }

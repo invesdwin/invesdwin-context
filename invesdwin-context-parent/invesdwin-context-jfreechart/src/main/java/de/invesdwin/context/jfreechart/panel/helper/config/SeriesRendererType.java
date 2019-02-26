@@ -211,4 +211,9 @@ public enum SeriesRendererType implements IRendererType {
     public SeriesRendererType getSeriesRendererType() {
         return this;
     }
+
+    @Override
+    public boolean isSeriesRendererTypeConfigurable() {
+        return true;
+    }
 }
