@@ -19,7 +19,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.renderer.IUpDownColorRenderer;
 
 @NotThreadSafe
-public class OrderPlottingRenderer extends AbstractXYItemRenderer implements ICustomRendererType, IUpDownColorRenderer {
+public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer implements ICustomRendererType, IUpDownColorRenderer {
 
     private static final LineStyleType LINE_STYLE_DEFAULT = LineStyleType.Solid;
     private static final LineStyleType LINE_STYLE_PENDING = LineStyleType.Dashed;

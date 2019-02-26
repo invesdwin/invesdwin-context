@@ -1,5 +1,6 @@
 package de.invesdwin.context.jfreechart.dataset.order;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -111,6 +112,11 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     @Override
     public double getXValueAsDateTime(final int series, final int item) {
         return ohlcDataset.getXValueAsDateTime(series, item);
+    }
+
+    @Override
+    public int getDateTimeAsItemIndex(final int series, final Date time) {
+        return ohlcDataset.getDateTimeAsItemIndex(series, time);
     }
 
     public void addOrUpdate(final OrderPlottingDataItem item) {
