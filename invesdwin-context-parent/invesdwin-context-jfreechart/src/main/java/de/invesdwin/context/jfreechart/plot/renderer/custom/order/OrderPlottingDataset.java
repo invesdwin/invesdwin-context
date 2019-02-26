@@ -31,7 +31,7 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     private DatasetGroup group;
     private String rangeAxisId;
     private final Map<String, OrderPlottingDataItem> orderId_item = new LinkedHashMap<>();
-    private boolean lastTradeProfit;
+    private boolean lastTradeProfit = true;
 
     public OrderPlottingDataset(final String seriesKey, final IndexedDateTimeOHLCDataset ohlcDataset) {
         this.seriesKey = seriesKey;

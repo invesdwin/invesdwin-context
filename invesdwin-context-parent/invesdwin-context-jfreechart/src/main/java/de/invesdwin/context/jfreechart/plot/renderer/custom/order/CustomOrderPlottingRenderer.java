@@ -58,10 +58,10 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
             final OrderPlottingDataset dataset) {
         this.dataset = dataset;
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
-        setSeriesPaint(0, UP_COLOR);
-        setSeriesStroke(0, config.getSeriesStroke());
         upColor = UP_COLOR;
         downColor = DOWN_COLOR;
+        setSeriesPaint(0, upColor);
+        setSeriesStroke(0, config.getSeriesStroke());
     }
 
     @Override

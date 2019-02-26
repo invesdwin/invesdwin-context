@@ -64,7 +64,6 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         private final XYAreaRendererStateData profit;
         private final XYAreaRendererStateData loss;
         private final Line2D line;
-        private final boolean firstItem = true;
 
         private XYAreaRendererState(final PlotRenderingInfo info) {
             super(info);

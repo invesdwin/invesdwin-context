@@ -23,8 +23,9 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
 
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
-    private static final Percent AREA_TRANSPARENCY = new Percent(90, PercentScale.PERCENT);
-    private static final Percent LINE_TRANSPARENCY = new Percent(80, PercentScale.PERCENT);
+    public static final Color LEGEND_COLOR = Colors.setTransparency(UP_COLOR, Percent.FIFTY_PERCENT);
+    public static final Percent AREA_TRANSPARENCY = new Percent(90, PercentScale.PERCENT);
+    public static final Percent LINE_TRANSPARENCY = new Percent(80, PercentScale.PERCENT);
 
     private Color upColor;
     private Color downColor;
@@ -32,17 +33,16 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
     public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
 
-        setSeriesPaint(0, Colors.setTransparency(UP_COLOR, LINE_TRANSPARENCY));
+        setSeriesPaint(0, Colors.setTransparency(LEGEND_COLOR, LINE_TRANSPARENCY));
         setSeriesStroke(0, config.getSeriesStroke());
 
-        this.upColor = Colors.setTransparency(UP_COLOR, AREA_TRANSPARENCY);
+        this.upColor = Colors.setTransparency(LEGEND_COLOR, AREA_TRANSPARENCY);
         this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
     }
 
     @Override
     public Paint getItemPaint(final int row, final int column) {
-
-        return upColor;
+        return LEGEND_COLOR;
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
@@ -75,17 +76,28 @@ public class PlotZoomHelper {
 
     public void limitRange() {
         Range range = chartPanel.getDomainAxis().getRange();
-        boolean rangeChanged = false;
+        final MutableBoolean rangeChanged = new MutableBoolean(false);
         final double minLowerBound = 0D - chartPanel.getAllowedRangeGap();
         if (range.getLowerBound() < minLowerBound) {
-            range = new Range(minLowerBound, range.getUpperBound());
-            rangeChanged = true;
+            final double difference = minLowerBound - range.getLowerBound();
+            range = new Range(minLowerBound, range.getUpperBound() + difference);
+            rangeChanged.setTrue();
         }
         final int maxUpperBound = chartPanel.getDataset().getItemCount(0) + chartPanel.getAllowedRangeGap();
         if (range.getUpperBound() > maxUpperBound) {
-            range = new Range(range.getLowerBound(), maxUpperBound);
-            rangeChanged = true;
+            final double difference = range.getUpperBound() - maxUpperBound;
+            range = new Range(range.getLowerBound() - difference, maxUpperBound);
+            rangeChanged.setTrue();
         }
+        range = limitRangeZoom(range, rangeChanged, minLowerBound, maxUpperBound);
+        if (rangeChanged.booleanValue()) {
+            chartPanel.getDomainAxis().setRange(range);
+        }
+    }
+
+    private Range limitRangeZoom(final Range pRange, final MutableBoolean rangeChanged, final double minLowerBound,
+            final int maxUpperBound) {
+        Range range = pRange;
         final int itemCount = (int) range.getLength();
         if (itemCount <= MIN_ZOOM_ITEM_COUNT) {
             final int gap = MIN_ZOOM_ITEM_COUNT / 2;
@@ -96,7 +108,7 @@ public class PlotZoomHelper {
             if (range.getLowerBound() < minLowerBound) {
                 range = new Range(minLowerBound, MIN_ZOOM_ITEM_COUNT);
             }
-            rangeChanged = true;
+            rangeChanged.setTrue();
         }
         if (itemCount >= MAX_ZOOM_ITEM_COUNT) {
             final int gap = MAX_ZOOM_ITEM_COUNT / 2;
@@ -107,11 +119,9 @@ public class PlotZoomHelper {
             if (range.getLowerBound() < minLowerBound) {
                 range = new Range(minLowerBound, MAX_ZOOM_ITEM_COUNT);
             }
-            rangeChanged = true;
+            rangeChanged.setTrue();
         }
-        if (rangeChanged) {
-            chartPanel.getDomainAxis().setRange(range);
-        }
+        return range;
     }
 
 }

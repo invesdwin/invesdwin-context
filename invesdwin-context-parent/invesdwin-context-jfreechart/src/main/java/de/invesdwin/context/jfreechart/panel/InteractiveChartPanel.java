@@ -34,6 +34,7 @@ import de.invesdwin.context.jfreechart.plot.IndexedDateTimeNumberFormat;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
+import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.swing.listener.KeyListenerSupport;
 import de.invesdwin.util.swing.listener.MouseListenerSupport;
 import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
@@ -179,8 +180,10 @@ public class InteractiveChartPanel extends JPanel {
     }
 
     public void resetRange() {
-        final Range range = new Range(dataset.getItemCount(0) - getInitialVisibleItemCount(),
-                dataset.getItemCount(0) + chartPanel.getAllowedRangeGap());
+        final int minLowerBound = -chartPanel.getAllowedRangeGap();
+        final int lowerBound = dataset.getItemCount(0) - getInitialVisibleItemCount();
+        final int upperBound = dataset.getItemCount(0) + chartPanel.getAllowedRangeGap();
+        final Range range = new Range(Doubles.max(minLowerBound, lowerBound), upperBound);
         domainAxis.setRange(range);
         update();
     }
