@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.dataset.points;
+package de.invesdwin.context.jfreechart.dataset.basis.points;
 
 import java.util.Collection;
 
