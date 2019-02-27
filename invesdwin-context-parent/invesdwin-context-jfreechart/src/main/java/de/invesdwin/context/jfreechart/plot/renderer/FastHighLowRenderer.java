@@ -21,11 +21,12 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
 @NotThreadSafe
-public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer, IPriceLineRenderer {
+public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer, IDelegatePriceLineRenderer {
 
     private static final float STROKE_SCALING_MIN_WIDTH = 0.5F;
     private final FastCandlestickRenderer candlestickRenderer;
@@ -37,6 +38,11 @@ public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColor
         setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
         this.priceLineAnnotation = new XYPriceLineAnnotation(candlestickRenderer.getDataset(), this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPriceLineRenderer getDelegatePriceLineRenderer() {
+        return priceLineAnnotation;
     }
 
     @Override
@@ -119,16 +125,6 @@ public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColor
     protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
             final int series, final int item, final double entityX, final double entityY) {
         //noop
-    }
-
-    @Override
-    public void setPriceLineVisible(final boolean visible) {
-        priceLineAnnotation.setPriceLineVisible(visible);
-    }
-
-    @Override
-    public boolean isPriceLineVisible() {
-        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

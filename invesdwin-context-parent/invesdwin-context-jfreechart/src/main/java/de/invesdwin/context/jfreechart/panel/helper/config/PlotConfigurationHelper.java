@@ -132,7 +132,6 @@ public class PlotConfigurationHelper {
             }
 
             private void addSeriesConfigMenuItems() {
-                final boolean priceLineConfigurable;
                 if (highlighted.isPriceSeries()) {
                     titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
                     priceRendererItem.setVisible(true);
@@ -265,9 +264,14 @@ public class PlotConfigurationHelper {
         upColorItem.setText("Change " + rendererType.getUpColorName() + " Color");
         downColorItem.setVisible(rendererType.isDownColorConfigurable());
         downColorItem.setText("Change " + rendererType.getDownColorName() + " Color");
-        final boolean priceLineVisible = highlighted.isPriceLineVisible();
-        hidePriceLineItem.setVisible(priceLineVisible);
-        showPriceLineItem.setVisible(!priceLineVisible);
+        if (rendererType.isPriceLineConfigurable()) {
+            final boolean priceLineVisible = highlighted.isPriceLineVisible();
+            hidePriceLineItem.setVisible(priceLineVisible);
+            showPriceLineItem.setVisible(!priceLineVisible);
+        } else {
+            hidePriceLineItem.setVisible(false);
+            showPriceLineItem.setVisible(false);
+        }
     }
 
     private void updateLineMenuItemVisibility() {

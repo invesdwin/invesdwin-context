@@ -34,6 +34,7 @@ import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
@@ -44,7 +45,7 @@ import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnno
  *
  */
 @NotThreadSafe
-public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IPriceLineRenderer {
+public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IDelegatePriceLineRenderer {
 
     private static final class XYAreaRendererState extends XYItemRendererState {
         private GeneralPath area;
@@ -89,6 +90,11 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IPrice
 
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPriceLineRenderer getDelegatePriceLineRenderer() {
+        return priceLineAnnotation;
     }
 
     /**
@@ -468,13 +474,4 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IPrice
         //noop
     }
 
-    @Override
-    public void setPriceLineVisible(final boolean visible) {
-        priceLineAnnotation.setPriceLineVisible(visible);
-    }
-
-    @Override
-    public boolean isPriceLineVisible() {
-        return priceLineAnnotation.isPriceLineVisible();
-    }
 }

@@ -6,4 +6,8 @@ public interface IPriceLineRenderer {
 
     boolean isPriceLineVisible();
 
+    void setPriceLabelEnabled(boolean priceLabelEnabled);
+
+    boolean isPriceLabelEnabled();
+
 }

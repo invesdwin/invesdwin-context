@@ -9,6 +9,7 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.internal.ACustomEquityChangeRenderer;
@@ -24,7 +25,7 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
  */
 @NotThreadSafe
 public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
-        implements ICustomRendererType, IPriceLineRenderer {
+        implements ICustomRendererType, IDelegatePriceLineRenderer {
 
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
@@ -46,6 +47,11 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
         this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPriceLineRenderer getDelegatePriceLineRenderer() {
+        return priceLineAnnotation;
     }
 
     @Override
@@ -108,16 +114,6 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
     @Override
     public String getDownColorName() {
         return "Drawdown";
-    }
-
-    @Override
-    public void setPriceLineVisible(final boolean visible) {
-        priceLineAnnotation.setPriceLineVisible(visible);
-    }
-
-    @Override
-    public boolean isPriceLineVisible() {
-        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

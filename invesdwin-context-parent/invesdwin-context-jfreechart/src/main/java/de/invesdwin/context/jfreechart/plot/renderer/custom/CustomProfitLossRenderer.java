@@ -9,6 +9,7 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.internal.ACustomProfitLossRenderer;
@@ -24,7 +25,7 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
  */
 @NotThreadSafe
 public class CustomProfitLossRenderer extends ACustomProfitLossRenderer
-        implements ICustomRendererType, IPriceLineRenderer {
+        implements ICustomRendererType, IDelegatePriceLineRenderer {
 
     public static final Percent TRANSPARENCY = new Percent(50, PercentScale.PERCENT);
     public static final Color DOWN_COLOR = Colors.fromHex("#CC0000");
@@ -47,6 +48,11 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer
 
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPriceLineRenderer getDelegatePriceLineRenderer() {
+        return priceLineAnnotation;
     }
 
     @Override
@@ -111,16 +117,6 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer
     @Override
     public String getDownColorName() {
         return "Loss";
-    }
-
-    @Override
-    public void setPriceLineVisible(final boolean visible) {
-        priceLineAnnotation.setPriceLineVisible(visible);
-    }
-
-    @Override
-    public boolean isPriceLineVisible() {
-        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

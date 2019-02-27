@@ -40,7 +40,8 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
     private final XYDataset dataset;
     private final XYItemRenderer renderer;
     private Stroke stroke;
-    private boolean visible;
+    private boolean priceLineVisible;
+    private boolean priceLabelEnabled;
 
     public XYPriceLineAnnotation(final XYDataset dataset, final XYItemRenderer renderer) {
         this.dataset = dataset;
@@ -60,20 +61,30 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
     }
 
     @Override
-    public void setPriceLineVisible(final boolean visible) {
-        this.visible = visible;
+    public void setPriceLineVisible(final boolean priceLineVisible) {
+        this.priceLineVisible = priceLineVisible;
         fireAnnotationChanged();
     }
 
     @Override
     public boolean isPriceLineVisible() {
-        return visible;
+        return priceLineVisible;
+    }
+
+    @Override
+    public void setPriceLabelEnabled(final boolean priceLabelEnabled) {
+        this.priceLabelEnabled = priceLabelEnabled;
+    }
+
+    @Override
+    public boolean isPriceLabelEnabled() {
+        return priceLabelEnabled;
     }
 
     @Override
     public void draw(final Graphics2D g2, final XYPlot plot, final Rectangle2D dataArea, final ValueAxis domainAxis,
             final ValueAxis rangeAxis, final int rendererIndex, final PlotRenderingInfo info) {
-        if (!visible) {
+        if (!priceLineVisible) {
             return;
         }
 
@@ -112,15 +123,17 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
         if (visible) {
             g2.draw(line);
 
-            final NumberAxis cRangeAxis = (NumberAxis) rangeAxis;
-            final NumberFormat rangeAxisFormat = cRangeAxis.getNumberFormatOverride();
+            if (priceLabelEnabled) {
+                final NumberAxis cRangeAxis = (NumberAxis) rangeAxis;
+                final NumberFormat rangeAxisFormat = cRangeAxis.getNumberFormatOverride();
 
-            final XYTextAnnotation priceAnnotation = new XYTextAnnotation(rangeAxisFormat.format(lastPrice), x2 - 1D,
-                    y + 1D);
-            priceAnnotation.setPaint(paint);
-            priceAnnotation.setFont(FONT);
-            priceAnnotation.setTextAnchor(TextAnchor.TOP_RIGHT);
-            priceAnnotation.draw(g2, plot, dataArea, ABSOLUTE_AXIS, ABSOLUTE_AXIS, rendererIndex, info);
+                final XYTextAnnotation priceAnnotation = new XYTextAnnotation(rangeAxisFormat.format(lastPrice),
+                        x2 - 1D, y + 1D);
+                priceAnnotation.setPaint(paint);
+                priceAnnotation.setFont(FONT);
+                priceAnnotation.setTextAnchor(TextAnchor.TOP_RIGHT);
+                priceAnnotation.draw(g2, plot, dataArea, ABSOLUTE_AXIS, ABSOLUTE_AXIS, rendererIndex, info);
+            }
         }
 
     }

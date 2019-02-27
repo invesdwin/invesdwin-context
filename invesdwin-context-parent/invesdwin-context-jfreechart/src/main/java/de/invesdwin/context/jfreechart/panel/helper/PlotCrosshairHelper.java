@@ -126,10 +126,10 @@ public class PlotCrosshairHelper {
                     final double yyRight = rangeAxisRight.java2DToValue(mousePoint.getY(), panelArea,
                             plot.getRangeAxisEdge());
                     rangeCrosshairMarkerRight.setValue(yyRight);
-                    if (rangeAxisRight.isTickLabelsVisible()) {
+                    if (rangeAxisRight.isVisible()) {
                         rangeCrosshairMarkerRight.setLabel(rangeAxisRight.getNumberFormatOverride().format(yyRight));
                         final NumberAxis rangeAxisLeft = (NumberAxis) plot.getRangeAxis(1);
-                        if (rangeAxisLeft != null) {
+                        if (rangeAxisLeft != null && rangeAxisLeft.isVisible()) {
                             rangeCrosshairMarkerLeft.setValue(yyRight);
                             final double yyLeft = rangeAxisLeft.java2DToValue(mousePoint.getY(), panelArea,
                                     plot.getRangeAxisEdge(1));

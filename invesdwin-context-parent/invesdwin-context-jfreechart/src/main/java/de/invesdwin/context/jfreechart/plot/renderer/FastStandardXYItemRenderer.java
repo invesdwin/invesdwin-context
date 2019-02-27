@@ -16,17 +16,23 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
 @NotThreadSafe
-public class FastStandardXYItemRenderer extends StandardXYItemRenderer implements IPriceLineRenderer {
+public class FastStandardXYItemRenderer extends StandardXYItemRenderer implements IDelegatePriceLineRenderer {
 
     private final XYPriceLineAnnotation priceLineAnnotation;
 
     public FastStandardXYItemRenderer(final XYDataset dataset) {
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPriceLineRenderer getDelegatePriceLineRenderer() {
+        return priceLineAnnotation;
     }
 
     //CHECKSTYLE:OFF
@@ -51,16 +57,6 @@ public class FastStandardXYItemRenderer extends StandardXYItemRenderer implement
     protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
             final int series, final int item, final double entityX, final double entityY) {
         //noop
-    }
-
-    @Override
-    public void setPriceLineVisible(final boolean visible) {
-        priceLineAnnotation.setPriceLineVisible(visible);
-    }
-
-    @Override
-    public boolean isPriceLineVisible() {
-        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

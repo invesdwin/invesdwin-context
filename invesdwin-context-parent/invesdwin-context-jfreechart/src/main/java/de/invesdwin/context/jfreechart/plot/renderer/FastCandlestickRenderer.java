@@ -28,6 +28,7 @@ import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.util.error.UnknownArgumentException;
@@ -44,7 +45,7 @@ import de.invesdwin.util.math.Floats;
 //CHECKSTYLE:OFF
 @NotThreadSafe
 public class FastCandlestickRenderer extends AbstractXYItemRenderer
-        implements IUpDownColorRenderer, IPriceLineRenderer {
+        implements IUpDownColorRenderer, IDelegatePriceLineRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
     private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;
@@ -94,6 +95,11 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
         this.dataset = dataset;
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPriceLineRenderer getDelegatePriceLineRenderer() {
+        return priceLineAnnotation;
     }
 
     public OHLCDataset getDataset() {
@@ -487,16 +493,6 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
     protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
             final int series, final int item, final double entityX, final double entityY) {
         //noop
-    }
-
-    @Override
-    public void setPriceLineVisible(final boolean visible) {
-        priceLineAnnotation.setPriceLineVisible(visible);
-    }
-
-    @Override
-    public boolean isPriceLineVisible() {
-        return priceLineAnnotation.isPriceLineVisible();
     }
 
     @Override

@@ -25,7 +25,8 @@ public class PriceInitialSettings {
     public static final Color DEFAULT_SERIES_COLOR = Colors.fromHex("#3C78D8");
     public static final Stroke DEFAULT_SERIES_STROKE = LineStyleType.Solid.getStroke(LineWidthType._1);
     public static final PriceRendererType DEFAULT_PRICE_RENDERER_TYPE = PriceRendererType.Candlestick;
-    private static final boolean DEFAULT_PRICE_LINE_VISIBLE = true;
+    public static final boolean DEFAULT_PRICE_LINE_VISIBLE = true;
+    public static final boolean DEFAULT_PRICE_LABEL_ENABLED = true;
 
     private final PlotConfigurationHelper plotConfigurationHelper;
 
@@ -45,6 +46,7 @@ public class PriceInitialSettings {
     private Color seriesColor;
     private Stroke seriesStroke;
     private boolean priceLineVisible;
+    private boolean priceLabelEnabled;
 
     public PriceInitialSettings(final PlotConfigurationHelper plotConfigurationHelper) {
         this.plotConfigurationHelper = plotConfigurationHelper;
@@ -61,6 +63,7 @@ public class PriceInitialSettings {
         setSeriesColor(DEFAULT_SERIES_COLOR);
         setSeriesStroke(DEFAULT_SERIES_STROKE);
         setPriceLineVisible(DEFAULT_PRICE_LINE_VISIBLE);
+        setPriceLabelEnabled(DEFAULT_PRICE_LABEL_ENABLED);
     }
 
     public PriceRendererType getPriceRendererType() {
@@ -202,12 +205,30 @@ public class PriceInitialSettings {
         this.stepLineRenderer.setPriceLineVisible(priceLineVisible);
     }
 
+    public boolean isPriceLabelEnabled() {
+        return priceLabelEnabled;
+    }
+
+    public void setPriceLabelEnabled(final boolean priceLabelEnabled) {
+        this.priceLabelEnabled = priceLabelEnabled;
+        updatePriceLabelEnabled();
+    }
+
+    private void updatePriceLabelEnabled() {
+        candlestickRenderer.setPriceLabelEnabled(priceLabelEnabled);
+        barsRenderer.setPriceLabelEnabled(priceLabelEnabled);
+        areaRenderer.setPriceLabelEnabled(priceLabelEnabled);
+        lineRenderer.setPriceLabelEnabled(priceLabelEnabled);
+        stepLineRenderer.setPriceLabelEnabled(priceLabelEnabled);
+    }
+
     public void reset() {
         updateUpColor();
         updateDownColor();
         updateSeriesColor();
         updateSeriesStroke();
         updatePriceLineVisible();
+        updatePriceLabelEnabled();
         plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
     }
 
