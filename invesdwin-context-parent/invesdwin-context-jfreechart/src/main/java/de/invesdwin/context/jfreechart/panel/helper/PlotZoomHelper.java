@@ -11,9 +11,8 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.Range;
 
-import com.google.common.primitives.Doubles;
-
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe
 public class PlotZoomHelper {
