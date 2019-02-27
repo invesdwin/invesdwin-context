@@ -38,6 +38,7 @@ import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.lang.Colors;
 
 @NotThreadSafe
 public class PlotLegendHelper {
@@ -48,8 +49,8 @@ public class PlotLegendHelper {
     private static final int INITIAL_PLOT_WEIGHT = CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT;
     private static final int EMPTY_PLOT_WEIGHT = CustomCombinedDomainXYPlot.EMPTY_PLOT_WEIGHT;
 
-    private static final Color LEGEND_BACKGROUND_PAINT = new Color(255, 255, 255, 100);
-    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(222, 222, 222, 100);
+    private static final Color LEGEND_BACKGROUND_PAINT = Colors.INVISIBLE_COLOR;
+    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(233, 233, 233, 100);
 
     private final InteractiveChartPanel chartPanel;
 
@@ -266,7 +267,8 @@ public class PlotLegendHelper {
                 final XYPlot plot = plotSource.getPlot();
                 final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
                 final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
-                setDatasetHidden(plot, datasetIndex, !(renderer instanceof DisabledXYItemRenderer));
+                final boolean visible = renderer instanceof DisabledXYItemRenderer;
+                setDatasetVisible(plot, datasetIndex, visible);
                 EventDispatchThreadUtil.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -278,10 +280,10 @@ public class PlotLegendHelper {
         }
     }
 
-    public void setDatasetHidden(final XYPlot plot, final int datasetIndex, final boolean hidden) {
+    public void setDatasetVisible(final XYPlot plot, final int datasetIndex, final boolean visible) {
         final XYDataset dataset = plot.getDataset(datasetIndex);
         final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
-        if (!hidden) {
+        if (visible) {
             final DisabledXYDataset cDataset = (DisabledXYDataset) dataset;
             plot.setDataset(datasetIndex, cDataset.getEnabledDataset());
             final DisabledXYItemRenderer cRenderer = (DisabledXYItemRenderer) renderer;

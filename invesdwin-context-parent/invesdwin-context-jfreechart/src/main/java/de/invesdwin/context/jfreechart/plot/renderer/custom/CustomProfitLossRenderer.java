@@ -9,7 +9,8 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.internal.ACustomProfitLossRenderer;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
@@ -22,7 +23,8 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
  *
  */
 @NotThreadSafe
-public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implements ICustomRendererType {
+public class CustomProfitLossRenderer extends ACustomProfitLossRenderer
+        implements ICustomRendererType, IPriceLineRenderer {
 
     public static final Percent TRANSPARENCY = new Percent(50, PercentScale.PERCENT);
     public static final Color DOWN_COLOR = Colors.fromHex("#CC0000");
@@ -31,6 +33,7 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implemen
     private final XYDataset dataset;
     private Color upColor;
     private Color downColor;
+    private final XYPriceLineAnnotation priceLineAnnotation;
 
     public CustomProfitLossRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
         this.dataset = dataset;
@@ -41,13 +44,16 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implemen
 
         this.upColor = Colors.setTransparency(UP_COLOR, TRANSPARENCY);
         this.downColor = Colors.setTransparency(DOWN_COLOR, TRANSPARENCY);
+
+        this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
+        addAnnotation(priceLineAnnotation);
     }
 
     @Override
     public Paint getItemPaint(final int row, final int column) {
         final double yValue = dataset.getYValue(row, column);
         if (Double.isNaN(yValue)) {
-            return DisabledXYItemRenderer.INVISIBLE_COLOR;
+            return Colors.INVISIBLE_COLOR;
         } else if (yValue >= 0) {
             return upColor;
         } else {
@@ -105,6 +111,16 @@ public class CustomProfitLossRenderer extends ACustomProfitLossRenderer implemen
     @Override
     public String getDownColorName() {
         return "Loss";
+    }
+
+    @Override
+    public void setPriceLineVisible(final boolean visible) {
+        priceLineAnnotation.setPriceLineVisible(visible);
+    }
+
+    @Override
+    public boolean isPriceLineVisible() {
+        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

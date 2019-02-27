@@ -15,8 +15,18 @@ import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+
 @NotThreadSafe
-public class FastXYStepRenderer extends XYStepRenderer {
+public class FastXYStepRenderer extends XYStepRenderer implements IPriceLineRenderer {
+
+    private final XYPriceLineAnnotation priceLineAnnotation;
+
+    public FastXYStepRenderer(final XYDataset dataset) {
+        this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
+        addAnnotation(priceLineAnnotation);
+    }
 
     @Override
     public XYItemRendererState initialise(final Graphics2D g2, final Rectangle2D dataArea, final XYPlot plot,
@@ -35,6 +45,16 @@ public class FastXYStepRenderer extends XYStepRenderer {
     protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
             final int series, final int item, final double entityX, final double entityY) {
         //noop
+    }
+
+    @Override
+    public void setPriceLineVisible(final boolean visible) {
+        priceLineAnnotation.setPriceLineVisible(visible);
+    }
+
+    @Override
+    public boolean isPriceLineVisible() {
+        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

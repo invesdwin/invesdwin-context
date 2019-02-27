@@ -31,6 +31,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.CustomProfitLossRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
@@ -41,11 +42,10 @@ import de.invesdwin.util.lang.Strings;
 public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
         implements ICustomRendererType, IUpDownColorRenderer {
 
+    public static final Font FONT = XYPriceLineAnnotation.FONT;
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
     private static final ValueAxis ABSOLUTE_AXIS = XYPlots.DRAWING_ABSOLUTE_AXIS;
-
-    private static final Font FONT = new Font("Verdana", Font.PLAIN, 9);
 
     private static final LineStyleType LINE_STYLE_DEFAULT = LineStyleType.Solid;
     private static final LineStyleType LINE_STYLE_PENDING = LineStyleType.Dashed;
@@ -188,13 +188,13 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
                     if (!closed) {
                         final String label = next.getLabel();
                         if (Strings.isNotBlank(label)) {
-                            final XYTextAnnotation labelAnnotation = new XYTextAnnotation(label + " ", x2, y2 - 1D);
+                            final XYTextAnnotation labelAnnotation = new XYTextAnnotation(label, x2 - 1D, y2 - 1D);
                             labelAnnotation.setPaint(color);
                             labelAnnotation.setFont(FONT);
                             labelAnnotation.setTextAnchor(TextAnchor.BOTTOM_RIGHT);
                             labelAnnotation.draw(g2, plot, dataArea, ABSOLUTE_AXIS, ABSOLUTE_AXIS, rendererIndex, info);
                             final XYTextAnnotation priceAnnotation = new XYTextAnnotation(
-                                    rangeAxisFormat.format(closePrice) + " ", x2, y2 + 1D);
+                                    rangeAxisFormat.format(closePrice), x2 - 1D, y2 + 1D);
                             priceAnnotation.setPaint(color);
                             priceAnnotation.setFont(FONT);
                             priceAnnotation.setTextAnchor(TextAnchor.TOP_RIGHT);

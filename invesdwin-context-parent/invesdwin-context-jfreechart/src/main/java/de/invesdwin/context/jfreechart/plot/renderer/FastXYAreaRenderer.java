@@ -20,24 +20,22 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
 import org.jfree.chart.labels.XYSeriesLabelGenerator;
-import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.CrosshairState;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.chart.ui.GradientPaintTransformer;
 import org.jfree.chart.ui.StandardGradientPaintTransformer;
-import org.jfree.chart.urls.XYURLGenerator;
 import org.jfree.chart.util.Args;
-import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.util.SerialUtils;
 import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
 /**
  * Instead of drawing an outline, this one draws a line so that at start and end of series the line does not go to zero.
@@ -46,25 +44,12 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
  *
  */
 @NotThreadSafe
-public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItemRenderer, PublicCloneable {
+public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IPriceLineRenderer {
 
-    /**
-     * A state object used by this renderer.
-     */
     private static final class XYAreaRendererState extends XYItemRendererState {
-
-        /** Working storage for the area under one series. */
         private GeneralPath area;
-
-        /** Working line that can be recycled. */
         private final Line2D line;
 
-        /**
-         * Creates a new state.
-         *
-         * @param info
-         *            the plot rendering info.
-         */
         private XYAreaRendererState(final PlotRenderingInfo info) {
             super(info);
             this.area = new GeneralPath();
@@ -73,50 +58,19 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
 
     }
 
-    /** A flag indicating whether or not lines are drawn between XY points. */
     private final boolean plotLines;
 
-    /** A flag indicating whether or not Area are drawn at each XY point. */
     private final boolean plotArea;
 
-    /**
-     * The shape used to represent an area in each legend item (this should never be {@code null}).
-     */
     private transient Shape legendArea;
 
-    /**
-     * A transformer that is applied to the paint used to fill under the area *if* it is an instance of GradientPaint.
-     *
-     * @since 1.0.14
-     */
     private GradientPaintTransformer gradientTransformer;
 
-    /**
-     * Constructs a new renderer.
-     *
-     * @param type
-     *            the type of the renderer.
-     */
-    public FastXYAreaRenderer() {
-        this(null, null);
-    }
+    private final XYPriceLineAnnotation priceLineAnnotation;
 
-    /**
-     * Constructs a new renderer. To specify the type of renderer, use one of the constants: {@code SHAPES},
-     * {@code LINES}, {@code SHAPES_AND_LINES}, {@code AREA} or {@code AREA_AND_SHAPES}.
-     *
-     * @param type
-     *            the type of renderer.
-     * @param toolTipGenerator
-     *            the tool tip generator ({@code null} permitted).
-     * @param urlGenerator
-     *            the URL generator ({@code null} permitted).
-     */
-    public FastXYAreaRenderer(final XYToolTipGenerator toolTipGenerator, final XYURLGenerator urlGenerator) {
+    public FastXYAreaRenderer(final XYDataset dataset) {
 
         super();
-        setDefaultToolTipGenerator(toolTipGenerator);
-        setURLGenerator(urlGenerator);
 
         this.plotArea = true;
         this.plotLines = true;
@@ -132,6 +86,9 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
         this.gradientTransformer = new StandardGradientPaintTransformer();
 
         setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
+
+        this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
+        addAnnotation(priceLineAnnotation);
     }
 
     /**
@@ -393,21 +350,6 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
     }
 
     /**
-     * Returns a clone of the renderer.
-     *
-     * @return A clone.
-     *
-     * @throws CloneNotSupportedException
-     *             if the renderer cannot be cloned.
-     */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final FastXYAreaRenderer clone = (FastXYAreaRenderer) super.clone();
-        clone.legendArea = ShapeUtils.clone(this.legendArea);
-        return clone;
-    }
-
-    /**
      * Tests this renderer for equality with an arbitrary object.
      *
      * @param obj
@@ -524,5 +466,15 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements XYItem
     protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
             final int series, final int item, final double entityX, final double entityY) {
         //noop
+    }
+
+    @Override
+    public void setPriceLineVisible(final boolean visible) {
+        priceLineAnnotation.setPriceLineVisible(visible);
+    }
+
+    @Override
+    public boolean isPriceLineVisible() {
+        return priceLineAnnotation.isPriceLineVisible();
     }
 }

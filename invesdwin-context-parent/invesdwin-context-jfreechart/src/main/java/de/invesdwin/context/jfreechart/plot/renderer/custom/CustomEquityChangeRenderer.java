@@ -5,8 +5,12 @@ import java.awt.Paint;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.jfree.data.xy.XYDataset;
+
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.internal.ACustomEquityChangeRenderer;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
@@ -19,7 +23,8 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
  *
  */
 @NotThreadSafe
-public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer implements ICustomRendererType {
+public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
+        implements ICustomRendererType, IPriceLineRenderer {
 
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;
@@ -27,10 +32,11 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
     public static final Percent AREA_TRANSPARENCY = new Percent(90, PercentScale.PERCENT);
     public static final Percent LINE_TRANSPARENCY = new Percent(80, PercentScale.PERCENT);
 
+    private final XYPriceLineAnnotation priceLineAnnotation;
     private Color upColor;
     private Color downColor;
 
-    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
+    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
 
         setSeriesPaint(0, Colors.setTransparency(LEGEND_COLOR, LINE_TRANSPARENCY));
@@ -38,6 +44,8 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
 
         this.upColor = Colors.setTransparency(LEGEND_COLOR, AREA_TRANSPARENCY);
         this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
+        this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
+        addAnnotation(priceLineAnnotation);
     }
 
     @Override
@@ -100,6 +108,16 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer impl
     @Override
     public String getDownColorName() {
         return "Drawdown";
+    }
+
+    @Override
+    public void setPriceLineVisible(final boolean visible) {
+        priceLineAnnotation.setPriceLineVisible(visible);
+    }
+
+    @Override
+    public boolean isPriceLineVisible() {
+        return priceLineAnnotation.isPriceLineVisible();
     }
 
 }

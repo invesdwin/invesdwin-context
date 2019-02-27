@@ -3,6 +3,7 @@ package de.invesdwin.context.jfreechart.panel.helper;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
@@ -22,11 +23,12 @@ import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.TextAnchor;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
-import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+import de.invesdwin.util.lang.Colors;
 
 @NotThreadSafe
 public class PlotCrosshairHelper {
-
+    private static final Font CROSSHAIR_FONT = XYPriceLineAnnotation.FONT;
     private static final Cursor CROSSHAIR_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
     private static final Color CROSSHAIR_COLOR = Color.BLACK;
     private static final Stroke CROSSHAIR_STROKE = new BasicStroke(0.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
@@ -46,7 +48,9 @@ public class PlotCrosshairHelper {
         domainCrosshairMarker = new ValueMarker(0D);
         domainCrosshairMarker.setStroke(CROSSHAIR_STROKE);
         domainCrosshairMarker.setPaint(CROSSHAIR_COLOR);
+        domainCrosshairMarker.setLabelFont(CROSSHAIR_FONT);
         domainCrosshairMarker.setLabelPaint(CROSSHAIR_COLOR);
+        domainCrosshairMarker.setLabelBackgroundColor(Colors.INVISIBLE_COLOR);
         domainCrosshairMarker.setLabelAnchor(RectangleAnchor.BOTTOM);
         domainCrosshairMarker.setLabelTextAnchor(TextAnchor.BOTTOM_RIGHT);
         domainCrosshairMarker.setLabelOffset(new RectangleInsets(0, 4, 2, 0));
@@ -58,17 +62,21 @@ public class PlotCrosshairHelper {
         rangeCrosshairMarkerRight = new ValueMarker(0D);
         rangeCrosshairMarkerRight.setStroke(CROSSHAIR_STROKE);
         rangeCrosshairMarkerRight.setPaint(CROSSHAIR_COLOR);
+        rangeCrosshairMarkerRight.setLabelFont(CROSSHAIR_FONT);
         rangeCrosshairMarkerRight.setLabelPaint(CROSSHAIR_COLOR);
+        rangeCrosshairMarkerRight.setLabelBackgroundColor(Colors.INVISIBLE_COLOR);
         rangeCrosshairMarkerRight.setLabelAnchor(RectangleAnchor.RIGHT);
         rangeCrosshairMarkerRight.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
         rangeCrosshairMarkerRight.setLabelOffset(new RectangleInsets(0, 0, 1, 1));
         rangeCrosshairMarkerLeft = new ValueMarker(0D);
         rangeCrosshairMarkerLeft.setStroke(CROSSHAIR_STROKE);
-        rangeCrosshairMarkerLeft.setPaint(DisabledXYItemRenderer.INVISIBLE_COLOR);
+        rangeCrosshairMarkerLeft.setPaint(Colors.INVISIBLE_COLOR);
+        rangeCrosshairMarkerLeft.setLabelFont(CROSSHAIR_FONT);
         rangeCrosshairMarkerLeft.setLabelPaint(CROSSHAIR_COLOR);
+        rangeCrosshairMarkerLeft.setLabelBackgroundColor(Colors.INVISIBLE_COLOR);
         rangeCrosshairMarkerLeft.setLabelAnchor(RectangleAnchor.LEFT);
         rangeCrosshairMarkerLeft.setLabelTextAnchor(TextAnchor.TOP_LEFT);
-        rangeCrosshairMarkerLeft.setLabelOffset(new RectangleInsets(0, 1, 1, 0));
+        rangeCrosshairMarkerLeft.setLabelOffset(new RectangleInsets(0, 2, 1, 0));
     }
 
     public ValueMarker getDomainCrosshairMarker() {

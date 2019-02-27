@@ -14,15 +14,13 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
-import org.jfree.chart.labels.HighLowItemLabelGenerator;
-import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.CrosshairState;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
+import org.jfree.chart.ui.Layer;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.util.PaintUtils;
 import org.jfree.data.Range;
@@ -30,6 +28,8 @@ import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Floats;
 
@@ -43,7 +43,8 @@ import de.invesdwin.util.math.Floats;
  */
 //CHECKSTYLE:OFF
 @NotThreadSafe
-public class FastCandlestickRenderer extends AbstractXYItemRenderer implements XYItemRenderer, IUpDownColorRenderer {
+public class FastCandlestickRenderer extends AbstractXYItemRenderer
+        implements IUpDownColorRenderer, IPriceLineRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
     private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;
@@ -82,27 +83,17 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer implements X
 
     private BasicStroke itemStroke;
 
-    /**
-     * Creates a new renderer for candlestick charts.
-     */
-    public FastCandlestickRenderer(final OHLCDataset dataset) {
-        this(dataset, new HighLowItemLabelGenerator());
-    }
+    private final XYPriceLineAnnotation priceLineAnnotation;
 
-    /**
-     * Creates a new renderer for candlestick charts.
-     *
-     * @param toolTipGenerator
-     *            the tool tip generator. <code>null</code> is none.
-     */
-    public FastCandlestickRenderer(final OHLCDataset dataset, final XYToolTipGenerator toolTipGenerator) {
+    public FastCandlestickRenderer(final OHLCDataset dataset) {
         super();
-        setDefaultToolTipGenerator(toolTipGenerator);
         this.upColor = PriceInitialSettings.DEFAULT_UP_COLOR;
         this.downColor = PriceInitialSettings.DEFAULT_DOWN_COLOR;
         setSeriesPaint(0, upColor);
         setSeriesStroke(0, PriceInitialSettings.DEFAULT_SERIES_STROKE);
         this.dataset = dataset;
+        this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
+        addAnnotation(priceLineAnnotation);
     }
 
     public OHLCDataset getDataset() {
@@ -496,6 +487,22 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer implements X
     protected void addEntity(final EntityCollection entities, final Shape hotspot, final XYDataset dataset,
             final int series, final int item, final double entityX, final double entityY) {
         //noop
+    }
+
+    @Override
+    public void setPriceLineVisible(final boolean visible) {
+        priceLineAnnotation.setPriceLineVisible(visible);
+    }
+
+    @Override
+    public boolean isPriceLineVisible() {
+        return priceLineAnnotation.isPriceLineVisible();
+    }
+
+    @Override
+    public void drawAnnotations(final Graphics2D g2, final Rectangle2D dataArea, final ValueAxis domainAxis,
+            final ValueAxis rangeAxis, final Layer layer, final PlotRenderingInfo info) {
+        super.drawAnnotations(g2, dataArea, domainAxis, rangeAxis, layer, info);
     }
 
 }

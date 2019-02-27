@@ -11,6 +11,8 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.Range;
 
+import com.google.common.primitives.Doubles;
+
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 
 @NotThreadSafe
@@ -78,15 +80,15 @@ public class PlotZoomHelper {
         Range range = chartPanel.getDomainAxis().getRange();
         final MutableBoolean rangeChanged = new MutableBoolean(false);
         final double minLowerBound = 0D - chartPanel.getAllowedRangeGap();
+        final int maxUpperBound = chartPanel.getDataset().getItemCount(0) + chartPanel.getAllowedRangeGap();
         if (range.getLowerBound() < minLowerBound) {
             final double difference = minLowerBound - range.getLowerBound();
-            range = new Range(minLowerBound, range.getUpperBound() + difference);
+            range = new Range(minLowerBound, Doubles.min(range.getUpperBound() + difference, maxUpperBound));
             rangeChanged.setTrue();
         }
-        final int maxUpperBound = chartPanel.getDataset().getItemCount(0) + chartPanel.getAllowedRangeGap();
         if (range.getUpperBound() > maxUpperBound) {
             final double difference = range.getUpperBound() - maxUpperBound;
-            range = new Range(range.getLowerBound() - difference, maxUpperBound);
+            range = new Range(Doubles.max(minLowerBound, range.getLowerBound() - difference), maxUpperBound);
             rangeChanged.setTrue();
         }
         range = limitRangeZoom(range, rangeChanged, minLowerBound, maxUpperBound);

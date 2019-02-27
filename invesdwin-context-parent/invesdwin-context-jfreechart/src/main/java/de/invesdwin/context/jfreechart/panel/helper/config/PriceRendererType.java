@@ -152,4 +152,9 @@ public enum PriceRendererType implements IRendererType {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isPriceLineConfigurable() {
+        return true;
+    }
+
 }

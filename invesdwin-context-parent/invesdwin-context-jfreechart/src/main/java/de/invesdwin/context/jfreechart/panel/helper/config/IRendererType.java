@@ -24,6 +24,8 @@ public interface IRendererType {
 
     boolean isSeriesColorConfigurable();
 
+    boolean isPriceLineConfigurable();
+
     void reset(HighlightedLegendInfo highlighted, SeriesInitialSettings initialSettings);
 
     default String getSeriesColorName() {

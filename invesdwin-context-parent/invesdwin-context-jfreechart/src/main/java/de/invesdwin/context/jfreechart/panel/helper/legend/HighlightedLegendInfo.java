@@ -9,6 +9,7 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.assertions.Assertions;
@@ -67,12 +68,12 @@ public class HighlightedLegendInfo {
         plot.setRenderer(datasetIndex, renderer);
     }
 
-    public boolean isHidden() {
-        return getRenderer() instanceof DisabledXYItemRenderer;
+    public boolean isDatasetVisible() {
+        return !(getRenderer() instanceof DisabledXYItemRenderer);
     }
 
-    public void setHidden(final boolean hidden) {
-        chartPanel.getPlotLegendHelper().setDatasetHidden(plot, datasetIndex, hidden);
+    public void setDatasetVisible(final boolean visible) {
+        chartPanel.getPlotLegendHelper().setDatasetVisible(plot, datasetIndex, visible);
     }
 
     public boolean isRemovable() {
@@ -85,6 +86,25 @@ public class HighlightedLegendInfo {
         XYPlots.removeDataset(plot, datasetIndex);
         XYPlots.updateRangeAxes(plot);
         chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
+    }
+
+    public void setPriceLineVisible(final boolean visible) {
+        final IPriceLineRenderer renderer = (IPriceLineRenderer) getRenderer();
+        renderer.setPriceLineVisible(visible);
+    }
+
+    public boolean isPriceLineVisible() {
+        final XYItemRenderer renderer = getRenderer();
+        return isPriceLineVisible(renderer);
+    }
+
+    public static boolean isPriceLineVisible(final XYItemRenderer renderer) {
+        if (renderer instanceof IPriceLineRenderer) {
+            final IPriceLineRenderer cRenderer = (IPriceLineRenderer) renderer;
+            return cRenderer.isPriceLineVisible();
+        } else {
+            return false;
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
+import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.FastCandlestickRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastHighLowRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastStandardXYItemRenderer;
@@ -24,6 +25,7 @@ public class PriceInitialSettings {
     public static final Color DEFAULT_SERIES_COLOR = Colors.fromHex("#3C78D8");
     public static final Stroke DEFAULT_SERIES_STROKE = LineStyleType.Solid.getStroke(LineWidthType._1);
     public static final PriceRendererType DEFAULT_PRICE_RENDERER_TYPE = PriceRendererType.Candlestick;
+    private static final boolean DEFAULT_PRICE_LINE_VISIBLE = true;
 
     private final PlotConfigurationHelper plotConfigurationHelper;
 
@@ -42,20 +44,23 @@ public class PriceInitialSettings {
     private Color downColor;
     private Color seriesColor;
     private Stroke seriesStroke;
+    private boolean priceLineVisible;
 
     public PriceInitialSettings(final PlotConfigurationHelper plotConfigurationHelper) {
         this.plotConfigurationHelper = plotConfigurationHelper;
 
-        this.candlestickRenderer = new FastCandlestickRenderer(plotConfigurationHelper.getChartPanel().getDataset());
+        final IndexedDateTimeOHLCDataset dataset = plotConfigurationHelper.getChartPanel().getDataset();
+        this.candlestickRenderer = new FastCandlestickRenderer(dataset);
         this.barsRenderer = new FastHighLowRenderer(candlestickRenderer);
-        this.areaRenderer = new FastXYAreaRenderer();
-        this.lineRenderer = new FastStandardXYItemRenderer();
-        this.stepLineRenderer = new FastXYStepRenderer();
+        this.areaRenderer = new FastXYAreaRenderer(dataset);
+        this.lineRenderer = new FastStandardXYItemRenderer(dataset);
+        this.stepLineRenderer = new FastXYStepRenderer(dataset);
 
         setUpColor(DEFAULT_UP_COLOR);
         setDownColor(DEFAULT_DOWN_COLOR);
         setSeriesColor(DEFAULT_SERIES_COLOR);
         setSeriesStroke(DEFAULT_SERIES_STROKE);
+        setPriceLineVisible(DEFAULT_PRICE_LINE_VISIBLE);
     }
 
     public PriceRendererType getPriceRendererType() {
@@ -121,7 +126,10 @@ public class PriceInitialSettings {
 
     public void setUpColor(final Color upColor) {
         this.upColor = upColor;
+        updateUpColor();
+    }
 
+    private void updateUpColor() {
         candlestickRenderer.setUpColor(upColor);
     }
 
@@ -131,6 +139,10 @@ public class PriceInitialSettings {
 
     public void setDownColor(final Color downColor) {
         this.downColor = downColor;
+        updateDownColor();
+    }
+
+    private void updateDownColor() {
         candlestickRenderer.setDownColor(downColor);
     }
 
@@ -140,7 +152,10 @@ public class PriceInitialSettings {
 
     public void setSeriesColor(final Color seriesColor) {
         this.seriesColor = seriesColor;
+        updateSeriesColor();
+    }
 
+    private void updateSeriesColor() {
         this.candlestickRenderer.setSeriesPaint(0, seriesColor);
         this.barsRenderer.setSeriesPaint(0, seriesColor);
         this.lineRenderer.setSeriesPaint(0, seriesColor);
@@ -150,7 +165,10 @@ public class PriceInitialSettings {
 
     public void setSeriesStroke(final LineStyleType lineStyleType, final LineWidthType lineWidthType) {
         this.seriesStroke = lineStyleType.getStroke(lineWidthType);
+        updateSeriesStroke();
+    }
 
+    private void updateSeriesStroke() {
         this.candlestickRenderer.setSeriesStroke(0, seriesStroke);
         this.barsRenderer.setSeriesStroke(0, seriesStroke);
         this.lineRenderer.setSeriesStroke(0, seriesStroke);
@@ -167,11 +185,29 @@ public class PriceInitialSettings {
         return seriesStroke;
     }
 
+    public boolean isPriceLineVisible() {
+        return priceLineVisible;
+    }
+
+    public void setPriceLineVisible(final boolean priceLineVisible) {
+        this.priceLineVisible = priceLineVisible;
+        updatePriceLineVisible();
+    }
+
+    private void updatePriceLineVisible() {
+        this.candlestickRenderer.setPriceLineVisible(priceLineVisible);
+        this.barsRenderer.setPriceLineVisible(priceLineVisible);
+        this.lineRenderer.setPriceLineVisible(priceLineVisible);
+        this.areaRenderer.setPriceLineVisible(priceLineVisible);
+        this.stepLineRenderer.setPriceLineVisible(priceLineVisible);
+    }
+
     public void reset() {
-        candlestickRenderer.setUpColor(upColor);
-        candlestickRenderer.setDownColor(downColor);
-        candlestickRenderer.setSeriesPaint(0, seriesColor);
-        candlestickRenderer.setSeriesStroke(0, seriesStroke);
+        updateUpColor();
+        updateDownColor();
+        updateSeriesColor();
+        updateSeriesStroke();
+        updatePriceLineVisible();
         plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
     }
 

@@ -45,8 +45,8 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.dataset.PlotSourceXYSeriesCollection;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.ListXYSeriesOHLC;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.XYDataItemOHLC;
-import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
+import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.Doubles;
 
 /**
@@ -56,8 +56,6 @@ import de.invesdwin.util.math.Doubles;
 @NotThreadSafe
 public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         implements XYItemRenderer, PublicCloneable, IUpDownColorRenderer {
-
-    private static final Color INVISIBLE_COLOR = DisabledXYItemRenderer.INVISIBLE_COLOR;
 
     private static final class XYAreaRendererState extends XYItemRendererState {
 
@@ -330,8 +328,8 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
 
         final double x1 = dataset.getXValue(series, item1);
         if (Double.isNaN(cItem1.getClose().doubleValue())) {
-            upColor = INVISIBLE_COLOR;
-            downColor = INVISIBLE_COLOR;
+            upColor = Colors.INVISIBLE_COLOR;
+            downColor = Colors.INVISIBLE_COLOR;
         } else {
             upColor = getUpColor();
             downColor = getDownColor();
@@ -420,7 +418,7 @@ public abstract class ACustomEquityChangeRenderer extends AbstractXYItemRenderer
         final Paint paint;
         final double yValue = dataset.getYValue(series, item);
         if (Double.isNaN(yValue)) {
-            paint = INVISIBLE_COLOR;
+            paint = Colors.INVISIBLE_COLOR;
         } else {
             paint = lookupSeriesPaint(series);
         }

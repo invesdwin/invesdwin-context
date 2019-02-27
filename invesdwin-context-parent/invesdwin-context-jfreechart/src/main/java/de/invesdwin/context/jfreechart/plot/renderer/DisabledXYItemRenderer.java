@@ -1,6 +1,5 @@
 package de.invesdwin.context.jfreechart.plot.renderer;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Shape;
@@ -21,11 +20,10 @@ import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.Colors;
 
 @NotThreadSafe
 public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
-
-    public static final Color INVISIBLE_COLOR = new Color(0, 0, 0, 0);
 
     private final XYItemRenderer enabledRenderer;
 
@@ -106,7 +104,7 @@ public class DisabledXYItemRenderer extends AbstractXYItemRenderer {
 
     @Override
     public Paint getItemPaint(final int row, final int column) {
-        return INVISIBLE_COLOR;
+        return Colors.INVISIBLE_COLOR;
     }
 
     @Override

@@ -20,6 +20,7 @@ public class SeriesInitialSettings {
     private final Color downColor;
     private final LineStyleType lineStyleType;
     private final LineWidthType lineWidthType;
+    private final boolean priceLineVisible;
 
     public SeriesInitialSettings(final XYItemRenderer initialRenderer) {
         final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(initialRenderer);
@@ -40,6 +41,7 @@ public class SeriesInitialSettings {
         final Stroke stroke = initialRenderer.getSeriesStroke(0);
         lineStyleType = LineStyleType.valueOf(stroke);
         lineWidthType = LineWidthType.valueOf(stroke);
+        priceLineVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
     }
 
     public void reset(final HighlightedLegendInfo highlighted) {
@@ -85,6 +87,10 @@ public class SeriesInitialSettings {
 
     public Stroke getSeriesStroke() {
         return lineStyleType.getStroke(lineWidthType);
+    }
+
+    public boolean isPriceLineVisible() {
+        return priceLineVisible;
     }
 
 }

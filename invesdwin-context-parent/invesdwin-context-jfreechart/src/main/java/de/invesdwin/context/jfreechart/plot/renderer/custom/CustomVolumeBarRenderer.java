@@ -30,8 +30,8 @@ public class CustomVolumeBarRenderer extends FastXYBarRenderer implements IUpDow
     private Color upColor;
     private Color downColor;
 
-    public CustomVolumeBarRenderer(final PlotConfigurationHelper plotConfigurationHelper) {
-        super(0.25f);
+    public CustomVolumeBarRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
+        super(dataset, 0.25f);
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
         this.candlestickRenderer = (FastCandlestickRenderer) config.getPriceRenderer(PriceRendererType.Candlestick);
 

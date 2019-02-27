@@ -26,10 +26,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.lang.Strings;
@@ -66,6 +68,9 @@ public class PlotConfigurationHelper {
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
 
+    private JMenuItem showPriceLineItem;
+    private JMenuItem hidePriceLineItem;
+
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
         initPopupMenu();
@@ -93,6 +98,7 @@ public class PlotConfigurationHelper {
         initRendererItems();
         initStrokeItems();
         initColorItems();
+        initPriceLineItems();
         initResetStyleItem();
         initSeriesVisibilityItems();
         initExportItems();
@@ -106,7 +112,7 @@ public class PlotConfigurationHelper {
                 popupMenu.removeAll();
                 highlighted = chartPanel.getPlotLegendHelper().getHighlightedLegendInfo();
                 if (highlighted != null) {
-                    if (highlighted.isHidden()) {
+                    if (!highlighted.isDatasetVisible()) {
                         popupMenu.add(titleItem);
                         if (highlighted.isRemovable()) {
                             popupMenu.add(removeSeriesItem);
@@ -126,6 +132,7 @@ public class PlotConfigurationHelper {
             }
 
             private void addSeriesConfigMenuItems() {
+                final boolean priceLineConfigurable;
                 if (highlighted.isPriceSeries()) {
                     titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
                     priceRendererItem.setVisible(true);
@@ -155,6 +162,8 @@ public class PlotConfigurationHelper {
                 popupMenu.add(seriesColorItem);
                 popupMenu.add(upColorItem);
                 popupMenu.add(downColorItem);
+                popupMenu.add(hidePriceLineItem);
+                popupMenu.add(showPriceLineItem);
                 popupMenu.add(resetStyleItem);
                 popupMenu.addSeparator();
                 if (highlighted.isRemovable()) {
@@ -176,6 +185,24 @@ public class PlotConfigurationHelper {
             }
         });
 
+    }
+
+    private void initPriceLineItems() {
+        showPriceLineItem = new JMenuItem("Show Price Line");
+        showPriceLineItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                highlighted.setPriceLineVisible(true);
+            }
+        });
+
+        hidePriceLineItem = new JMenuItem("Hide Price Line");
+        hidePriceLineItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                highlighted.setPriceLineVisible(false);
+            }
+        });
     }
 
     private SeriesInitialSettings getOrCreateSeriesInitialSettings() {
@@ -238,6 +265,9 @@ public class PlotConfigurationHelper {
         upColorItem.setText("Change " + rendererType.getUpColorName() + " Color");
         downColorItem.setVisible(rendererType.isDownColorConfigurable());
         downColorItem.setText("Change " + rendererType.getDownColorName() + " Color");
+        final boolean priceLineVisible = highlighted.isPriceLineVisible();
+        hidePriceLineItem.setVisible(priceLineVisible);
+        showPriceLineItem.setVisible(!priceLineVisible);
     }
 
     private void updateLineMenuItemVisibility() {
@@ -276,7 +306,7 @@ public class PlotConfigurationHelper {
         showSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                highlighted.setHidden(false);
+                highlighted.setDatasetVisible(true);
             }
         });
 
@@ -284,7 +314,7 @@ public class PlotConfigurationHelper {
         hideSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                highlighted.setHidden(true);
+                highlighted.setDatasetVisible(false);
             }
         });
     }
@@ -322,7 +352,10 @@ public class PlotConfigurationHelper {
                     final LineStyleType lineStyleType = LineStyleType.valueOf(stroke);
                     final LineWidthType lineWidthType = LineWidthType.valueOf(stroke);
                     final Color color = (Color) renderer.getSeriesPaint(0);
-                    highlighted.setRenderer(type.newRenderer(lineStyleType, lineWidthType, color));
+                    final XYDataset dataset = highlighted.getDataset();
+                    final boolean priceLineVisible = highlighted.isPriceLineVisible();
+                    highlighted.setRenderer(
+                            type.newRenderer(dataset, lineStyleType, lineWidthType, color, priceLineVisible));
                 }
             });
             seriesRendererGroup.add(item);
@@ -339,6 +372,11 @@ public class PlotConfigurationHelper {
                         .getRendererType();
                 customRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
                 customRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
+                if (customRenderer.isPriceLineConfigurable()
+                        && getSeriesInitialSettings().getRendererType().isPriceLineConfigurable()) {
+                    final IPriceLineRenderer customPriceLineRenderer = (IPriceLineRenderer) customRenderer;
+                    customPriceLineRenderer.setPriceLineVisible(highlighted.isPriceLineVisible());
+                }
                 highlighted.setRenderer(customRenderer);
             }
         });
