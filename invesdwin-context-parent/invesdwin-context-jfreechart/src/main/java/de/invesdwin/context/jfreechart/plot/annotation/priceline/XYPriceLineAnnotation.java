@@ -32,7 +32,7 @@ import de.invesdwin.util.math.decimal.scaled.Percent;
 @NotThreadSafe
 public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPriceLineRenderer {
 
-    public static final Font FONT = new Font("Verdana", Font.PLAIN, 9);
+    public static final Font FONT = XYPlots.AXIS_LABEL_FONT;
     public static final Percent TRANSPARENCY = Percent.ZERO_PERCENT;
 
     private static final ValueAxis ABSOLUTE_AXIS = XYPlots.DRAWING_ABSOLUTE_AXIS;

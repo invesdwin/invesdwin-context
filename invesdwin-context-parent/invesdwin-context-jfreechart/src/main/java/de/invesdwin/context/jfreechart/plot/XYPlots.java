@@ -1,5 +1,6 @@
 package de.invesdwin.context.jfreechart.plot;
 
+import java.awt.Font;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public final class XYPlots {
             return value;
         }
     };
+    public static final Font AXIS_LABEL_FONT = new Font("Verdana", Font.PLAIN, 9);;
 
     private XYPlots() {}
 
@@ -135,6 +137,8 @@ public final class XYPlots {
         if (!autorange) {
             rangeAxis.setRange(0, 1);
         }
+        rangeAxis.setLabelFont(AXIS_LABEL_FONT);
+        rangeAxis.setTickLabelFont(AXIS_LABEL_FONT);
         return rangeAxis;
     }
 

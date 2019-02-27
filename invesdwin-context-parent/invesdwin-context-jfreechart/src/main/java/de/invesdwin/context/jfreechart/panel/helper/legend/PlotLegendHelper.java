@@ -50,7 +50,9 @@ public class PlotLegendHelper {
     private static final int EMPTY_PLOT_WEIGHT = CustomCombinedDomainXYPlot.EMPTY_PLOT_WEIGHT;
 
     private static final Color LEGEND_BACKGROUND_PAINT = Colors.INVISIBLE_COLOR;
-    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(222, 222, 222, 100);
+    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(240, 240, 240, 200);
+    private static final Font LEGEND_FONT = XYPlots.AXIS_LABEL_FONT;
+    private static final Font HIGHLIGHTED_LEGEND_FONT = LEGEND_FONT.deriveFont(Font.BOLD);
 
     private final InteractiveChartPanel chartPanel;
 
@@ -140,10 +142,10 @@ public class PlotLegendHelper {
                         && highlightedLegendInfo.getDatasetIndex() == item.getDatasetIndex()) {
                     final IPlotSourceDataset plotSource = (IPlotSourceDataset) item.getDataset();
                     if (highlightedLegendInfo.getPlot() == plotSource.getPlot()) {
-                        return textFont.deriveFont(Font.ITALIC);
+                        return HIGHLIGHTED_LEGEND_FONT;
                     }
                 }
-                return super.newTextFont(item, textFont);
+                return LEGEND_FONT;
             }
 
             @Override

@@ -264,11 +264,11 @@ public class PlotConfigurationHelper {
         upColorItem.setText("Change " + rendererType.getUpColorName() + " Color");
         downColorItem.setVisible(rendererType.isDownColorConfigurable());
         downColorItem.setText("Change " + rendererType.getDownColorName() + " Color");
-        if (rendererType.isPriceLineConfigurable()) {
-            final boolean priceLineVisible = highlighted.isPriceLineVisible();
-            hidePriceLineItem.setVisible(priceLineVisible);
-            showPriceLineItem.setVisible(!priceLineVisible);
-        } else {
+        if(rendererType.isPriceLineConfigurable()) {
+        final boolean priceLineVisible = highlighted.isPriceLineVisible();
+        hidePriceLineItem.setVisible(priceLineVisible);
+        showPriceLineItem.setVisible(!priceLineVisible);
+        }else {
             hidePriceLineItem.setVisible(false);
             showPriceLineItem.setVisible(false);
         }
