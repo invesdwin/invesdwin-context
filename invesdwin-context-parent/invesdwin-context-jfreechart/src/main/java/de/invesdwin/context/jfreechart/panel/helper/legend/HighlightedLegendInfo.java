@@ -7,7 +7,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
-import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;

@@ -2,9 +2,7 @@ package de.invesdwin.context.jfreechart.panel.helper.legend;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Paint;
 import java.awt.event.MouseEvent;
-import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -12,10 +10,8 @@ import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.chart.LegendItem;
 import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.annotations.XYTitleAnnotation;
-import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.LegendItemEntity;
 import org.jfree.chart.plot.XYPlot;
@@ -23,21 +19,18 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.data.general.Dataset;
-import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
-import de.invesdwin.context.jfreechart.panel.basis.CustomLegendTitle;
 import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.annotation.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
-import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
 
 @NotThreadSafe
@@ -51,8 +44,6 @@ public class PlotLegendHelper {
 
     private static final Color LEGEND_BACKGROUND_PAINT = Colors.INVISIBLE_COLOR;
     private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(240, 240, 240, 200);
-    private static final Font LEGEND_FONT = XYPlots.AXIS_LABEL_FONT;
-    private static final Font HIGHLIGHTED_LEGEND_FONT = LEGEND_FONT.deriveFont(Font.BOLD);
 
     private final InteractiveChartPanel chartPanel;
 
@@ -86,105 +77,7 @@ public class PlotLegendHelper {
     }
 
     public void addLegendAnnotation(final XYPlot plot) {
-        final CustomLegendTitle lt = new CustomLegendTitle(plot) {
-            @Override
-            protected String newLabel(final LegendItem item) {
-                final String label = super.newLabel(item);
-                int domainMarkerItem = (int) chartPanel.getPlotCrosshairHelper().getDomainCrosshairMarker().getValue();
-                if (domainMarkerItem == -1) {
-                    domainMarkerItem = chartPanel.getDataset().getData().size() - 1;
-                }
-                if (domainMarkerItem >= 0) {
-                    final XYDataset dataset = (XYDataset) item.getDataset();
-                    final int series = item.getSeriesIndex();
-                    final int lastItem = dataset.getItemCount(series) - 1;
-                    if (domainMarkerItem > lastItem) {
-                        domainMarkerItem = lastItem;
-                    }
-                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
-                    if (!plotSource.isLegendValueVisible(series, domainMarkerItem)) {
-                        return label;
-                    }
-                    final XYPlot plot = plotSource.getPlot();
-                    if (plot == chartPanel.getCombinedPlot().getTrashPlot()) {
-                        return label;
-                    }
-                    final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxisForDataset(item.getDatasetIndex());
-                    final NumberFormat rangeAxisFormat = rangeAxis.getNumberFormatOverride();
-                    if (dataset instanceof OHLCDataset) {
-                        final OHLCDataset ohlc = (OHLCDataset) dataset;
-                        final StringBuilder sb = new StringBuilder(label);
-                        sb.append(" O:");
-                        sb.append(rangeAxisFormat.format(ohlc.getOpen(series, domainMarkerItem)));
-                        sb.append(" H:");
-                        sb.append(rangeAxisFormat.format(ohlc.getHigh(series, domainMarkerItem)));
-                        sb.append(" L:");
-                        sb.append(rangeAxisFormat.format(ohlc.getLow(series, domainMarkerItem)));
-                        sb.append(" C:");
-                        sb.append(rangeAxisFormat.format(ohlc.getClose(series, domainMarkerItem)));
-                        sb.append(" T:");
-                        sb.append(chartPanel.getDomainAxisFormat().format(domainMarkerItem));
-                        return sb.toString();
-                    } else {
-                        final StringBuilder sb = new StringBuilder(label);
-                        sb.append(" ");
-                        sb.append(rangeAxisFormat.format(dataset.getYValue(series, domainMarkerItem)));
-                        return sb.toString();
-                    }
-                } else {
-                    return label;
-                }
-            }
-
-            @Override
-            protected Font newTextFont(final LegendItem item, final Font textFont) {
-                if (highlightedLegendInfo != null
-                        && highlightedLegendInfo.getDatasetIndex() == item.getDatasetIndex()) {
-                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) item.getDataset();
-                    if (highlightedLegendInfo.getPlot() == plotSource.getPlot()) {
-                        return HIGHLIGHTED_LEGEND_FONT;
-                    }
-                }
-                return LEGEND_FONT;
-            }
-
-            @Override
-            protected Paint newFillPaint(final LegendItem item) {
-                int domainMarkerItem = (int) chartPanel.getPlotCrosshairHelper().getDomainCrosshairMarker().getValue();
-                if (domainMarkerItem == -1) {
-                    domainMarkerItem = chartPanel.getDataset().getData().size() - 1;
-                }
-                if (domainMarkerItem >= 0) {
-                    final Dataset dataset = item.getDataset();
-                    final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
-                    final int datasetIndex = item.getDatasetIndex();
-                    final XYItemRenderer renderer = plotSource.getPlot().getRenderer(datasetIndex);
-                    if (renderer == null) {
-                        return super.newFillPaint(item);
-                    } else if (dataset instanceof OHLCDataset) {
-                        final OHLCDataset ohlc = (OHLCDataset) dataset;
-                        if (domainMarkerItem >= ohlc.getItemCount(0)) {
-                            domainMarkerItem = ohlc.getItemCount(0) - 1;
-                        }
-                        return renderer.getItemPaint(0, domainMarkerItem);
-                    } else if (dataset instanceof XYDataset) {
-                        final XYDataset xy = (XYDataset) dataset;
-                        if (domainMarkerItem >= xy.getItemCount(0)) {
-                            domainMarkerItem = xy.getItemCount(0) - 1;
-                        }
-                        return renderer.getItemPaint(0, domainMarkerItem);
-                    } else {
-                        throw UnknownArgumentException.newInstance(Class.class, dataset.getClass());
-                    }
-                } else {
-                    return super.newFillPaint(item);
-                }
-            }
-        };
-        addLegendAnnotation(plot, lt);
-    }
-
-    private void addLegendAnnotation(final XYPlot plot, final CustomLegendTitle lt) {
+        final CustomLegendTitle lt = new HighlightableLegendTitle(chartPanel, plot);
         lt.setItemFont(new Font("Dialog", Font.PLAIN, 9));
         lt.setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
         lt.setPosition(RectangleEdge.TOP);
