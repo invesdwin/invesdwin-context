@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.plot.renderer.custom.order;
+package de.invesdwin.context.jfreechart.plot.renderer.custom.orders;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
