@@ -178,6 +178,9 @@ public class PlotCrosshairHelper {
         rangeCrosshairMarkerLeft.setValue(-1D);
         domainCrosshairMarker.setValue(-1D);
         lastDomainCrosshairMarker.setValue(-1D);
+
+        crosshairLastMouseX = -1;
+        crosshairLastMouseY = -1;
     }
 
     private void disableCrosshair(final XYPlot subplot) {

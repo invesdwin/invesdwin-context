@@ -1,7 +1,6 @@
 package de.invesdwin.context.jfreechart.panel.helper.legend;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -78,10 +77,11 @@ public class PlotLegendHelper {
 
     public void addLegendAnnotation(final XYPlot plot) {
         final CustomLegendTitle lt = new HighlightableLegendTitle(chartPanel, plot);
-        lt.setItemFont(new Font("Dialog", Font.PLAIN, 9));
         lt.setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
         lt.setPosition(RectangleEdge.TOP);
         final XYTitleAnnotation ta = new XYTitleAnnotation(0.005, 0.99, lt, RectangleAnchor.TOP_LEFT);
+        ta.setMaxWidth(0.9);
+        ta.setMaxHeight(0.9);
         plot.addAnnotation(ta);
     }
 

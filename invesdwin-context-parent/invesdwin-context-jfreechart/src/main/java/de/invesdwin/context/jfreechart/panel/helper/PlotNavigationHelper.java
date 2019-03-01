@@ -11,15 +11,20 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.Timer;
 
+import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYAnnotationEntity;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.helper.icons.PlotIcons;
 import de.invesdwin.context.jfreechart.plot.annotation.XYIconAnnotation;
 import de.invesdwin.context.jfreechart.plot.annotation.XYIconAnnotationEntity;
+import de.invesdwin.context.jfreechart.plot.annotation.XYNoteAnnotation;
+import de.invesdwin.context.jfreechart.plot.annotation.XYNoteIconAnnotation;
+import de.invesdwin.context.jfreechart.plot.renderer.INoteRenderer;
 import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe
@@ -56,13 +61,16 @@ public class PlotNavigationHelper {
 
     private final XYIconAnnotation[] visibleCheckAnnotations;
 
-    private XYPlot shownOnPlot;
-    private XYIconAnnotation highlightedAnnotation;
-    private Shape highlightingArea;
-    private boolean highlighting = false;
-    private boolean visible = false;
-    private Timer buttonTimer;
-    private XYIconAnnotation buttonTimerAnnotation;
+    private XYPlot navShowingOnPlotPlot;
+    private XYIconAnnotation navHighlightedAnnotation;
+    private Shape navHighlightingArea;
+    private boolean navHighlighting = false;
+    private boolean navVisible = false;
+    private Timer navButtonTimer;
+    private XYIconAnnotation navButtonTimerAnnotation;
+
+    private XYNoteIconAnnotation noteShowingIconAnnotation;
+    private XYPlot noteShowingOnPlot;
 
     public PlotNavigationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -115,35 +123,78 @@ public class PlotNavigationHelper {
     public void mouseMoved(final MouseEvent e) {
         final int mouseX = e.getX();
         final int mouseY = e.getY();
+        final XYNoteIconAnnotation highlightedNoteIconAnnotation = findHighlightedNoteIconAnnotation(mouseX, mouseY);
+        if (highlightedNoteIconAnnotation != null) {
+            if (noteShowingIconAnnotation == null || noteShowingIconAnnotation != highlightedNoteIconAnnotation) {
+                mouseExited();
+                final CustomCombinedDomainXYPlot combinedPlot = chartPanel.getCombinedPlot();
+                final List<XYPlot> subplots = combinedPlot.getSubplots();
+                final int subplotIndex = combinedPlot.getSubplotIndex(mouseX, mouseY);
+                noteShowingOnPlot = subplots.get(subplotIndex);
+                noteShowingOnPlot.addAnnotation(highlightedNoteIconAnnotation.getNoteAnnotation());
+                noteShowingIconAnnotation = highlightedNoteIconAnnotation;
+            }
+            chartPanel.getChartPanel().setCursor(PlotResizeHelper.DEFAULT_CURSOR);
+        } else {
+            hideNote();
+            updateNavigationVisibility(mouseX, mouseY);
+        }
+    }
+
+    private XYNoteIconAnnotation findHighlightedNoteIconAnnotation(final int mouseX, final int mouseY) {
+        final CustomCombinedDomainXYPlot combinedPlot = chartPanel.getCombinedPlot();
+        final int subplotIndex = combinedPlot.getSubplotIndex(mouseX, mouseY);
+        if (subplotIndex == -1) {
+            return null;
+        }
+        final List<XYPlot> subplots = combinedPlot.getSubplots();
+        final XYPlot plot = subplots.get(subplotIndex);
+        for (int i = 0; i < plot.getDatasetCount(); i++) {
+            final XYItemRenderer renderer = plot.getRenderer(i);
+            if (renderer instanceof INoteRenderer) {
+                final INoteRenderer cRenderer = (INoteRenderer) renderer;
+                for (final XYNoteIconAnnotation noteIcon : cRenderer.getVisibleNoteIcons()) {
+                    final XYAnnotationEntity entity = noteIcon.getEntity();
+                    if (entity != null && entity.getArea().contains(mouseX, mouseY)) {
+                        return noteIcon;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void updateNavigationVisibility(final int mouseX, final int mouseY) {
+        final ChartEntity entityForPoint = chartPanel.getChartPanel().getEntityForPoint(mouseX, mouseY);
         final CustomCombinedDomainXYPlot combinedPlot = chartPanel.getCombinedPlot();
         final List<XYPlot> subplots = combinedPlot.getSubplots();
         final int lastSubPlotIndex = subplots.size() - 1;
         final XYPlot lastSubPlot = subplots.get(lastSubPlotIndex);
-        if (combinedPlot.getSubplotIndex(mouseX, mouseY) == lastSubPlotIndex) {
-            if (lastSubPlot != shownOnPlot) {
+        final int subplotIndex = combinedPlot.getSubplotIndex(mouseX, mouseY);
+        if (subplotIndex == lastSubPlotIndex) {
+            if (lastSubPlot != navShowingOnPlotPlot) {
                 mouseExited();
-                shownOnPlot = lastSubPlot;
-                addAnnotations(shownOnPlot, false, null);
+                navShowingOnPlotPlot = lastSubPlot;
+                addAnnotations(navShowingOnPlotPlot, false, null);
             }
-            final ChartEntity entityForPoint = chartPanel.getChartPanel().getEntityForPoint(mouseX, mouseY);
             XYIconAnnotation newHighlightedAnnotation = null;
             if (entityForPoint instanceof XYIconAnnotationEntity) {
                 final XYIconAnnotationEntity l = (XYIconAnnotationEntity) entityForPoint;
                 newHighlightedAnnotation = getIconAnnotation(l);
             }
             final boolean newVisible = findVisibleEntity(mouseX, mouseY);
-            this.highlighting = determineHighlighting(mouseX, mouseY);
-            if (newHighlightedAnnotation != this.highlightedAnnotation || visible != newVisible) {
-                removeAnnotations(shownOnPlot, false);
-                addAnnotations(shownOnPlot, newVisible, newHighlightedAnnotation);
-                highlightingArea = null;
-                this.highlightedAnnotation = newHighlightedAnnotation;
-                this.visible = newVisible;
-                if (buttonTimerAnnotation != null && highlightedAnnotation != buttonTimerAnnotation) {
+            this.navHighlighting = determineHighlighting(mouseX, mouseY);
+            if (newHighlightedAnnotation != this.navHighlightedAnnotation || navVisible != newVisible) {
+                removeAnnotations(navShowingOnPlotPlot, false);
+                addAnnotations(navShowingOnPlotPlot, newVisible, newHighlightedAnnotation);
+                navHighlightingArea = null;
+                this.navHighlightedAnnotation = newHighlightedAnnotation;
+                this.navVisible = newVisible;
+                if (navButtonTimerAnnotation != null && navHighlightedAnnotation != navButtonTimerAnnotation) {
                     stopButtonTimer();
                 }
             }
-            if (this.highlighting) {
+            if (this.navHighlighting) {
                 chartPanel.getChartPanel().setCursor(PlotResizeHelper.DEFAULT_CURSOR);
             }
         } else {
@@ -167,15 +218,15 @@ public class PlotNavigationHelper {
     }
 
     private boolean determineHighlighting(final int mouseX, final int mouseY) {
-        final Shape area = getHighlightingArea();
+        final Shape area = getNavHighlightingArea();
         if (area == null) {
             return false;
         }
         return area.contains(mouseX, mouseY);
     }
 
-    private Shape getHighlightingArea() {
-        if (highlightingArea == null) {
+    private Shape getNavHighlightingArea() {
+        if (navHighlightingArea == null) {
             Double minX = null;
             Double minY = null;
             Double maxX = null;
@@ -195,9 +246,9 @@ public class PlotNavigationHelper {
             if (minY == null) {
                 return null;
             }
-            highlightingArea = new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
+            navHighlightingArea = new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
         }
-        return highlightingArea;
+        return navHighlightingArea;
     }
 
     private XYIconAnnotation getIconAnnotation(final XYIconAnnotationEntity l) {
@@ -279,11 +330,26 @@ public class PlotNavigationHelper {
     }
 
     public void mouseExited() {
-        if (shownOnPlot != null) {
-            removeAnnotations(shownOnPlot, true);
-            shownOnPlot = null;
+        if (navShowingOnPlotPlot != null) {
+            removeAnnotations(navShowingOnPlotPlot, true);
+            navShowingOnPlotPlot = null;
         }
         stopButtonTimer();
+        hideNote();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void hideNote() {
+        if (noteShowingOnPlot != null) {
+            final List<XYAnnotation> existingAnnotations = noteShowingOnPlot.getAnnotations();
+            for (final XYAnnotation annotation : existingAnnotations) {
+                if (annotation instanceof XYNoteAnnotation) {
+                    noteShowingOnPlot.removeAnnotation(annotation);
+                }
+            }
+            noteShowingIconAnnotation = null;
+            noteShowingOnPlot = null;
+        }
     }
 
     public void mousePressed(final MouseEvent e) {
@@ -336,10 +402,10 @@ public class PlotNavigationHelper {
     }
 
     private void startButtonTimer(final XYIconAnnotation annotation, final ActionListener action) {
-        buttonTimer = new Timer(BUTTON_TIMER_DELAY, action);
-        buttonTimer.setInitialDelay(0);
-        buttonTimer.start();
-        buttonTimerAnnotation = annotation;
+        navButtonTimer = new Timer(BUTTON_TIMER_DELAY, action);
+        navButtonTimer.setInitialDelay(0);
+        navButtonTimer.start();
+        navButtonTimerAnnotation = annotation;
     }
 
     public void mouseReleased(final MouseEvent e) {
@@ -366,17 +432,17 @@ public class PlotNavigationHelper {
     }
 
     private boolean stopButtonTimer() {
-        if (buttonTimer != null) {
-            buttonTimer.stop();
-            buttonTimer = null;
-            buttonTimerAnnotation = null;
+        if (navButtonTimer != null) {
+            navButtonTimer.stop();
+            navButtonTimer = null;
+            navButtonTimerAnnotation = null;
             return true;
         }
         return false;
     }
 
     public boolean isHighlighting() {
-        return highlighting;
+        return navHighlighting || noteShowingOnPlot != null;
     }
 
 }

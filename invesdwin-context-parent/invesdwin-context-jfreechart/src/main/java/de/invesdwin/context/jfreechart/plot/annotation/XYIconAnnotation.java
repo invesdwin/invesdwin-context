@@ -33,11 +33,11 @@ public class XYIconAnnotation extends AbstractXYAnnotation implements Cloneable,
 
     private static final long serialVersionUID = -4364694501921559958L;
 
-    private final double x;
+    private double x;
 
-    private final double y;
+    private double y;
 
-    private transient Icon icon;
+    private Icon icon;
 
     private final RectangleAnchor anchor;
 
@@ -72,12 +72,24 @@ public class XYIconAnnotation extends AbstractXYAnnotation implements Cloneable,
         return this.x;
     }
 
+    public void setX(final double x) {
+        this.x = x;
+    }
+
     public double getY() {
         return this.y;
     }
 
+    public void setY(final double y) {
+        this.y = y;
+    }
+
     public Icon getIcon() {
         return this.icon;
+    }
+
+    public void setIcon(final Icon icon) {
+        this.icon = icon;
     }
 
     public RectangleAnchor getImageAnchor() {
@@ -158,10 +170,14 @@ public class XYIconAnnotation extends AbstractXYAnnotation implements Cloneable,
         if (entities == null) {
             return;
         }
-        final XYAnnotationEntity entity = new XYIconAnnotationEntity(this, hotspot, rendererIndex, toolTipText,
-                urlText);
+        final XYAnnotationEntity entity = newEntity(hotspot, rendererIndex, toolTipText, urlText);
         entities.add(entity);
         this.entity = entity;
+    }
+
+    protected XYAnnotationEntity newEntity(final Shape hotspot, final int rendererIndex, final String toolTipText,
+            final String urlText) {
+        return new XYIconAnnotationEntity(this, hotspot, rendererIndex, toolTipText, urlText);
     }
 
     public XYAnnotationEntity getEntity() {
@@ -173,37 +189,13 @@ public class XYIconAnnotation extends AbstractXYAnnotation implements Cloneable,
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        // now try to reject equality...
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof XYIconAnnotation)) {
-            return false;
-        }
-        final XYIconAnnotation that = (XYIconAnnotation) obj;
-        if (this.x != that.x) {
-            return false;
-        }
-        if (this.y != that.y) {
-            return false;
-        }
-        if (!org.jfree.chart.util.ObjectUtils.equal(this.icon, that.icon)) {
-            return false;
-        }
-        if (!this.anchor.equals(that.anchor)) {
-            return false;
-        }
-        // seems to be the same...
-        return true;
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 
     @Override
-    public int hashCode() {
-        return this.icon.hashCode();
+    public boolean equals(final Object obj) {
+        return obj == this;
     }
 
     @Override

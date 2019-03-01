@@ -23,7 +23,7 @@ import de.invesdwin.util.error.UnknownArgumentException;
 @NotThreadSafe
 public class HighlightableLegendTitle extends CustomLegendTitle {
 
-    private static final Font LEGEND_FONT = XYPlots.AXIS_LABEL_FONT;
+    private static final Font LEGEND_FONT = XYPlots.DEFAULT_FONT;
     private static final Font HIGHLIGHTED_LEGEND_FONT = LEGEND_FONT.deriveFont(Font.BOLD);
 
     private final InteractiveChartPanel chartPanel;

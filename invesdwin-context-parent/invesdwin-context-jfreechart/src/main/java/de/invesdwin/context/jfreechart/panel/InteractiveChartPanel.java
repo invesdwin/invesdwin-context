@@ -79,8 +79,8 @@ public class InteractiveChartPanel extends JPanel {
 
         domainAxis = new NumberAxis();
         domainAxis.setAutoRange(true);
-        domainAxis.setLabelFont(XYPlots.AXIS_LABEL_FONT);
-        domainAxis.setTickLabelFont(XYPlots.AXIS_LABEL_FONT);
+        domainAxis.setLabelFont(XYPlots.DEFAULT_FONT);
+        domainAxis.setTickLabelFont(XYPlots.DEFAULT_FONT);
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         domainAxisFormat = new IndexedDateTimeNumberFormat(dataset, domainAxis);
         domainAxis.setNumberFormatOverride(domainAxisFormat);

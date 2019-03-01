@@ -32,7 +32,7 @@ import de.invesdwin.util.math.decimal.scaled.Percent;
 @NotThreadSafe
 public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPriceLineRenderer {
 
-    public static final Font FONT = XYPlots.AXIS_LABEL_FONT;
+    public static final Font FONT = XYPlots.DEFAULT_FONT;
     public static final Percent TRANSPARENCY = Percent.ZERO_PERCENT;
 
     private static final ValueAxis ABSOLUTE_AXIS = XYPlots.DRAWING_ABSOLUTE_AXIS;
@@ -136,6 +136,16 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
             }
         }
 
+    }
+
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return obj == this;
     }
 
 }
