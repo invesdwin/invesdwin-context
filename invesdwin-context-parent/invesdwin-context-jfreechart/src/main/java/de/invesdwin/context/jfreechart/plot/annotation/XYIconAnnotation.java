@@ -45,17 +45,17 @@ public class XYIconAnnotation extends AbstractXYAnnotation implements Cloneable,
 
     private XYAnnotationEntity entity;
 
-    public XYIconAnnotation(final double x, final double y, final Icon image) {
-        this(x, y, image, RectangleAnchor.CENTER);
+    public XYIconAnnotation(final double x, final double y, final Icon icon) {
+        this(x, y, icon, RectangleAnchor.CENTER);
     }
 
-    public XYIconAnnotation(final double x, final double y, final Icon image, final RectangleAnchor anchor) {
+    public XYIconAnnotation(final double x, final double y, final Icon icon, final RectangleAnchor anchor) {
         super();
-        Args.nullNotPermitted(image, "image");
+        Args.nullNotPermitted(icon, "image");
         Args.nullNotPermitted(anchor, "anchor");
         this.x = x;
         this.y = y;
-        this.icon = image;
+        this.icon = icon;
         this.anchor = anchor;
         this.coordinateType = XYCoordinateType.RELATIVE;
     }
@@ -101,8 +101,8 @@ public class XYIconAnnotation extends AbstractXYAnnotation implements Cloneable,
             anchorX = xRange.getLowerBound() + (modifyXInput(this.x) * xRange.getLength());
             anchorY = yRange.getLowerBound() + (modifyYInput(this.y) * yRange.getLength());
         } else {
-            anchorX = domainAxis.valueToJava2D(modifyXInput(this.x), dataArea, domainEdge);
-            anchorY = rangeAxis.valueToJava2D(modifyYInput(this.y), dataArea, rangeEdge);
+            anchorX = modifyXInput(this.x);
+            anchorY = modifyYInput(this.y);
         }
 
         final float j2DX = (float) domainAxis.valueToJava2D(anchorX, dataArea, domainEdge);

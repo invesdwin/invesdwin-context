@@ -20,7 +20,10 @@ public enum PlotIcons {
     //legend
     ADD("add_256.png"),
     REMOVE("remove_256.png"),
-    TRASH("trash_256.png");
+    TRASH("trash_256.png"),
+
+    //order plotting
+    MARKER("marker_256.png");
 
     private String name;
 
@@ -29,6 +32,11 @@ public enum PlotIcons {
     }
 
     public ImageIcon newIcon(final int size, final float alpha) {
+        final ImageIcon scaled = newIcon(size);
+        return new AlphaImageIcon(scaled, alpha);
+    }
+
+    public ImageIcon newIcon(final int size) {
         final URL resource = PlotIcons.class.getResource(name);
         if (resource == null) {
             throw new IllegalArgumentException(name + " not found");
@@ -36,7 +44,7 @@ public enum PlotIcons {
         final ImageIcon icon = new ImageIcon(resource);
         final ImageIcon scaled = new ImageIcon(
                 icon.getImage().getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH));
-        return new AlphaImageIcon(scaled, alpha);
+        return scaled;
     }
 
 }

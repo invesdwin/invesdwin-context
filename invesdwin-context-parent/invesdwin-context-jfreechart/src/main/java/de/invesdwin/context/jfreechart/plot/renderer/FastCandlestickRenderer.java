@@ -297,7 +297,7 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
         final double yyOpen = rangeAxis.valueToJava2D(yOpen, dataArea, edge);
         final double yyClose = rangeAxis.valueToJava2D(yClose, dataArea, edge);
 
-        calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH, getSeriesStroke(0));
+        calculateItemStroke(state, getSeriesStroke(0));
         final double stickWidth = calculateStickWidth(state, dataArea, horiz);
 
         final Paint p = getItemPaint(series, item);
@@ -314,18 +314,18 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
         // draw the upper shadow
         if (yHigh > maxOpenClose) {
             if (horiz) {
-                g2.draw(new Line2D.Double(yyHigh, xx, yyMaxOpenClose, xx));
+                g2.draw(new Line2D.Double(yyHigh, xx, yyMinOpenClose, xx));
             } else {
-                g2.draw(new Line2D.Double(xx, yyHigh, xx, yyMaxOpenClose));
+                g2.draw(new Line2D.Double(xx, yyHigh, xx, yyMinOpenClose));
             }
         }
 
         // draw the lower shadow
         if (yLow < minOpenClose) {
             if (horiz) {
-                g2.draw(new Line2D.Double(yyLow, xx, yyMinOpenClose, xx));
+                g2.draw(new Line2D.Double(yyLow, xx, yyMaxOpenClose, xx));
             } else {
-                g2.draw(new Line2D.Double(xx, yyLow, xx, yyMinOpenClose));
+                g2.draw(new Line2D.Double(xx, yyLow, xx, yyMaxOpenClose));
             }
         }
 
@@ -373,21 +373,21 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
         return horiz;
     }
 
-    public void calculateItemStroke(final XYItemRendererState state, final float strokeScalingMinWidth,
-            final Stroke seriesStroke) {
+    public void calculateItemStroke(final XYItemRendererState state, final Stroke seriesStroke) {
         final BasicStroke cStroke = (BasicStroke) seriesStroke;
         final float strokeScalingMaxWidth = cStroke.getLineWidth();
 
         final int itemCount = state.getLastItemIndex() - state.getFirstItemIndex();
         final float strokeWidth;
         if (itemCount > STROKE_SCALING_MAX_ITEMS) {
-            strokeWidth = strokeScalingMinWidth;
+            strokeWidth = STROKE_SCALING_MIN_WIDTH;
         } else if (itemCount <= STROKE_SCALING_MIN_ITEMS) {
             strokeWidth = strokeScalingMaxWidth;
         } else {
-            final float widthDifference = strokeScalingMaxWidth - strokeScalingMinWidth;
+            final float widthDifference = strokeScalingMaxWidth - STROKE_SCALING_MIN_WIDTH;
             final float itemDifference = itemCount / (STROKE_SCALING_MAX_ITEMS);
-            strokeWidth = Floats.max(strokeScalingMinWidth, strokeScalingMaxWidth - widthDifference * itemDifference);
+            strokeWidth = Floats.max(STROKE_SCALING_MIN_WIDTH,
+                    strokeScalingMaxWidth - widthDifference * itemDifference);
         }
         this.itemStroke = new BasicStroke(strokeWidth, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_BEVEL);
     }
@@ -418,7 +418,7 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
             xxWidth *= autoWidthFactorSmall;
         }
         xxWidth = Math.min(xxWidth, this.maxCandleWidth);
-        stickWidth = Math.max(Math.min(0, this.maxCandleWidth), xxWidth);
+        stickWidth = Math.max(Math.min(STROKE_SCALING_MIN_WIDTH, this.maxCandleWidth), xxWidth);
         return stickWidth;
     }
 

@@ -28,7 +28,6 @@ import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnno
 @NotThreadSafe
 public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer, IDelegatePriceLineRenderer {
 
-    private static final float STROKE_SCALING_MIN_WIDTH = 0.5F;
     private final FastCandlestickRenderer candlestickRenderer;
     private double tickLength;
     private final XYPriceLineAnnotation priceLineAnnotation;
@@ -81,7 +80,7 @@ public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColor
 
         final boolean horiz = candlestickRenderer.isHorizontal(plot);
         final double stickWidth = candlestickRenderer.calculateStickWidth(state, dataArea, horiz);
-        candlestickRenderer.calculateItemStroke(state, STROKE_SCALING_MIN_WIDTH, getSeriesStroke(0));
+        candlestickRenderer.calculateItemStroke(state, getSeriesStroke(0));
         setTickLength(stickWidth / 2);
         //info null to skip entitycollection stuff
         super.drawItem(g2, state, dataArea, null, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState,

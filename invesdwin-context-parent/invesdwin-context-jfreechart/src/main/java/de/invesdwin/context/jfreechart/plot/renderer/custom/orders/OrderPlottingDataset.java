@@ -161,4 +161,8 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
         return lastTradeProfit;
     }
 
+    public IndexedDateTimeOHLCDataset getOhlcDataset() {
+        return ohlcDataset;
+    }
+
 }
