@@ -42,7 +42,7 @@ public class PlotLegendHelper {
     private static final int EMPTY_PLOT_WEIGHT = CustomCombinedDomainXYPlot.EMPTY_PLOT_WEIGHT;
 
     private static final Color LEGEND_BACKGROUND_PAINT = Colors.INVISIBLE_COLOR;
-    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(240, 240, 240, 200);
+    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(255, 255, 255, 150);
 
     private final InteractiveChartPanel chartPanel;
 
@@ -94,20 +94,23 @@ public class PlotLegendHelper {
             final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
             final XYPlot plot = plotSource.getPlot();
             final CustomLegendTitle title = getTitle(plot);
-            final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
-            if (highlightedLegendInfo == null || highlightedLegendInfo.getTitle() != title
-                    || highlightedLegendInfo.getDatasetIndex() != datasetIndex) {
-                //CHECKSTYLE:OFF
-                if (highlightedLegendInfo != null) {
-                    //CHECKSTYLE:ON
-                    highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
+            final Integer datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset, false);
+            if (datasetIndex != null) {
+                if (highlightedLegendInfo == null || highlightedLegendInfo.getTitle() != title
+                        || highlightedLegendInfo.getDatasetIndex() != datasetIndex.intValue()) {
+                    //CHECKSTYLE:OFF
+                    if (highlightedLegendInfo != null) {
+                        //CHECKSTYLE:ON
+                        highlightedLegendInfo.getTitle().setBackgroundPaint(LEGEND_BACKGROUND_PAINT);
+                    }
+                    final int subplotIndex = chartPanel.getCombinedPlot().getSubplotIndex(mouseX, mouseY);
+                    highlightedLegendInfo = new HighlightedLegendInfo(chartPanel, subplotIndex, plot, title,
+                            datasetIndex);
+                    title.setBackgroundPaint(HIGHLIGHTED_LEGEND_BACKGROUND_PAINT);
+                    chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
                 }
-                final int subplotIndex = chartPanel.getCombinedPlot().getSubplotIndex(mouseX, mouseY);
-                highlightedLegendInfo = new HighlightedLegendInfo(chartPanel, subplotIndex, plot, title, datasetIndex);
-                title.setBackgroundPaint(HIGHLIGHTED_LEGEND_BACKGROUND_PAINT);
-                chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
+                updated = true;
             }
-            updated = true;
         }
         if (!updated) {
             disableHighlighting();
@@ -160,7 +163,7 @@ public class PlotLegendHelper {
             if (dataset instanceof IPlotSourceDataset) {
                 final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                 final XYPlot plot = plotSource.getPlot();
-                final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset);
+                final int datasetIndex = XYPlots.getDatasetIndexForDataset(plot, dataset, true);
                 final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
                 final boolean visible = renderer instanceof DisabledXYItemRenderer;
                 setDatasetVisible(plot, datasetIndex, visible);

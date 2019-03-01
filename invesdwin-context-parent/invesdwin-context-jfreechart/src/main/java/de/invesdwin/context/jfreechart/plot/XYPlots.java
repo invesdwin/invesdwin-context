@@ -164,7 +164,8 @@ public final class XYPlots {
         plot.setNotify(notifyBefore);
     }
 
-    public static int getDatasetIndexForDataset(final XYPlot plot, final Dataset dataset) {
+    public static Integer getDatasetIndexForDataset(final XYPlot plot, final Dataset dataset,
+            final boolean shouldThrow) {
         for (int datasetIndex = 0; datasetIndex <= plot.getDatasetCount(); datasetIndex++) {
             final XYDataset potentialDataset = plot.getDataset(datasetIndex);
             if (potentialDataset != null) {
@@ -179,7 +180,11 @@ public final class XYPlots {
                 }
             }
         }
-        throw new IllegalStateException("No datasetIndex found for dataset");
+        if (shouldThrow) {
+            throw new IllegalStateException("No datasetIndex found for dataset");
+        } else {
+            return null;
+        }
     }
 
 }

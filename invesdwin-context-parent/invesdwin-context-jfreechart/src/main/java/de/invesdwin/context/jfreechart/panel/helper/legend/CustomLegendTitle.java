@@ -184,6 +184,10 @@ public class CustomLegendTitle extends Title implements Cloneable, PublicCloneab
         notifyListeners(new TitleChangeEvent(this));
     }
 
+    public void fireChangeEvent() {
+        notifyListeners(new TitleChangeEvent(this));
+    }
+
     /**
      * Returns the location of the shape within each legend item.
      *
