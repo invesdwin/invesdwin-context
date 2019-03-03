@@ -42,7 +42,7 @@ public class PlotLegendHelper {
     private static final int EMPTY_PLOT_WEIGHT = CustomCombinedDomainXYPlot.EMPTY_PLOT_WEIGHT;
 
     private static final Color LEGEND_BACKGROUND_PAINT = Colors.INVISIBLE_COLOR;
-    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(255, 255, 255, 150);
+    private static final Color HIGHLIGHTED_LEGEND_BACKGROUND_PAINT = new Color(255, 255, 255, 200);
 
     private final InteractiveChartPanel chartPanel;
 
