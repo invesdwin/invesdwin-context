@@ -455,7 +455,6 @@ public class TestHashMap {
 			double id = (double)i;
 			map.put(il, id);
 			map.get(il);
-			map.remove(il);
 		}
 		for (Long o : remove) {
 			map.remove(o);
@@ -478,7 +477,6 @@ public class TestHashMap {
 			double id = (double)i;
 			map.put(il, id);
 			map.get(il);
-			map.remove(il);
 		}
 		for (Long o : remove) {
 			map.remove(o);
@@ -501,7 +499,6 @@ public class TestHashMap {
 			double id = (double)i;
 			map.put(il, id);
 			map.get(il);
-			map.remove(il);
 		}
 		for (Long o : remove) {
 			map.remove(o);
@@ -529,7 +526,6 @@ public class TestHashMap {
 			double id = (double)i;
 			map.put(il, id);
 			map.get(il);
-			map.remove(il);
 		}
 		for (Long o : remove) {
 			map.remove(o);
