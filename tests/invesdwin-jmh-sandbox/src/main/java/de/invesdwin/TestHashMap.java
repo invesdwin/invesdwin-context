@@ -37,11 +37,16 @@ import org.openjdk.jol.info.GraphLayout;
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 import com.google.common.collect.GuavaCompactHashMap;
 
+import de.invesdwin.util.collections.eviction.LeastRecentlyAddedMap;
+import de.invesdwin.util.collections.eviction.LeastRecentlyModifiedMap;
+import de.invesdwin.util.collections.eviction.LeastRecentlyUsedMap;
 import de.invesdwin.util.time.Instant;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -235,7 +240,7 @@ import static java.util.Arrays.stream;
 public class TestHashMap {
 	public static final int TIMES = 10000;
 	private static final int MAX = 5000000;
-	private static long ELEMENTS_SIZE;
+	private static double ELEMENTS_SIZE;
 
 	static Long[] add = new Long[TIMES], lookup = new Long[TIMES], remove = new Long[TIMES];
 	static {
@@ -434,6 +439,103 @@ public class TestHashMap {
 		}
 		return r + map.size();
 	}
+	
+	@Benchmark
+	public int lruMap() {
+		Map<Long, Double> map = new LeastRecentlyUsedMap<>(TIMES/10);
+		for (Long o : add) {
+			map.put(o, o.doubleValue());
+		}
+		int r = 0;
+		for (Long o : lookup) {
+			r ^= map.get(o) != null ? 1 : 0;
+		}
+		for(int i = 0; i < TIMES; i++) {
+			long il = (long)i;
+			double id = (double)i;
+			map.put(il, id);
+			map.get(il);
+			map.remove(il);
+		}
+		for (Long o : remove) {
+			map.remove(o);
+		}
+		return r + map.size();
+	}
+	
+	@Benchmark
+	public int lrmMap() {
+		Map<Long, Double> map = new LeastRecentlyModifiedMap<>(TIMES/10);
+		for (Long o : add) {
+			map.put(o, o.doubleValue());
+		}
+		int r = 0;
+		for (Long o : lookup) {
+			r ^= map.get(o) != null ? 1 : 0;
+		}
+		for(int i = 0; i < TIMES; i++) {
+			long il = (long)i;
+			double id = (double)i;
+			map.put(il, id);
+			map.get(il);
+			map.remove(il);
+		}
+		for (Long o : remove) {
+			map.remove(o);
+		}
+		return r + map.size();
+	}
+	
+	@Benchmark
+	public int lraMap() {
+		Map<Long, Double> map = new LeastRecentlyAddedMap<>(TIMES/10);
+		for (Long o : add) {
+			map.put(o, o.doubleValue());
+		}
+		int r = 0;
+		for (Long o : lookup) {
+			r ^= map.get(o) != null ? 1 : 0;
+		}
+		for(int i = 0; i < TIMES; i++) {
+			long il = (long)i;
+			double id = (double)i;
+			map.put(il, id);
+			map.get(il);
+			map.remove(il);
+		}
+		for (Long o : remove) {
+			map.remove(o);
+		}
+		return r + map.size();
+	}
+	
+	@Benchmark
+	public int javaLruMap() {
+		Map<Long, Double> map = new LinkedHashMap<Long, Double>() {
+			 @Override
+			  protected boolean removeEldestEntry(final Entry<Long, Double> eldest) {
+			    return size() >= TIMES/10;
+			  }
+		};
+		for (Long o : add) {
+			map.put(o, o.doubleValue());
+		}
+		int r = 0;
+		for (Long o : lookup) {
+			r ^= map.get(o) != null ? 1 : 0;
+		}
+		for(int i = 0; i < TIMES; i++) {
+			long il = (long)i;
+			double id = (double)i;
+			map.put(il, id);
+			map.get(il);
+			map.remove(il);
+		}
+		for (Long o : remove) {
+			map.remove(o);
+		}
+		return r + map.size();
+	}
 
 	public static void main(String[] argv) {
 		testSize();
@@ -450,6 +552,10 @@ public class TestHashMap {
 		testRuntime("fastUtilHashMap", test::fastUtilHashMap);
 		testRuntime("troveHashMap", test::troveHashMap);
 		testRuntime("smoothieMap", test::smoothieMap);
+		testRuntime("lruMap", test::lruMap);
+		testRuntime("lrmMap", test::lrmMap);
+		testRuntime("lraMap", test::lraMap);
+		testRuntime("javaLruMap", test::javaLruMap);
 	}
 
 	private static void testRuntime(String string, Runnable object) {
@@ -462,11 +568,6 @@ public class TestHashMap {
 		System.out.println(string+": "+overall);
 	}
 
-	private static void put(Map hashMap, Object t) {
-		Long l = (Long) t;
-		hashMap.put(l, l.doubleValue());
-	}
-
 	private static void put(ObjectObjectHashMap hppcMap, Object t) {
 		Long l = (Long) t;
 		hppcMap.put(l, l.doubleValue());
@@ -474,71 +575,54 @@ public class TestHashMap {
 
 	private static void testSize() {
 		HashMap hashMap = new HashMap();
-		testSize("HashMap", hashMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(hashMap, t);
-			}
-
-		});
+		testSize("HashMap", hashMap);
 		net.ontopia.utils.CompactHashMap compactHashMap = new net.ontopia.utils.CompactHashMap();
-		testSize("CompactHashMap", compactHashMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(compactHashMap, t);
-			}
-		});
+		testSize("CompactHashMap", compactHashMap);
 		com.koloboke.collect.map.hash.HashObjObjMap<Object, Object> kolobokeMap = com.koloboke.collect.map.hash.HashObjObjMaps
 				.newMutableMap();
-		testSize("KolobokeMap", kolobokeMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(kolobokeMap, t);
-			}
-		});
+		testSize("KolobokeMap", kolobokeMap);
 		com.carrotsearch.hppc.ObjectObjectHashMap hppcMap = new com.carrotsearch.hppc.ObjectObjectHashMap();
-		testSize("HPPC map", hppcMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(hppcMap, t);
-			}
-		});
+		testSize("HPPC map", hppcMap);
 		com.google.common.collect.GuavaCompactHashMap guavaCompactHashMap = new com.google.common.collect.GuavaCompactHashMap();
-		testSize("GuavaCompactHashMap", guavaCompactHashMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(guavaCompactHashMap, t);
-			}
-		});
+		testSize("GuavaCompactHashMap", guavaCompactHashMap);
 		it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap fastUtilHashMap = new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap();
-		testSize("FastUtilHashMap", fastUtilHashMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(fastUtilHashMap, t);
-			}
-		});
+		testSize("FastUtilHashMap", fastUtilHashMap);
 		gnu.trove.map.hash.THashMap troveHashMap = new gnu.trove.map.hash.THashMap();
-		testSize("TroveHashMap", troveHashMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(troveHashMap, t);
-			}
-		});
+		testSize("TroveHashMap", troveHashMap);
 		net.openhft.smoothie.SmoothieMap smoothieMap = new net.openhft.smoothie.SmoothieMap();
-		testSize("SmoothieMap", smoothieMap, new Consumer() {
-			@Override
-			public void accept(Object t) {
-				put(smoothieMap, t);
-			}
-		});
+		testSize("SmoothieMap", smoothieMap);
+		LeastRecentlyUsedMap lruMap = new LeastRecentlyUsedMap<>(TIMES/10);
+		testSize("lruMap", lruMap);
+		LeastRecentlyModifiedMap lrmMap = new LeastRecentlyModifiedMap<>(TIMES/10);
+		testSize("lrmMap", lrmMap);
+		LeastRecentlyAddedMap lraMap = new LeastRecentlyAddedMap<>(TIMES/10);
+		testSize("lraMap", lraMap);
+		Map<Long, Double> javaLruMap = new LinkedHashMap<Long, Double>() {
+			 @Override
+			  protected boolean removeEldestEntry(final Entry<Long, Double> eldest) {
+			    return size() >= TIMES/10;
+			  }
+		};
+		testSize("javaLruMap", javaLruMap);
 	}
 
-	public static void testSize(String name, Object map, Consumer mapAdd) {
+	private static void testSize(String name, ObjectObjectHashMap map) {
 		for (Long o : add) {
-			mapAdd.accept(o);
+			map.put(o, o.doubleValue());
 		}
+		double size = map.size();
+		double elementsSize = ELEMENTS_SIZE / TIMES * size;
 		System.out.printf("%s: %.1f bytes per element\n", name,
-				((GraphLayout.parseInstance(map).totalSize() - ELEMENTS_SIZE) * 1.0 / TIMES));
+				((GraphLayout.parseInstance(map).totalSize() - elementsSize) * 1.0 / size));
+	}
 
+	private static void testSize(String name, Map map) {
+		for (Long o : add) {
+			map.put(o, o.doubleValue());
+		}
+		double size = map.size();
+		double elementsSize = ELEMENTS_SIZE / TIMES * size;
+		System.out.printf("%s: %.1f bytes per element\n", name,
+				((GraphLayout.parseInstance(map).totalSize() - elementsSize) * 1.0 / size));
 	}
 }
