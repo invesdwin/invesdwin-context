@@ -14,7 +14,7 @@ import de.invesdwin.util.time.Instant;
 //CHECKSTYLE:OFF
 public class TestHashSet extends AbstractPerformanceTest {
     private static final int REPETITIONS = 1000;
-    private static final int TIMES = 100000;
+    private static final int TIMES = 10000;
     private static final int MAX = 5000000;
     private static final long ELEMENTS_SIZE;
 
