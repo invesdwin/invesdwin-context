@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.invesdwin</groupId>
+		<artifactId>invesdwin-context-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>invesdwin-performance-sandbox</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-aspects</artifactId>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jbellis</groupId>
+			<artifactId>jamm</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>it.unimi.dsi</groupId>
+			<artifactId>fastutil</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.openhft</groupId>
+			<artifactId>smoothie-map</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.koloboke</groupId>
+			<artifactId>koloboke-impl-jdk8</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.carrotsearch</groupId>
+			<artifactId>hppc</artifactId>
+			<version>0.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.trove4j</groupId>
+			<artifactId>core</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.ontopia</groupId>
+			<artifactId>ontopia-engine</artifactId>
+			<version>5.3.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>crimson</groupId>
+					<artifactId>crimson</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+</project>
