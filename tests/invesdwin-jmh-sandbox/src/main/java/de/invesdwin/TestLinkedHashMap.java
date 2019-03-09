@@ -52,34 +52,17 @@ import java.util.function.Consumer;
 
 import static java.util.Arrays.stream;
 
-//with remove
-//HashMap: 66,8 bytes per element
-//CompactHashMap: 45,4 bytes per element
-//KolobokeMap: 45,4 bytes per element
-//HPPC map: 45,4 bytes per element
-//GuavaCompactHashMap: 51,8 bytes per element
-//FastUtilHashMap: 45,4 bytes per element
-//TroveHashMap: 40,8 bytes per element
-//SmoothieMap: 119,7 bytes per element
-//hashMap: PT11.632.317.887S
-//compactHashMap: PT19.864.692.475S
-//hppcMap: PT14.690.901.011S
-//kolobokeMap: PT14.076.916.124S
-//guavaCompactHashMap: PT11.768.156.010S
-//fastUtilHashMap: PT13.198.236.702S
-//troveHashMap: PT25.498.872.729S
-//smoothieMap: PT12.031.543.770S
+
+
 
 //https://stackoverflow.com/questions/26365457/should-i-dump-java-util-hashset-in-favor-of-compacthashset/26369483#26369483
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@OperationsPerInvocation(TestHashMap.TIMES)
+@OperationsPerInvocation(TestLinkedHashMap.TIMES)
 @Threads(1)
 @Fork(1)
 @State(Scope.Thread)
-public class TestHashMap {
-	private boolean removeEnabled = false;
-
+public class TestLinkedHashMap {
 	private static final int REPETITIONS = 1000;
 	public static final int TIMES = 10000;
 	private static final int MAX = 5000000;
@@ -96,6 +79,11 @@ public class TestHashMap {
 			remove[ix] = new Long(Math.round(Math.random() * MAX));
 	}
 
+	@Benchmark
+	public int linkedHashMap() {
+		Map<Long, Double> map = new LinkedHashMap<Long, Double>();
+		return test(map);
+	}
 
 	private int test(Map<Long, Double> map) {
 		for (Long o : add) {
@@ -105,97 +93,29 @@ public class TestHashMap {
 		for (Long o : lookup) {
 			r ^= map.get(o) != null ? 1 : 0;
 		}
-		for (int i = 0; i < TIMES; i++) {
-			long il = (long) i;
-			double id = (double) i;
+		for(int i = 0; i < TIMES; i++) {
+			long il = (long)i;
+			double id = (double)i;
 			map.put(il, id);
 			map.get(il);
-			if (removeEnabled) {
-				map.remove(il);
-			}
+			map.remove(il);
 		}
-		if (removeEnabled) {
-			for (Long o : remove) {
-				map.remove(o);
-			}
-		}
-		return r + map.size();
-	}
-	private int test(com.carrotsearch.hppc.ObjectObjectHashMap<Long, Double> map) {
-		for (Long o : add) {
-			map.put(o, o.doubleValue());
-		}
-		int r = 0;
-		for (Long o : lookup) {
-			r ^= map.get(o) != null ? 1 : 0;
-		}
-		for (int i = 0; i < TIMES; i++) {
-			long il = (long) i;
-			double id = (double) i;
-			map.put(il, id);
-			map.get(il);
-			if (removeEnabled) {
-				map.remove(il);
-			}
-		}
-		if (removeEnabled) {
-			for (Long o : remove) {
-				map.remove(o);
-			}
+		for (Long o : remove) {
+			map.remove(o);
 		}
 		return r + map.size();
 	}
 
-	
 	@Benchmark
-	public int hashMap() {
-		Map<Long, Double> map = new HashMap<Long, Double>();
-		return test(map);
-	}
-	
-	@Benchmark
-	public int compactHashMap() {
-		Map<Long, Double> map = new net.ontopia.utils.CompactHashMap<Long, Double>();
+	public int guavaCompactLinkedHashMap() {
+		Map<Long, Double> map = new com.google.common.collect.GuavaCompactLinkedHashMap<>();
 		return test(map);
 	}
 
 	@Benchmark
-	public int hppcMap() {
-		com.carrotsearch.hppc.ObjectObjectHashMap<Long, Double> map = new com.carrotsearch.hppc.ObjectObjectHashMap<Long, Double>();
-		return test(map);
-	}
-
-
-//	@Benchmark
-//	public int kolobokeMap() {
-//		Map<Long, Double> map = com.koloboke.collect.map.hash.HashObjObjMaps.newMutableMap();
-//		return test(map);
-//	}
-
-	@Benchmark
-	public int guavaCompactHashMap() {
-		Map<Long, Double> map = new com.google.common.collect.GuavaCompactHashMap<>();
-		return test(map);
-	}
-
-	@Benchmark
-	public int fastUtilHashMap() {
+	public int fastUtilLinkedHashMap() {
 		// fair comparison -- growing table
-		Map<Long, Double> map = new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>();
-		return test(map);
-	}
-
-	@Benchmark
-	public int troveHashMap() {
-		// fair comparison -- growing table
-		Map<Long, Double> map = new gnu.trove.map.hash.THashMap<>();
-		return test(map);
-	}
-
-	@Benchmark
-	public int smoothieMap() {
-		// fair comparison -- growing table
-		Map<Long, Double> map = new net.openhft.smoothie.SmoothieMap<>();
+		Map<Long, Double> map = new it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap<>();
 		return test(map);
 	}
 
@@ -205,15 +125,10 @@ public class TestHashMap {
 	}
 
 	private static void testRuntime() {
-		TestHashMap test = new TestHashMap();
-		testRuntime("hashMap", test::hashMap);
-		testRuntime("compactHashMap", test::compactHashMap);
-		testRuntime("hppcMap", test::hppcMap);
-//		testRuntime("kolobokeMap", test::kolobokeMap);
-		testRuntime("guavaCompactHashMap", test::guavaCompactHashMap);
-		testRuntime("fastUtilHashMap", test::fastUtilHashMap);
-		testRuntime("troveHashMap", test::troveHashMap);
-		testRuntime("smoothieMap", test::smoothieMap);
+		TestLinkedHashMap test = new TestLinkedHashMap();
+		testRuntime("linkedHashMap", test::linkedHashMap);
+		testRuntime("guavaCompactLinkedHashMap", test::guavaCompactLinkedHashMap);
+		testRuntime("fastUtilLinkedHashMap", test::fastUtilLinkedHashMap);
 	}
 
 	private static void testRuntime(String string, Runnable object) {
@@ -223,7 +138,7 @@ public class TestHashMap {
 			object.run();
 //			System.out.println(i + ". " + string + ": " + instant);
 		}
-		System.out.println(string + ": " + overall);
+		System.out.println(string+": "+overall);
 	}
 
 	private static void put(ObjectObjectHashMap hppcMap, Object t) {
@@ -232,23 +147,12 @@ public class TestHashMap {
 	}
 
 	private static void testSize() {
-		HashMap hashMap = new HashMap();
-		testSize("HashMap", hashMap);
-		net.ontopia.utils.CompactHashMap compactHashMap = new net.ontopia.utils.CompactHashMap();
-		testSize("CompactHashMap", compactHashMap);
-		com.koloboke.collect.map.hash.HashObjObjMap<Object, Object> kolobokeMap = com.koloboke.collect.map.hash.HashObjObjMaps
-				.newMutableMap();
-		testSize("KolobokeMap", kolobokeMap);
-		com.carrotsearch.hppc.ObjectObjectHashMap hppcMap = new com.carrotsearch.hppc.ObjectObjectHashMap();
-		testSize("HPPC map", hppcMap);
-		com.google.common.collect.GuavaCompactHashMap guavaCompactHashMap = new com.google.common.collect.GuavaCompactHashMap();
-		testSize("GuavaCompactHashMap", guavaCompactHashMap);
-		it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap fastUtilHashMap = new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap();
-		testSize("FastUtilHashMap", fastUtilHashMap);
-		gnu.trove.map.hash.THashMap troveHashMap = new gnu.trove.map.hash.THashMap();
-		testSize("TroveHashMap", troveHashMap);
-		net.openhft.smoothie.SmoothieMap smoothieMap = new net.openhft.smoothie.SmoothieMap();
-		testSize("SmoothieMap", smoothieMap);
+		LinkedHashMap hashMap = new LinkedHashMap();
+		testSize("LinkedHashMap", hashMap);
+		com.google.common.collect.GuavaCompactLinkedHashMap guavaCompactHashMap = new com.google.common.collect.GuavaCompactLinkedHashMap();
+		testSize("GuavaCompactLinkedHashMap", guavaCompactHashMap);
+		it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap fastUtilHashMap = new it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap();
+		testSize("FastUtilLinkedHashMap", fastUtilHashMap);
 	}
 
 	private static void testSize(String name, ObjectObjectHashMap map) {
