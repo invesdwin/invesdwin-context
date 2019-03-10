@@ -16,14 +16,15 @@ import de.invesdwin.util.lang.cleanable.ACleanableAction;
 public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
 
     private final FlatFileItemReader<E> itemReader;
-    private final ACleanableAction cleanableAction;
+    private final ACleanableAction cleanable;
     private E cachedNext;
 
     public ABeanCsvReader(final InputStream in) {
         try {
             itemReader = newItemReader(in);
             itemReader.open(new ExecutionContext());
-            cleanableAction = ACleanableAction.valueOfRunnable(itemReader::close);
+            cleanable = ACleanableAction.valueOfRunnable(itemReader::close);
+            registerCleanable(cleanable);
         } catch (final Exception e) {
             throw Err.process(e);
         }
@@ -53,7 +54,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
         if (cachedNext != null) {
             return cachedNext;
         } else {
-            if (cleanableAction.isClosed()) {
+            if (cleanable.isClosed()) {
                 return null;
             }
             do {
@@ -63,7 +64,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
                     throw Err.process(e);
                 }
                 if (cachedNext == null) {
-                    cleanableAction.close();
+                    cleanable.close();
                     return null;
                 }
             } while (isInvalidRow(cachedNext));
