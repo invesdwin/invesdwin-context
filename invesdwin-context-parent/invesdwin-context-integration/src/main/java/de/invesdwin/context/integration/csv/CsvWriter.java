@@ -12,6 +12,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.loadingcache.ALoadingCache;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.finalizer.AFinalizer;
 
 @NotThreadSafe
 public class CsvWriter implements Closeable {
@@ -35,7 +36,7 @@ public class CsvWriter implements Closeable {
         }
     };
 
-    private final OutputStream out;
+    private final CsvWriterFinalizer finalizer;
     private byte[] quoteBytes;
     private byte[] columnSeparatorBytes;
     private byte[] newlineBytes;
@@ -44,7 +45,8 @@ public class CsvWriter implements Closeable {
     private Integer assertColumnCount;
 
     public CsvWriter(final OutputStream out) {
-        this.out = out;
+        finalizer = new CsvWriterFinalizer();
+        finalizer.register(this);
         withQuote(DEFAULT_QUOTE);
         withColumnSeparator(DEFAULT_COLUMN_SEPARATOR);
         withNewLine(DEFAULT_NEWLINE);
@@ -95,18 +97,18 @@ public class CsvWriter implements Closeable {
             final Object column = columns.get(i);
             if (column != null) {
                 if (quoteBytes != null) {
-                    out.write(quoteBytes);
+                    finalizer.out.write(quoteBytes);
                 }
-                out.write(Strings.asStringEmptyText(column).getBytes());
+                finalizer.out.write(Strings.asStringEmptyText(column).getBytes());
                 if (quoteBytes != null) {
-                    out.write(quoteBytes);
+                    finalizer.out.write(quoteBytes);
                 }
             }
             if (i < columns.size() - 1) {
-                out.write(columnSeparatorBytes);
+                finalizer.out.write(columnSeparatorBytes);
             }
         }
-        out.write(newlineBytes);
+        finalizer.out.write(newlineBytes);
     }
 
     public void line(final Object... columns) throws IOException {
@@ -123,18 +125,35 @@ public class CsvWriter implements Closeable {
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        close();
-    }
-
-    @Override
     public final void close() throws IOException {
-        out.close();
+        finalizer.close();
     }
 
     public void flush() throws IOException {
-        out.flush();
+        finalizer.out.flush();
+    }
+
+    private static final class CsvWriterFinalizer extends AFinalizer {
+
+        private OutputStream out;
+
+        @Override
+        protected void clean() {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+                out = null;
+            }
+        }
+
+        @Override
+        public boolean isClosed() {
+            return out != null;
+        }
+
     }
 
 }
