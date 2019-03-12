@@ -45,8 +45,8 @@ public class CsvWriter implements Closeable {
     private Integer assertColumnCount;
 
     public CsvWriter(final OutputStream out) {
-        finalizer = new CsvWriterFinalizer();
-        finalizer.register(this);
+        this.finalizer = new CsvWriterFinalizer();
+        this.finalizer.register(this);
         withQuote(DEFAULT_QUOTE);
         withColumnSeparator(DEFAULT_COLUMN_SEPARATOR);
         withNewLine(DEFAULT_NEWLINE);
@@ -139,19 +139,17 @@ public class CsvWriter implements Closeable {
 
         @Override
         protected void clean() {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-                out = null;
+            try {
+                out.close();
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
             }
+            out = null;
         }
 
         @Override
         public boolean isClosed() {
-            return out != null;
+            return out == null;
         }
 
     }
