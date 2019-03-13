@@ -46,6 +46,7 @@ public class CsvWriter implements Closeable {
 
     public CsvWriter(final OutputStream out) {
         this.finalizer = new CsvWriterFinalizer();
+        this.finalizer.out = out;
         this.finalizer.register(this);
         withQuote(DEFAULT_QUOTE);
         withColumnSeparator(DEFAULT_COLUMN_SEPARATOR);
