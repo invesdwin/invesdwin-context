@@ -15,19 +15,34 @@ import de.invesdwin.util.lang.finalizer.AFinalizer;
 @NotThreadSafe
 public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
 
-    private final FlatFileItemReader<E> itemReader;
-    private final AFinalizer finalizer;
+    private final BeanCsvReaderFinalizer<E> finalizer;
     private E cachedNext;
 
     public ABeanCsvReader(final InputStream in) {
+        finalizer = new BeanCsvReaderFinalizer<E>();
         try {
-            itemReader = newItemReader(in);
-            itemReader.open(new ExecutionContext());
-            finalizer = AFinalizer.valueOfRunnable(itemReader::close);
-            finalizer.register(this);
+            finalizer.itemReader = newItemReader(in);
+            finalizer.itemReader.open(new ExecutionContext());
         } catch (final Exception e) {
             throw Err.process(e);
         }
+        finalizer.register(this);
+    }
+
+    private static final class BeanCsvReaderFinalizer<_E> extends AFinalizer {
+        private FlatFileItemReader<_E> itemReader;
+
+        @Override
+        protected void clean() {
+            itemReader.close();
+            itemReader = null;
+        }
+
+        @Override
+        public boolean isClosed() {
+            return itemReader == null;
+        }
+
     }
 
     protected abstract FlatFileItemReader<E> newItemReader(InputStream in) throws Exception;
@@ -59,7 +74,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
             }
             do {
                 try {
-                    cachedNext = itemReader.read();
+                    cachedNext = finalizer.itemReader.read();
                 } catch (final Exception e) {
                     throw Err.process(e);
                 }
@@ -70,6 +85,12 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
             } while (isInvalidRow(cachedNext));
             return cachedNext;
         }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        finalizer.close();
     }
 
 }
