@@ -24,7 +24,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
             itemReader = newItemReader(in);
             itemReader.open(new ExecutionContext());
             finalizer = AFinalizer.valueOfRunnable(itemReader::close);
-            registerFinalizer(finalizer);
+            finalizer.register(this);
         } catch (final Exception e) {
             throw Err.process(e);
         }
