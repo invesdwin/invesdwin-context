@@ -280,6 +280,9 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
 
         final boolean horiz = isHorizontal(plot);
 
+        if (!(dataset instanceof OHLCDataset)) {
+            return;
+        }
         final OHLCDataset highLowData = (OHLCDataset) dataset;
 
         final double x = highLowData.getXValue(series, item);
