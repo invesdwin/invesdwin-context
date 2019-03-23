@@ -54,6 +54,40 @@ public class StyleSettingsPanel extends JPanel {
         this.plotConfigurationHelper = plotConfigurationHelper;
         this.highlighted = highlighted;
 
+        initRenderer();
+        initLine();
+        initColors();
+        initShowPriceLine();
+        initResetStyle();
+        updateRendererVisibility();
+        updateLineVisibility();
+
+        popupMenu.add(priceRendererItem);
+        popupMenu.add(seriesRendererItem);
+        add(cmb_lineStyle);
+        add(cmb_lineWidth);
+        add(btn_seriesColor);
+        add(btn_upColor);
+        add(btn_downColor);
+        add(chk_showPriceLine);
+        add(btn_resetStyle);
+    }
+
+    private void initResetStyle() {
+        btn_resetStyle = new JButton("Reset Style");
+        btn_resetStyle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                if (highlighted.isPriceSeries()) {
+                    plotConfigurationHelper.getPriceInitialSettings().reset();
+                } else {
+                    plotConfigurationHelper.getSeriesInitialSettings().reset(highlighted);
+                }
+            }
+        });
+    }
+
+    private void updateRendererVisibility() {
         if (highlighted.isPriceSeries()) {
             priceRendererItem.setVisible(true);
             seriesRendererItem.setVisible(false);
@@ -71,40 +105,6 @@ public class StyleSettingsPanel extends JPanel {
             seriesRendererItem.setVisible(true);
         }
 
-        initRendererItems();
-        initStrokeItems();
-        initColorItems();
-        initShowPriceLineItem();
-        initResetStyleItem();
-        updateRendererVisibility();
-        updateLineMenuItemVisibility();
-
-        popupMenu.add(priceRendererItem);
-        popupMenu.add(seriesRendererItem);
-        popupMenu.add(lineStyleItem);
-        popupMenu.add(lineWidthItem);
-        add(btn_seriesColor);
-        add(btn_upColor);
-        add(btn_downColor);
-        add(chk_showPriceLine);
-        add(btn_resetStyle);
-    }
-
-    private void initResetStyleItem() {
-        btn_resetStyle = new JButton("Reset Style");
-        btn_resetStyle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (highlighted.isPriceSeries()) {
-                    plotConfigurationHelper.getPriceInitialSettings().reset();
-                } else {
-                    plotConfigurationHelper.getSeriesInitialSettings().reset(highlighted);
-                }
-            }
-        });
-    }
-
-    private void updateRendererVisibility() {
         if (priceRendererItem.isVisible()) {
             final PriceRendererType rendererType = priceInitialSettings.getCurrentPriceRendererType();
             for (final Component component : priceRendererItem.getMenuComponents()) {
@@ -129,8 +129,8 @@ public class StyleSettingsPanel extends JPanel {
     }
 
     private void updateStyleVisibility(final IRendererType rendererType) {
-        lineStyleItem.setVisible(rendererType.isLineStyleConfigurable());
-        lineWidthItem.setVisible(rendererType.isLineWidthConfigurable());
+        cmb_lineStyle.setVisible(rendererType.isLineStyleConfigurable());
+        cmb_lineWidth.setVisible(rendererType.isLineWidthConfigurable());
         btn_seriesColor.setVisible(rendererType.isSeriesColorConfigurable());
         btn_seriesColor.setText("Change " + rendererType.getSeriesColorName() + " Color");
         btn_seriesColor.setName(rendererType.getSeriesColorName());
@@ -141,32 +141,23 @@ public class StyleSettingsPanel extends JPanel {
         btn_downColor.setText("Change " + rendererType.getDownColorName() + " Color");
         btn_downColor.setName(rendererType.getDownColorName());
         chk_showPriceLine.setVisible(rendererType.isPriceLineConfigurable());
+        chk_showPriceLine.setSelected(highlighted.isPriceLineVisible());
     }
 
-    private void updateLineMenuItemVisibility() {
-        if (lineStyleItem.isVisible()) {
+    private void updateLineVisibility() {
+        if (cmb_lineStyle.isVisible()) {
             final XYItemRenderer renderer = highlighted.getRenderer();
             final LineStyleType lineStyleType = LineStyleType.valueOf(renderer.getSeriesStroke(0));
-            for (final Component component : lineStyleItem.getMenuComponents()) {
-                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                if (menuItem.getName().equals(lineStyleType.name())) {
-                    menuItem.setSelected(true);
-                }
-            }
+            cmb_lineStyle.setSelectedItem(lineStyleType);
         }
-        if (lineWidthItem.isVisible()) {
+        if (cmb_lineWidth.isVisible()) {
             final XYItemRenderer renderer = highlighted.getRenderer();
             final LineWidthType lineWidthType = LineWidthType.valueOf(renderer.getSeriesStroke(0));
-            for (final Component component : lineWidthItem.getMenuComponents()) {
-                final JRadioButtonMenuItem menuItem = (JRadioButtonMenuItem) component;
-                if (menuItem.getName().equals(lineWidthType.name())) {
-                    menuItem.setSelected(true);
-                }
-            }
+            cmb_lineWidth.setSelectedItem(lineWidthType);
         }
     }
 
-    private void initRendererItems() {
+    private void initRenderer() {
         priceRendererItem = new JMenu("Change Series Type");
         final ButtonGroup priceRendererGroup = new ButtonGroup();
         for (final PriceRendererType type : PriceRendererType.values()) {
@@ -231,45 +222,40 @@ public class StyleSettingsPanel extends JPanel {
         seriesRendererItem.add(customRendererItem);
     }
 
-    private void initStrokeItems() {
-        final ButtonGroup lineStyleGroup = new ButtonGroup();
-        lineStyleItem = new JMenu("Change Line Style");
+    private void initLine() {
+        cmb_lineStyle = new JComboBox<LineStyleType>();
+        cmb_lineStyle.setName("Change Line Style");
         for (final LineStyleType type : LineStyleType.values()) {
-            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
-            item.setName(type.name());
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-                    final XYItemRenderer renderer = highlighted.getRenderer();
-                    final Stroke stroke = renderer.getSeriesStroke(0);
-                    renderer.setSeriesStroke(0, type.getStroke(stroke));
-                }
-            });
-            lineStyleGroup.add(item);
-            lineStyleItem.add(item);
+            cmb_lineStyle.addItem(type);
         }
+        cmb_lineStyle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final XYItemRenderer renderer = highlighted.getRenderer();
+                final Stroke stroke = renderer.getSeriesStroke(0);
+                final LineStyleType selectedItem = (LineStyleType) cmb_lineWidth.getSelectedItem();
+                renderer.setSeriesStroke(0, selectedItem.getStroke(stroke));
+            }
+        });
 
-        final ButtonGroup lineWidthGroup = new ButtonGroup();
-        lineWidthItem = new JMenu("Change Line Width");
+        cmb_lineWidth = new JComboBox<LineWidthType>();
+        cmb_lineWidth.setName("Change Line Width");
         for (final LineWidthType type : LineWidthType.values()) {
-            final JRadioButtonMenuItem item = new JRadioButtonMenuItem(type.toString());
-            item.setName(type.name());
-            item.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-                    final XYItemRenderer renderer = highlighted.getRenderer();
-                    final Stroke stroke = renderer.getSeriesStroke(0);
-                    renderer.setSeriesStroke(0, type.getStroke(stroke));
-                }
-
-            });
-            lineWidthGroup.add(item);
-            lineWidthItem.add(item);
+            cmb_lineWidth.addItem(type);
         }
+        cmb_lineWidth.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final XYItemRenderer renderer = highlighted.getRenderer();
+                final Stroke stroke = renderer.getSeriesStroke(0);
+                final LineWidthType selectedItem = (LineWidthType) cmb_lineWidth.getSelectedItem();
+                renderer.setSeriesStroke(0, selectedItem.getStroke(stroke));
+            }
+
+        });
     }
 
-    private void initColorItems() {
+    private void initColors() {
         final XYItemRenderer renderer = highlighted.getRenderer();
         btn_seriesColor = new ColorChooserButton((Color) renderer.getSeriesPaint(0)) {
             @Override
@@ -351,9 +337,8 @@ public class StyleSettingsPanel extends JPanel {
         }
     }
 
-    private void initShowPriceLineItem() {
+    private void initShowPriceLine() {
         chk_showPriceLine = new JCheckBox("Show Price Line");
-        chk_showPriceLine.setSelected(highlighted.isPriceLineVisible());
         chk_showPriceLine.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
