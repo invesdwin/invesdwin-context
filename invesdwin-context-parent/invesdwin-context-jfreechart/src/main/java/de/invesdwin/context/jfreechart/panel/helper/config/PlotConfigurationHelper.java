@@ -106,9 +106,9 @@ public class PlotConfigurationHelper {
 
             private void addSeriesConfigMenuItems() {
                 if (highlighted.isPriceSeries()) {
-                    titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
+                    titleItem.setText("Series - " + String.valueOf(chartPanel.getDataset().getSeriesKey(0)));
                 } else {
-                    titleItem.setText(highlighted.getSeriesKey());
+                    titleItem.setText("Series - " + highlighted.getSeriesKey());
                 }
                 popupMenu.add(titleItem);
                 popupMenu.addSeparator();
@@ -148,7 +148,7 @@ public class PlotConfigurationHelper {
     }
 
     private void initSeriesVisibilityItems() {
-        configureSeriesItem = new JMenuItem("Configure Series");
+        configureSeriesItem = new JMenuItem("Configure");
         configureSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -157,7 +157,7 @@ public class PlotConfigurationHelper {
             }
         });
 
-        removeSeriesItem = new JMenuItem("Remove Series");
+        removeSeriesItem = new JMenuItem("Remove");
         removeSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -165,7 +165,7 @@ public class PlotConfigurationHelper {
             }
         });
 
-        showSeriesItem = new JMenuItem("Show Series");
+        showSeriesItem = new JMenuItem("Show");
         showSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -173,7 +173,7 @@ public class PlotConfigurationHelper {
             }
         });
 
-        hideSeriesItem = new JMenuItem("Hide Series");
+        hideSeriesItem = new JMenuItem("Hide");
         hideSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
