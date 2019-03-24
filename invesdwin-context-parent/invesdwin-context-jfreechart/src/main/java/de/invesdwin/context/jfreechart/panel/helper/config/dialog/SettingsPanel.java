@@ -58,13 +58,12 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
     }
 
     @Override
-    public void ok() {
-        styleSettings.ok();
-    }
-
-    @Override
     public void cancel() {
         styleSettings.cancel();
     }
 
+    @Override
+    public void ok() {
+        styleSettings.ok();
+    }
 }

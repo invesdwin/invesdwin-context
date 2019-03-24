@@ -368,17 +368,17 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
     }
 
     @Override
-    public void ok() {
-        //noop
-    }
-
-    @Override
     public void cancel() {
         if (highlighted.isPriceSeries()) {
             priceSettingsBefore.reset();
         } else {
             seriesSettingsBefore.reset(highlighted);
         }
+    }
+
+    @Override
+    public void ok() {
+        //noop
     }
 
 }

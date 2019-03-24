@@ -4,8 +4,8 @@ public interface ISettingsPanelActions {
 
     void reset();
 
-    void ok();
-
     void cancel();
+
+    void ok();
 
 }
