@@ -37,43 +37,79 @@ public class StyleSettingsLayoutPanel extends JPanel {
     //CHECKSTYLE:ON
 
     public StyleSettingsLayoutPanel() {
-        setLayout(new GridLayout(9, 2, 5, 5));
-
         lbl_priceRenderer = new JLabel("Series Type");
-        add(lbl_priceRenderer);
         cmb_priceRenderer = new JComboBox<>();
-        add(cmb_priceRenderer);
         lbl_seriesRenderer = new JLabel("Series Type");
-        add(lbl_seriesRenderer);
         cmb_seriesRenderer = new JComboBox<>();
-        add(cmb_seriesRenderer);
         lbl_lineStyle = new JLabel("Line Style");
-        add(lbl_lineStyle);
         cmb_lineStyle = new JComboBox<LineStyleType>();
-        add(cmb_lineStyle);
         lbl_lineWidth = new JLabel("Line Width");
-        add(lbl_lineWidth);
         cmb_lineWidth = new JComboBox<LineWidthType>();
-        add(cmb_lineWidth);
         lbl_seriesColor = new JLabel("Series Color");
-        add(lbl_seriesColor);
         btn_seriesColor = new JButton();
-        add(btn_seriesColor);
         lbl_upColor = new JLabel("Up Color");
-        add(lbl_upColor);
         btn_upColor = new JButton();
-        add(btn_upColor);
         lbl_downColor = new JLabel("Down Color");
-        add(lbl_downColor);
         btn_downColor = new JButton();
-        add(btn_downColor);
         lbl_priceLine = new JLabel("Price Line");
-        add(lbl_priceLine);
         chk_priceLine = new JCheckBox();
-        add(chk_priceLine);
-        add(new JPanel());
         btn_resetStyle = new JButton("Reset Style");
-        add(btn_resetStyle);
+
+        updateLayout();
+    }
+
+    //CHECKSTYLE:OFF
+    public void updateLayout() {
+        //CHECKSTYLE:ON
+        removeAll();
+        int rows = 0;
+        if (cmb_priceRenderer.isVisible()) {
+            add(lbl_priceRenderer);
+            add(cmb_priceRenderer);
+            rows++;
+        }
+        if (cmb_seriesRenderer.isVisible()) {
+            add(lbl_seriesRenderer);
+            add(cmb_seriesRenderer);
+            rows++;
+        }
+        if (cmb_lineStyle.isVisible()) {
+            add(lbl_lineStyle);
+            add(cmb_lineStyle);
+            rows++;
+        }
+        if (cmb_lineWidth.isVisible()) {
+            add(lbl_lineWidth);
+            add(cmb_lineWidth);
+            rows++;
+        }
+        if (btn_seriesColor.isVisible()) {
+            add(lbl_seriesColor);
+            add(btn_seriesColor);
+            rows++;
+        }
+        if (btn_upColor.isVisible()) {
+            add(lbl_upColor);
+            add(btn_upColor);
+            rows++;
+        }
+        if (btn_downColor.isVisible()) {
+            add(lbl_downColor);
+            add(btn_downColor);
+            rows++;
+        }
+        if (chk_priceLine.isVisible()) {
+            add(lbl_priceLine);
+            add(chk_priceLine);
+            rows++;
+        }
+        if (btn_resetStyle.isVisible()) {
+            add(new JPanel());
+            add(btn_resetStyle);
+            rows++;
+        }
+
+        setLayout(new GridLayout(rows, 2, 5, 5));
     }
 
 }

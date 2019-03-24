@@ -136,6 +136,11 @@ public class StyleSettingsPanel extends JPanel {
             }
 
             @Override
+            protected int getIconWidth() {
+                return super.getIconWidth() * 6;
+            }
+
+            @Override
             public void change(final Color initialColor, final Color newColor) {
                 super.change(initialColor, newColor);
                 final XYItemRenderer renderer = highlighted.getRenderer();
@@ -166,6 +171,11 @@ public class StyleSettingsPanel extends JPanel {
                 }
 
                 @Override
+                protected int getIconWidth() {
+                    return super.getIconWidth() * 6;
+                }
+
+                @Override
                 public void change(final Color initialColor, final Color newColor) {
                     super.change(initialColor, newColor);
                     final IUpDownColorRenderer upDownRenderer = (IUpDownColorRenderer) highlighted.getRenderer();
@@ -191,6 +201,11 @@ public class StyleSettingsPanel extends JPanel {
                 @Override
                 protected String getChooserDialogTitle() {
                     return panel.btn_downColor.getName() + " Color";
+                }
+
+                @Override
+                protected int getIconWidth() {
+                    return super.getIconWidth() * 6;
                 }
 
                 @Override
@@ -322,14 +337,7 @@ public class StyleSettingsPanel extends JPanel {
     }
 
     private void updateLabelVisibility() {
-        panel.lbl_priceRenderer.setVisible(panel.cmb_priceRenderer.isVisible());
-        panel.lbl_seriesRenderer.setVisible(panel.cmb_seriesRenderer.isVisible());
-        panel.lbl_lineStyle.setVisible(panel.cmb_lineStyle.isVisible());
-        panel.lbl_lineWidth.setVisible(panel.cmb_lineWidth.isVisible());
-        panel.lbl_seriesColor.setVisible(panel.btn_seriesColor.isVisible());
-        panel.lbl_upColor.setVisible(panel.btn_upColor.isVisible());
-        panel.lbl_downColor.setVisible(panel.btn_downColor.isVisible());
-        panel.lbl_priceLine.setVisible(panel.chk_priceLine.isVisible());
+        panel.updateLayout();
     }
 
 }
