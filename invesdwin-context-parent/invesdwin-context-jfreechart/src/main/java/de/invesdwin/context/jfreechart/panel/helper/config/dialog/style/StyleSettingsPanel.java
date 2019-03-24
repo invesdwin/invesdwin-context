@@ -74,9 +74,13 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
         initShowPriceLine();
         removeAll();
         add(panel);
-    }
 
-    protected void updateLayout() {}
+        if (highlighted.isPriceSeries()) {
+            panel.cmb_priceRenderer.requestFocus();
+        } else {
+            panel.cmb_seriesRenderer.requestFocus();
+        }
+    }
 
     private void initRenderer() {
         if (highlighted.isPriceSeries()) {

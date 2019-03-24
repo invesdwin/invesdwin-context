@@ -29,7 +29,7 @@ public class SettingsDialog extends JDialog {
         contentPane.setLayout(new BorderLayout());
         panel = new SettingsPanel(plotConfigurationHelper, highlighted, this);
         contentPane.add(panel);
-        setTitle("Series Settings - " + highlighted.getSeriesKey());
+        setTitle(highlighted.getSeriesKey() + " - Series Settings");
 
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowListenerSupport() {
