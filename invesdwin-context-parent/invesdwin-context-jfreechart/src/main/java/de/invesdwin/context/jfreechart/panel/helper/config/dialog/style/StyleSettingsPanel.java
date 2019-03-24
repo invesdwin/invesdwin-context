@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.dialog.style;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +44,8 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
 
     public StyleSettingsPanel(final PlotConfigurationHelper plotConfigurationHelper,
             final HighlightedLegendInfo highlighted, final JDialog dialog) {
+        final FlowLayout flowLayout = (FlowLayout) getLayout();
+        flowLayout.setVgap(0);
         final TitledBorder titleBorder = new TitledBorder(null, "Style", TitledBorder.LEADING, TitledBorder.TOP, null,
                 null);
         final EmptyBorder marginBorder = new EmptyBorder(10, 10, 10, 10);
