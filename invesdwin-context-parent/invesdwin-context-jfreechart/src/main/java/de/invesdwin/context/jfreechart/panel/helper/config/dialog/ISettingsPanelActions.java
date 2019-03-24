@@ -1,6 +1,6 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.dialog;
 
-public interface ISettingsPanelTab {
+public interface ISettingsPanelActions {
 
     void reset();
 

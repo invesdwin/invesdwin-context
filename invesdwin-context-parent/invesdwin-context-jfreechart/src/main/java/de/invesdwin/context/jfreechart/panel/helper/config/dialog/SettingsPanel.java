@@ -13,7 +13,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.dialog.style.StyleSet
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 
 @NotThreadSafe
-public class SettingsPanel extends JPanel implements ISettingsPanelTab {
+public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     private final StyleSettingsPanel styleSettings;
     private final SettingsPanelButtonsLayout buttons;

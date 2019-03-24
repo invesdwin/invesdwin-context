@@ -23,7 +23,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelTab;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelActions;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
@@ -31,7 +31,7 @@ import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.swing.ColorChooserButtonActionListener;
 
 @NotThreadSafe
-public class StyleSettingsPanel extends JPanel implements ISettingsPanelTab {
+public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions {
 
     private final PlotConfigurationHelper plotConfigurationHelper;
     private final HighlightedLegendInfo highlighted;
