@@ -46,6 +46,10 @@ public class SettingsPanel extends JPanel implements ISettingsPanelTab {
                 dialog.dispose();
             }
         });
+
+        if (dialog != null) {
+            dialog.getRootPane().setDefaultButton(buttons.btn_ok);
+        }
     }
 
     @Override
