@@ -66,6 +66,25 @@ public class PriceInitialSettings {
         setPriceLabelEnabled(DEFAULT_PRICE_LABEL_ENABLED);
     }
 
+    public PriceInitialSettings(final PriceInitialSettings copyOf) {
+        this.plotConfigurationHelper = copyOf.plotConfigurationHelper;
+        this.candlestickRenderer = copyOf.candlestickRenderer;
+        this.barsRenderer = copyOf.barsRenderer;
+        this.areaRenderer = copyOf.areaRenderer;
+        this.lineRenderer = copyOf.lineRenderer;
+        this.stepLineRenderer = copyOf.stepLineRenderer;
+
+        final XYItemRenderer priceRenderer = copyOf.getCurrentPriceRenderer();
+        priceRendererType = getPriceRendererType(priceRenderer);
+        upColor = candlestickRenderer.getUpColor();
+        downColor = candlestickRenderer.getDownColor();
+        seriesColor = (Color) priceRenderer.getSeriesPaint(0);
+        seriesStroke = priceRenderer.getSeriesStroke(0);
+        priceLineVisible = candlestickRenderer.isPriceLineVisible();
+        priceLabelEnabled = candlestickRenderer.isPriceLabelEnabled();
+
+    }
+
     public PriceRendererType getPriceRendererType() {
         return priceRendererType;
     }
@@ -79,7 +98,7 @@ public class PriceInitialSettings {
     }
 
     public void updatePriceRendererType(final PriceRendererType priceRendererType) {
-        final XYItemRenderer renderer = plotConfigurationHelper.getChartPanel().getOhlcPlot().getRenderer(0);
+        final XYItemRenderer renderer = getCurrentPriceRenderer();
         final XYItemRenderer newRenderer = getPriceRenderer(priceRendererType);
         newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));
         newRenderer.setSeriesStroke(0, renderer.getSeriesStroke(0));
@@ -233,7 +252,11 @@ public class PriceInitialSettings {
     }
 
     public PriceRendererType getCurrentPriceRendererType() {
-        return getPriceRendererType(plotConfigurationHelper.getChartPanel().getOhlcPlot().getRenderer(0));
+        return getPriceRendererType(getCurrentPriceRenderer());
+    }
+
+    public XYItemRenderer getCurrentPriceRenderer() {
+        return plotConfigurationHelper.getChartPanel().getOhlcPlot().getRenderer(0);
     }
 
 }

@@ -14,7 +14,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 
 @NotThreadSafe
-public class StyleSettingsLayoutPanel extends JPanel {
+public class StyleSettingsPanelLayout extends JPanel {
 
     //CHECKSTYLE:OFF
     public final JLabel lbl_priceRenderer;
@@ -33,10 +33,9 @@ public class StyleSettingsLayoutPanel extends JPanel {
     public final JButton btn_downColor;
     public final JLabel lbl_priceLine;
     public final JCheckBox chk_priceLine;
-    public final JButton btn_resetStyle;
     //CHECKSTYLE:ON
 
-    public StyleSettingsLayoutPanel() {
+    public StyleSettingsPanelLayout() {
         lbl_priceRenderer = new JLabel("Series Type");
         cmb_priceRenderer = new JComboBox<>();
         lbl_seriesRenderer = new JLabel("Series Type");
@@ -53,7 +52,6 @@ public class StyleSettingsLayoutPanel extends JPanel {
         btn_downColor = new JButton();
         lbl_priceLine = new JLabel("Price Line");
         chk_priceLine = new JCheckBox();
-        btn_resetStyle = new JButton("Reset Style");
 
         add(lbl_priceRenderer);
         add(cmb_priceRenderer);
@@ -71,10 +69,8 @@ public class StyleSettingsLayoutPanel extends JPanel {
         add(btn_downColor);
         add(lbl_priceLine);
         add(chk_priceLine);
-        add(new JPanel());
-        add(btn_resetStyle);
 
-        setLayout(new GridLayout(9, 2, 5, 5));
+        setLayout(new GridLayout(8, 2, 5, 5));
     }
 
     //CHECKSTYLE:OFF
@@ -120,11 +116,6 @@ public class StyleSettingsLayoutPanel extends JPanel {
         if (chk_priceLine.isVisible()) {
             add(lbl_priceLine);
             add(chk_priceLine);
-            rows++;
-        }
-        if (btn_resetStyle.isVisible()) {
-            add(new JPanel());
-            add(btn_resetStyle);
             rows++;
         }
 

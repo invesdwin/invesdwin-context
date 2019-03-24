@@ -1,8 +1,5 @@
 package de.invesdwin.context.jfreechart.panel.helper.config;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -15,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -26,7 +22,7 @@ import org.jfree.chart.ChartUtils;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsPanel;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsDialog;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.swing.Dialogs;
@@ -156,16 +152,7 @@ public class PlotConfigurationHelper {
         configureSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final Frame frame = Dialogs.getFrameForComponent(getChartPanel());
-                final JDialog dialog = new JDialog(frame, true);
-                final Container contentPane = dialog.getContentPane();
-                contentPane.setLayout(new BorderLayout());
-                contentPane.add(new SettingsPanel(PlotConfigurationHelper.this, highlighted, dialog));
-                dialog.setTitle("Series Settings - " + titleItem.getText());
-                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                dialog.setResizable(false);
-                dialog.pack();
-                dialog.setLocationRelativeTo(getChartPanel());
+                final SettingsDialog dialog = new SettingsDialog(PlotConfigurationHelper.this, highlighted);
                 dialog.setVisible(true);
             }
         });

@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -17,9 +19,11 @@ import de.invesdwin.context.jfreechart.panel.helper.config.IRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelTab;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
@@ -27,26 +31,40 @@ import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.swing.ColorChooserButtonActionListener;
 
 @NotThreadSafe
-public class StyleSettingsPanel extends JPanel {
+public class StyleSettingsPanel extends JPanel implements ISettingsPanelTab {
 
     private final PlotConfigurationHelper plotConfigurationHelper;
     private final HighlightedLegendInfo highlighted;
     private final JDialog dialog;
+    private final PriceInitialSettings priceSettingsBefore;
+    private final SeriesInitialSettings seriesSettingsBefore;
 
-    private StyleSettingsLayoutPanel panel;
+    private StyleSettingsPanelLayout panel;
 
     public StyleSettingsPanel(final PlotConfigurationHelper plotConfigurationHelper,
             final HighlightedLegendInfo highlighted, final JDialog dialog) {
+        final TitledBorder titleBorder = new TitledBorder(null, "Style", TitledBorder.LEADING, TitledBorder.TOP, null,
+                null);
+        final EmptyBorder marginBorder = new EmptyBorder(10, 10, 10, 10);
+        setBorder(new CompoundBorder(new CompoundBorder(marginBorder, titleBorder), marginBorder));
+
         this.plotConfigurationHelper = plotConfigurationHelper;
         this.highlighted = highlighted;
         this.dialog = dialog;
+
+        if (highlighted.isPriceSeries()) {
+            priceSettingsBefore = new PriceInitialSettings(plotConfigurationHelper.getPriceInitialSettings());
+            seriesSettingsBefore = null;
+        } else {
+            priceSettingsBefore = null;
+            seriesSettingsBefore = new SeriesInitialSettings(highlighted.getRenderer());
+        }
 
         initPanel();
     }
 
     private void initPanel() {
-        panel = new StyleSettingsLayoutPanel();
-        panel.setBorder(new TitledBorder(null, "Style", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel = new StyleSettingsPanelLayout();
         updateRendererVisibility();
         updateLineVisibility();
         updateLabelVisibility();
@@ -54,7 +72,6 @@ public class StyleSettingsPanel extends JPanel {
         initLine();
         initColors();
         initShowPriceLine();
-        initResetStyle();
         removeAll();
         add(panel);
     }
@@ -248,20 +265,6 @@ public class StyleSettingsPanel extends JPanel {
         });
     }
 
-    private void initResetStyle() {
-        panel.btn_resetStyle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (highlighted.isPriceSeries()) {
-                    plotConfigurationHelper.getPriceInitialSettings().reset();
-                } else {
-                    plotConfigurationHelper.getSeriesInitialSettings(highlighted).reset(highlighted);
-                }
-                initPanel();
-            }
-        });
-    }
-
     private void updateRendererVisibility() {
         if (highlighted.isPriceSeries()) {
             panel.cmb_priceRenderer.setVisible(true);
@@ -347,6 +350,30 @@ public class StyleSettingsPanel extends JPanel {
         panel.updateLayout();
         if (dialog != null) {
             dialog.pack();
+        }
+    }
+
+    @Override
+    public void reset() {
+        if (highlighted.isPriceSeries()) {
+            plotConfigurationHelper.getPriceInitialSettings().reset();
+        } else {
+            plotConfigurationHelper.getSeriesInitialSettings(highlighted).reset(highlighted);
+        }
+        initPanel();
+    }
+
+    @Override
+    public void ok() {
+        //noop
+    }
+
+    @Override
+    public void cancel() {
+        if (highlighted.isPriceSeries()) {
+            priceSettingsBefore.reset();
+        } else {
+            seriesSettingsBefore.reset(highlighted);
         }
     }
 
