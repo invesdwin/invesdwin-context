@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
@@ -29,19 +31,22 @@ public class StyleSettingsPanel extends JPanel {
 
     private final PlotConfigurationHelper plotConfigurationHelper;
     private final HighlightedLegendInfo highlighted;
+    private final JDialog dialog;
 
     private StyleSettingsLayoutPanel panel;
 
     public StyleSettingsPanel(final PlotConfigurationHelper plotConfigurationHelper,
-            final HighlightedLegendInfo highlighted) {
+            final HighlightedLegendInfo highlighted, final JDialog dialog) {
         this.plotConfigurationHelper = plotConfigurationHelper;
         this.highlighted = highlighted;
+        this.dialog = dialog;
 
         initPanel();
     }
 
     private void initPanel() {
         panel = new StyleSettingsLayoutPanel();
+        panel.setBorder(new TitledBorder(null, "Style", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         updateRendererVisibility();
         updateLineVisibility();
         updateLabelVisibility();
@@ -53,6 +58,8 @@ public class StyleSettingsPanel extends JPanel {
         removeAll();
         add(panel);
     }
+
+    protected void updateLayout() {}
 
     private void initRenderer() {
         if (highlighted.isPriceSeries()) {
@@ -338,6 +345,9 @@ public class StyleSettingsPanel extends JPanel {
 
     private void updateLabelVisibility() {
         panel.updateLayout();
+        if (dialog != null) {
+            dialog.pack();
+        }
     }
 
 }

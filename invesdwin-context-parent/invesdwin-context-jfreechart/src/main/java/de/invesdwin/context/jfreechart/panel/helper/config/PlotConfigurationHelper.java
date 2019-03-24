@@ -2,7 +2,7 @@ package de.invesdwin.context.jfreechart.panel.helper.config;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -156,16 +156,16 @@ public class PlotConfigurationHelper {
         configureSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final JDialog dialog = new JDialog(Dialogs.getFrameForComponent(getChartPanel()), true);
+                final Frame frame = Dialogs.getFrameForComponent(getChartPanel());
+                final JDialog dialog = new JDialog(frame, true);
                 final Container contentPane = dialog.getContentPane();
                 contentPane.setLayout(new BorderLayout());
-                contentPane.add(new SettingsPanel(PlotConfigurationHelper.this, highlighted));
+                contentPane.add(new SettingsPanel(PlotConfigurationHelper.this, highlighted, dialog));
                 dialog.setTitle("Series Settings - " + titleItem.getText());
-                dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                dialog.setResizable(false);
                 dialog.pack();
-                dialog.setSize(new Dimension(800, 600));
-                dialog.setMinimumSize(new Dimension(100, 100));
-                dialog.setLocationRelativeTo(Dialogs.getRootFrame());
+                dialog.setLocationRelativeTo(getChartPanel());
                 dialog.setVisible(true);
             }
         });

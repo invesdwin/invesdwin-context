@@ -55,7 +55,26 @@ public class StyleSettingsLayoutPanel extends JPanel {
         chk_priceLine = new JCheckBox();
         btn_resetStyle = new JButton("Reset Style");
 
-        updateLayout();
+        add(lbl_priceRenderer);
+        add(cmb_priceRenderer);
+        add(lbl_seriesRenderer);
+        add(cmb_seriesRenderer);
+        add(lbl_lineStyle);
+        add(cmb_lineStyle);
+        add(lbl_lineWidth);
+        add(cmb_lineWidth);
+        add(lbl_seriesColor);
+        add(btn_seriesColor);
+        add(lbl_upColor);
+        add(btn_upColor);
+        add(lbl_downColor);
+        add(btn_downColor);
+        add(lbl_priceLine);
+        add(chk_priceLine);
+        add(new JPanel());
+        add(btn_resetStyle);
+
+        setLayout(new GridLayout(9, 2, 5, 5));
     }
 
     //CHECKSTYLE:OFF
