@@ -4,6 +4,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JPanel;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.style.StyleSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 
 @NotThreadSafe

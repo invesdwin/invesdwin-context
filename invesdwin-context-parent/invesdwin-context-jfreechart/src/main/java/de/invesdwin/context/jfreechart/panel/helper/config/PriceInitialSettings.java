@@ -78,7 +78,7 @@ public class PriceInitialSettings {
         this.priceRendererType = priceRendererType;
     }
 
-    void updatePriceRendererType(final PriceRendererType priceRendererType) {
+    public void updatePriceRendererType(final PriceRendererType priceRendererType) {
         final XYItemRenderer renderer = plotConfigurationHelper.getChartPanel().getOhlcPlot().getRenderer(0);
         final XYItemRenderer newRenderer = getPriceRenderer(priceRendererType);
         newRenderer.setSeriesPaint(0, renderer.getSeriesPaint(0));

@@ -138,7 +138,7 @@ public class PlotConfigurationHelper {
 
     }
 
-    public SeriesInitialSettings getOrCreateSeriesInitialSettings() {
+    public SeriesInitialSettings getOrCreateSeriesInitialSettings(final HighlightedLegendInfo highlighted) {
         SeriesInitialSettings seriesInitialSettings = seriesKey_initialSettings.get(highlighted.getSeriesKey());
         if (seriesInitialSettings == null) {
             seriesInitialSettings = new SeriesInitialSettings(highlighted.getRenderer());
@@ -147,7 +147,7 @@ public class PlotConfigurationHelper {
         return seriesInitialSettings;
     }
 
-    public SeriesInitialSettings getSeriesInitialSettings() {
+    public SeriesInitialSettings getSeriesInitialSettings(final HighlightedLegendInfo highlighted) {
         return seriesKey_initialSettings.get(highlighted.getSeriesKey());
     }
 
@@ -156,7 +156,7 @@ public class PlotConfigurationHelper {
         configureSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final JDialog dialog = new JDialog(Dialogs.getRootFrame());
+                final JDialog dialog = new JDialog(Dialogs.getFrameForComponent(getChartPanel()), true);
                 final Container contentPane = dialog.getContentPane();
                 contentPane.setLayout(new BorderLayout());
                 contentPane.add(new SettingsPanel(PlotConfigurationHelper.this, highlighted));
