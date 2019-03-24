@@ -53,7 +53,7 @@ public class SettingsDialog extends JDialog {
     }
 
     protected void close() {
-        panel.ok();
+        panel.cancel();
         dispose();
     }
 }
