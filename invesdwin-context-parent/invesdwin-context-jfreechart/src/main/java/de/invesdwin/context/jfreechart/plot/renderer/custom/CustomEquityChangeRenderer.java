@@ -9,7 +9,7 @@ import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.internal.ACustomEquityChangeRenderer;
@@ -25,7 +25,7 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
  */
 @NotThreadSafe
 public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
-        implements ICustomRendererType, IDelegatePriceLineRenderer {
+        implements ICustomRendererType, IDelegatePriceLineXYItemRenderer {
 
     public static final Color UP_COLOR = CustomProfitLossRenderer.UP_COLOR;
     public static final Color DOWN_COLOR = CustomProfitLossRenderer.DOWN_COLOR;

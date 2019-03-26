@@ -4,12 +4,12 @@ import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.util.assertions.Assertions;
 
@@ -55,8 +55,8 @@ public class HighlightedLegendInfo {
         return chartPanel.getDataset() == DisabledXYDataset.maybeUnwrap(getDataset());
     }
 
-    public XYDataset getDataset() {
-        return plot.getDataset(datasetIndex);
+    public IPlotSourceDataset getDataset() {
+        return (IPlotSourceDataset) plot.getDataset(datasetIndex);
     }
 
     public XYItemRenderer getRenderer() {
@@ -82,6 +82,8 @@ public class HighlightedLegendInfo {
     public void removeSeries() {
         Assertions.checkTrue(isRemovable());
         chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(getSeriesKey());
+        final IPlotSourceDataset dataset = getDataset();
+        dataset.setPlot(null);
         XYPlots.removeDataset(plot, datasetIndex);
         XYPlots.updateRangeAxes(plot);
         chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();

@@ -138,10 +138,11 @@ public class PlotLegendHelper {
             chartPanel.getChartPanel().setCursor(CustomChartPanel.DEFAULT_CURSOR);
             if (trashPlot != null) {
                 for (int datasetIndex = 0; datasetIndex < trashPlot.getDatasetCount(); datasetIndex++) {
-                    final XYDataset dataset = trashPlot.getDataset(datasetIndex);
+                    final IPlotSourceDataset dataset = (IPlotSourceDataset) trashPlot.getDataset(datasetIndex);
                     if (dataset != null) {
                         final String seriesKey = String.valueOf(dataset.getSeriesKey(0));
                         chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(seriesKey);
+                        dataset.setPlot(null);
                     }
                 }
                 trashPlot = null;
@@ -238,9 +239,8 @@ public class PlotLegendHelper {
                 final XYPlot toPlot = toPlots.get(toSubplotIndex);
                 final int fromDatasetIndex = dragStart.getDatasetIndex();
                 final int toDatasetIndex = XYPlots.getFreeDatasetIndex(toPlot);
-                final XYDataset dataset = fromPlot.getDataset(fromDatasetIndex);
-                final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
-                plotSource.setPlot(toPlot);
+                final IPlotSourceDataset dataset = (IPlotSourceDataset) fromPlot.getDataset(fromDatasetIndex);
+                dataset.setPlot(toPlot);
                 toPlot.setNotify(false);
                 fromPlot.setNotify(false);
                 toPlot.setDataset(toDatasetIndex, dataset);

@@ -1,6 +1,6 @@
 package de.invesdwin.context.jfreechart.plot.annotation.priceline;
 
-public interface IDelegatePriceLineRenderer extends IPriceLineRenderer {
+public interface IDelegatePriceLineXYItemRenderer extends IPriceLineXYItemRenderer {
 
     IPriceLineRenderer getDelegatePriceLineRenderer();
 

@@ -16,12 +16,12 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRendererState;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
 @NotThreadSafe
-public class FastStandardXYItemRenderer extends StandardXYItemRenderer implements IDelegatePriceLineRenderer {
+public class FastStandardXYItemRenderer extends StandardXYItemRenderer implements IDelegatePriceLineXYItemRenderer {
 
     private final XYPriceLineAnnotation priceLineAnnotation;
 

@@ -34,7 +34,7 @@ import org.jfree.chart.util.ShapeUtils;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
@@ -45,7 +45,7 @@ import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnno
  *
  */
 @NotThreadSafe
-public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IDelegatePriceLineRenderer {
+public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IDelegatePriceLineXYItemRenderer {
 
     private static final class XYAreaRendererState extends XYItemRendererState {
         private GeneralPath area;

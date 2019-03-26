@@ -28,7 +28,7 @@ import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 import de.invesdwin.util.error.UnknownArgumentException;
@@ -45,7 +45,7 @@ import de.invesdwin.util.math.Floats;
 //CHECKSTYLE:OFF
 @NotThreadSafe
 public class FastCandlestickRenderer extends AbstractXYItemRenderer
-        implements IUpDownColorRenderer, IDelegatePriceLineRenderer {
+        implements IUpDownColorRenderer, IDelegatePriceLineXYItemRenderer {
 
     private static final double SMALL_AUTO_WIDTH_SCALING_MIN_ITEMS = 10;
     private static final double SMALL_AUTO_WIDTH_SCALING_MAX_ITEMS = 200;

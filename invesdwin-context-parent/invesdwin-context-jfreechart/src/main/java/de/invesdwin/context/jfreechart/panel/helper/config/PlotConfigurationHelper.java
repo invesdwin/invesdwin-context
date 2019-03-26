@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +24,9 @@ import org.jfree.chart.ChartUtils;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsDialog;
+import de.invesdwin.context.jfreechart.panel.helper.config.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.PopupMenuListenerSupport;
@@ -48,6 +51,8 @@ public class PlotConfigurationHelper {
     private JMenuItem copyToClipboardItem;
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
+
+    private final Map<String, IIndicatorSeriesProvider> indicatorProviders = new HashMap<>();
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -298,4 +303,17 @@ public class PlotConfigurationHelper {
     public void removeInitialSeriesSettings(final String seriesKey) {
         seriesKey_initialSettings.remove(seriesKey);
     }
+
+    public void putIndicatorProvider(final IIndicatorSeriesProvider indicatorProvider) {
+        Assertions.checkNull(indicatorProviders.put(indicatorProvider.getName(), indicatorProvider));
+    }
+
+    public Collection<IIndicatorSeriesProvider> getIndicatorProviders() {
+        return indicatorProviders.values();
+    }
+
+    public IIndicatorSeriesProvider getIndicatorProvider(final String name) {
+        return indicatorProviders.get(name);
+    }
+
 }

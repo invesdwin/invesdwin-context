@@ -21,12 +21,12 @@ import org.jfree.data.Range;
 import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
-import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
 
 @NotThreadSafe
-public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer, IDelegatePriceLineRenderer {
+public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer, IDelegatePriceLineXYItemRenderer {
 
     private final FastCandlestickRenderer candlestickRenderer;
     private double tickLength;
