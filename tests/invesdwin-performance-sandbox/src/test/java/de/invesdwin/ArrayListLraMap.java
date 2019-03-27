@@ -59,13 +59,26 @@ public class ArrayListLraMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public V put(final K arg0, final V arg1) {
-        final V put = map.put(arg0, arg1);
+    public V put(final K key, final V value) {
+        final V put = map.put(key, value);
         if (put == null) {
-            orderedKeys.add(arg0);
-            while (orderedKeys.size() > maximumSize) {
-                map.remove(orderedKeys.remove(0));
-            }
+            updateOrderedKeys(key);
+        }
+        return put;
+    }
+
+    private void updateOrderedKeys(final K arg0) {
+        orderedKeys.add(arg0);
+        while (orderedKeys.size() > maximumSize) {
+            map.remove(orderedKeys.remove(0));
+        }
+    }
+
+    @Override
+    public V putIfAbsent(final K key, final V value) {
+        final V put = map.putIfAbsent(key, value);
+        if (put == null) {
+            updateOrderedKeys(key);
         }
         return put;
     }
