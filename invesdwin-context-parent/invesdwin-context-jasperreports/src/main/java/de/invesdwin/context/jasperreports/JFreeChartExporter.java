@@ -23,7 +23,6 @@ import javax.annotation.concurrent.Immutable;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ClosedInputStream;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -42,6 +41,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.error.Throwables;
+import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.streams.ADelegateInputStream;
 import de.invesdwin.util.time.duration.Duration;
@@ -174,7 +174,7 @@ public enum JFreeChartExporter {
         } catch (final IOException e) {
             throw Err.process(e);
         } finally {
-            IOUtils.closeQuietly(out);
+            Closeables.closeQuietly(out);
         }
     }
 
@@ -233,7 +233,7 @@ public enum JFreeChartExporter {
         } catch (final IOException e) {
             throw Err.process(e);
         } finally {
-            IOUtils.closeQuietly(out);
+            Closeables.closeQuietly(out);
         }
         return new ByteArrayInputStream(out.toByteArray());
     }
