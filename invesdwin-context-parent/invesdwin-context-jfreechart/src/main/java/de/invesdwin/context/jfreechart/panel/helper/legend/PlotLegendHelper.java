@@ -142,7 +142,7 @@ public class PlotLegendHelper {
                     if (dataset != null) {
                         final String seriesKey = String.valueOf(dataset.getSeriesKey(0));
                         chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(seriesKey);
-                        dataset.setPlot(null);
+                        dataset.close();
                     }
                 }
                 trashPlot = null;
@@ -180,7 +180,7 @@ public class PlotLegendHelper {
     }
 
     public void setDatasetVisible(final XYPlot plot, final int datasetIndex, final boolean visible) {
-        final XYDataset dataset = plot.getDataset(datasetIndex);
+        final IPlotSourceDataset dataset = (IPlotSourceDataset) plot.getDataset(datasetIndex);
         final XYItemRenderer renderer = plot.getRenderer(datasetIndex);
         if (visible) {
             final DisabledXYDataset cDataset = (DisabledXYDataset) dataset;

@@ -1,7 +1,6 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.indicator;
 
-import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineXYItemRenderer;
-import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
+import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.util.math.expression.IExpression;
 
 public interface IIndicatorSeriesProvider {
@@ -14,8 +13,6 @@ public interface IIndicatorSeriesProvider {
 
     String getPlotPaneId();
 
-    IPlotSourceDataset newDataset(IExpression[] args);
-
-    IPriceLineXYItemRenderer newRenderer(IPlotSourceDataset dataset);
+    void newInstance(InteractiveChartPanel chartPanel, IExpression[] args);
 
 }

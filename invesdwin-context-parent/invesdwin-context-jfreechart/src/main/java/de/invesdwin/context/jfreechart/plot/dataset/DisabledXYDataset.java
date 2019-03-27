@@ -11,17 +11,15 @@ import de.invesdwin.util.assertions.Assertions;
 @Immutable
 public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceDataset {
 
-    private final XYDataset enabledDataset;
-    private final IPlotSourceDataset plotSource;
+    private final IPlotSourceDataset enabledDataset;
 
-    public DisabledXYDataset(final XYDataset enabledDataset) {
+    public DisabledXYDataset(final IPlotSourceDataset enabledDataset) {
         Assertions.checkNotNull(enabledDataset);
         if (enabledDataset instanceof DisabledXYDataset) {
             throw new IllegalArgumentException(
                     "enabledDataset should not be an instance of " + DisabledXYDataset.class.getSimpleName());
         }
         this.enabledDataset = enabledDataset;
-        this.plotSource = (IPlotSourceDataset) enabledDataset;
     }
 
     public XYDataset getEnabledDataset() {
@@ -55,12 +53,12 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
 
     @Override
     public XYPlot getPlot() {
-        return plotSource.getPlot();
+        return enabledDataset.getPlot();
     }
 
     @Override
     public void setPlot(final XYPlot plot) {
-        plotSource.setPlot(plot);
+        enabledDataset.setPlot(plot);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
 
     @Override
     public void setPrecision(final int precision) {
-        plotSource.setPrecision(precision);
+        enabledDataset.setPrecision(precision);
     }
 
     public static XYDataset maybeUnwrap(final XYDataset dataset) {
@@ -84,17 +82,22 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
 
     @Override
     public String getRangeAxisId() {
-        return plotSource.getRangeAxisId();
+        return enabledDataset.getRangeAxisId();
     }
 
     @Override
     public void setRangeAxisId(final String rangeAxisId) {
-        plotSource.setRangeAxisId(rangeAxisId);
+        enabledDataset.setRangeAxisId(rangeAxisId);
     }
 
     @Override
     public boolean isLegendValueVisible(final int series, final int item) {
         return false;
+    }
+
+    @Override
+    public void close() {
+        enabledDataset.close();
     }
 
 }
