@@ -11,12 +11,164 @@ import com.carrotsearch.hppc.ObjectObjectHashMap;
 
 import de.invesdwin.util.time.Instant;
 
+// Openj9 java 8 -Xgcpolicy:gencon
+// hashMap: PT10.673.089.868S
+// compactHashMap: PT31.682.672.559S
+// hppcMap: PT16.570.689.086S
+// guavaCompactHashMap: PT9.244.068.963S
+// fastUtilHashMap: PT14.604.036.365S
+// troveHashMap: PT13.882.609.951S
+
+// Openj9 java 8 -Xgcpolicy:balanced
+// hashMap: PT17.586.313.547S
+// compactHashMap: PT41.379.089.692S
+// hppcMap: PT25.596.774.880S
+// guavaCompactHashMap: PT22.646.482.987S
+// fastUtilHashMap: PT24.438.371.012S
+// troveHashMap: PT21.945.963.103S
+
+// Openj9 java 8 -Xgcpolicy:metronome
+// hashMap: PT13.301.320.653S
+// compactHashMap: PT36.532.957.555S
+// hppcMap: PT20.934.546.699S
+// guavaCompactHashMap: PT24.411.726.191S
+// fastUtilHashMap: PT19.357.303.449S
+// troveHashMap: PT17.859.125.003S
+
+// Openj9 java 8 -Xgcpolicy:optavgpause
+// hashMap: PT15.674.841.322S
+// compactHashMap: PT35.587.337.904S
+// hppcMap: PT19.828.710.327S
+// guavaCompactHashMap: PT12.047.931.813S
+// fastUtilHashMap: PT17.395.649.212S
+// troveHashMap: PT16.604.839.397S
+
+// Openj9 java 8 -Xgcpolicy:optthruput
+// hashMap: PT13.619.991.479S
+// compactHashMap: PT35.352.615.176S
+// hppcMap: PT19.486.721.217S
+// guavaCompactHashMap: PT11.752.282.974S
+// fastUtilHashMap: PT18.566.279.722S
+// troveHashMap: PT17.261.404.424S
+
+// Openj9 java 11 -Xgcpolicy:gencon
+// hashMap: PT11.469.006.103S
+// compactHashMap: PT33.547.919.810S
+// hppcMap: PT17.180.321.014S
+// guavaCompactHashMap: PT9.720.283.446S
+// fastUtilHashMap: PT15.558.054.552S
+// troveHashMap: PT15.160.953.378S
+
+// Openj9 java 11 -Xgcpolicy:balanced
+// hashMap: PT13.968.364.439S
+// compactHashMap: PT36.150.251.258S
+// hppcMap: PT21.988.758.968S
+// guavaCompactHashMap: PT12.147.315.991S
+// fastUtilHashMap: PT20.839.989.782S
+// troveHashMap: PT17.298.240.239S
+
+// Openj9 java 11 -Xgcpolicy:metronome
+// hashMap: PT13.985.609.723S
+// compactHashMap: PT38.050.801.611S
+// hppcMap: PT22.581.615.944S
+// guavaCompactHashMap: PT24.993.480.549S
+// fastUtilHashMap: PT22.010.727.253S
+// troveHashMap: PT19.188.915.066S
+
+// Openj9 java 11 -Xgcpolicy:optavgpause
+// hashMap: PT14.810.054.694S
+// compactHashMap: PT35.662.968.604S
+// hppcMap: PT25.245.937.725S
+// guavaCompactHashMap: PT12.559.163.593S
+// fastUtilHashMap: PT17.711.671.131S
+// troveHashMap: PT16.859.589.138S
+
+// Openj9 java 11 -Xgcpolicy:optthruput
+// hashMap: PT12.362.809.375S
+// compactHashMap: PT34.113.324.432S
+// hppcMap: PT19.570.270.592S
+// guavaCompactHashMap: PT11.117.609.098S
+// fastUtilHashMap: PT16.828.001.865S
+// troveHashMap: PT15.385.554.122S
+
+// Hotspot java 8 -XX:+UseSerialGC
+// hashMap: PT11.173.708.773S
+// compactHashMap: PT30.152.080.092S
+// hppcMap: PT18.938.884.815S
+// guavaCompactHashMap: PT9.359.868.062S
+// fastUtilHashMap: PT16.400.995.860S
+// troveHashMap: PT12.983.279.046S
+
+// Hotspot java 8 -XX:+UseParallelGC
+// hashMap: PT10.660.893.704S
+// compactHashMap: PT30.389.739.942S
+// hppcMap: PT20.196.656.942S
+// guavaCompactHashMap: PT9.638.008.614S
+// fastUtilHashMap: PT15.447.543.459S
+// troveHashMap: PT12.315.306.130S
+
+// Hotspot java 8 -XX:+UseConcMarkSweepGC
+// hashMap: PT10.059.356.110S
+// compactHashMap: PT30.060.590.340S
+// hppcMap: PT19.748.543.779S
+// guavaCompactHashMap: PT9.265.152.036S
+// fastUtilHashMap: PT16.172.261.943S
+// troveHashMap: PT12.643.560.707S
+
+// Hotspot java 8 -XX:+UseG1GC
+// hashMap: PT22.277.037.590S
+// compactHashMap: PT42.252.736.339S
+// hppcMap: PT35.776.199.261S
+// guavaCompactHashMap: PT12.360.797.017S
+// fastUtilHashMap: PT31.256.247.291S
+// troveHashMap: PT15.636.118.622S
+
+// Hotspot java 11 -XX:+UseSerialGC
+// hashMap: PT10.399.517.139S
+// compactHashMap: PT29.949.991.829S
+// hppcMap: PT18.259.987.647S
+// guavaCompactHashMap: PT9.076.489.170S
+// fastUtilHashMap: PT15.462.131.872S
+// troveHashMap: PT12.838.159.361S
+
+// Hotspot java 11 -XX:+UseParallelGC
+// hashMap: PT11.180.302.138S
+// compactHashMap: PT29.950.683.183S
+// hppcMap: PT19.635.354.795S
+// guavaCompactHashMap: PT9.116.864.128S
+// fastUtilHashMap: PT15.915.601.877S
+// troveHashMap: PT12.933.871.414S
+
+// Hotspot java 11 -XX:+UseConcMarkSweepGC
+// hashMap: PT12.045.087.460S
+// compactHashMap: PT31.893.287.419S
+// hppcMap: PT23.397.116.620S
+// guavaCompactHashMap: PT9.776.016.608S
+// fastUtilHashMap: PT18.160.823.306S
+// troveHashMap: PT13.697.234.275S
+
+// Hotspot java 11 -XX:+UseG1GC
+// hashMap: PT19.169.524.307S
+// compactHashMap: PT40.557.505.254S
+// hppcMap: PT31.373.068.214S
+// guavaCompactHashMap: PT12.171.967.944S
+// fastUtilHashMap: PT26.929.169.933S
+// troveHashMap: PT16.152.498.349S
+
+// Hotspot java 11 -XX:+UnlockExperimentalVMOptions -XX:+UseZGC
+// hashMap: PT11.443.784.010S
+// compactHashMap: PT30.986.300.520S
+// hppcMap: PT22.917.488.291S
+// guavaCompactHashMap: PT9.635.536.091S
+// fastUtilHashMap: PT17.628.276.801S
+// troveHashMap: PT12.724.979.248S
+
 @NotThreadSafe
-//CHECKSTYLE:OFF
+// CHECKSTYLE:OFF
 public class TestHashMap extends AbstractPerformanceTest {
 
     private static final int REPETITIONS = 1000;
-    private static final int TIMES = 10000;
+    private static final int TIMES = 100000;
     private static final int MAX = 5000000;
     private static final double ELEMENTS_SIZE;
 
@@ -138,11 +290,11 @@ public class TestHashMap extends AbstractPerformanceTest {
         testRuntime("hashMap", test::hashMap);
         testRuntime("compactHashMap", test::compactHashMap);
         testRuntime("hppcMap", test::hppcMap);
-        testRuntime("kolobokeMap", test::kolobokeMap);
+        //        testRuntime("kolobokeMap", test::kolobokeMap);
         testRuntime("guavaCompactHashMap", test::guavaCompactHashMap);
         testRuntime("fastUtilHashMap", test::fastUtilHashMap);
         testRuntime("troveHashMap", test::troveHashMap);
-        testRuntime("smoothieMap", test::smoothieMap);
+        //        testRuntime("smoothieMap", test::smoothieMap);
     }
 
     private static void testRuntime(final String string, final Runnable object) {
@@ -171,8 +323,8 @@ public class TestHashMap extends AbstractPerformanceTest {
         testSize("FastUtilHashMap", fastUtilHashMap);
         final gnu.trove.map.hash.THashMap troveHashMap = new gnu.trove.map.hash.THashMap();
         testSize("TroveHashMap", troveHashMap);
-        final net.openhft.smoothie.SmoothieMap smoothieMap = new net.openhft.smoothie.SmoothieMap();
-        testSize("SmoothieMap", smoothieMap);
+        //        final net.openhft.smoothie.SmoothieMap smoothieMap = new net.openhft.smoothie.SmoothieMap();
+        //        testSize("SmoothieMap", smoothieMap);
     }
 
     private static void testSize(final String name, final ObjectObjectHashMap map) {
