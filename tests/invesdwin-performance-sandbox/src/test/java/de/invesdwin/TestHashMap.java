@@ -163,6 +163,14 @@ import de.invesdwin.util.time.Instant;
 // fastUtilHashMap: PT17.628.276.801S
 // troveHashMap: PT12.724.979.248S
 
+// Hotspot java 12 -XX:+UnlockExperimentalVMOptions -XX:+UseShenandoahGC
+// hashMap: PT11.991.925.977S
+// compactHashMap: PT33.862.227.384S
+// hppcMap: PT28.150.080.801S
+// guavaCompactHashMap: PT9.442.861.079S
+// fastUtilHashMap: PT25.183.109.274S
+// troveHashMap: PT16.216.778.572S
+
 @NotThreadSafe
 // CHECKSTYLE:OFF
 public class TestHashMap extends AbstractPerformanceTest {
