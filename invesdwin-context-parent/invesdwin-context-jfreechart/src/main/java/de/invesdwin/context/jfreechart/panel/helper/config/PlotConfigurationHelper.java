@@ -48,6 +48,7 @@ public class PlotConfigurationHelper {
     private JMenuItem showSeriesItem;
     private JMenuItem hideSeriesItem;
 
+    private JMenuItem addIndicatorSeriesItem;
     private JMenuItem copyToClipboardItem;
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
@@ -79,6 +80,7 @@ public class PlotConfigurationHelper {
         titleItem.setEnabled(false);
 
         initSeriesVisibilityItems();
+        initAddIndicatorSeriesItem();
         initExportItems();
         initHelpItem();
 
@@ -100,6 +102,9 @@ public class PlotConfigurationHelper {
                         addSeriesConfigMenuItems();
                     }
                 } else {
+                    if (!indicatorProviders.isEmpty()) {
+                        popupMenu.add(addIndicatorSeriesItem);
+                    }
                     popupMenu.add(copyToClipboardItem);
                     popupMenu.add(saveAsPNGItem);
                     popupMenu.addSeparator();
@@ -183,6 +188,16 @@ public class PlotConfigurationHelper {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 highlighted.setDatasetVisible(false);
+            }
+        });
+    }
+
+    private void initAddIndicatorSeriesItem() {
+        addIndicatorSeriesItem = new JMenuItem("Add Indicator Series");
+        addIndicatorSeriesItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println("TODO");
             }
         });
     }

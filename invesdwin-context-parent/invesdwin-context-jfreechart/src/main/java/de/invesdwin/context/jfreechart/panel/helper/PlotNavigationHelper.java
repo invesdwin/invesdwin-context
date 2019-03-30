@@ -334,6 +334,7 @@ public class PlotNavigationHelper {
             removeAnnotations(navShowingOnPlotPlot, true);
             navShowingOnPlotPlot = null;
         }
+        navHighlighting = false;
         stopButtonTimer();
         hideNote();
     }
