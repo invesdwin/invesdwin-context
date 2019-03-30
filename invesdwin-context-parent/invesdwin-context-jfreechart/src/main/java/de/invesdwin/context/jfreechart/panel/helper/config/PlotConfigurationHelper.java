@@ -25,8 +25,8 @@ import org.jfree.chart.ChartUtils;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsDialog;
-import de.invesdwin.context.jfreechart.panel.helper.config.indicator.AddIndicatorSeriesDialog;
-import de.invesdwin.context.jfreechart.panel.helper.config.indicator.IIndicatorSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.AddSeriesDialog;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
@@ -55,7 +55,7 @@ public class PlotConfigurationHelper {
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
 
-    private final Map<String, IIndicatorSeriesProvider> indicatorProviders = new TreeMap<>();
+    private final Map<String, ISeriesProvider> seriesProviders = new TreeMap<>();
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -104,7 +104,7 @@ public class PlotConfigurationHelper {
                         addSeriesConfigMenuItems();
                     }
                 } else {
-                    if (!indicatorProviders.isEmpty()) {
+                    if (!seriesProviders.isEmpty()) {
                         popupMenu.add(addSeriesItem);
                         popupMenu.addSeparator();
                     }
@@ -201,7 +201,7 @@ public class PlotConfigurationHelper {
         addSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final AddIndicatorSeriesDialog dialog = new AddIndicatorSeriesDialog(PlotConfigurationHelper.this);
+                final AddSeriesDialog dialog = new AddSeriesDialog(PlotConfigurationHelper.this);
                 dialog.setVisible(true);
             }
         });
@@ -324,16 +324,16 @@ public class PlotConfigurationHelper {
         seriesKey_initialSettings.remove(seriesKey);
     }
 
-    public void putIndicatorProvider(final IIndicatorSeriesProvider indicatorProvider) {
-        Assertions.checkNull(indicatorProviders.put(indicatorProvider.getName(), indicatorProvider));
+    public void putSeriesProvider(final ISeriesProvider seriesProvider) {
+        Assertions.checkNull(seriesProviders.put(seriesProvider.getName(), seriesProvider));
     }
 
-    public Collection<IIndicatorSeriesProvider> getIndicatorProviders() {
-        return indicatorProviders.values();
+    public Collection<ISeriesProvider> getSeriesProviders() {
+        return seriesProviders.values();
     }
 
-    public IIndicatorSeriesProvider getIndicatorProvider(final String name) {
-        return indicatorProviders.get(name);
+    public ISeriesProvider getSeriesProvider(final String name) {
+        return seriesProviders.get(name);
     }
 
 }

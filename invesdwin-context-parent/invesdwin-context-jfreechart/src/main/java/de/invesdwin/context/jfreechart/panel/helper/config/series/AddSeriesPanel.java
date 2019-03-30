@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.indicator;
+package de.invesdwin.context.jfreechart.panel.helper.config.series;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -19,26 +19,26 @@ import de.invesdwin.util.swing.listener.MouseListenerSupport;
 import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
 
 @NotThreadSafe
-public class AddIndicatorSeriesPanel extends JPanel {
+public class AddSeriesPanel extends JPanel {
 
     private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
-    private final JList<IIndicatorSeriesProvider> lst_indicators;
+    private final JList<ISeriesProvider> lst_indicators;
     private final JButton btn_close;
 
-    public AddIndicatorSeriesPanel(final PlotConfigurationHelper plotConfigurationHelper,
-            final AddIndicatorSeriesDialog dialog) {
+    public AddSeriesPanel(final PlotConfigurationHelper plotConfigurationHelper,
+            final AddSeriesDialog dialog) {
         setLayout(new BorderLayout());
 
         final JScrollPane scrollPane = new JScrollPane();
         add(scrollPane, BorderLayout.CENTER);
 
-        final DefaultListModel<IIndicatorSeriesProvider> model = new DefaultListModel<>();
-        final Collection<IIndicatorSeriesProvider> indicatorProviders = plotConfigurationHelper.getIndicatorProviders();
-        for (final IIndicatorSeriesProvider indicatorProvider : indicatorProviders) {
+        final DefaultListModel<ISeriesProvider> model = new DefaultListModel<>();
+        final Collection<ISeriesProvider> indicatorProviders = plotConfigurationHelper.getSeriesProviders();
+        for (final ISeriesProvider indicatorProvider : indicatorProviders) {
             model.addElement(indicatorProvider);
         }
 
-        lst_indicators = new JList<IIndicatorSeriesProvider>(model);
+        lst_indicators = new JList<ISeriesProvider>(model);
         scrollPane.setViewportView(lst_indicators);
 
         lst_indicators.setCursor(HAND_CURSOR);
@@ -59,7 +59,7 @@ public class AddIndicatorSeriesPanel extends JPanel {
             public void mouseMoved(final MouseEvent e) {
                 final int selectedIndex = lst_indicators.locationToIndex(e.getPoint());
                 lst_indicators.setSelectedIndex(selectedIndex);
-                final IIndicatorSeriesProvider selectedValue = lst_indicators.getSelectedValue();
+                final ISeriesProvider selectedValue = lst_indicators.getSelectedValue();
                 lst_indicators.setToolTipText(selectedValue.getDescription());
             }
         });
@@ -67,7 +67,7 @@ public class AddIndicatorSeriesPanel extends JPanel {
             @Override
             public void mouseReleased(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    final IIndicatorSeriesProvider selectedValue = lst_indicators.getSelectedValue();
+                    final ISeriesProvider selectedValue = lst_indicators.getSelectedValue();
                     selectedValue.newInstance(plotConfigurationHelper.getChartPanel(),
                             selectedValue.getDefaultValues());
                 }
