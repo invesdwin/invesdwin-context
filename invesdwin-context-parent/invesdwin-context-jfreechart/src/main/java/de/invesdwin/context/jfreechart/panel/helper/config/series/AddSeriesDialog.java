@@ -31,7 +31,9 @@ public class AddSeriesDialog extends JDialog {
                 + "document this feature in help;"//
                 + "add constant line series provider;"//
                 + "add expression series provider or a menu point to add a custom expression;"//
-                + "allow to plot expression components individually (only API or also via popup?)");
+                + "allow to plot expression components individually (only API or also via popup?);"//
+                + "fix name consistency;"//
+                + "maybe add groups to list and metadata?;");
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
         panel = new AddSeriesPanel(plotConfigurationHelper, this);
