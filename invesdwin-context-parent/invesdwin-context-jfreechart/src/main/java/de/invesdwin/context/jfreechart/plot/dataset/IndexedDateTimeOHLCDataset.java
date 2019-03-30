@@ -19,9 +19,11 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     private XYPlot plot;
     private int precision;
     private String rangeAxisId;
+    private final String seriesTitle;
 
-    public IndexedDateTimeOHLCDataset(final Comparable<?> key, final List<OHLCDataItem> data) {
-        super(key, data);
+    public IndexedDateTimeOHLCDataset(final String seriesKey, final List<OHLCDataItem> data) {
+        super(seriesKey, data);
+        this.seriesTitle = seriesKey;
     }
 
     @Override
@@ -117,6 +119,11 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     @Override
     public boolean isLegendValueVisible(final int series, final int item) {
         return true;
+    }
+
+    @Override
+    public String getSeriesTitle() {
+        return seriesTitle;
     }
 
 }

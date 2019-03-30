@@ -32,9 +32,11 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     private String rangeAxisId;
     private final Map<String, OrderPlottingDataItem> orderId_item = new LinkedHashMap<>();
     private boolean lastTradeProfit = true;
+    private final String seriesTitle;
 
     public OrderPlottingDataset(final String seriesKey, final IndexedDateTimeOHLCDataset ohlcDataset) {
         this.seriesKey = seriesKey;
+        this.seriesTitle = seriesKey;
         this.ohlcDataset = ohlcDataset;
     }
 
@@ -163,6 +165,11 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
 
     public IndexedDateTimeOHLCDataset getOhlcDataset() {
         return ohlcDataset;
+    }
+
+    @Override
+    public String getSeriesTitle() {
+        return seriesTitle;
     }
 
 }

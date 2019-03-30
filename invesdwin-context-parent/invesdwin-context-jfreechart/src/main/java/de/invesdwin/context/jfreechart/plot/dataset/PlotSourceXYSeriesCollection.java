@@ -21,6 +21,11 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     private XYPlot plot;
     private int precision;
     private String rangeAxisId;
+    private final String seriesTitle;
+
+    public PlotSourceXYSeriesCollection(final String seriesTitle) {
+        this.seriesTitle = seriesTitle;
+    }
 
     @Override
     public XYPlot getPlot() {
@@ -123,6 +128,11 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     @Override
     public boolean isLegendValueVisible(final int series, final int item) {
         return !Double.isNaN(getYValue(series, item));
+    }
+
+    @Override
+    public String getSeriesTitle() {
+        return seriesTitle;
     }
 
 }

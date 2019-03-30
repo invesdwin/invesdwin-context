@@ -26,4 +26,6 @@ public interface IPlotSourceDataset extends XYDataset, Closeable {
 
     boolean isLegendValueVisible(int series, int item);
 
+    String getSeriesTitle();
+
 }

@@ -35,23 +35,22 @@ public class HighlightableLegendTitle extends CustomLegendTitle {
 
     @Override
     protected String newLabel(final LegendItem item) {
-        final String label = super.newLabel(item);
         int domainMarkerItem = (int) chartPanel.getPlotCrosshairHelper().getDomainCrosshairMarker().getValue();
         if (domainMarkerItem == -1) {
             domainMarkerItem = chartPanel.getDataset().getData().size() - 1;
         }
         if (domainMarkerItem >= 0) {
-            final XYDataset dataset = (XYDataset) item.getDataset();
+            final IPlotSourceDataset dataset = (IPlotSourceDataset) item.getDataset();
+            final String label = dataset.getSeriesTitle();
             final int series = item.getSeriesIndex();
             final int lastItem = dataset.getItemCount(series) - 1;
             if (domainMarkerItem > lastItem) {
                 domainMarkerItem = lastItem;
             }
-            final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
-            if (!plotSource.isLegendValueVisible(series, domainMarkerItem)) {
+            if (!dataset.isLegendValueVisible(series, domainMarkerItem)) {
                 return label;
             }
-            final XYPlot plot = plotSource.getPlot();
+            final XYPlot plot = dataset.getPlot();
             if (plot == chartPanel.getCombinedPlot().getTrashPlot()) {
                 return label;
             }
@@ -78,7 +77,7 @@ public class HighlightableLegendTitle extends CustomLegendTitle {
                 return sb.toString();
             }
         } else {
-            return label;
+            return super.newLabel(item);
         }
     }
 
