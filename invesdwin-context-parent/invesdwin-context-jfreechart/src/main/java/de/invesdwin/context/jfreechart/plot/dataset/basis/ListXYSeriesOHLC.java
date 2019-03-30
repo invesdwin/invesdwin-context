@@ -24,16 +24,16 @@ public class ListXYSeriesOHLC extends XYSeries {
     static {
         try {
             final Field minXField = XYSeries.class.getDeclaredField("minX");
-            Reflections.makeAccessibleFinal(minXField);
+            Reflections.makeAccessible(minXField);
             MH_MINX_SETTER = MethodHandles.lookup().unreflectSetter(minXField);
             final Field maxXField = XYSeries.class.getDeclaredField("maxX");
-            Reflections.makeAccessibleFinal(maxXField);
+            Reflections.makeAccessible(maxXField);
             MH_MAXX_SETTER = MethodHandles.lookup().unreflectSetter(maxXField);
             final Field minYField = XYSeries.class.getDeclaredField("minY");
-            Reflections.makeAccessibleFinal(minYField);
+            Reflections.makeAccessible(minYField);
             MH_MINY_SETTER = MethodHandles.lookup().unreflectSetter(minYField);
             final Field maxYField = XYSeries.class.getDeclaredField("maxY");
-            Reflections.makeAccessibleFinal(maxYField);
+            Reflections.makeAccessible(maxYField);
             MH_MAXY_SETTER = MethodHandles.lookup().unreflectSetter(maxYField);
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
             throw new RuntimeException(e);
