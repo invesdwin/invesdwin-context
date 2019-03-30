@@ -2,11 +2,14 @@ package de.invesdwin.context.jfreechart.panel.helper.config.indicator;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,8 +23,10 @@ public class AddIndicatorSeriesPanel extends JPanel {
 
     private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     private final JList<IIndicatorSeriesProvider> lst_indicators;
+    private final JButton btn_close;
 
-    public AddIndicatorSeriesPanel(final PlotConfigurationHelper plotConfigurationHelper) {
+    public AddIndicatorSeriesPanel(final PlotConfigurationHelper plotConfigurationHelper,
+            final AddIndicatorSeriesDialog dialog) {
         setLayout(new BorderLayout());
 
         final JScrollPane scrollPane = new JScrollPane();
@@ -37,6 +42,18 @@ public class AddIndicatorSeriesPanel extends JPanel {
         scrollPane.setViewportView(lst_indicators);
 
         lst_indicators.setCursor(HAND_CURSOR);
+
+        final JPanel panel = new JPanel();
+        add(panel, BorderLayout.SOUTH);
+
+        btn_close = new JButton("Close");
+        btn_close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                dialog.close();
+            }
+        });
+        panel.add(btn_close);
         lst_indicators.addMouseMotionListener(new MouseMotionListenerSupport() {
             @Override
             public void mouseMoved(final MouseEvent e) {
@@ -57,5 +74,4 @@ public class AddIndicatorSeriesPanel extends JPanel {
             }
         });
     }
-
 }

@@ -50,7 +50,7 @@ public class PlotConfigurationHelper {
     private JMenuItem showSeriesItem;
     private JMenuItem hideSeriesItem;
 
-    private JMenuItem addIndicatorSeriesItem;
+    private JMenuItem addSeriesItem;
     private JMenuItem copyToClipboardItem;
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
@@ -82,7 +82,7 @@ public class PlotConfigurationHelper {
         titleItem.setEnabled(false);
 
         initSeriesVisibilityItems();
-        initAddIndicatorSeriesItem();
+        initAddIndicatorItem();
         initExportItems();
         initHelpItem();
 
@@ -105,7 +105,8 @@ public class PlotConfigurationHelper {
                     }
                 } else {
                     if (!indicatorProviders.isEmpty()) {
-                        popupMenu.add(addIndicatorSeriesItem);
+                        popupMenu.add(addSeriesItem);
+                        popupMenu.addSeparator();
                     }
                     popupMenu.add(copyToClipboardItem);
                     popupMenu.add(saveAsPNGItem);
@@ -125,6 +126,7 @@ public class PlotConfigurationHelper {
                 popupMenu.add(titleItem);
                 popupMenu.addSeparator();
                 popupMenu.add(configureSeriesItem);
+                popupMenu.addSeparator();
                 if (highlighted.isRemovable()) {
                     popupMenu.add(removeSeriesItem);
                 }
@@ -194,9 +196,9 @@ public class PlotConfigurationHelper {
         });
     }
 
-    private void initAddIndicatorSeriesItem() {
-        addIndicatorSeriesItem = new JMenuItem("Add Indicator Series");
-        addIndicatorSeriesItem.addActionListener(new ActionListener() {
+    private void initAddIndicatorItem() {
+        addSeriesItem = new JMenuItem("Add Series");
+        addSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final AddIndicatorSeriesDialog dialog = new AddIndicatorSeriesDialog(PlotConfigurationHelper.this);

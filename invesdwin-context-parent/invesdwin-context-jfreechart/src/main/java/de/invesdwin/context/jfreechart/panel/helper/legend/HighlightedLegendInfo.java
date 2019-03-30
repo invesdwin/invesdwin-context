@@ -86,7 +86,7 @@ public class HighlightedLegendInfo {
         dataset.close();
         XYPlots.removeDataset(plot, datasetIndex);
         XYPlots.updateRangeAxes(plot);
-        chartPanel.getCombinedPlot().removeEmptyPlotsAndResetTrashPlot();
+        chartPanel.getPlotLegendHelper().removeEmptyPlotsAndResetTrashPlot();
     }
 
     public void setPriceLineVisible(final boolean visible) {

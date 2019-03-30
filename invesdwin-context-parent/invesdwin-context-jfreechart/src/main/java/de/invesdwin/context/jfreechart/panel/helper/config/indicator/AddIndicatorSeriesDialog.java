@@ -25,7 +25,7 @@ public class AddIndicatorSeriesDialog extends JDialog {
         super(Dialogs.getFrameForComponent(plotConfigurationHelper.getChartPanel()), true);
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
-        panel = new AddIndicatorSeriesPanel(plotConfigurationHelper);
+        panel = new AddIndicatorSeriesPanel(plotConfigurationHelper, this);
         contentPane.add(panel);
         setTitle("Add Indicator Series");
 

@@ -3,7 +3,6 @@ package de.invesdwin.context.jfreechart.panel.basis;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -14,12 +13,11 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
-import de.invesdwin.context.jfreechart.plot.XYPlots;
 
 @NotThreadSafe
 public class CustomCombinedDomainXYPlot extends CombinedDomainXYPlot {
 
-    public static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
+    public static final Color DEFAULT_BACKGROUND_COLOR = (Color) DEFAULT_BACKGROUND_PAINT;
     public static final int INVISIBLE_PLOT_WEIGHT = 0;
     public static final int INITIAL_PLOT_WEIGHT = 1000;
     public static final int MAIN_PLOT_WEIGHT = INITIAL_PLOT_WEIGHT * 2;
@@ -73,26 +71,6 @@ public class CustomCombinedDomainXYPlot extends CombinedDomainXYPlot {
             }
         }
         return false;
-    }
-
-    public void removeEmptyPlotsAndResetTrashPlot() {
-        final List<XYPlot> subplotsCopy = new ArrayList<>(getSubplots());
-        for (int subplotIndex = 0; subplotIndex < subplotsCopy.size(); subplotIndex++) {
-            final XYPlot subplot = subplotsCopy.get(subplotIndex);
-            if (subplot != trashPlot && !XYPlots.hasDataset(subplot)) {
-                remove(subplot);
-            }
-        }
-        if (trashPlot.getWeight() != INVISIBLE_PLOT_WEIGHT) {
-            for (int datasetIndex = 0; datasetIndex < trashPlot.getDatasetCount(); datasetIndex++) {
-                trashPlot.setDataset(datasetIndex, null);
-                trashPlot.setRenderer(datasetIndex, null);
-            }
-            trashPlot.clearAnnotations();
-            chartPanel.getPlotLegendHelper().addLegendAnnotation(trashPlot);
-            trashPlot.setBackgroundPaint(DEFAULT_BACKGROUND_COLOR);
-            trashPlot.setWeight(INVISIBLE_PLOT_WEIGHT);
-        }
     }
 
     @Deprecated

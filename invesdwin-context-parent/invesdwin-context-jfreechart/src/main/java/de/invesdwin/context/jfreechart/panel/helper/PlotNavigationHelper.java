@@ -148,6 +148,9 @@ public class PlotNavigationHelper {
             return null;
         }
         final List<XYPlot> subplots = combinedPlot.getSubplots();
+        if (subplotIndex >= subplots.size()) {
+            return null;
+        }
         final XYPlot plot = subplots.get(subplotIndex);
         for (int i = 0; i < plot.getDatasetCount(); i++) {
             final XYItemRenderer renderer = plot.getRenderer(i);
