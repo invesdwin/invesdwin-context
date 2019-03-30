@@ -9,6 +9,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.OHLCDataItem;
 
 import de.invesdwin.context.jfreechart.plot.dataset.basis.ListOHLCDataset;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Integers;
 
@@ -23,6 +24,7 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
 
     public IndexedDateTimeOHLCDataset(final String seriesKey, final List<OHLCDataItem> data) {
         super(seriesKey, data);
+        Assertions.checkNotNull(seriesKey);
         this.seriesTitle = seriesKey;
     }
 

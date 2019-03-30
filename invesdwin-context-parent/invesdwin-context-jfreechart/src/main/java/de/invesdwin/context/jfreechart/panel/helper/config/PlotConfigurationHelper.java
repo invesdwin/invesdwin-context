@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JFileChooser;
@@ -24,6 +25,7 @@ import org.jfree.chart.ChartUtils;
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsDialog;
+import de.invesdwin.context.jfreechart.panel.helper.config.indicator.AddIndicatorSeriesDialog;
 import de.invesdwin.context.jfreechart.panel.helper.config.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.util.assertions.Assertions;
@@ -53,7 +55,7 @@ public class PlotConfigurationHelper {
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
 
-    private final Map<String, IIndicatorSeriesProvider> indicatorProviders = new HashMap<>();
+    private final Map<String, IIndicatorSeriesProvider> indicatorProviders = new TreeMap<>();
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -197,7 +199,8 @@ public class PlotConfigurationHelper {
         addIndicatorSeriesItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println("TODO");
+                final AddIndicatorSeriesDialog dialog = new AddIndicatorSeriesDialog(PlotConfigurationHelper.this);
+                dialog.setVisible(true);
             }
         });
     }

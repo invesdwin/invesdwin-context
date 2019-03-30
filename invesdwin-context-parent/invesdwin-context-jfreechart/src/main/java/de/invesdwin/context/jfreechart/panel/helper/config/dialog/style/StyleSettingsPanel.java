@@ -291,7 +291,7 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
             updateStyleVisibility(rendererType);
         }
         if (panel.cmb_seriesRenderer.isVisible()) {
-            final IRendererType rendererType = plotConfigurationHelper.getSeriesInitialSettings(highlighted)
+            final IRendererType rendererType = plotConfigurationHelper.getOrCreateSeriesInitialSettings(highlighted)
                     .getCurrentRendererType(highlighted);
             for (final SeriesRendererType type : SeriesRendererType.values()) {
                 if (type == SeriesRendererType.Custom) {

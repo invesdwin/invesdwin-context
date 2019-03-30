@@ -14,6 +14,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import de.invesdwin.context.jfreechart.plot.dataset.basis.ListXYSeriesOHLC;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.XYDataItemOHLC;
+import de.invesdwin.util.assertions.Assertions;
 
 @NotThreadSafe
 public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements IPlotSourceDataset, XYRangeInfo {
@@ -25,6 +26,7 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
 
     public PlotSourceXYSeriesCollection(final String seriesTitle) {
         this.seriesTitle = seriesTitle;
+        Assertions.checkNotNull(seriesTitle);
     }
 
     @Override

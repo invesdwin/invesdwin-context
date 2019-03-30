@@ -42,6 +42,10 @@ public class HighlightableLegendTitle extends CustomLegendTitle {
         if (domainMarkerItem >= 0) {
             final IPlotSourceDataset dataset = (IPlotSourceDataset) item.getDataset();
             final String label = dataset.getSeriesTitle();
+            if (label == null) {
+                throw new NullPointerException(
+                        "seriesTitle should not be null for seriesKey: " + dataset.getSeriesKey(0));
+            }
             final int series = item.getSeriesIndex();
             final int lastItem = dataset.getItemCount(series) - 1;
             if (domainMarkerItem > lastItem) {

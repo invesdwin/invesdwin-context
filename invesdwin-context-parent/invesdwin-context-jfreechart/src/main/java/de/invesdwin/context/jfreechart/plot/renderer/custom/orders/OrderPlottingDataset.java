@@ -16,6 +16,7 @@ import org.jfree.data.xy.AbstractXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IIndexedDateTimeXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.iterable.ASkippingIterable;
 import de.invesdwin.util.collections.iterable.ICloseableIterable;
 import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
@@ -35,6 +36,7 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     private final String seriesTitle;
 
     public OrderPlottingDataset(final String seriesKey, final IndexedDateTimeOHLCDataset ohlcDataset) {
+        Assertions.checkNotNull(seriesKey);
         this.seriesKey = seriesKey;
         this.seriesTitle = seriesKey;
         this.ohlcDataset = ohlcDataset;

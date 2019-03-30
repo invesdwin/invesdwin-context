@@ -11,6 +11,15 @@ public interface IIndicatorSeriesProvider {
 
     IIndicatorSeriesParameter[] getParameters();
 
+    default IExpression[] getDefaultValues() {
+        final IIndicatorSeriesParameter[] parameters = getParameters();
+        final IExpression[] defaultValues = new IExpression[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            defaultValues[i] = parameters[i].getDefaultValue();
+        }
+        return defaultValues;
+    }
+
     String getPlotPaneId();
 
     void newInstance(InteractiveChartPanel chartPanel, IExpression[] args);
