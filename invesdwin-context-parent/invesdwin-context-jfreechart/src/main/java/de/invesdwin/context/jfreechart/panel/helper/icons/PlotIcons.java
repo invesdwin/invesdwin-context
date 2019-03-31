@@ -23,7 +23,10 @@ public enum PlotIcons {
     TRASH("trash_256.png"),
 
     //order plotting
-    MARKER("marker_256.png");
+    MARKER("marker_256.png"),
+
+    //add series
+    SEARCH("search_256.png");
 
     private String name;
 

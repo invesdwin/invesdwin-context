@@ -9,6 +9,10 @@ public interface ISeriesProvider {
 
     String getDescription();
 
+    String getExpressionName();
+
+    String getExpressionString(IExpression[] args);
+
     ISeriesParameter[] getParameters();
 
     default IExpression[] getDefaultValues() {
