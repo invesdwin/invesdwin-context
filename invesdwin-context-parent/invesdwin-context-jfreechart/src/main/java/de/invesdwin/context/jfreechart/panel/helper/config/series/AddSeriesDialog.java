@@ -23,15 +23,16 @@ public class AddSeriesDialog extends JDialog {
 
     public AddSeriesDialog(final PlotConfigurationHelper plotConfigurationHelper) {
         super(Dialogs.getFrameForComponent(plotConfigurationHelper.getChartPanel()), true);
-        System.out.println("TODO: "//
-                + "add custom series providers (from strategy); "//
-                + "add default renderer to metadata; "//
-                + "remove automatic yellow color?; "//
-                + "document this feature in help;"//
-                + "add constant line series provider;"//
-                + "add expression series provider or a menu point to add a custom expression;"//
-                + "allow to plot expression components individually (only API or also via popup?);"//
-                + "fix name consistency;"//
+        System.out.println(
+                "TODO: allow configuaration of range axis id via editable combobox (for the constant expression)"//
+                        + "add custom series providers (from strategy); "//
+                        + "add default renderer to metadata; "//
+                        + "remove automatic yellow color?; "//
+                        + "document this feature in help;"//
+                        + "add constant line series provider;"//
+                        + "add expression series provider or a menu point to add a custom expression;"//
+                        + "allow to plot expression components individually (only API or also via popup?);"//
+                        + "fix name consistency;"//
         );
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
