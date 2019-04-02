@@ -8,6 +8,7 @@ import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastStandardXYItemRenderer;
@@ -227,6 +228,7 @@ public enum SeriesRendererType implements IRendererType {
                 initialSettings.isPriceLineVisible(), initialSettings.isPriceLabelVisible());
         highlighted.setRenderer(newRenderer);
         dataset.setRangeAxisId(initialSettings.getRangeAxisId());
+        XYPlots.updateRangeAxes(dataset.getPlot());
     }
 
     @Override

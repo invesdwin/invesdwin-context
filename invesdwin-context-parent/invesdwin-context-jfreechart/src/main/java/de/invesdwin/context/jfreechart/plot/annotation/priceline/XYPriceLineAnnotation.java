@@ -74,6 +74,7 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
     @Override
     public void setPriceLabelVisible(final boolean priceLabelEnabled) {
         this.priceLabelVisible = priceLabelEnabled;
+        fireAnnotationChanged();
     }
 
     @Override

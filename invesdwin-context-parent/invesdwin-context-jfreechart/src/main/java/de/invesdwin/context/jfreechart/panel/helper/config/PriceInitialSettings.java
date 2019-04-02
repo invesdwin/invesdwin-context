@@ -7,6 +7,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
+import de.invesdwin.context.jfreechart.plot.XYPlots;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.FastCandlestickRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastHighLowRenderer;
@@ -48,7 +50,7 @@ public class PriceInitialSettings {
     private Stroke seriesStroke;
     private boolean priceLineVisible;
     private boolean priceLabelVisible;
-    private final String rangeAxisId;
+    private String rangeAxisId;
 
     public PriceInitialSettings(final PlotConfigurationHelper plotConfigurationHelper) {
         this.plotConfigurationHelper = plotConfigurationHelper;
@@ -252,8 +254,8 @@ public class PriceInitialSettings {
         updateSeriesStroke();
         updatePriceLineVisible();
         updatePriceLabelVisible();
+        updateRangeAxisId();
         final IDatasetSourceXYItemRenderer renderer = getPriceRenderer(priceRendererType);
-        renderer.getDataset().setRangeAxisId(rangeAxisId);
         plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, renderer);
     }
 
@@ -267,6 +269,18 @@ public class PriceInitialSettings {
 
     public String getRangeAxisId() {
         return rangeAxisId;
+    }
+
+    public void setRangeAxisId(final String rangeAxisId) {
+        this.rangeAxisId = rangeAxisId;
+        updateRangeAxisId();
+    }
+
+    private void updateRangeAxisId() {
+        final IDatasetSourceXYItemRenderer renderer = getPriceRenderer(priceRendererType);
+        final IPlotSourceDataset dataset = renderer.getDataset();
+        dataset.setRangeAxisId(rangeAxisId);
+        XYPlots.updateRangeAxes(dataset.getPlot());
     }
 
 }

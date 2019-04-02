@@ -12,6 +12,11 @@ public interface IDelegatePriceLineXYItemRenderer extends IPriceLineXYItemRender
     }
 
     @Override
+    default void setPriceLineVisible(final boolean priceLineVisible) {
+        getDelegatePriceLineRenderer().setPriceLineVisible(priceLineVisible);
+    }
+
+    @Override
     default boolean isPriceLineVisible() {
         return getDelegatePriceLineRenderer().isPriceLineVisible();
     }
@@ -19,11 +24,6 @@ public interface IDelegatePriceLineXYItemRenderer extends IPriceLineXYItemRender
     @Override
     default void setPriceLabelVisible(final boolean priceLabelVisible) {
         getDelegatePriceLineRenderer().setPriceLabelVisible(priceLabelVisible);
-    }
-
-    @Override
-    default void setPriceLineVisible(final boolean priceLineVisible) {
-        getDelegatePriceLineRenderer().setPriceLineVisible(priceLineVisible);
     }
 
 }

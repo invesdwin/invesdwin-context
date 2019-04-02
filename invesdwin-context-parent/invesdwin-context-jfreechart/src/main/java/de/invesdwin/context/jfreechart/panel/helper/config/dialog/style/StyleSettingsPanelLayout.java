@@ -1,5 +1,6 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.dialog.style;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -17,8 +18,6 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 public class StyleSettingsPanelLayout extends JPanel {
 
     //CHECKSTYLE:OFF
-    public final JLabel lbl_rangeAxisId;
-    public final JComboBox<String> cmb_rangeAxisId;
     public final JLabel lbl_priceRenderer;
     public final JComboBox<PriceRendererType> cmb_priceRenderer;
     public final JLabel lbl_seriesRenderer;
@@ -37,11 +36,11 @@ public class StyleSettingsPanelLayout extends JPanel {
     public final JCheckBox chk_priceLine;
     public final JLabel lbl_priceLabel;
     public final JCheckBox chk_priceLabel;
+    public final JLabel lbl_rangeAxisId;
+    public final JComboBox<String> cmb_rangeAxisId;
     //CHECKSTYLE:ON
 
     public StyleSettingsPanelLayout() {
-        lbl_rangeAxisId = new JLabel("Range Axis Id");
-        cmb_rangeAxisId = new JComboBox<>();
         lbl_priceRenderer = new JLabel("Series Type");
         cmb_priceRenderer = new JComboBox<>();
         lbl_seriesRenderer = new JLabel("Series Type");
@@ -60,9 +59,9 @@ public class StyleSettingsPanelLayout extends JPanel {
         chk_priceLine = new JCheckBox();
         lbl_priceLabel = new JLabel("Price Label");
         chk_priceLabel = new JCheckBox();
+        lbl_rangeAxisId = new JLabel("Range Axis Id");
+        cmb_rangeAxisId = new JComboBox<>();
 
-        add(lbl_rangeAxisId);
-        add(cmb_rangeAxisId);
         add(lbl_priceRenderer);
         add(cmb_priceRenderer);
         add(lbl_seriesRenderer);
@@ -81,20 +80,18 @@ public class StyleSettingsPanelLayout extends JPanel {
         add(chk_priceLine);
         add(lbl_priceLabel);
         add(chk_priceLabel);
+        add(lbl_rangeAxisId);
+        add(cmb_rangeAxisId);
 
-        setLayout(new GridLayout(8, 2, 5, 5));
+        setLayout(new GridLayout(10, 2, 5, 5));
     }
 
     //CHECKSTYLE:OFF
     public void updateLayout() {
         //CHECKSTYLE:ON
         removeAll();
+        setLayout(new FlowLayout());
         int rows = 0;
-        if (cmb_rangeAxisId.isVisible()) {
-            add(lbl_rangeAxisId);
-            add(cmb_rangeAxisId);
-            rows++;
-        }
         if (cmb_priceRenderer.isVisible()) {
             add(lbl_priceRenderer);
             add(cmb_priceRenderer);
@@ -138,6 +135,11 @@ public class StyleSettingsPanelLayout extends JPanel {
         if (chk_priceLabel.isVisible()) {
             add(lbl_priceLabel);
             add(chk_priceLabel);
+            rows++;
+        }
+        if (cmb_rangeAxisId.isVisible()) {
+            add(lbl_rangeAxisId);
+            add(cmb_rangeAxisId);
             rows++;
         }
 

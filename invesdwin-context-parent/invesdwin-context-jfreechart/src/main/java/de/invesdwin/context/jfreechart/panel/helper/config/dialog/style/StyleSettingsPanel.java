@@ -26,6 +26,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelActions;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
@@ -139,7 +140,9 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final String rangeAxisId = (String) panel.cmb_rangeAxisId.getSelectedItem();
-                highlighted.getDataset().setRangeAxisId(rangeAxisId);
+                final IPlotSourceDataset dataset = highlighted.getDataset();
+                dataset.setRangeAxisId(rangeAxisId);
+                XYPlots.updateRangeAxes(dataset.getPlot());
             }
         });
     }
@@ -277,11 +280,13 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
         panel.chk_priceLine.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                highlighted.setPriceLineVisible(panel.chk_priceLine.isSelected());
-                panel.chk_priceLabel.setEnabled(panel.chk_priceLine.isSelected());
+                final boolean priceLineVisible = panel.chk_priceLine.isSelected();
+                highlighted.setPriceLineVisible(priceLineVisible);
+                panel.chk_priceLabel.setEnabled(priceLineVisible);
+                panel.chk_priceLabel.setSelected(highlighted.isPriceLabelVisible() && priceLineVisible);
             }
         });
-        panel.chk_priceLine.addActionListener(new ActionListener() {
+        panel.chk_priceLabel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 highlighted.setPriceLabelVisible(panel.chk_priceLabel.isSelected());
@@ -360,7 +365,7 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
         panel.chk_priceLine.setVisible(rendererType.isPriceLineConfigurable());
         panel.chk_priceLine.setSelected(highlighted.isPriceLineVisible());
         panel.chk_priceLabel.setVisible(rendererType.isPriceLineConfigurable());
-        panel.chk_priceLabel.setSelected(highlighted.isPriceLabelVisible());
+        panel.chk_priceLabel.setSelected(highlighted.isPriceLabelVisible() && panel.chk_priceLine.isSelected());
         panel.chk_priceLabel.setEnabled(panel.chk_priceLine.isSelected());
     }
 
