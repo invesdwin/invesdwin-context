@@ -17,6 +17,8 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
 public class StyleSettingsPanelLayout extends JPanel {
 
     //CHECKSTYLE:OFF
+    public final JLabel lbl_rangeAxisId;
+    public final JComboBox<String> cmb_rangeAxisId;
     public final JLabel lbl_priceRenderer;
     public final JComboBox<PriceRendererType> cmb_priceRenderer;
     public final JLabel lbl_seriesRenderer;
@@ -33,9 +35,13 @@ public class StyleSettingsPanelLayout extends JPanel {
     public final JButton btn_downColor;
     public final JLabel lbl_priceLine;
     public final JCheckBox chk_priceLine;
+    public final JLabel lbl_priceLabel;
+    public final JCheckBox chk_priceLabel;
     //CHECKSTYLE:ON
 
     public StyleSettingsPanelLayout() {
+        lbl_rangeAxisId = new JLabel("Range Axis Id");
+        cmb_rangeAxisId = new JComboBox<>();
         lbl_priceRenderer = new JLabel("Series Type");
         cmb_priceRenderer = new JComboBox<>();
         lbl_seriesRenderer = new JLabel("Series Type");
@@ -52,7 +58,11 @@ public class StyleSettingsPanelLayout extends JPanel {
         btn_downColor = new JButton();
         lbl_priceLine = new JLabel("Price Line");
         chk_priceLine = new JCheckBox();
+        lbl_priceLabel = new JLabel("Price Label");
+        chk_priceLabel = new JCheckBox();
 
+        add(lbl_rangeAxisId);
+        add(cmb_rangeAxisId);
         add(lbl_priceRenderer);
         add(cmb_priceRenderer);
         add(lbl_seriesRenderer);
@@ -69,6 +79,8 @@ public class StyleSettingsPanelLayout extends JPanel {
         add(btn_downColor);
         add(lbl_priceLine);
         add(chk_priceLine);
+        add(lbl_priceLabel);
+        add(chk_priceLabel);
 
         setLayout(new GridLayout(8, 2, 5, 5));
     }
@@ -78,6 +90,11 @@ public class StyleSettingsPanelLayout extends JPanel {
         //CHECKSTYLE:ON
         removeAll();
         int rows = 0;
+        if (cmb_rangeAxisId.isVisible()) {
+            add(lbl_rangeAxisId);
+            add(cmb_rangeAxisId);
+            rows++;
+        }
         if (cmb_priceRenderer.isVisible()) {
             add(lbl_priceRenderer);
             add(cmb_priceRenderer);
@@ -116,6 +133,11 @@ public class StyleSettingsPanelLayout extends JPanel {
         if (chk_priceLine.isVisible()) {
             add(lbl_priceLine);
             add(chk_priceLine);
+            rows++;
+        }
+        if (chk_priceLabel.isVisible()) {
+            add(lbl_priceLabel);
+            add(chk_priceLabel);
             rows++;
         }
 

@@ -5,9 +5,8 @@ import java.awt.Stroke;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 
@@ -21,8 +20,10 @@ public class SeriesInitialSettings {
     private final LineStyleType lineStyleType;
     private final LineWidthType lineWidthType;
     private final boolean priceLineVisible;
+    private final boolean priceLabelVisible;
+    private final String rangeAxisId;
 
-    public SeriesInitialSettings(final XYItemRenderer initialRenderer) {
+    public SeriesInitialSettings(final IDatasetSourceXYItemRenderer initialRenderer) {
         final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(initialRenderer);
         if (seriesRendererType == SeriesRendererType.Custom) {
             rendererType = (ICustomRendererType) initialRenderer;
@@ -42,6 +43,8 @@ public class SeriesInitialSettings {
         lineStyleType = LineStyleType.valueOf(stroke);
         lineWidthType = LineWidthType.valueOf(stroke);
         priceLineVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
+        priceLabelVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
+        rangeAxisId = initialRenderer.getDataset().getRangeAxisId();
     }
 
     public void reset(final HighlightedLegendInfo highlighted) {
@@ -91,6 +94,14 @@ public class SeriesInitialSettings {
 
     public boolean isPriceLineVisible() {
         return priceLineVisible;
+    }
+
+    public boolean isPriceLabelVisible() {
+        return priceLabelVisible;
+    }
+
+    public String getRangeAxisId() {
+        return rangeAxisId;
     }
 
 }

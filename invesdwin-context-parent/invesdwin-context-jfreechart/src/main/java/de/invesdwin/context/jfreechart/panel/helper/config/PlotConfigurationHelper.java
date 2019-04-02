@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JFileChooser;
@@ -21,6 +23,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartUtils;
+import org.jfree.chart.plot.XYPlot;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
@@ -28,6 +31,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsDialog
 import de.invesdwin.context.jfreechart.panel.helper.config.series.AddSeriesDialog;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.swing.Dialogs;
@@ -334,6 +338,29 @@ public class PlotConfigurationHelper {
 
     public ISeriesProvider getSeriesProvider(final String name) {
         return seriesProviders.get(name);
+    }
+
+    public Set<String> getRangeAxisIds() {
+        final Set<String> rangeAxisIds = new TreeSet<>();
+        addRangeAxisId(rangeAxisIds, getPriceInitialSettings().getRangeAxisId());
+        for (final SeriesInitialSettings series : seriesKey_initialSettings.values()) {
+            addRangeAxisId(rangeAxisIds, series.getRangeAxisId());
+        }
+        for (final XYPlot plot : chartPanel.getCombinedPlot().getSubplots()) {
+            for (int datasetIndex = 0; datasetIndex < plot.getDatasetCount(); datasetIndex++) {
+                final IPlotSourceDataset dataset = (IPlotSourceDataset) plot.getDataset(datasetIndex);
+                if (dataset != null) {
+                    addRangeAxisId(rangeAxisIds, dataset.getRangeAxisId());
+                }
+            }
+        }
+        return rangeAxisIds;
+    }
+
+    private void addRangeAxisId(final Set<String> rangeAxisIds, final String rangeAxisId) {
+        if (rangeAxisId != null) {
+            rangeAxisIds.add(rangeAxisId);
+        }
     }
 
 }

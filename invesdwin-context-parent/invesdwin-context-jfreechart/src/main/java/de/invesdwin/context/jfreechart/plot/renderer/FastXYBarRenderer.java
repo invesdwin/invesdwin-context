@@ -18,20 +18,28 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 
 @NotThreadSafe
 public class FastXYBarRenderer extends XYBarRenderer implements IDelegatePriceLineXYItemRenderer {
 
     private final XYPriceLineAnnotation priceLineAnnotation;
+    private final IPlotSourceDataset dataset;
 
-    public FastXYBarRenderer(final XYDataset dataset) {
+    public FastXYBarRenderer(final IPlotSourceDataset dataset) {
         this(dataset, 0D);
     }
 
-    public FastXYBarRenderer(final XYDataset dataset, final double margin) {
+    public FastXYBarRenderer(final IPlotSourceDataset dataset, final double margin) {
         super(margin);
+        this.dataset = dataset;
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPlotSourceDataset getDataset() {
+        return dataset;
     }
 
     @Override

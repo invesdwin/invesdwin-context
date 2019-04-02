@@ -37,6 +37,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 
 /**
  * Instead of drawing an outline, this one draws a line so that at start and end of series the line does not go to zero.
@@ -69,9 +70,10 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IDeleg
 
     private final XYPriceLineAnnotation priceLineAnnotation;
 
-    public FastXYAreaRenderer(final XYDataset dataset) {
+    private IPlotSourceDataset dataset;
 
-        super();
+    public FastXYAreaRenderer(final IPlotSourceDataset dataset) {
+        this.dataset = dataset;
 
         this.plotArea = true;
         this.plotLines = true;
@@ -90,6 +92,11 @@ public class FastXYAreaRenderer extends AbstractXYItemRenderer implements IDeleg
 
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPlotSourceDataset getDataset() {
+        return dataset;
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
@@ -14,7 +15,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.IRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
@@ -27,6 +27,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelActions;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.swing.ColorChooserButtonActionListener;
@@ -123,15 +124,24 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
                     } else {
                         final LineStyleType lineStyleType = LineStyleType.valueOf(stroke);
                         final LineWidthType lineWidthType = LineWidthType.valueOf(stroke);
-                        final XYDataset dataset = highlighted.getDataset();
+                        final IPlotSourceDataset dataset = highlighted.getDataset();
                         final boolean priceLineVisible = highlighted.isPriceLineVisible();
-                        highlighted.setRenderer(
-                                type.newRenderer(dataset, lineStyleType, lineWidthType, color, priceLineVisible));
+                        final boolean priceLabelVisible = highlighted.isPriceLabelVisible();
+                        highlighted.setRenderer(type.newRenderer(dataset, lineStyleType, lineWidthType, color,
+                                priceLineVisible, priceLabelVisible));
                     }
                     initPanel();
                 }
             });
         }
+        panel.cmb_rangeAxisId.setEditable(true);
+        panel.cmb_rangeAxisId.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final String rangeAxisId = (String) panel.cmb_rangeAxisId.getSelectedItem();
+                highlighted.getDataset().setRangeAxisId(rangeAxisId);
+            }
+        });
     }
 
     private void initLine() {
@@ -268,17 +278,34 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
             @Override
             public void actionPerformed(final ActionEvent e) {
                 highlighted.setPriceLineVisible(panel.chk_priceLine.isSelected());
+                panel.chk_priceLabel.setEnabled(panel.chk_priceLine.isSelected());
+            }
+        });
+        panel.chk_priceLine.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                highlighted.setPriceLabelVisible(panel.chk_priceLabel.isSelected());
             }
         });
     }
 
     private void updateRendererVisibility() {
+        final DefaultComboBoxModel<String> rangeAxisIdModel = new DefaultComboBoxModel<>();
+        for (final String rangeAxisId : plotConfigurationHelper.getRangeAxisIds()) {
+            rangeAxisIdModel.addElement(rangeAxisId);
+        }
+        panel.cmb_rangeAxisId.setModel(rangeAxisIdModel);
         if (highlighted.isPriceSeries()) {
             panel.cmb_priceRenderer.setVisible(true);
             panel.cmb_seriesRenderer.setVisible(false);
+            panel.cmb_rangeAxisId.setSelectedItem(plotConfigurationHelper.getPriceInitialSettings()
+                    .getCurrentPriceRenderer()
+                    .getDataset()
+                    .getRangeAxisId());
         } else {
             panel.cmb_priceRenderer.setVisible(false);
             panel.cmb_seriesRenderer.setVisible(true);
+            panel.cmb_rangeAxisId.setSelectedItem(highlighted.getDataset().getRangeAxisId());
         }
 
         if (panel.cmb_priceRenderer.isVisible()) {
@@ -332,6 +359,9 @@ public class StyleSettingsPanel extends JPanel implements ISettingsPanelActions 
         panel.btn_downColor.setName(rendererType.getDownColorName());
         panel.chk_priceLine.setVisible(rendererType.isPriceLineConfigurable());
         panel.chk_priceLine.setSelected(highlighted.isPriceLineVisible());
+        panel.chk_priceLabel.setVisible(rendererType.isPriceLineConfigurable());
+        panel.chk_priceLabel.setSelected(highlighted.isPriceLabelVisible());
+        panel.chk_priceLabel.setEnabled(panel.chk_priceLine.isSelected());
     }
 
     private void updateLineVisibility() {

@@ -11,6 +11,7 @@ import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRende
 import de.invesdwin.context.jfreechart.plot.dataset.DisabledXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
 import de.invesdwin.util.assertions.Assertions;
 
 @Immutable
@@ -59,11 +60,11 @@ public class HighlightedLegendInfo {
         return (IPlotSourceDataset) plot.getDataset(datasetIndex);
     }
 
-    public XYItemRenderer getRenderer() {
-        return plot.getRenderer(datasetIndex);
+    public IDatasetSourceXYItemRenderer getRenderer() {
+        return (IDatasetSourceXYItemRenderer) plot.getRenderer(datasetIndex);
     }
 
-    public void setRenderer(final XYItemRenderer renderer) {
+    public void setRenderer(final IDatasetSourceXYItemRenderer renderer) {
         plot.setRenderer(datasetIndex, renderer);
     }
 
@@ -103,6 +104,25 @@ public class HighlightedLegendInfo {
         if (renderer instanceof IPriceLineRenderer) {
             final IPriceLineRenderer cRenderer = (IPriceLineRenderer) renderer;
             return cRenderer.isPriceLineVisible();
+        } else {
+            return false;
+        }
+    }
+
+    public void setPriceLabelVisible(final boolean visible) {
+        final IPriceLineRenderer renderer = (IPriceLineRenderer) getRenderer();
+        renderer.setPriceLabelVisible(visible);
+    }
+
+    public boolean isPriceLabelVisible() {
+        final XYItemRenderer renderer = getRenderer();
+        return isPriceLabelVisible(renderer);
+    }
+
+    public static boolean isPriceLabelVisible(final XYItemRenderer renderer) {
+        if (renderer instanceof IPriceLineRenderer) {
+            final IPriceLineRenderer cRenderer = (IPriceLineRenderer) renderer;
+            return cRenderer.isPriceLabelVisible();
         } else {
             return false;
         }

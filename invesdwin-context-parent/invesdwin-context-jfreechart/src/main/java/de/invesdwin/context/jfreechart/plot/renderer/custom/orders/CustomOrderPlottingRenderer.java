@@ -89,6 +89,11 @@ public class CustomOrderPlottingRenderer extends AbstractXYItemRenderer
     }
 
     @Override
+    public OrderPlottingDataset getDataset() {
+        return dataset;
+    }
+
+    @Override
     public void setSeriesPaint(final int series, final Paint paint, final boolean notify) {
         super.setSeriesPaint(series, paint, notify);
         if (series == 0) {

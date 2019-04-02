@@ -2,12 +2,12 @@ package de.invesdwin.context.jfreechart.plot.annotation.priceline;
 
 public interface IPriceLineRenderer {
 
-    void setPriceLineVisible(boolean visible);
+    void setPriceLineVisible(boolean priceLineVisible);
 
     boolean isPriceLineVisible();
 
-    void setPriceLabelEnabled(boolean priceLabelEnabled);
+    void setPriceLabelVisible(boolean priceLabelVisible);
 
-    boolean isPriceLabelEnabled();
+    boolean isPriceLabelVisible();
 
 }

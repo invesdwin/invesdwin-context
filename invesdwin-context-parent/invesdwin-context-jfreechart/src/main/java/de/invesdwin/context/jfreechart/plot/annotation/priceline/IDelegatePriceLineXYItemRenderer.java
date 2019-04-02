@@ -1,12 +1,14 @@
 package de.invesdwin.context.jfreechart.plot.annotation.priceline;
 
-public interface IDelegatePriceLineXYItemRenderer extends IPriceLineXYItemRenderer {
+import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
+
+public interface IDelegatePriceLineXYItemRenderer extends IPriceLineXYItemRenderer, IDatasetSourceXYItemRenderer {
 
     IPriceLineRenderer getDelegatePriceLineRenderer();
 
     @Override
-    default boolean isPriceLabelEnabled() {
-        return getDelegatePriceLineRenderer().isPriceLabelEnabled();
+    default boolean isPriceLabelVisible() {
+        return getDelegatePriceLineRenderer().isPriceLabelVisible();
     }
 
     @Override
@@ -15,13 +17,13 @@ public interface IDelegatePriceLineXYItemRenderer extends IPriceLineXYItemRender
     }
 
     @Override
-    default void setPriceLabelEnabled(final boolean priceLabelEnabled) {
-        getDelegatePriceLineRenderer().setPriceLabelEnabled(priceLabelEnabled);
+    default void setPriceLabelVisible(final boolean priceLabelVisible) {
+        getDelegatePriceLineRenderer().setPriceLabelVisible(priceLabelVisible);
     }
 
     @Override
-    default void setPriceLineVisible(final boolean visible) {
-        getDelegatePriceLineRenderer().setPriceLineVisible(visible);
+    default void setPriceLineVisible(final boolean priceLineVisible) {
+        getDelegatePriceLineRenderer().setPriceLineVisible(priceLineVisible);
     }
 
 }

@@ -13,6 +13,7 @@ import de.invesdwin.context.jfreechart.plot.renderer.FastHighLowRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastStandardXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastXYAreaRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastXYStepRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.Colors;
@@ -46,7 +47,8 @@ public class PriceInitialSettings {
     private Color seriesColor;
     private Stroke seriesStroke;
     private boolean priceLineVisible;
-    private boolean priceLabelEnabled;
+    private boolean priceLabelVisible;
+    private final String rangeAxisId;
 
     public PriceInitialSettings(final PlotConfigurationHelper plotConfigurationHelper) {
         this.plotConfigurationHelper = plotConfigurationHelper;
@@ -57,13 +59,14 @@ public class PriceInitialSettings {
         this.areaRenderer = new FastXYAreaRenderer(dataset);
         this.lineRenderer = new FastStandardXYItemRenderer(dataset);
         this.stepLineRenderer = new FastXYStepRenderer(dataset);
+        this.rangeAxisId = dataset.getRangeAxisId();
 
         setUpColor(DEFAULT_UP_COLOR);
         setDownColor(DEFAULT_DOWN_COLOR);
         setSeriesColor(DEFAULT_SERIES_COLOR);
         setSeriesStroke(DEFAULT_SERIES_STROKE);
         setPriceLineVisible(DEFAULT_PRICE_LINE_VISIBLE);
-        setPriceLabelEnabled(DEFAULT_PRICE_LABEL_ENABLED);
+        setPriceLabelVisible(DEFAULT_PRICE_LABEL_ENABLED);
     }
 
     public PriceInitialSettings(final PriceInitialSettings copyOf) {
@@ -73,6 +76,7 @@ public class PriceInitialSettings {
         this.areaRenderer = copyOf.areaRenderer;
         this.lineRenderer = copyOf.lineRenderer;
         this.stepLineRenderer = copyOf.stepLineRenderer;
+        this.rangeAxisId = copyOf.getRangeAxisId();
 
         final XYItemRenderer priceRenderer = copyOf.getCurrentPriceRenderer();
         priceRendererType = getPriceRendererType(priceRenderer);
@@ -81,7 +85,7 @@ public class PriceInitialSettings {
         seriesColor = (Color) priceRenderer.getSeriesPaint(0);
         seriesStroke = priceRenderer.getSeriesStroke(0);
         priceLineVisible = candlestickRenderer.isPriceLineVisible();
-        priceLabelEnabled = candlestickRenderer.isPriceLabelEnabled();
+        priceLabelVisible = candlestickRenderer.isPriceLabelVisible();
 
     }
 
@@ -105,11 +109,11 @@ public class PriceInitialSettings {
         plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, newRenderer);
     }
 
-    public XYItemRenderer getPriceRenderer() {
+    public IDatasetSourceXYItemRenderer getPriceRenderer() {
         return getPriceRenderer(priceRendererType);
     }
 
-    public XYItemRenderer getPriceRenderer(final PriceRendererType priceRendererType) {
+    public IDatasetSourceXYItemRenderer getPriceRenderer(final PriceRendererType priceRendererType) {
         switch (priceRendererType) {
         case Area:
             return areaRenderer;
@@ -224,21 +228,21 @@ public class PriceInitialSettings {
         this.stepLineRenderer.setPriceLineVisible(priceLineVisible);
     }
 
-    public boolean isPriceLabelEnabled() {
-        return priceLabelEnabled;
+    public boolean isPriceLabelVisible() {
+        return priceLabelVisible;
     }
 
-    public void setPriceLabelEnabled(final boolean priceLabelEnabled) {
-        this.priceLabelEnabled = priceLabelEnabled;
-        updatePriceLabelEnabled();
+    public void setPriceLabelVisible(final boolean priceLabelVisible) {
+        this.priceLabelVisible = priceLabelVisible;
+        updatePriceLabelVisible();
     }
 
-    private void updatePriceLabelEnabled() {
-        candlestickRenderer.setPriceLabelEnabled(priceLabelEnabled);
-        barsRenderer.setPriceLabelEnabled(priceLabelEnabled);
-        areaRenderer.setPriceLabelEnabled(priceLabelEnabled);
-        lineRenderer.setPriceLabelEnabled(priceLabelEnabled);
-        stepLineRenderer.setPriceLabelEnabled(priceLabelEnabled);
+    private void updatePriceLabelVisible() {
+        candlestickRenderer.setPriceLabelVisible(priceLabelVisible);
+        barsRenderer.setPriceLabelVisible(priceLabelVisible);
+        areaRenderer.setPriceLabelVisible(priceLabelVisible);
+        lineRenderer.setPriceLabelVisible(priceLabelVisible);
+        stepLineRenderer.setPriceLabelVisible(priceLabelVisible);
     }
 
     public void reset() {
@@ -247,16 +251,22 @@ public class PriceInitialSettings {
         updateSeriesColor();
         updateSeriesStroke();
         updatePriceLineVisible();
-        updatePriceLabelEnabled();
-        plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, getPriceRenderer(priceRendererType));
+        updatePriceLabelVisible();
+        final IDatasetSourceXYItemRenderer renderer = getPriceRenderer(priceRendererType);
+        renderer.getDataset().setRangeAxisId(rangeAxisId);
+        plotConfigurationHelper.getChartPanel().getOhlcPlot().setRenderer(0, renderer);
     }
 
     public PriceRendererType getCurrentPriceRendererType() {
         return getPriceRendererType(getCurrentPriceRenderer());
     }
 
-    public XYItemRenderer getCurrentPriceRenderer() {
-        return plotConfigurationHelper.getChartPanel().getOhlcPlot().getRenderer(0);
+    public IDatasetSourceXYItemRenderer getCurrentPriceRenderer() {
+        return (IDatasetSourceXYItemRenderer) plotConfigurationHelper.getChartPanel().getOhlcPlot().getRenderer(0);
+    }
+
+    public String getRangeAxisId() {
+        return rangeAxisId;
     }
 
 }

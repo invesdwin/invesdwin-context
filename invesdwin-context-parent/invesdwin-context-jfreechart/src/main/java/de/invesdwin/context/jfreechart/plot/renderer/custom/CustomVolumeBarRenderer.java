@@ -12,6 +12,7 @@ import org.jfree.data.xy.XYDataset;
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceRendererType;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.FastCandlestickRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastXYBarRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
@@ -30,7 +31,8 @@ public class CustomVolumeBarRenderer extends FastXYBarRenderer implements IUpDow
     private Color upColor;
     private Color downColor;
 
-    public CustomVolumeBarRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
+    public CustomVolumeBarRenderer(final PlotConfigurationHelper plotConfigurationHelper,
+            final IPlotSourceDataset dataset) {
         super(dataset, 0.25f);
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
         this.candlestickRenderer = (FastCandlestickRenderer) config.getPriceRenderer(PriceRendererType.Candlestick);

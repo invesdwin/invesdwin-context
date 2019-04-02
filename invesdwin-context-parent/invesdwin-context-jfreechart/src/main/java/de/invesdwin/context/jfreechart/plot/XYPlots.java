@@ -47,11 +47,10 @@ public final class XYPlots {
         final Map<String, RangeAxisData> rangeAxisId_data = new LinkedHashMap<>();
         int rangeAxisIndex = -1;
         for (int datasetIndex = 0; datasetIndex < plot.getDatasetCount(); datasetIndex++) {
-            final Dataset dataset = plot.getDataset(datasetIndex);
+            final IPlotSourceDataset dataset = (IPlotSourceDataset) plot.getDataset(datasetIndex);
             if (dataset != null) {
-                final IPlotSourceDataset plotSource = (IPlotSourceDataset) dataset;
                 final boolean visible = !(dataset instanceof DisabledXYDataset);
-                String rangeAxisId = plotSource.getRangeAxisId();
+                String rangeAxisId = dataset.getRangeAxisId();
                 if (!visible) {
                     rangeAxisId += "_invisible";
                 }
@@ -63,7 +62,7 @@ public final class XYPlots {
                 }
                 data.getDatasetIndexes().add(datasetIndex);
                 if (visible) {
-                    data.setPrecision(Integers.max(data.getPrecision(), plotSource.getPrecision()));
+                    data.setPrecision(Integers.max(data.getPrecision(), dataset.getPrecision()));
                     data.setVisible(true);
                 }
             }
@@ -164,6 +163,7 @@ public final class XYPlots {
         plot.setNotify(notifyBefore);
     }
 
+    @SuppressWarnings("resource")
     public static Integer getDatasetIndexForDataset(final XYPlot plot, final Dataset dataset,
             final boolean shouldThrow) {
         for (int datasetIndex = 0; datasetIndex <= plot.getDatasetCount(); datasetIndex++) {

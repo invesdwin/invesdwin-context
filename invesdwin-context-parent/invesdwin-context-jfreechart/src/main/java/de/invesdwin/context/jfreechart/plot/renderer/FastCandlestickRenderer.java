@@ -31,6 +31,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Floats;
 
@@ -80,13 +81,13 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
      */
     private Color downColor;
 
-    private final OHLCDataset dataset;
+    private final IndexedDateTimeOHLCDataset dataset;
 
     private BasicStroke itemStroke;
 
     private final XYPriceLineAnnotation priceLineAnnotation;
 
-    public FastCandlestickRenderer(final OHLCDataset dataset) {
+    public FastCandlestickRenderer(final IndexedDateTimeOHLCDataset dataset) {
         super();
         this.upColor = PriceInitialSettings.DEFAULT_UP_COLOR;
         this.downColor = PriceInitialSettings.DEFAULT_DOWN_COLOR;
@@ -102,7 +103,8 @@ public class FastCandlestickRenderer extends AbstractXYItemRenderer
         return priceLineAnnotation;
     }
 
-    public OHLCDataset getDataset() {
+    @Override
+    public IndexedDateTimeOHLCDataset getDataset() {
         return dataset;
     }
 

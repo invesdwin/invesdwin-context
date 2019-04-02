@@ -41,7 +41,7 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
     private final XYItemRenderer renderer;
     private Stroke stroke;
     private boolean priceLineVisible;
-    private boolean priceLabelEnabled;
+    private boolean priceLabelVisible;
 
     public XYPriceLineAnnotation(final XYDataset dataset, final XYItemRenderer renderer) {
         this.dataset = dataset;
@@ -72,13 +72,13 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
     }
 
     @Override
-    public void setPriceLabelEnabled(final boolean priceLabelEnabled) {
-        this.priceLabelEnabled = priceLabelEnabled;
+    public void setPriceLabelVisible(final boolean priceLabelEnabled) {
+        this.priceLabelVisible = priceLabelEnabled;
     }
 
     @Override
-    public boolean isPriceLabelEnabled() {
-        return priceLabelEnabled;
+    public boolean isPriceLabelVisible() {
+        return priceLabelVisible;
     }
 
     @Override
@@ -123,7 +123,7 @@ public class XYPriceLineAnnotation extends AbstractXYAnnotation implements IPric
         if (visible) {
             g2.draw(line);
 
-            if (priceLabelEnabled) {
+            if (priceLabelVisible) {
                 final NumberAxis cRangeAxis = (NumberAxis) rangeAxis;
                 final NumberFormat rangeAxisFormat = cRangeAxis.getNumberFormatOverride();
 

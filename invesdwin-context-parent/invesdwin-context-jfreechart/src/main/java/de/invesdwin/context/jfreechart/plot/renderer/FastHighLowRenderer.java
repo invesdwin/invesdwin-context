@@ -24,6 +24,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 
 @NotThreadSafe
 public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColorRenderer, IDelegatePriceLineXYItemRenderer {
@@ -39,6 +40,12 @@ public class FastHighLowRenderer extends HighLowRenderer implements IUpDownColor
         addAnnotation(priceLineAnnotation);
     }
 
+
+    @Override
+    public IPlotSourceDataset getDataset() {
+        return candlestickRenderer.getDataset();
+    }
+    
     @Override
     public IPriceLineRenderer getDelegatePriceLineRenderer() {
         return priceLineAnnotation;

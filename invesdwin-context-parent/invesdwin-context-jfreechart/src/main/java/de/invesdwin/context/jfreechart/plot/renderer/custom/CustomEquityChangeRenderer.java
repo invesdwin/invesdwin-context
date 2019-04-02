@@ -5,13 +5,12 @@ import java.awt.Paint;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.data.xy.XYDataset;
-
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.PriceInitialSettings;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IDelegatePriceLineXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.XYPriceLineAnnotation;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.internal.ACustomEquityChangeRenderer;
 import de.invesdwin.util.lang.Colors;
 import de.invesdwin.util.math.decimal.scaled.Percent;
@@ -33,11 +32,15 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
     public static final Percent AREA_TRANSPARENCY = new Percent(90, PercentScale.PERCENT);
     public static final Percent LINE_TRANSPARENCY = new Percent(80, PercentScale.PERCENT);
 
+    private final IPlotSourceDataset dataset;
     private final XYPriceLineAnnotation priceLineAnnotation;
     private Color upColor;
     private Color downColor;
 
-    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper, final XYDataset dataset) {
+    public CustomEquityChangeRenderer(final PlotConfigurationHelper plotConfigurationHelper,
+            final IPlotSourceDataset dataset) {
+        this.dataset = dataset;
+
         final PriceInitialSettings config = plotConfigurationHelper.getPriceInitialSettings();
 
         setSeriesPaint(0, Colors.setTransparency(LEGEND_COLOR, LINE_TRANSPARENCY));
@@ -47,6 +50,11 @@ public class CustomEquityChangeRenderer extends ACustomEquityChangeRenderer
         this.downColor = Colors.setTransparency(DOWN_COLOR, AREA_TRANSPARENCY);
         this.priceLineAnnotation = new XYPriceLineAnnotation(dataset, this);
         addAnnotation(priceLineAnnotation);
+    }
+
+    @Override
+    public IPlotSourceDataset getDataset() {
+        return dataset;
     }
 
     @Override

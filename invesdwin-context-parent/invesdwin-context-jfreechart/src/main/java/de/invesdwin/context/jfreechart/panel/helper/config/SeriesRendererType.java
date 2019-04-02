@@ -6,14 +6,15 @@ import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.renderer.xy.StandardXYBarPainter;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.XYDataset;
 
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.renderer.DisabledXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastStandardXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastXYAreaRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastXYBarRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.FastXYStepRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
 import de.invesdwin.util.error.UnknownArgumentException;
 
@@ -21,13 +22,15 @@ import de.invesdwin.util.error.UnknownArgumentException;
 public enum SeriesRendererType implements IRendererType {
     Line {
         @Override
-        public XYItemRenderer newRenderer(final XYDataset dataset, final LineStyleType lineStyleType,
-                final LineWidthType lineWidthType, final Color color, final boolean priceLineVisible) {
+        public IDatasetSourceXYItemRenderer newRenderer(final IPlotSourceDataset dataset,
+                final LineStyleType lineStyleType, final LineWidthType lineWidthType, final Color color,
+                final boolean priceLineVisible, final boolean priceLabelVisible) {
             final FastStandardXYItemRenderer renderer = new FastStandardXYItemRenderer(dataset);
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setPriceLineVisible(priceLineVisible);
+            renderer.setPriceLabelVisible(priceLabelVisible);
             return renderer;
         }
 
@@ -43,13 +46,15 @@ public enum SeriesRendererType implements IRendererType {
     },
     Step {
         @Override
-        public XYItemRenderer newRenderer(final XYDataset dataset, final LineStyleType lineStyleType,
-                final LineWidthType lineWidthType, final Color color, final boolean priceLineVisible) {
+        public IDatasetSourceXYItemRenderer newRenderer(final IPlotSourceDataset dataset,
+                final LineStyleType lineStyleType, final LineWidthType lineWidthType, final Color color,
+                final boolean priceLineVisible, final boolean priceLabelVisible) {
             final FastXYStepRenderer renderer = new FastXYStepRenderer(dataset);
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesFillPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setPriceLineVisible(priceLineVisible);
+            renderer.setPriceLabelVisible(priceLabelVisible);
             return renderer;
         }
 
@@ -65,12 +70,14 @@ public enum SeriesRendererType implements IRendererType {
     },
     Area {
         @Override
-        public XYItemRenderer newRenderer(final XYDataset dataset, final LineStyleType lineStyleType,
-                final LineWidthType lineWidthType, final Color color, final boolean priceLineVisible) {
+        public IDatasetSourceXYItemRenderer newRenderer(final IPlotSourceDataset dataset,
+                final LineStyleType lineStyleType, final LineWidthType lineWidthType, final Color color,
+                final boolean priceLineVisible, final boolean priceLabelVisible) {
             final FastXYAreaRenderer renderer = new FastXYAreaRenderer(dataset);
             renderer.setSeriesPaint(0, color);
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setPriceLineVisible(priceLineVisible);
+            renderer.setPriceLabelVisible(priceLabelVisible);
             return renderer;
         }
 
@@ -86,8 +93,9 @@ public enum SeriesRendererType implements IRendererType {
     },
     Column {
         @Override
-        public XYItemRenderer newRenderer(final XYDataset dataset, final LineStyleType lineStyleType,
-                final LineWidthType lineWidthType, final Color color, final boolean priceLineVisible) {
+        public IDatasetSourceXYItemRenderer newRenderer(final IPlotSourceDataset dataset,
+                final LineStyleType lineStyleType, final LineWidthType lineWidthType, final Color color,
+                final boolean priceLineVisible, final boolean priceLabelVisible) {
             final FastXYBarRenderer renderer = new FastXYBarRenderer(dataset);
             renderer.setBarPainter(new StandardXYBarPainter());
             renderer.setShadowVisible(false);
@@ -96,6 +104,7 @@ public enum SeriesRendererType implements IRendererType {
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setDrawBarOutline(false);
             renderer.setPriceLineVisible(priceLineVisible);
+            renderer.setPriceLabelVisible(priceLabelVisible);
             return renderer;
         }
 
@@ -111,8 +120,9 @@ public enum SeriesRendererType implements IRendererType {
     },
     Histogram {
         @Override
-        public XYItemRenderer newRenderer(final XYDataset dataset, final LineStyleType lineStyleType,
-                final LineWidthType lineWidthType, final Color color, final boolean priceLineVisible) {
+        public IDatasetSourceXYItemRenderer newRenderer(final IPlotSourceDataset dataset,
+                final LineStyleType lineStyleType, final LineWidthType lineWidthType, final Color color,
+                final boolean priceLineVisible, final boolean priceLabelVisible) {
             final FastXYBarRenderer renderer = new FastXYBarRenderer(dataset, HISTOGRAM_MARGIN);
             renderer.setBarPainter(new StandardXYBarPainter());
             renderer.setShadowVisible(false);
@@ -121,6 +131,7 @@ public enum SeriesRendererType implements IRendererType {
             renderer.setSeriesStroke(0, lineStyleType.getStroke(lineWidthType));
             renderer.setDrawBarOutline(false);
             renderer.setPriceLineVisible(priceLineVisible);
+            renderer.setPriceLabelVisible(priceLabelVisible);
             return renderer;
         }
 
@@ -146,8 +157,9 @@ public enum SeriesRendererType implements IRendererType {
         }
 
         @Override
-        public XYItemRenderer newRenderer(final XYDataset dataset, final LineStyleType lineStyleType,
-                final LineWidthType lineWidthType, final Color color, final boolean priceLineVisible) {
+        public IDatasetSourceXYItemRenderer newRenderer(final IPlotSourceDataset dataset,
+                final LineStyleType lineStyleType, final LineWidthType lineWidthType, final Color color,
+                final boolean priceLineVisible, final boolean priceLabelVisible) {
             throw new UnsupportedOperationException();
         }
 
@@ -168,8 +180,8 @@ public enum SeriesRendererType implements IRendererType {
     };
     private static final double HISTOGRAM_MARGIN = 0.80D;
 
-    public abstract XYItemRenderer newRenderer(XYDataset dataset, LineStyleType lineStyleType,
-            LineWidthType lineWidthType, Color color, boolean priceLineVisible);
+    public abstract IDatasetSourceXYItemRenderer newRenderer(IPlotSourceDataset dataset, LineStyleType lineStyleType,
+            LineWidthType lineWidthType, Color color, boolean priceLineVisible, boolean priceLabelVisible);
 
     public static SeriesRendererType valueOf(final XYItemRenderer renderer) {
         final XYItemRenderer unwrapped = DisabledXYItemRenderer.maybeUnwrap(renderer);
@@ -209,10 +221,12 @@ public enum SeriesRendererType implements IRendererType {
 
     @Override
     public void reset(final HighlightedLegendInfo highlighted, final SeriesInitialSettings initialSettings) {
-        final XYItemRenderer newRenderer = newRenderer(highlighted.getDataset(), initialSettings.getLineStyleType(),
+        final IPlotSourceDataset dataset = highlighted.getDataset();
+        final IDatasetSourceXYItemRenderer newRenderer = newRenderer(dataset, initialSettings.getLineStyleType(),
                 initialSettings.getLineWidthType(), initialSettings.getSeriesColor(),
-                initialSettings.isPriceLineVisible());
+                initialSettings.isPriceLineVisible(), initialSettings.isPriceLabelVisible());
         highlighted.setRenderer(newRenderer);
+        dataset.setRangeAxisId(initialSettings.getRangeAxisId());
     }
 
     @Override

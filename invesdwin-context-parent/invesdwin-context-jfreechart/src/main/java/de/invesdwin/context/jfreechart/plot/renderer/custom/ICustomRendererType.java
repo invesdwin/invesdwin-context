@@ -1,15 +1,14 @@
 package de.invesdwin.context.jfreechart.plot.renderer.custom;
 
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-
 import de.invesdwin.context.jfreechart.panel.helper.config.IRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesInitialSettings;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.plot.annotation.priceline.IPriceLineRenderer;
+import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 
-public interface ICustomRendererType extends IRendererType, XYItemRenderer {
+public interface ICustomRendererType extends IRendererType, IDatasetSourceXYItemRenderer {
 
     String getName();
 
@@ -53,6 +52,7 @@ public interface ICustomRendererType extends IRendererType, XYItemRenderer {
         if (this instanceof IPriceLineRenderer) {
             final IPriceLineRenderer cThis = (IPriceLineRenderer) this;
             cThis.setPriceLineVisible(initialSettings.isPriceLineVisible());
+            cThis.setPriceLabelVisible(initialSettings.isPriceLabelVisible());
         }
         setSeriesPaint(0, initialSettings.getSeriesColor());
         setSeriesStroke(0, initialSettings.getSeriesStroke());
