@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.series;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
 import de.invesdwin.util.math.expression.IExpression;
 
 public interface ISeriesProvider {
@@ -12,6 +13,8 @@ public interface ISeriesProvider {
     String getExpressionName();
 
     String getExpressionString(IExpression[] args);
+
+    SeriesRendererType getRendererType();
 
     ISeriesParameter[] getParameters();
 
