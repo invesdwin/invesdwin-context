@@ -30,6 +30,7 @@ public class AddSeriesDialog extends JDialog {
                 + "document this feature in help;"//
                 + "add expression series provider or a menu point to add a custom expression;"//
                 + "allow to plot expression components individually (only API or also via popup?);"//
+                + "make parameters configurable (with tooltips both on label and fields)" //
         );
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
