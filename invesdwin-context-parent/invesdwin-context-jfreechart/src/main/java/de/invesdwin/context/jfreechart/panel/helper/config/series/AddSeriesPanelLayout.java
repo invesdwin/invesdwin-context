@@ -52,6 +52,7 @@ public class AddSeriesPanelLayout extends JPanel {
                 new Object[][] { { "1", "2" }, { "3", "4" }, { "5", "6" }, { "7", "8" }, { "9", "10" }, { "11", "12" },
                         { "13", "14" }, { "15", "16" }, { "17", "18" }, { "19", "20" }, },
                 new String[] { "New column", "New column" }));
+        tbl_series.setEnabled(false);
         tbl_series.setShowVerticalLines(false);
         tbl_series.setShowHorizontalLines(false);
         tbl_series.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

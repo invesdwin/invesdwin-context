@@ -329,7 +329,11 @@ public class PlotConfigurationHelper {
     }
 
     public void putSeriesProvider(final ISeriesProvider seriesProvider) {
-        Assertions.checkNull(seriesProviders.put(seriesProvider.getName(), seriesProvider));
+        Assertions.checkNull(putOrReplaceSeriesProvider(seriesProvider));
+    }
+
+    public ISeriesProvider putOrReplaceSeriesProvider(final ISeriesProvider seriesProvider) {
+        return seriesProviders.put(seriesProvider.getName(), seriesProvider);
     }
 
     public Collection<ISeriesProvider> getSeriesProviders() {

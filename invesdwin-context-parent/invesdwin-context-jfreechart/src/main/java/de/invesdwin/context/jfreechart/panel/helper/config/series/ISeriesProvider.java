@@ -5,6 +5,8 @@ import de.invesdwin.util.math.expression.IExpression;
 
 public interface ISeriesProvider {
 
+    ISeriesParameter[] NO_PARAMETERS = new ISeriesParameter[0];
+
     String getName();
 
     String getDescription();
