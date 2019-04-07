@@ -1,6 +1,8 @@
 package de.invesdwin.context.jfreechart.panel;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Stroke;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,10 +17,31 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.OHLCDataItem;
 
+import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
+import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
+import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
+import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.SeriesParameterType;
+import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
+import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeXYSeries;
+import de.invesdwin.context.jfreechart.plot.dataset.PlotSourceXYSeriesCollection;
+import de.invesdwin.context.jfreechart.plot.dataset.basis.XYDataItemOHLC;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.math.expression.IExpression;
+import de.invesdwin.util.math.expression.eval.BooleanExpression;
+import de.invesdwin.util.math.expression.eval.ConstantExpression;
+import de.invesdwin.util.math.expression.eval.EnumerationExpression;
+import de.invesdwin.util.time.fdate.FDate;
 
 @NotThreadSafe
 public class CandlestickDemo extends JFrame {
@@ -30,6 +53,8 @@ public class CandlestickDemo extends JFrame {
         final InteractiveChartPanel chartPanel = new InteractiveChartPanel(getDataSet());
         chartPanel.setPreferredSize(new Dimension(1280, 800));
         add(chartPanel);
+        chartPanel.getPlotConfigurationHelper().putSeriesProvider(new CustomSeriesProvider());
+        chartPanel.getPlotConfigurationHelper().putSeriesProvider(new ThrowExceptionSeriesProvider());
         this.pack();
     }
 
@@ -92,5 +117,279 @@ public class CandlestickDemo extends JFrame {
             throw new RuntimeException(e);
         }
         new CandlestickDemo().setVisible(true);
+    }
+
+    private final class ThrowExceptionSeriesProvider implements ISeriesProvider {
+        @Override
+        public void newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
+            throw new RuntimeException("This should be displayed in a dialog.");
+        }
+
+        @Override
+        public String getPlotPaneId() {
+            return "plotPaneId";
+        }
+
+        @Override
+        public ISeriesParameter[] getParameters() {
+            return NO_PARAMETERS;
+        }
+
+        @Override
+        public String getName() {
+            return "throw exception";
+        }
+
+        @Override
+        public String getExpressionName() {
+            return "";
+        }
+
+        @Override
+        public String getDescription() {
+            return "handles the exception";
+        }
+    }
+
+    private final class CustomSeriesProvider implements ISeriesProvider {
+        @Override
+        public void newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
+            final Stroke stroke = chartPanel.getPlotConfigurationHelper().getPriceInitialSettings().getSeriesStroke();
+            final LineStyleType lineStyleType = LineStyleType.valueOf(stroke);
+            final LineWidthType lineWidthType = LineWidthType.valueOf(stroke);
+            final Color color = Color.GREEN;
+            final boolean priceLineVisible = false;
+            final boolean priceLabelVisible = false;
+
+            final PlotSourceXYSeriesCollection dataset = new PlotSourceXYSeriesCollection(getExpressionString(args));
+            final XYPlot plot = chartPanel.getOhlcPlot();
+            dataset.setPlot(plot);
+            dataset.setPrecision(4);
+            dataset.setRangeAxisId(getPlotPaneId());
+            final IndexedDateTimeXYSeries series = newSeriesPrefilled(chartPanel, args);
+            final int datasetIndex = plot.getDatasetCount();
+            dataset.addSeries(series);
+            final SeriesRendererType seriesRendererType = SeriesRendererType.Line;
+            final XYItemRenderer renderer = seriesRendererType.newRenderer(dataset, lineStyleType, lineWidthType, color,
+                    priceLineVisible, priceLabelVisible);
+            plot.setDataset(datasetIndex, dataset);
+            plot.setRenderer(datasetIndex, renderer);
+            XYPlots.updateRangeAxes(plot);
+            chartPanel.update();
+
+            if (!chartPanel.getCombinedPlot().isSubplotVisible(plot)) {
+                chartPanel.getCombinedPlot().add(plot, CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT);
+            }
+        }
+
+        private IndexedDateTimeXYSeries newSeriesPrefilled(final InteractiveChartPanel chartPanel,
+                final IExpression[] args) {
+            Assertions.checkEquals(4, args.length);
+            final boolean invertAddition = args[0].evaluateBoolean();
+            final int lagBars = args[1].evaluateInteger();
+            Assertions.assertThat(lagBars).isNotNegative();
+            double addition = args[2].evaluateDouble();
+            if (invertAddition) {
+                addition = -addition;
+            }
+            final OhlcValueType ohlcValueType = OhlcValueType.parseString(args[3].toString());
+
+            final IndexedDateTimeXYSeries series = new IndexedDateTimeXYSeries(getExpressionName());
+
+            final List<XYDataItemOHLC> list = series.getData();
+            final List<OHLCDataItem> ohlc = chartPanel.getDataset().getData();
+            for (int i = 0; i < ohlc.size(); i++) {
+                final FDate time = new FDate(ohlc.get(i).getDate());
+                final int lagIndex = Integers.max(i - lagBars, 0);
+                final OHLCDataItem ohlcItem = ohlc.get(lagIndex);
+                final double value = ohlcValueType.getValue(ohlcItem);
+                final XYDataItemOHLC item = new XYDataItemOHLC(
+                        new OHLCDataItem(time.dateValue(), Double.NaN, Double.NaN, Double.NaN, value, Double.NaN));
+                final int index = list.size();
+                final double xValueAsDateTime = chartPanel.getDataset().getXValueAsDateTime(0, index);
+                if (xValueAsDateTime != item.getXValue()) {
+                    throw new IllegalStateException(
+                            "Async at index [" + index + "]: ohlc[" + new FDate((long) xValueAsDateTime)
+                                    + "] != series[" + new FDate((long) item.getXValue()) + "]");
+                }
+                list.add(item);
+                series.updateBoundsForAddedItem(item);
+            }
+            return series;
+        }
+
+        @Override
+        public String getPlotPaneId() {
+            return "plotPaneId";
+        }
+
+        @Override
+        public ISeriesParameter[] getParameters() {
+            return new ISeriesParameter[] { new ISeriesParameter() {
+
+                @Override
+                public SeriesParameterType getType() {
+                    return SeriesParameterType.Boolean;
+                }
+
+                @Override
+                public String getName() {
+                    return "Invert Addition";
+                }
+
+                @Override
+                public IExpression[] getEnumerationValues() {
+                    return null;
+                }
+
+                @Override
+                public String getDescription() {
+                    return "boolean description";
+                }
+
+                @Override
+                public IExpression getDefaultValue() {
+                    return new BooleanExpression(true);
+                }
+            }, new ISeriesParameter() {
+
+                @Override
+                public SeriesParameterType getType() {
+                    return SeriesParameterType.Integer;
+                }
+
+                @Override
+                public String getName() {
+                    return "Lag Bars";
+                }
+
+                @Override
+                public IExpression[] getEnumerationValues() {
+                    return null;
+                }
+
+                @Override
+                public String getDescription() {
+                    return "integer description";
+                }
+
+                @Override
+                public IExpression getDefaultValue() {
+                    return new ConstantExpression(1);
+                }
+            }, new ISeriesParameter() {
+
+                @Override
+                public SeriesParameterType getType() {
+                    return SeriesParameterType.Double;
+                }
+
+                @Override
+                public String getName() {
+                    return "Addition";
+                }
+
+                @Override
+                public IExpression[] getEnumerationValues() {
+                    return null;
+                }
+
+                @Override
+                public String getDescription() {
+                    return "double description";
+                }
+
+                @Override
+                public IExpression getDefaultValue() {
+                    return new ConstantExpression(0);
+                }
+            }, new ISeriesParameter() {
+
+                @Override
+                public SeriesParameterType getType() {
+                    return SeriesParameterType.Enumeration;
+                }
+
+                @Override
+                public String getName() {
+                    return "OHLC Value";
+                }
+
+                @Override
+                public IExpression[] getEnumerationValues() {
+                    return EnumerationExpression.valueOf(OhlcValueType.values());
+                }
+
+                @Override
+                public String getDescription() {
+                    return "enum description";
+                }
+
+                @Override
+                public IExpression getDefaultValue() {
+                    return EnumerationExpression.valueOf(OhlcValueType.Low);
+                }
+            } };
+        }
+
+        @Override
+        public String getName() {
+            return "name";
+        }
+
+        @Override
+        public String getExpressionName() {
+            return "expression";
+        }
+
+        @Override
+        public String getDescription() {
+            return "description";
+        }
+    }
+
+    private enum OhlcValueType {
+        Open {
+            @Override
+            public double getValue(final OHLCDataItem item) {
+                return item.getOpen().doubleValue();
+            }
+        },
+        High {
+            @Override
+            public double getValue(final OHLCDataItem item) {
+                return item.getHigh().doubleValue();
+            }
+        },
+        Low {
+            @Override
+            public double getValue(final OHLCDataItem item) {
+                return item.getLow().doubleValue();
+            }
+        },
+        Close {
+            @Override
+            public double getValue(final OHLCDataItem item) {
+                return item.getClose().doubleValue();
+            }
+        };
+
+        public abstract double getValue(OHLCDataItem item);
+
+        public static OhlcValueType parseString(final String str) {
+            final String strClean = str.trim().toLowerCase();
+            switch (strClean) {
+            case "open":
+                return OhlcValueType.Open;
+            case "high":
+                return OhlcValueType.High;
+            case "low":
+                return OhlcValueType.Low;
+            case "close":
+                return OhlcValueType.Close;
+            default:
+                throw UnknownArgumentException.newInstance(String.class, strClean);
+            }
+        }
     }
 }

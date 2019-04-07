@@ -14,7 +14,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.DocumentListenerSupport;
 import de.invesdwin.util.swing.listener.MouseListenerSupport;
 import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
@@ -22,6 +24,7 @@ import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
 @NotThreadSafe
 public class AddSeriesPanel extends JPanel {
 
+    private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory.getXLogger(AddSeriesPanel.class);
     private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     private final PlotConfigurationHelper plotConfigurationHelper;
 
@@ -41,7 +44,7 @@ public class AddSeriesPanel extends JPanel {
             @Override
             public void mouseMoved(final MouseEvent e) {
                 final int selectedRow = panel.tbl_series.rowAtPoint(e.getPoint());
-                panel.tbl_series.setRowSelectionInterval(selectedRow, selectedRow);;
+                panel.tbl_series.setRowSelectionInterval(selectedRow, selectedRow);
                 final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
                 final ISeriesProvider selectedValue = plotConfigurationHelper.getSeriesProvider(selectedName);
                 panel.tbl_series.setToolTipText(selectedValue.getDescription());
@@ -54,8 +57,14 @@ public class AddSeriesPanel extends JPanel {
                     final int selectedRow = panel.tbl_series.getSelectedRow();
                     final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
                     final ISeriesProvider selectedValue = plotConfigurationHelper.getSeriesProvider(selectedName);
-                    selectedValue.newInstance(plotConfigurationHelper.getChartPanel(),
-                            selectedValue.getDefaultValues());
+                    try {
+                        selectedValue.newInstance(plotConfigurationHelper.getChartPanel(),
+                                selectedValue.getDefaultValues());
+                    } catch (final Throwable t) {
+                        LOG.warn("Error Adding Series: " + selectedName + "\n" + Throwables.getFullStackTrace(t));
+                        Dialogs.showMessageDialog(panel, Throwables.concatMessages(t),
+                                "Error Adding Series: " + selectedName, Dialogs.ERROR_MESSAGE);
+                    }
                 }
             }
         });

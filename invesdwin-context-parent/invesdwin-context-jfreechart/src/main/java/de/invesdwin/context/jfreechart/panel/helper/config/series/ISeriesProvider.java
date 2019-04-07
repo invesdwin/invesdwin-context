@@ -13,7 +13,20 @@ public interface ISeriesProvider {
 
     String getExpressionName();
 
-    String getExpressionString(IExpression[] args);
+    default String getExpressionString(final IExpression[] args) {
+        final StringBuilder sb = new StringBuilder(getExpressionName());
+        if (args.length > 0) {
+            sb.append("(");
+            for (int i = 0; i < args.length; i++) {
+                if (i > 0) {
+                    sb.append(",");
+                }
+                sb.append(args[i].toString());
+            }
+            sb.append(")");
+        }
+        return sb.toString();
+    }
 
     ISeriesParameter[] getParameters();
 
