@@ -65,6 +65,7 @@ public class AddSeriesPanel extends JPanel {
                                 .newInstance(plotConfigurationHelper.getChartPanel(), args);
                         dataset.setSeriesProvider(selectedValue);
                         dataset.setSeriesArguments(args);
+                        dataset.setSeriesTitle(selectedValue.getExpressionString(args));
                     } catch (final Throwable t) {
                         final String seriesTitle = selectedName;
                         LOG.warn("Error Adding Series: " + seriesTitle + "\n" + Throwables.getFullStackTrace(t));
