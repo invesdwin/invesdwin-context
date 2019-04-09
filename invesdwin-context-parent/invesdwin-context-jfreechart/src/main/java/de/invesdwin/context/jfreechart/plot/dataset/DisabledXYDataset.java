@@ -108,6 +108,11 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     }
 
     @Override
+    public void setSeriesTitle(final String seriesTitle) {
+        enabledDataset.setSeriesTitle(seriesTitle);
+    }
+
+    @Override
     public ISeriesProvider getSeriesProvider() {
         return enabledDataset.getSeriesProvider();
     }

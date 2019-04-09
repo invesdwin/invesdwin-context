@@ -31,6 +31,8 @@ public interface IPlotSourceDataset extends XYDataset, Closeable {
 
     String getSeriesTitle();
 
+    void setSeriesTitle(String seriesTitle);
+
     ISeriesProvider getSeriesProvider();
 
     void setSeriesProvider(ISeriesProvider seriesProvider);

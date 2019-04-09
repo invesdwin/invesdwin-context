@@ -16,7 +16,8 @@ public class ParameterSettingsPanelLayout extends JPanel {
     public final IParameterSettingsModifier[] modifiers;
     //CHECKSTYLE:ON
 
-    public ParameterSettingsPanelLayout(final IParameterSettingsModifier[] modifiers) {
+    public ParameterSettingsPanelLayout(final IParameterSettingsModifier[] modifiers,
+            final Runnable modificationListener) {
         this.modifiers = modifiers;
 
         setLayout(new FlowLayout());
@@ -26,7 +27,7 @@ public class ParameterSettingsPanelLayout extends JPanel {
             final JLabel label = new JLabel(modifier.getParameter().getName());
             label.setToolTipText(modifier.getParameter().getDescription());
             add(label);
-            add(modifier.newComponent());
+            add(modifier.newComponent(modificationListener));
             rows++;
         }
 

@@ -25,15 +25,13 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
         setLayout(new BorderLayout());
 
         styleSettings = new StyleSettingsPanel(plotConfigurationHelper, highlighted, dialog);
+        add(styleSettings, BorderLayout.CENTER);
 
         if (highlighted.getDataset().hasSeriesArguments()) {
-            add(styleSettings, BorderLayout.WEST);
-
             parameterSettings = new ParameterSettingsPanel(plotConfigurationHelper, highlighted, dialog);
-            add(styleSettings, BorderLayout.EAST);
+            add(parameterSettings, BorderLayout.EAST);
         } else {
             parameterSettings = null;
-            add(styleSettings, BorderLayout.CENTER);
         }
 
         buttons = new SettingsPanelButtonsLayout();

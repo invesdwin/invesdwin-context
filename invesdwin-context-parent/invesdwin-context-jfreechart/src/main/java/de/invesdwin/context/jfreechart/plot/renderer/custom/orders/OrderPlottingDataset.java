@@ -27,6 +27,7 @@ import de.invesdwin.util.math.expression.IExpression;
 public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSourceDataset, IIndexedDateTimeXYDataset {
 
     private final String seriesKey;
+    private String seriesTitle;
     private final IndexedDateTimeOHLCDataset ohlcDataset;
     private final Set<DatasetChangeListener> changeListeners = new LinkedHashSet<>();
     private int precision;
@@ -41,6 +42,7 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     public OrderPlottingDataset(final String seriesKey, final IndexedDateTimeOHLCDataset ohlcDataset) {
         Assertions.checkNotNull(seriesKey);
         this.seriesKey = seriesKey;
+        this.seriesTitle = seriesKey;
         this.ohlcDataset = ohlcDataset;
     }
 
@@ -173,7 +175,12 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
 
     @Override
     public String getSeriesTitle() {
-        return seriesKey;
+        return seriesTitle;
+    }
+
+    @Override
+    public void setSeriesTitle(final String seriesTitle) {
+        this.seriesTitle = seriesTitle;
     }
 
     @Override

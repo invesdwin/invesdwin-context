@@ -24,7 +24,7 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     private XYPlot plot;
     private int precision;
     private String rangeAxisId;
-    private final String seriesTitle;
+    private String seriesTitle;
     private ISeriesProvider seriesProvider;
     private IExpression[] seriesArguments;
 
@@ -139,6 +139,11 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     @Override
     public String getSeriesTitle() {
         return seriesTitle;
+    }
+
+    @Override
+    public void setSeriesTitle(final String seriesTitle) {
+        this.seriesTitle = seriesTitle;
     }
 
     @Override

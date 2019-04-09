@@ -1,6 +1,5 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.series;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.ParameterSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.IParameterSettingsModifier;
 import de.invesdwin.util.math.expression.IExpression;
 
@@ -16,8 +15,8 @@ public interface ISeriesParameter {
 
     IExpression[] getEnumerationValues();
 
-    default IParameterSettingsModifier newModifier(final ParameterSettingsPanel panel) {
-        return getType().newModifier(this, panel);
+    default IParameterSettingsModifier newModifier() {
+        return getType().newModifier(this);
     }
 
 }

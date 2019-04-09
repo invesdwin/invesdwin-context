@@ -2,7 +2,6 @@ package de.invesdwin.context.jfreechart.panel.helper.config.series;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.ParameterSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.BooleanParameterSettingsModifier;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.DoubleParameterSettingsModifier;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.EnumerationParameterSettingsModifier;
@@ -13,32 +12,28 @@ import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modi
 public enum SeriesParameterType {
     Integer {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
-                final ParameterSettingsPanel panel) {
-            return new IntegerParameterSettingsModifier(parameter, panel);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
+            return new IntegerParameterSettingsModifier(parameter);
         }
     },
     Double {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
-                final ParameterSettingsPanel panel) {
-            return new DoubleParameterSettingsModifier(parameter, panel);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
+            return new DoubleParameterSettingsModifier(parameter);
         }
     },
     Boolean {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
-                final ParameterSettingsPanel panel) {
-            return new BooleanParameterSettingsModifier(parameter, panel);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
+            return new BooleanParameterSettingsModifier(parameter);
         }
     },
     Enumeration {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
-                final ParameterSettingsPanel panel) {
-            return new EnumerationParameterSettingsModifier(parameter, panel);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
+            return new EnumerationParameterSettingsModifier(parameter);
         }
     };
 
-    public abstract IParameterSettingsModifier newModifier(ISeriesParameter parameter, ParameterSettingsPanel panel);
+    public abstract IParameterSettingsModifier newModifier(ISeriesParameter parameter);
 }
