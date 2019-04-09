@@ -6,7 +6,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.math.expression.IExpression;
 
 @Immutable
 public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceDataset {
@@ -103,6 +105,26 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     @Override
     public String getSeriesTitle() {
         return enabledDataset.getSeriesTitle();
+    }
+
+    @Override
+    public ISeriesProvider getSeriesProvider() {
+        return enabledDataset.getSeriesProvider();
+    }
+
+    @Override
+    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
+        enabledDataset.setSeriesProvider(seriesProvider);
+    }
+
+    @Override
+    public IExpression[] getSeriesArguments() {
+        return enabledDataset.getSeriesArguments();
+    }
+
+    @Override
+    public void setSeriesArguments(final IExpression[] seriesArguments) {
+        enabledDataset.setSeriesArguments(seriesArguments);
     }
 
 }

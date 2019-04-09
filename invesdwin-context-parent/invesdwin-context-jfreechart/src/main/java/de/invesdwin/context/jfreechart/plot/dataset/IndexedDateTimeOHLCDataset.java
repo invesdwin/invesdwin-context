@@ -8,10 +8,12 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.OHLCDataItem;
 
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.ListOHLCDataset;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.math.expression.IExpression;
 
 @NotThreadSafe
 public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
@@ -21,6 +23,8 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     private int precision;
     private String rangeAxisId;
     private final String seriesTitle;
+    private ISeriesProvider seriesProvider;
+    private IExpression[] seriesArguments;
 
     public IndexedDateTimeOHLCDataset(final String seriesKey, final List<OHLCDataItem> data) {
         super(seriesKey, data);
@@ -126,6 +130,26 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     @Override
     public String getSeriesTitle() {
         return seriesTitle;
+    }
+
+    @Override
+    public ISeriesProvider getSeriesProvider() {
+        return seriesProvider;
+    }
+
+    @Override
+    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
+        this.seriesProvider = seriesProvider;
+    }
+
+    @Override
+    public void setSeriesArguments(final IExpression[] seriesArguments) {
+        this.seriesArguments = seriesArguments;
+    }
+
+    @Override
+    public IExpression[] getSeriesArguments() {
+        return seriesArguments;
     }
 
 }

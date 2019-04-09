@@ -9,6 +9,7 @@ import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo
 import de.invesdwin.context.jfreechart.plot.renderer.IDatasetSourceXYItemRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.IUpDownColorRenderer;
 import de.invesdwin.context.jfreechart.plot.renderer.custom.ICustomRendererType;
+import de.invesdwin.util.math.expression.IExpression;
 
 @NotThreadSafe
 public class SeriesInitialSettings {
@@ -22,6 +23,7 @@ public class SeriesInitialSettings {
     private final boolean priceLineVisible;
     private final boolean priceLabelVisible;
     private final String rangeAxisId;
+    private final IExpression[] seriesArguments;
 
     public SeriesInitialSettings(final IDatasetSourceXYItemRenderer initialRenderer) {
         final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(initialRenderer);
@@ -45,6 +47,7 @@ public class SeriesInitialSettings {
         priceLineVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
         priceLabelVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
         rangeAxisId = initialRenderer.getDataset().getRangeAxisId();
+        seriesArguments = initialRenderer.getDataset().getSeriesArguments();
     }
 
     public void reset(final HighlightedLegendInfo highlighted) {
@@ -102,6 +105,10 @@ public class SeriesInitialSettings {
 
     public String getRangeAxisId() {
         return rangeAxisId;
+    }
+
+    public IExpression[] getSeriesArguments() {
+        return seriesArguments;
     }
 
 }

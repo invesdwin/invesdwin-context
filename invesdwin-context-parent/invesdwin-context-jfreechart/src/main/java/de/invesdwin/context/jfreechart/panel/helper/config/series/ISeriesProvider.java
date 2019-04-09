@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.series;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.math.expression.IExpression;
 
 public interface ISeriesProvider {
@@ -41,6 +42,8 @@ public interface ISeriesProvider {
 
     String getPlotPaneId();
 
-    void newInstance(InteractiveChartPanel chartPanel, IExpression[] args);
+    IPlotSourceDataset newInstance(InteractiveChartPanel chartPanel, IExpression[] args);
+
+    void modifyDataset(InteractiveChartPanel chartPanel, IPlotSourceDataset dataset, IExpression[] args);
 
 }

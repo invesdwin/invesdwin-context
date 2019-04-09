@@ -9,6 +9,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.ParameterSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.style.StyleSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 
@@ -16,13 +17,25 @@ import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo
 public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     private final StyleSettingsPanel styleSettings;
+    private final ParameterSettingsPanel parameterSettings;
     private final SettingsPanelButtonsLayout buttons;
 
     public SettingsPanel(final PlotConfigurationHelper plotConfigurationHelper, final HighlightedLegendInfo highlighted,
             final JDialog dialog) {
         setLayout(new BorderLayout());
+
         styleSettings = new StyleSettingsPanel(plotConfigurationHelper, highlighted, dialog);
-        add(styleSettings, BorderLayout.CENTER);
+
+        if (highlighted.getDataset().hasSeriesArguments()) {
+            add(styleSettings, BorderLayout.WEST);
+
+            parameterSettings = new ParameterSettingsPanel(plotConfigurationHelper, highlighted, dialog);
+            add(styleSettings, BorderLayout.EAST);
+        } else {
+            parameterSettings = null;
+            add(styleSettings, BorderLayout.CENTER);
+        }
+
         buttons = new SettingsPanelButtonsLayout();
         add(buttons, BorderLayout.SOUTH);
 
@@ -54,16 +67,26 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     @Override
     public void reset() {
+        if (parameterSettings != null) {
+            parameterSettings.reset();
+        }
         styleSettings.reset();
     }
 
     @Override
     public void cancel() {
+        if (parameterSettings != null) {
+            parameterSettings.cancel();
+        }
         styleSettings.cancel();
     }
 
     @Override
     public void ok() {
+        final boolean ok = true;
+        if (parameterSettings != null) {
+            parameterSettings.ok();
+        }
         styleSettings.ok();
     }
 }

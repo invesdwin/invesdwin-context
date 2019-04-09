@@ -14,8 +14,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.DocumentListenerSupport;
 import de.invesdwin.util.swing.listener.MouseListenerSupport;
@@ -58,12 +60,16 @@ public class AddSeriesPanel extends JPanel {
                     final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
                     final ISeriesProvider selectedValue = plotConfigurationHelper.getSeriesProvider(selectedName);
                     try {
-                        selectedValue.newInstance(plotConfigurationHelper.getChartPanel(),
-                                selectedValue.getDefaultValues());
+                        final IExpression[] args = selectedValue.getDefaultValues();
+                        final IPlotSourceDataset dataset = selectedValue
+                                .newInstance(plotConfigurationHelper.getChartPanel(), args);
+                        dataset.setSeriesProvider(selectedValue);
+                        dataset.setSeriesArguments(args);
                     } catch (final Throwable t) {
-                        LOG.warn("Error Adding Series: " + selectedName + "\n" + Throwables.getFullStackTrace(t));
-                        Dialogs.showMessageDialog(panel, Throwables.concatMessages(t),
-                                "Error Adding Series: " + selectedName, Dialogs.ERROR_MESSAGE);
+                        final String seriesTitle = selectedName;
+                        LOG.warn("Error Adding Series: " + seriesTitle + "\n" + Throwables.getFullStackTrace(t));
+                        Dialogs.showMessageDialog(panel, Throwables.concatMessagesShort(t),
+                                "Error Adding Series: " + seriesTitle, Dialogs.ERROR_MESSAGE);
                     }
                 }
             }

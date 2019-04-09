@@ -29,6 +29,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParamet
 import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.SeriesParameterType;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
+import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeXYSeries;
 import de.invesdwin.context.jfreechart.plot.dataset.PlotSourceXYSeriesCollection;
@@ -121,7 +122,7 @@ public class CandlestickDemo extends JFrame {
 
     private final class ThrowExceptionSeriesProvider implements ISeriesProvider {
         @Override
-        public void newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
+        public IPlotSourceDataset newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
             throw new RuntimeException("This should be displayed in a dialog.");
         }
 
@@ -149,11 +150,17 @@ public class CandlestickDemo extends JFrame {
         public String getDescription() {
             return "handles the exception";
         }
+
+        @Override
+        public void modifyDataset(final InteractiveChartPanel chartPanel, final IPlotSourceDataset dataset,
+                final IExpression[] args) {
+            throw new RuntimeException("This should never happen.");
+        }
     }
 
     private final class CustomSeriesProvider implements ISeriesProvider {
         @Override
-        public void newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
+        public IPlotSourceDataset newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
             final Stroke stroke = chartPanel.getPlotConfigurationHelper().getPriceInitialSettings().getSeriesStroke();
             final LineStyleType lineStyleType = LineStyleType.valueOf(stroke);
             final LineWidthType lineWidthType = LineWidthType.valueOf(stroke);
@@ -180,6 +187,8 @@ public class CandlestickDemo extends JFrame {
             if (!chartPanel.getCombinedPlot().isSubplotVisible(plot)) {
                 chartPanel.getCombinedPlot().add(plot, CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT);
             }
+
+            return dataset;
         }
 
         private IndexedDateTimeXYSeries newSeriesPrefilled(final InteractiveChartPanel chartPanel,
@@ -216,6 +225,16 @@ public class CandlestickDemo extends JFrame {
                 series.updateBoundsForAddedItem(item);
             }
             return series;
+        }
+
+        @Override
+        public void modifyDataset(final InteractiveChartPanel chartPanel, final IPlotSourceDataset dataset,
+                final IExpression[] args) {
+            final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
+            cDataset.setNotify(false);
+            cDataset.removeAllSeries();
+            cDataset.addSeries(newSeriesPrefilled(chartPanel, args));
+            cDataset.setNotify(true);
         }
 
         @Override

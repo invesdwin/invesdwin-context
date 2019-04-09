@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier;
 
 import javax.swing.JComponent;
 
@@ -10,6 +10,8 @@ public interface IParameterSettingsModifier {
     ISeriesParameter getParameter();
 
     IExpression getValue();
+
+    void setValue(IExpression value);
 
     JComponent newComponent();
 

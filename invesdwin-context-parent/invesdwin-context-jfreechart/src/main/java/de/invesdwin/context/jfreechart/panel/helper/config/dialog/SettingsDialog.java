@@ -53,7 +53,8 @@ public class SettingsDialog extends JDialog {
     }
 
     protected void close() {
-        panel.ok(); //tradingview also regards this as ok()
+        //tradingview also regards this as ok()
+        panel.ok();
         dispose();
     }
 }

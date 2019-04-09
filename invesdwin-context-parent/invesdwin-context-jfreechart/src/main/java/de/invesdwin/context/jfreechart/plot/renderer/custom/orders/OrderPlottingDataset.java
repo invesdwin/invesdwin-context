@@ -13,6 +13,7 @@ import org.jfree.data.general.DatasetChangeListener;
 import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.xy.AbstractXYDataset;
 
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.IIndexedDateTimeXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
@@ -20,6 +21,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.iterable.ASkippingIterable;
 import de.invesdwin.util.collections.iterable.ICloseableIterable;
 import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
+import de.invesdwin.util.math.expression.IExpression;
 
 @NotThreadSafe
 public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSourceDataset, IIndexedDateTimeXYDataset {
@@ -33,12 +35,12 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     private String rangeAxisId;
     private final Map<String, OrderPlottingDataItem> orderId_item = new LinkedHashMap<>();
     private boolean lastTradeProfit = true;
-    private final String seriesTitle;
+    private ISeriesProvider seriesProvider;
+    private IExpression[] seriesArguments;
 
     public OrderPlottingDataset(final String seriesKey, final IndexedDateTimeOHLCDataset ohlcDataset) {
         Assertions.checkNotNull(seriesKey);
         this.seriesKey = seriesKey;
-        this.seriesTitle = seriesKey;
         this.ohlcDataset = ohlcDataset;
     }
 
@@ -171,7 +173,27 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
 
     @Override
     public String getSeriesTitle() {
-        return seriesTitle;
+        return seriesKey;
+    }
+
+    @Override
+    public ISeriesProvider getSeriesProvider() {
+        return seriesProvider;
+    }
+
+    @Override
+    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
+        this.seriesProvider = seriesProvider;
+    }
+
+    @Override
+    public void setSeriesArguments(final IExpression[] seriesArguments) {
+        this.seriesArguments = seriesArguments;
+    }
+
+    @Override
+    public IExpression[] getSeriesArguments() {
+        return seriesArguments;
     }
 
 }

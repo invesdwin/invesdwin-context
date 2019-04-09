@@ -12,9 +12,11 @@ import org.jfree.data.xy.XYRangeInfo;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.ListXYSeriesOHLC;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.XYDataItemOHLC;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.math.expression.IExpression;
 
 @NotThreadSafe
 public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements IPlotSourceDataset, XYRangeInfo {
@@ -23,6 +25,8 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     private int precision;
     private String rangeAxisId;
     private final String seriesTitle;
+    private ISeriesProvider seriesProvider;
+    private IExpression[] seriesArguments;
 
     public PlotSourceXYSeriesCollection(final String seriesTitle) {
         this.seriesTitle = seriesTitle;
@@ -135,6 +139,26 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     @Override
     public String getSeriesTitle() {
         return seriesTitle;
+    }
+
+    @Override
+    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
+        this.seriesProvider = seriesProvider;
+    }
+
+    @Override
+    public ISeriesProvider getSeriesProvider() {
+        return seriesProvider;
+    }
+
+    @Override
+    public void setSeriesArguments(final IExpression[] seriesArguments) {
+        this.seriesArguments = seriesArguments;
+    }
+
+    @Override
+    public IExpression[] getSeriesArguments() {
+        return seriesArguments;
     }
 
 }
