@@ -13,6 +13,6 @@ public interface IParameterSettingsModifier {
 
     void setValue(IExpression value);
 
-    JComponent newComponent(Runnable modificationListener);
+    JComponent getComponent();
 
 }

@@ -15,8 +15,8 @@ public interface ISeriesParameter {
 
     IExpression[] getEnumerationValues();
 
-    default IParameterSettingsModifier newModifier() {
-        return getType().newModifier(this);
+    default IParameterSettingsModifier newModifier(final Runnable modificationListener) {
+        return getType().newModifier(this, modificationListener);
     }
 
 }

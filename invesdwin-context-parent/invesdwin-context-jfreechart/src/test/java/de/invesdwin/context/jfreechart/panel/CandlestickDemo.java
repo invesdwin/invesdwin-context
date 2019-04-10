@@ -143,7 +143,7 @@ public class CandlestickDemo extends JFrame {
 
         @Override
         public String getExpressionName() {
-            return "";
+            return "throwException";
         }
 
         @Override

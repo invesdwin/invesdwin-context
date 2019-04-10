@@ -333,6 +333,7 @@ public class PlotConfigurationHelper {
     }
 
     public ISeriesProvider putOrReplaceSeriesProvider(final ISeriesProvider seriesProvider) {
+        Assertions.checkNotBlank(seriesProvider.getExpressionName());
         return seriesProviders.put(seriesProvider.getName(), seriesProvider);
     }
 

@@ -12,28 +12,32 @@ import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modi
 public enum SeriesParameterType {
     Integer {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
-            return new IntegerParameterSettingsModifier(parameter);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
+                final Runnable modificationListener) {
+            return new IntegerParameterSettingsModifier(parameter, modificationListener);
         }
     },
     Double {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
-            return new DoubleParameterSettingsModifier(parameter);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
+                final Runnable modificationListener) {
+            return new DoubleParameterSettingsModifier(parameter, modificationListener);
         }
     },
     Boolean {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
-            return new BooleanParameterSettingsModifier(parameter);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
+                final Runnable modificationListener) {
+            return new BooleanParameterSettingsModifier(parameter, modificationListener);
         }
     },
     Enumeration {
         @Override
-        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter) {
-            return new EnumerationParameterSettingsModifier(parameter);
+        public IParameterSettingsModifier newModifier(final ISeriesParameter parameter,
+                final Runnable modificationListener) {
+            return new EnumerationParameterSettingsModifier(parameter, modificationListener);
         }
     };
 
-    public abstract IParameterSettingsModifier newModifier(ISeriesParameter parameter);
+    public abstract IParameterSettingsModifier newModifier(ISeriesParameter parameter, Runnable modificationListener);
 }

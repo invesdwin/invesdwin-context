@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 
+import org.springframework.web.util.HtmlUtils;
+
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.error.Throwables;
@@ -59,18 +61,25 @@ public class AddSeriesPanel extends JPanel {
                     final int selectedRow = panel.tbl_series.getSelectedRow();
                     final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
                     final ISeriesProvider selectedValue = plotConfigurationHelper.getSeriesProvider(selectedName);
+                    final IExpression[] args = selectedValue.getDefaultValues();
+                    final String expressionString = selectedValue.getExpressionString(args);
                     try {
-                        final IExpression[] args = selectedValue.getDefaultValues();
                         final IPlotSourceDataset dataset = selectedValue
                                 .newInstance(plotConfigurationHelper.getChartPanel(), args);
                         dataset.setSeriesProvider(selectedValue);
                         dataset.setSeriesArguments(args);
-                        dataset.setSeriesTitle(selectedValue.getExpressionString(args));
+                        dataset.setSeriesTitle(expressionString);
                     } catch (final Throwable t) {
-                        final String seriesTitle = selectedName;
-                        LOG.warn("Error Adding Series: " + seriesTitle + "\n" + Throwables.getFullStackTrace(t));
-                        Dialogs.showMessageDialog(panel, Throwables.concatMessagesShort(t),
-                                "Error Adding Series: " + seriesTitle, Dialogs.ERROR_MESSAGE);
+                        LOG.warn("Error adding series [" + selectedValue.getName() + "] with expression ["
+                                + expressionString + "]\n" + Throwables.getFullStackTrace(t));
+
+                        Dialogs.showMessageDialog(panel,
+                                "<html><b>Name:</b><br><pre>  " + selectedValue.getName()
+                                        + "</pre><b>Expression:</b><br><pre>  " + expressionString
+                                        + "</pre><br><b>Error:</b><br><pre>  "
+                                        + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  "))
+                                        + "</pre>",
+                                "Error", Dialogs.ERROR_MESSAGE);
                     }
                 }
             }

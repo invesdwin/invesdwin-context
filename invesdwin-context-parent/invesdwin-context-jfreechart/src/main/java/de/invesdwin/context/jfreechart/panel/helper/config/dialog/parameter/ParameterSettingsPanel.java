@@ -9,6 +9,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import org.springframework.web.util.HtmlUtils;
+
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelActions;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.IParameterSettingsModifier;
@@ -33,10 +35,12 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
     private final HighlightedLegendInfo highlighted;
 
     private final ParameterSettingsPanelLayout layout;
+    private boolean notifyModification = false;
 
     public ParameterSettingsPanel(final PlotConfigurationHelper plotConfigurationHelper,
             final HighlightedLegendInfo highlighted, final JDialog dialog) {
         Assertions.checkFalse(highlighted.isPriceSeries());
+        Assertions.checkNotNull(highlighted.getDataset().getSeriesProvider());
 
         final FlowLayout flowLayout = (FlowLayout) getLayout();
         flowLayout.setVgap(0);
@@ -51,30 +55,31 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
         final ISeriesParameter[] parameters = dataset.getSeriesProvider().getParameters();
         final IParameterSettingsModifier[] modifiers = new IParameterSettingsModifier[parameters.length];
         final IExpression[] args = dataset.getSeriesArguments();
+        final Runnable modificationListener = new Runnable() {
+            @Override
+            public void run() {
+                if (notifyModification) {
+                    ok();
+                }
+            }
+        };
         for (int i = 0; i < parameters.length; i++) {
             final ISeriesParameter parameter = parameters[i];
-            final IParameterSettingsModifier modifier = parameter.newModifier();
+            final IParameterSettingsModifier modifier = parameter.newModifier(modificationListener);
             modifier.setValue(args[i]);
             modifiers[i] = modifier;
         }
         this.seriesArgumentsBefore = args;
-        this.layout = new ParameterSettingsPanelLayout(modifiers, new Runnable() {
-            @Override
-            public void run() {
-                ok();
-            }
-        });
+        this.layout = new ParameterSettingsPanelLayout(modifiers);
         add(layout);
+        notifyModification = true;
     }
 
     @Override
     public void reset() {
         final IExpression[] seriesArgumentsInitial = plotConfigurationHelper.getSeriesInitialSettings(highlighted)
                 .getSeriesArguments();
-
-        for (int i = 0; i < seriesArgumentsInitial.length; i++) {
-            layout.modifiers[i].setValue(seriesArgumentsInitial[i]);
-        }
+        setModifierValues(seriesArgumentsInitial);
         if (hasChanges(seriesArgumentsInitial, dataset.getSeriesArguments())) {
             apply(seriesArgumentsInitial);
         }
@@ -90,7 +95,7 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
     @Override
     public void ok() {
         final IExpression[] newSeriesArguments = newSeriesArguments();
-        if (hasChanges(seriesArgumentsBefore, newSeriesArguments)) {
+        if (hasChanges(dataset.getSeriesArguments(), newSeriesArguments)) {
             apply(newSeriesArguments);
         }
     }
@@ -104,21 +109,36 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
     }
 
     public void apply(final IExpression[] arguments) {
+        final ISeriesProvider seriesProvider = dataset.getSeriesProvider();
+        final String toExpression = seriesProvider.getExpressionString(arguments);
         try {
-            final ISeriesProvider seriesProvider = dataset.getSeriesProvider();
             seriesProvider.modifyDataset(plotConfigurationHelper.getChartPanel(), dataset, arguments);
             dataset.setSeriesArguments(arguments);
-            dataset.setSeriesTitle(seriesProvider.getExpressionString(arguments));
+            dataset.setSeriesTitle(toExpression);
         } catch (final Throwable t) {
-            final String seriesTitle = dataset.getSeriesTitle();
-            LOG.warn("Error Modifying Series: " + seriesTitle + "\n" + Throwables.getFullStackTrace(t));
-            Dialogs.showMessageDialog(this, Throwables.concatMessagesShort(t), "Error Modifying Series: " + seriesTitle,
-                    Dialogs.ERROR_MESSAGE);
+            final String fromExpression = dataset.getSeriesTitle();
+            LOG.warn("Error modifying series [" + seriesProvider.getName() + "] expression from [" + fromExpression
+                    + "] to [" + toExpression + "]:\n" + Throwables.getFullStackTrace(t));
+            Dialogs.showMessageDialog(this,
+                    "<html><b>Name:</b><br><pre>  " + seriesProvider.getName() + "</pre><b>Expression:</b><br><pre>  "
+                            + fromExpression + "</pre><b>Invalid:</b><br><pre>  " + toExpression
+                            + "</pre><br><b>Error:</b><br><pre>  "
+                            + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>",
+                    "Invalid Inputs", Dialogs.ERROR_MESSAGE);
 
             final IExpression[] seriesArgumentsValid = dataset.getSeriesArguments();
-            for (int i = 0; i < seriesArgumentsValid.length; i++) {
-                layout.modifiers[i].setValue(seriesArgumentsValid[i]);
+            setModifierValues(seriesArgumentsValid);
+        }
+    }
+
+    private void setModifierValues(final IExpression[] values) {
+        notifyModification = false;
+        try {
+            for (int i = 0; i < values.length; i++) {
+                layout.modifiers[i].setValue(values[i]);
             }
+        } finally {
+            notifyModification = true;
         }
     }
 
