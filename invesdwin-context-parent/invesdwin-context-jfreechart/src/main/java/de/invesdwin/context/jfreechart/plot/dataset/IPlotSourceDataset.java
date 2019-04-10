@@ -19,9 +19,9 @@ public interface IPlotSourceDataset extends XYDataset, Closeable {
         setPlot(null);
     }
 
-    int getPrecision();
+    Integer getPrecision();
 
-    void setPrecision(int precision);
+    void setPrecision(Integer precision);
 
     String getRangeAxisId();
 

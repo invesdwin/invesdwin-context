@@ -30,7 +30,7 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     private String seriesTitle;
     private final IndexedDateTimeOHLCDataset ohlcDataset;
     private final Set<DatasetChangeListener> changeListeners = new LinkedHashSet<>();
-    private int precision;
+    private Integer precision;
     private XYPlot plot;
     private DatasetGroup group;
     private String rangeAxisId;
@@ -77,12 +77,12 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     }
 
     @Override
-    public int getPrecision() {
+    public Integer getPrecision() {
         return precision;
     }
 
     @Override
-    public void setPrecision(final int precision) {
+    public void setPrecision(final Integer precision) {
         this.precision = precision;
     }
 

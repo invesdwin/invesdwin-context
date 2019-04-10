@@ -20,7 +20,7 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
         implements IIndexedDateTimeXYDataset, IPlotSourceDataset {
 
     private XYPlot plot;
-    private int precision;
+    private Integer precision;
     private String rangeAxisId;
     private String seriesTitle;
     private ISeriesProvider seriesProvider;
@@ -103,12 +103,12 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     }
 
     @Override
-    public int getPrecision() {
+    public Integer getPrecision() {
         return precision;
     }
 
     @Override
-    public void setPrecision(final int precision) {
+    public void setPrecision(final Integer precision) {
         this.precision = precision;
     }
 

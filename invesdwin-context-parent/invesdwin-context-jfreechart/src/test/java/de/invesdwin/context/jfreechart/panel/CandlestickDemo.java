@@ -47,6 +47,8 @@ import de.invesdwin.util.time.fdate.FDate;
 @NotThreadSafe
 public class CandlestickDemo extends JFrame {
 
+    private static final String PRICE_PLOT_PANE_ID = "Price";
+
     public CandlestickDemo() {
         super("CandlestickDemo");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,6 +68,8 @@ public class CandlestickDemo extends JFrame {
 
         //Create a dataset, an Open, High, Low, Close dataset
         final IndexedDateTimeOHLCDataset result = new IndexedDateTimeOHLCDataset("MSFT", data);
+        result.setPrecision(2);
+        result.setRangeAxisId(PRICE_PLOT_PANE_ID);
 
         return result;
     }
@@ -128,7 +132,7 @@ public class CandlestickDemo extends JFrame {
 
         @Override
         public String getPlotPaneId() {
-            return "plotPaneId";
+            return PRICE_PLOT_PANE_ID;
         }
 
         @Override
@@ -211,7 +215,7 @@ public class CandlestickDemo extends JFrame {
                 final FDate time = new FDate(ohlc.get(i).getDate());
                 final int lagIndex = Integers.max(i - lagBars, 0);
                 final OHLCDataItem ohlcItem = ohlc.get(lagIndex);
-                final double value = ohlcValueType.getValue(ohlcItem);
+                final double value = ohlcValueType.getValue(ohlcItem) + addition;
                 final XYDataItemOHLC item = new XYDataItemOHLC(
                         new OHLCDataItem(time.dateValue(), Double.NaN, Double.NaN, Double.NaN, value, Double.NaN));
                 final int index = list.size();
@@ -239,7 +243,7 @@ public class CandlestickDemo extends JFrame {
 
         @Override
         public String getPlotPaneId() {
-            return "plotPaneId";
+            return PRICE_PLOT_PANE_ID;
         }
 
         @Override
@@ -268,7 +272,7 @@ public class CandlestickDemo extends JFrame {
 
                 @Override
                 public IExpression getDefaultValue() {
-                    return new BooleanExpression(true);
+                    return new BooleanExpression(false);
                 }
             }, new ISeriesParameter() {
 
@@ -294,7 +298,7 @@ public class CandlestickDemo extends JFrame {
 
                 @Override
                 public IExpression getDefaultValue() {
-                    return new ConstantExpression(1);
+                    return new ConstantExpression(0);
                 }
             }, new ISeriesParameter() {
 
@@ -346,7 +350,7 @@ public class CandlestickDemo extends JFrame {
 
                 @Override
                 public IExpression getDefaultValue() {
-                    return EnumerationExpression.valueOf(OhlcValueType.Low);
+                    return EnumerationExpression.valueOf(OhlcValueType.Close);
                 }
             } };
         }

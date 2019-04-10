@@ -22,7 +22,7 @@ import de.invesdwin.util.math.expression.IExpression;
 public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements IPlotSourceDataset, XYRangeInfo {
 
     private XYPlot plot;
-    private int precision;
+    private Integer precision;
     private String rangeAxisId;
     private String seriesTitle;
     private ISeriesProvider seriesProvider;
@@ -44,12 +44,12 @@ public class PlotSourceXYSeriesCollection extends XYSeriesCollection implements 
     }
 
     @Override
-    public int getPrecision() {
+    public Integer getPrecision() {
         return precision;
     }
 
     @Override
-    public void setPrecision(final int precision) {
+    public void setPrecision(final Integer precision) {
         this.precision = precision;
     }
 

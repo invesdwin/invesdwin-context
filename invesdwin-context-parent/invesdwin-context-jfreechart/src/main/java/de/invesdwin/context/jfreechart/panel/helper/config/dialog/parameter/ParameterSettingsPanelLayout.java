@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -26,7 +27,8 @@ public class ParameterSettingsPanelLayout extends JPanel {
             final JLabel label = new JLabel(modifier.getParameter().getName());
             label.setToolTipText(modifier.getParameter().getDescription());
             add(label);
-            add(modifier.getComponent());
+            final JComponent modifierComponent = modifier.getComponent();
+            add(modifierComponent);
             rows++;
         }
 

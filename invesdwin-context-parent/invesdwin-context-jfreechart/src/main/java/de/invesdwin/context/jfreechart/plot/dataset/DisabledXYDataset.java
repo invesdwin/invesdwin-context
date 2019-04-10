@@ -64,12 +64,12 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     }
 
     @Override
-    public int getPrecision() {
+    public Integer getPrecision() {
         return 0;
     }
 
     @Override
-    public void setPrecision(final int precision) {
+    public void setPrecision(final Integer precision) {
         enabledDataset.setPrecision(precision);
     }
 

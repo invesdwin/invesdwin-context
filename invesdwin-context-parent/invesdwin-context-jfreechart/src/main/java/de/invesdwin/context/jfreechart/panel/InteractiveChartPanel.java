@@ -33,6 +33,7 @@ import de.invesdwin.context.jfreechart.plot.IndexedDateTimeNumberFormat;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartLocaleChanger;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.swing.listener.KeyListenerSupport;
 import de.invesdwin.util.swing.listener.MouseListenerSupport;
@@ -68,6 +69,8 @@ public class InteractiveChartPanel extends JPanel {
 
     public InteractiveChartPanel(final IndexedDateTimeOHLCDataset dataset) {
         this.dataset = dataset;
+        Assertions.checkNotBlank(dataset.getRangeAxisId());
+        Assertions.checkNotNull(dataset.getPrecision());
 
         this.plotResizeHelper = new PlotResizeHelper(this);
         this.plotCrosshairHelper = new PlotCrosshairHelper(this);
@@ -144,14 +147,6 @@ public class InteractiveChartPanel extends JPanel {
         return plotPanHelper;
     }
 
-    protected int initRangeAxisDecimalDigits() {
-        return 2;
-    }
-
-    protected String initRangeAxisId() {
-        return "";
-    }
-
     public int getAllowedRangeGap() {
         return chartPanel.getAllowedRangeGap();
     }
@@ -199,8 +194,6 @@ public class InteractiveChartPanel extends JPanel {
         ohlcPlot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
         plotLegendHelper.addLegendAnnotation(ohlcPlot);
         dataset.setPlot(ohlcPlot);
-        dataset.setPrecision(initRangeAxisDecimalDigits());
-        dataset.setRangeAxisId(initRangeAxisId());
         //give main plot twice the weight
         combinedPlot.add(ohlcPlot, CustomCombinedDomainXYPlot.MAIN_PLOT_WEIGHT);
         XYPlots.updateRangeAxes(ohlcPlot);
