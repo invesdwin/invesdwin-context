@@ -13,7 +13,8 @@ import org.jfree.data.general.DatasetChangeListener;
 import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.xy.AbstractXYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.IIndexedDateTimeXYDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
@@ -36,8 +37,10 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     private String rangeAxisId;
     private final Map<String, OrderPlottingDataItem> orderId_item = new LinkedHashMap<>();
     private boolean lastTradeProfit = true;
-    private ISeriesProvider seriesProvider;
-    private IExpression[] seriesArguments;
+    private IIndicatorSeriesProvider indicatorSeriesProvider;
+    private IExpression[] indicatorSeriesArguments;
+    private IExpressionSeriesProvider expressionSeriesProvider;
+    private String expressionSeriesArguments;
 
     public OrderPlottingDataset(final String seriesKey, final IndexedDateTimeOHLCDataset ohlcDataset) {
         Assertions.checkNotNull(seriesKey);
@@ -184,23 +187,43 @@ public class OrderPlottingDataset extends AbstractXYDataset implements IPlotSour
     }
 
     @Override
-    public ISeriesProvider getSeriesProvider() {
-        return seriesProvider;
+    public IIndicatorSeriesProvider getIndicatorSeriesProvider() {
+        return indicatorSeriesProvider;
     }
 
     @Override
-    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
-        this.seriesProvider = seriesProvider;
+    public void setIndicatorSeriesProvider(final IIndicatorSeriesProvider indicatorSeriesProvider) {
+        this.indicatorSeriesProvider = indicatorSeriesProvider;
     }
 
     @Override
-    public void setSeriesArguments(final IExpression[] seriesArguments) {
-        this.seriesArguments = seriesArguments;
+    public void setIndicatorSeriesArguments(final IExpression[] indicatorSeriesArguments) {
+        this.indicatorSeriesArguments = indicatorSeriesArguments;
     }
 
     @Override
-    public IExpression[] getSeriesArguments() {
-        return seriesArguments;
+    public IExpression[] getIndicatorSeriesArguments() {
+        return indicatorSeriesArguments;
+    }
+
+    @Override
+    public IExpressionSeriesProvider getExpressionSeriesProvider() {
+        return expressionSeriesProvider;
+    }
+
+    @Override
+    public void setExpressionSeriesProvider(final IExpressionSeriesProvider expressionSeriesProvider) {
+        this.expressionSeriesProvider = expressionSeriesProvider;
+    }
+
+    @Override
+    public String getExpressionSeriesArguments() {
+        return expressionSeriesArguments;
+    }
+
+    @Override
+    public void setExpressionSeriesArguments(final String expressionSeriesArguments) {
+        this.expressionSeriesArguments = expressionSeriesArguments;
     }
 
 }

@@ -1,22 +1,22 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.util.math.expression.IExpression;
 
 @NotThreadSafe
 public abstract class AParameterSettingsModifier implements IParameterSettingsModifier {
 
-    private final ISeriesParameter parameter;
+    private final IIndicatorSeriesParameter parameter;
     private IExpression value;
 
-    public AParameterSettingsModifier(final ISeriesParameter parameter) {
+    public AParameterSettingsModifier(final IIndicatorSeriesParameter parameter) {
         this.parameter = parameter;
     }
 
     @Override
-    public ISeriesParameter getParameter() {
+    public IIndicatorSeriesParameter getParameter() {
         return parameter;
     }
 

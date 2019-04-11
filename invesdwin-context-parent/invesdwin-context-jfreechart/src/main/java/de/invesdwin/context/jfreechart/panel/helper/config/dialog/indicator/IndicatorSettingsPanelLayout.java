@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,16 +8,16 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.IParameterSettingsModifier;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier.IParameterSettingsModifier;
 
 @NotThreadSafe
-public class ParameterSettingsPanelLayout extends JPanel {
+public class IndicatorSettingsPanelLayout extends JPanel {
 
     //CHECKSTYLE:OFF
     public final IParameterSettingsModifier[] modifiers;
     //CHECKSTYLE:ON
 
-    public ParameterSettingsPanelLayout(final IParameterSettingsModifier[] modifiers) {
+    public IndicatorSettingsPanelLayout(final IParameterSettingsModifier[] modifiers) {
         this.modifiers = modifiers;
 
         setLayout(new FlowLayout());

@@ -1,12 +1,12 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.series;
+package de.invesdwin.context.jfreechart.panel.helper.config.series.indicator;
 
 import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.math.expression.IExpression;
 
-public interface ISeriesProvider {
+public interface IIndicatorSeriesProvider {
 
-    ISeriesParameter[] NO_PARAMETERS = new ISeriesParameter[0];
+    IIndicatorSeriesParameter[] NO_PARAMETERS = new IIndicatorSeriesParameter[0];
 
     String getName();
 
@@ -29,10 +29,10 @@ public interface ISeriesProvider {
         return sb.toString();
     }
 
-    ISeriesParameter[] getParameters();
+    IIndicatorSeriesParameter[] getParameters();
 
     default IExpression[] getDefaultValues() {
-        final ISeriesParameter[] parameters = getParameters();
+        final IIndicatorSeriesParameter[] parameters = getParameters();
         final IExpression[] defaultValues = new IExpression[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             defaultValues[i] = parameters[i].getDefaultValue();

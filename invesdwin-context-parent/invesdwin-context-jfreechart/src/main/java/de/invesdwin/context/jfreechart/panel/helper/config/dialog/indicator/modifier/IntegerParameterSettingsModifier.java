@@ -1,11 +1,11 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.math.expression.eval.ConstantExpression;
@@ -17,7 +17,7 @@ public class IntegerParameterSettingsModifier extends AParameterSettingsModifier
 
     private final JSpinnerDecimal component;
 
-    public IntegerParameterSettingsModifier(final ISeriesParameter parameter, final Runnable modificationListener) {
+    public IntegerParameterSettingsModifier(final IIndicatorSeriesParameter parameter, final Runnable modificationListener) {
         super(parameter);
 
         this.component = new JSpinnerInteger();

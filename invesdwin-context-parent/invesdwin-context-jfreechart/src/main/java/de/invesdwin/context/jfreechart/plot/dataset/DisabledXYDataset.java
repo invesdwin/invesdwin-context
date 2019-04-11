@@ -6,7 +6,8 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.math.expression.IExpression;
 
@@ -113,23 +114,43 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
     }
 
     @Override
-    public ISeriesProvider getSeriesProvider() {
-        return enabledDataset.getSeriesProvider();
+    public IIndicatorSeriesProvider getIndicatorSeriesProvider() {
+        return enabledDataset.getIndicatorSeriesProvider();
     }
 
     @Override
-    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
-        enabledDataset.setSeriesProvider(seriesProvider);
+    public void setIndicatorSeriesProvider(final IIndicatorSeriesProvider indicatorSeriesProvider) {
+        enabledDataset.setIndicatorSeriesProvider(indicatorSeriesProvider);
     }
 
     @Override
-    public IExpression[] getSeriesArguments() {
-        return enabledDataset.getSeriesArguments();
+    public IExpression[] getIndicatorSeriesArguments() {
+        return enabledDataset.getIndicatorSeriesArguments();
     }
 
     @Override
-    public void setSeriesArguments(final IExpression[] seriesArguments) {
-        enabledDataset.setSeriesArguments(seriesArguments);
+    public void setIndicatorSeriesArguments(final IExpression[] indicatorSeriesArguments) {
+        enabledDataset.setIndicatorSeriesArguments(indicatorSeriesArguments);
+    }
+
+    @Override
+    public IExpressionSeriesProvider getExpressionSeriesProvider() {
+        return enabledDataset.getExpressionSeriesProvider();
+    }
+
+    @Override
+    public void setExpressionSeriesProvider(final IExpressionSeriesProvider expressionSeriesProvider) {
+        enabledDataset.setExpressionSeriesProvider(expressionSeriesProvider);
+    }
+
+    @Override
+    public String getExpressionSeriesArguments() {
+        return enabledDataset.getExpressionSeriesArguments();
+    }
+
+    @Override
+    public void setExpressionSeriesArguments(final String expressionSeriesArguments) {
+        enabledDataset.setExpressionSeriesArguments(expressionSeriesArguments);
     }
 
 }

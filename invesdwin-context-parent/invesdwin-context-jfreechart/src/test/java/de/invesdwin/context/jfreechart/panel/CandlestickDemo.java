@@ -25,9 +25,9 @@ import de.invesdwin.context.jfreechart.panel.basis.CustomCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.SeriesParameterType;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.context.jfreechart.plot.dataset.IndexedDateTimeOHLCDataset;
@@ -56,8 +56,8 @@ public class CandlestickDemo extends JFrame {
         final InteractiveChartPanel chartPanel = new InteractiveChartPanel(getDataSet());
         chartPanel.setPreferredSize(new Dimension(1280, 800));
         add(chartPanel);
-        chartPanel.getPlotConfigurationHelper().putSeriesProvider(new CustomSeriesProvider());
-        chartPanel.getPlotConfigurationHelper().putSeriesProvider(new ThrowExceptionSeriesProvider());
+        chartPanel.getPlotConfigurationHelper().putIndicatorSeriesProvider(new CustomIndicatorSeriesProvider());
+        chartPanel.getPlotConfigurationHelper().putIndicatorSeriesProvider(new ThrowExceptionIndicatorSeriesProvider());
         this.pack();
     }
 
@@ -124,7 +124,7 @@ public class CandlestickDemo extends JFrame {
         new CandlestickDemo().setVisible(true);
     }
 
-    private final class ThrowExceptionSeriesProvider implements ISeriesProvider {
+    private final class ThrowExceptionIndicatorSeriesProvider implements IIndicatorSeriesProvider {
         @Override
         public IPlotSourceDataset newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
             throw new RuntimeException("This should be displayed in a dialog.");
@@ -136,7 +136,7 @@ public class CandlestickDemo extends JFrame {
         }
 
         @Override
-        public ISeriesParameter[] getParameters() {
+        public IIndicatorSeriesParameter[] getParameters() {
             return NO_PARAMETERS;
         }
 
@@ -162,7 +162,7 @@ public class CandlestickDemo extends JFrame {
         }
     }
 
-    private final class CustomSeriesProvider implements ISeriesProvider {
+    private final class CustomIndicatorSeriesProvider implements IIndicatorSeriesProvider {
         @Override
         public IPlotSourceDataset newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
             final Stroke stroke = chartPanel.getPlotConfigurationHelper().getPriceInitialSettings().getSeriesStroke();
@@ -247,8 +247,8 @@ public class CandlestickDemo extends JFrame {
         }
 
         @Override
-        public ISeriesParameter[] getParameters() {
-            return new ISeriesParameter[] { new ISeriesParameter() {
+        public IIndicatorSeriesParameter[] getParameters() {
+            return new IIndicatorSeriesParameter[] { new IIndicatorSeriesParameter() {
 
                 @Override
                 public SeriesParameterType getType() {
@@ -274,7 +274,7 @@ public class CandlestickDemo extends JFrame {
                 public IExpression getDefaultValue() {
                     return new BooleanExpression(false);
                 }
-            }, new ISeriesParameter() {
+            }, new IIndicatorSeriesParameter() {
 
                 @Override
                 public SeriesParameterType getType() {
@@ -300,7 +300,7 @@ public class CandlestickDemo extends JFrame {
                 public IExpression getDefaultValue() {
                     return new ConstantExpression(0);
                 }
-            }, new ISeriesParameter() {
+            }, new IIndicatorSeriesParameter() {
 
                 @Override
                 public SeriesParameterType getType() {
@@ -326,7 +326,7 @@ public class CandlestickDemo extends JFrame {
                 public IExpression getDefaultValue() {
                     return new ConstantExpression(0);
                 }
-            }, new ISeriesParameter() {
+            }, new IIndicatorSeriesParameter() {
 
                 @Override
                 public SeriesParameterType getType() {

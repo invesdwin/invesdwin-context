@@ -8,7 +8,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.OHLCDataItem;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.basis.ListOHLCDataset;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
@@ -23,8 +24,10 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     private Integer precision;
     private String rangeAxisId;
     private String seriesTitle;
-    private ISeriesProvider seriesProvider;
-    private IExpression[] seriesArguments;
+    private IIndicatorSeriesProvider indicatorSeriesProvider;
+    private IExpression[] indicatorSeriesArguments;
+    private IExpressionSeriesProvider expressionSeriesProvider;
+    private String expressionSeriesArguments;
 
     public IndexedDateTimeOHLCDataset(final String seriesKey, final List<OHLCDataItem> data) {
         super(seriesKey, data);
@@ -138,23 +141,43 @@ public class IndexedDateTimeOHLCDataset extends ListOHLCDataset
     }
 
     @Override
-    public ISeriesProvider getSeriesProvider() {
-        return seriesProvider;
+    public IIndicatorSeriesProvider getIndicatorSeriesProvider() {
+        return indicatorSeriesProvider;
     }
 
     @Override
-    public void setSeriesProvider(final ISeriesProvider seriesProvider) {
-        this.seriesProvider = seriesProvider;
+    public void setIndicatorSeriesProvider(final IIndicatorSeriesProvider indicatorSeriesProvider) {
+        this.indicatorSeriesProvider = indicatorSeriesProvider;
     }
 
     @Override
-    public void setSeriesArguments(final IExpression[] seriesArguments) {
-        this.seriesArguments = seriesArguments;
+    public void setIndicatorSeriesArguments(final IExpression[] indicatorSeriesArguments) {
+        this.indicatorSeriesArguments = indicatorSeriesArguments;
     }
 
     @Override
-    public IExpression[] getSeriesArguments() {
-        return seriesArguments;
+    public IExpression[] getIndicatorSeriesArguments() {
+        return indicatorSeriesArguments;
+    }
+
+    @Override
+    public IExpressionSeriesProvider getExpressionSeriesProvider() {
+        return expressionSeriesProvider;
+    }
+
+    @Override
+    public void setExpressionSeriesProvider(final IExpressionSeriesProvider expressionSeriesProvider) {
+        this.expressionSeriesProvider = expressionSeriesProvider;
+    }
+
+    @Override
+    public String getExpressionSeriesArguments() {
+        return expressionSeriesArguments;
+    }
+
+    @Override
+    public void setExpressionSeriesArguments(final String expressionSeriesArguments) {
+        this.expressionSeriesArguments = expressionSeriesArguments;
     }
 
 }

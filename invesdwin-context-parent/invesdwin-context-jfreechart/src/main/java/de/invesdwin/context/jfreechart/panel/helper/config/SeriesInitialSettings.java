@@ -47,7 +47,7 @@ public class SeriesInitialSettings {
         priceLineVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
         priceLabelVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
         rangeAxisId = initialRenderer.getDataset().getRangeAxisId();
-        seriesArguments = initialRenderer.getDataset().getSeriesArguments();
+        seriesArguments = initialRenderer.getDataset().getIndicatorSeriesArguments();
     }
 
     public void reset(final HighlightedLegendInfo highlighted) {

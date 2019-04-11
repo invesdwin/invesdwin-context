@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.math.expression.eval.ConstantExpression;
@@ -17,7 +17,7 @@ import de.invesdwin.util.swing.spinner.JSpinnerDecimal;
 public class DoubleParameterSettingsModifier extends AParameterSettingsModifier {
     private final JSpinnerDecimal component;
 
-    public DoubleParameterSettingsModifier(final ISeriesParameter parameter, final Runnable modificationListener) {
+    public DoubleParameterSettingsModifier(final IIndicatorSeriesParameter parameter, final Runnable modificationListener) {
         super(parameter);
 
         this.component = new JSpinnerDecimal();

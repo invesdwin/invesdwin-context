@@ -29,10 +29,10 @@ import de.invesdwin.context.jfreechart.panel.InteractiveChartPanel;
 import de.invesdwin.context.jfreechart.panel.basis.CustomChartTransferable;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.SettingsDialog;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.AddSeriesDialog;
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
-import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.PopupMenuListenerSupport;
@@ -59,7 +59,8 @@ public class PlotConfigurationHelper {
     private JMenuItem saveAsPNGItem;
     private JMenuItem helpItem;
 
-    private final Map<String, ISeriesProvider> seriesProviders = new TreeMap<>();
+    private final Map<String, IIndicatorSeriesProvider> indicatorSeriesProviders = new TreeMap<>();
+    private IExpressionSeriesProvider expressionSeriesProvider;
 
     public PlotConfigurationHelper(final InteractiveChartPanel chartPanel) {
         this.chartPanel = chartPanel;
@@ -108,7 +109,7 @@ public class PlotConfigurationHelper {
                         addSeriesConfigMenuItems();
                     }
                 } else {
-                    if (!seriesProviders.isEmpty()) {
+                    if (!indicatorSeriesProviders.isEmpty()) {
                         popupMenu.add(addSeriesItem);
                         popupMenu.addSeparator();
                     }
@@ -328,21 +329,24 @@ public class PlotConfigurationHelper {
         seriesKey_initialSettings.remove(seriesKey);
     }
 
-    public void putSeriesProvider(final ISeriesProvider seriesProvider) {
-        Assertions.checkNull(putOrReplaceSeriesProvider(seriesProvider));
+    public void putIndicatorSeriesProvider(final IIndicatorSeriesProvider indicatorSeriesProvider) {
+        indicatorSeriesProviders.put(indicatorSeriesProvider.getName(), indicatorSeriesProvider);
     }
 
-    public ISeriesProvider putOrReplaceSeriesProvider(final ISeriesProvider seriesProvider) {
-        Assertions.checkNotBlank(seriesProvider.getExpressionName());
-        return seriesProviders.put(seriesProvider.getName(), seriesProvider);
+    public Collection<IIndicatorSeriesProvider> getIndicatorSeriesProviders() {
+        return indicatorSeriesProviders.values();
     }
 
-    public Collection<ISeriesProvider> getSeriesProviders() {
-        return seriesProviders.values();
+    public IIndicatorSeriesProvider getIndicatorSeriesProvider(final String name) {
+        return indicatorSeriesProviders.get(name);
     }
 
-    public ISeriesProvider getSeriesProvider(final String name) {
-        return seriesProviders.get(name);
+    public IExpressionSeriesProvider getExpressionSeriesProvider() {
+        return expressionSeriesProvider;
+    }
+
+    public void setExpressionSeriesProvider(final IExpressionSeriesProvider expressionSeriesProvider) {
+        this.expressionSeriesProvider = expressionSeriesProvider;
     }
 
     public Set<String> getRangeAxisIds() {

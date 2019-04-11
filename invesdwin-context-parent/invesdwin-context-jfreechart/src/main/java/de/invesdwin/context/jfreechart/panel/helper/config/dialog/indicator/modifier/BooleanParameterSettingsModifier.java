@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.math.expression.eval.BooleanExpression;
 
@@ -16,7 +16,7 @@ public class BooleanParameterSettingsModifier extends AParameterSettingsModifier
 
     private final JCheckBox component;
 
-    public BooleanParameterSettingsModifier(final ISeriesParameter parameter, final Runnable modificationListener) {
+    public BooleanParameterSettingsModifier(final IIndicatorSeriesParameter parameter, final Runnable modificationListener) {
         super(parameter);
         component = new JCheckBox();
         component.addActionListener(new ActionListener() {

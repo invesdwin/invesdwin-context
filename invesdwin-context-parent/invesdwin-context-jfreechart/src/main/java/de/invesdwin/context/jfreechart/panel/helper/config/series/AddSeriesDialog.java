@@ -27,7 +27,7 @@ public class AddSeriesDialog extends JDialog {
                 + "document this feature in help;"//
                 + "add expression series provider or a menu point to add a custom expression;"//
                 + "allow to plot expression components individually (only API or also via popup?);"//
-        );
+                + "extend add series dialog by a textarea for expressions and click on expression column adds ' expression(...)' to the text and then trim()");
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
         panel = new AddSeriesPanel(plotConfigurationHelper, this);

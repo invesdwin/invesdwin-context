@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.expression;
 
 import java.awt.FlowLayout;
 
@@ -13,10 +13,10 @@ import org.springframework.web.util.HtmlUtils;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.ISettingsPanelActions;
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier.IParameterSettingsModifier;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier.IParameterSettingsModifier;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.AddSeriesPanel;
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.assertions.Assertions;
@@ -25,7 +25,7 @@ import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.swing.Dialogs;
 
 @NotThreadSafe
-public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActions {
+public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelActions {
 
     private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory.getXLogger(AddSeriesPanel.class);
 
@@ -34,27 +34,27 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
     private final IExpression[] seriesArgumentsBefore;
     private final HighlightedLegendInfo highlighted;
 
-    private final ParameterSettingsPanelLayout layout;
+    private final ExpressionSettingsPanelLayout layout;
     private boolean notifyModification = false;
 
-    public ParameterSettingsPanel(final PlotConfigurationHelper plotConfigurationHelper,
+    public ExpressionSettingsPanel(final PlotConfigurationHelper plotConfigurationHelper,
             final HighlightedLegendInfo highlighted, final JDialog dialog) {
         Assertions.checkFalse(highlighted.isPriceSeries());
-        Assertions.checkNotNull(highlighted.getDataset().getSeriesProvider());
+        Assertions.checkNotNull(highlighted.getDataset().getIndicatorSeriesProvider());
 
         final FlowLayout flowLayout = (FlowLayout) getLayout();
         flowLayout.setVgap(0);
-        final TitledBorder titleBorder = new TitledBorder(null, "Inputs", TitledBorder.LEADING, TitledBorder.TOP, null,
-                null);
+        final TitledBorder titleBorder = new TitledBorder(null, "Expression", TitledBorder.LEADING, TitledBorder.TOP,
+                null, null);
         final EmptyBorder marginBorder = new EmptyBorder(10, 10, 10, 10);
         setBorder(new CompoundBorder(new CompoundBorder(marginBorder, titleBorder), marginBorder));
 
         this.plotConfigurationHelper = plotConfigurationHelper;
         this.highlighted = highlighted;
         this.dataset = highlighted.getDataset();
-        final ISeriesParameter[] parameters = dataset.getSeriesProvider().getParameters();
+        final IIndicatorSeriesParameter[] parameters = dataset.getIndicatorSeriesProvider().getParameters();
         final IParameterSettingsModifier[] modifiers = new IParameterSettingsModifier[parameters.length];
-        final IExpression[] args = dataset.getSeriesArguments();
+        final IExpression[] args = dataset.getIndicatorSeriesArguments();
         final Runnable modificationListener = new Runnable() {
             @Override
             public void run() {
@@ -64,13 +64,13 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
             }
         };
         for (int i = 0; i < parameters.length; i++) {
-            final ISeriesParameter parameter = parameters[i];
+            final IIndicatorSeriesParameter parameter = parameters[i];
             final IParameterSettingsModifier modifier = parameter.newModifier(modificationListener);
             modifier.setValue(args[i]);
             modifiers[i] = modifier;
         }
         this.seriesArgumentsBefore = args;
-        this.layout = new ParameterSettingsPanelLayout(modifiers);
+        this.layout = new ExpressionSettingsPanelLayout(modifiers);
         add(layout);
         notifyModification = true;
     }
@@ -80,14 +80,14 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
         final IExpression[] seriesArgumentsInitial = plotConfigurationHelper.getSeriesInitialSettings(highlighted)
                 .getSeriesArguments();
         setModifierValues(seriesArgumentsInitial);
-        if (hasChanges(seriesArgumentsInitial, dataset.getSeriesArguments())) {
+        if (hasChanges(seriesArgumentsInitial, dataset.getIndicatorSeriesArguments())) {
             apply(seriesArgumentsInitial);
         }
     }
 
     @Override
     public void cancel() {
-        if (hasChanges(seriesArgumentsBefore, dataset.getSeriesArguments())) {
+        if (hasChanges(seriesArgumentsBefore, dataset.getIndicatorSeriesArguments())) {
             apply(seriesArgumentsBefore);
         }
     }
@@ -95,7 +95,7 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
     @Override
     public void ok() {
         final IExpression[] newSeriesArguments = newSeriesArguments();
-        if (hasChanges(dataset.getSeriesArguments(), newSeriesArguments)) {
+        if (hasChanges(dataset.getIndicatorSeriesArguments(), newSeriesArguments)) {
             apply(newSeriesArguments);
         }
     }
@@ -108,12 +108,12 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
         return args;
     }
 
-    public void apply(final IExpression[] arguments) {
-        final ISeriesProvider seriesProvider = dataset.getSeriesProvider();
+    public void apply(final String expression) {
+        final IExpressionSeriesProvider seriesProvider = dataset.getIndicatorSeriesProvider();
         final String toExpression = seriesProvider.getExpressionString(arguments);
         try {
             seriesProvider.modifyDataset(plotConfigurationHelper.getChartPanel(), dataset, arguments);
-            dataset.setSeriesArguments(arguments);
+            dataset.setIndicatorSeriesArguments(arguments);
             dataset.setSeriesTitle(toExpression);
         } catch (final Throwable t) {
             final String fromExpression = dataset.getSeriesTitle();
@@ -126,7 +126,7 @@ public class ParameterSettingsPanel extends JPanel implements ISettingsPanelActi
                             + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>",
                     "Invalid Inputs", Dialogs.ERROR_MESSAGE);
 
-            final IExpression[] seriesArgumentsValid = dataset.getSeriesArguments();
+            final IExpression[] seriesArgumentsValid = dataset.getIndicatorSeriesArguments();
             setModifierValues(seriesArgumentsValid);
         }
     }

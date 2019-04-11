@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.modifier;
+package de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.modifier;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,7 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesParameter;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.util.math.expression.IExpression;
 
 @NotThreadSafe
@@ -15,7 +15,7 @@ public class EnumerationParameterSettingsModifier extends AParameterSettingsModi
 
     private final JComboBox<IExpression> component;
 
-    public EnumerationParameterSettingsModifier(final ISeriesParameter parameter, final Runnable modificationListener) {
+    public EnumerationParameterSettingsModifier(final IIndicatorSeriesParameter parameter, final Runnable modificationListener) {
         super(parameter);
         component = new JComboBox<IExpression>();
         final IExpression[] values = parameter.getEnumerationValues();

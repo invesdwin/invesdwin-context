@@ -9,7 +9,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
-import de.invesdwin.context.jfreechart.panel.helper.config.dialog.parameter.ParameterSettingsPanel;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.expression.ExpressionSettingsPanel;
+import de.invesdwin.context.jfreechart.panel.helper.config.dialog.indicator.IndicatorSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.config.dialog.style.StyleSettingsPanel;
 import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo;
 
@@ -17,7 +18,8 @@ import de.invesdwin.context.jfreechart.panel.helper.legend.HighlightedLegendInfo
 public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     private final StyleSettingsPanel styleSettings;
-    private final ParameterSettingsPanel parameterSettings;
+    private final IndicatorSettingsPanel parameterSettings;
+    private final ExpressionSettingsPanel expressionSettings;
     private final SettingsPanelButtonsLayout buttons;
 
     public SettingsPanel(final PlotConfigurationHelper plotConfigurationHelper, final HighlightedLegendInfo highlighted,
@@ -27,11 +29,17 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
         styleSettings = new StyleSettingsPanel(plotConfigurationHelper, highlighted, dialog);
         add(styleSettings, BorderLayout.CENTER);
 
-        if (highlighted.getDataset().hasSeriesArguments()) {
-            parameterSettings = new ParameterSettingsPanel(plotConfigurationHelper, highlighted, dialog);
+        if (highlighted.getDataset().hasIndicatorSeriesArguments()) {
+            expressionSettings = null;
+            parameterSettings = new IndicatorSettingsPanel(plotConfigurationHelper, highlighted, dialog);
             add(parameterSettings, BorderLayout.EAST);
+        } else if (highlighted.getDataset().hasExpressionSeriesArguments()) {
+            parameterSettings = null;
+            expressionSettings = new ExpressionSettingsPanel(plotConfigurationHelper, highlighted, dialog);
+            add(expressionSettings, BorderLayout.EAST);
         } else {
             parameterSettings = null;
+            expressionSettings = null;
         }
 
         buttons = new SettingsPanelButtonsLayout();

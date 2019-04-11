@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import org.springframework.web.util.HtmlUtils;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
@@ -50,7 +51,7 @@ public class AddSeriesPanel extends JPanel {
                 final int selectedRow = panel.tbl_series.rowAtPoint(e.getPoint());
                 panel.tbl_series.setRowSelectionInterval(selectedRow, selectedRow);
                 final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
-                final ISeriesProvider selectedValue = plotConfigurationHelper.getSeriesProvider(selectedName);
+                final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper.getIndicatorSeriesProvider(selectedName);
                 panel.tbl_series.setToolTipText(selectedValue.getDescription());
             }
         });
@@ -60,14 +61,15 @@ public class AddSeriesPanel extends JPanel {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     final int selectedRow = panel.tbl_series.getSelectedRow();
                     final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
-                    final ISeriesProvider selectedValue = plotConfigurationHelper.getSeriesProvider(selectedName);
+                    final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper
+                            .getIndicatorSeriesProvider(selectedName);
                     final IExpression[] args = selectedValue.getDefaultValues();
                     final String expressionString = selectedValue.getExpressionString(args);
                     try {
                         final IPlotSourceDataset dataset = selectedValue
                                 .newInstance(plotConfigurationHelper.getChartPanel(), args);
-                        dataset.setSeriesProvider(selectedValue);
-                        dataset.setSeriesArguments(args);
+                        dataset.setIndicatorSeriesProvider(selectedValue);
+                        dataset.setIndicatorSeriesArguments(args);
                         dataset.setSeriesTitle(expressionString);
                     } catch (final Throwable t) {
                         LOG.warn("Error adding series [" + selectedValue.getName() + "] with expression ["
@@ -107,16 +109,16 @@ public class AddSeriesPanel extends JPanel {
         final DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Name");
         model.addColumn("Expression");
-        final Collection<ISeriesProvider> seriesProviders = plotConfigurationHelper.getSeriesProviders();
+        final Collection<IIndicatorSeriesProvider> seriesProviders = plotConfigurationHelper.getIndicatorSeriesProviders();
         if (Strings.isBlank(search)) {
-            for (final ISeriesProvider seriesProvider : seriesProviders) {
+            for (final IIndicatorSeriesProvider seriesProvider : seriesProviders) {
                 model.addRow(new Object[] { seriesProvider.getName(),
                         seriesProvider.getExpressionString(seriesProvider.getDefaultValues()) });
             }
         } else {
             final String searchString = search.trim();
             final Pattern searchPattern = Pattern.compile(searchString);
-            for (final ISeriesProvider seriesProvider : seriesProviders) {
+            for (final IIndicatorSeriesProvider seriesProvider : seriesProviders) {
                 if (matches(seriesProvider, searchString, searchPattern)) {
                     model.addRow(new Object[] { seriesProvider.getName(),
                             seriesProvider.getExpressionString(seriesProvider.getDefaultValues()) });
@@ -126,7 +128,7 @@ public class AddSeriesPanel extends JPanel {
         return model;
     }
 
-    private boolean matches(final ISeriesProvider seriesProvider, final String searchString,
+    private boolean matches(final IIndicatorSeriesProvider seriesProvider, final String searchString,
             final Pattern searchPattern) {
         if (matches(searchString, searchPattern, seriesProvider.getName())) {
             return true;

@@ -5,7 +5,8 @@ import java.io.Closeable;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 
-import de.invesdwin.context.jfreechart.panel.helper.config.series.ISeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.util.math.expression.IExpression;
 
 public interface IPlotSourceDataset extends XYDataset, Closeable {
@@ -33,17 +34,29 @@ public interface IPlotSourceDataset extends XYDataset, Closeable {
 
     void setSeriesTitle(String seriesTitle);
 
-    ISeriesProvider getSeriesProvider();
+    IIndicatorSeriesProvider getIndicatorSeriesProvider();
 
-    void setSeriesProvider(ISeriesProvider seriesProvider);
+    void setIndicatorSeriesProvider(IIndicatorSeriesProvider indicatorSeriesProvider);
 
-    void setSeriesArguments(IExpression[] seriesArguments);
+    void setIndicatorSeriesArguments(IExpression[] indicatorSeriesArguments);
 
-    IExpression[] getSeriesArguments();
+    IExpression[] getIndicatorSeriesArguments();
 
-    default boolean hasSeriesArguments() {
-        final IExpression[] args = getSeriesArguments();
+    default boolean hasIndicatorSeriesArguments() {
+        final IExpression[] args = getIndicatorSeriesArguments();
         return args != null && args.length > 0;
+    }
+
+    IExpressionSeriesProvider getExpressionSeriesProvider();
+
+    void setExpressionSeriesProvider(IExpressionSeriesProvider expressionSeriesProvider);
+
+    String getExpressionSeriesArguments();
+
+    void setExpressionSeriesArguments(String expressionSeriesArguments);
+
+    default boolean hasExpressionSeriesArguments() {
+        return getExpressionSeriesArguments() != null;
     }
 
 }
