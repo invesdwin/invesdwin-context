@@ -26,7 +26,8 @@ public enum PlotIcons {
     MARKER("marker_256.png"),
 
     //add series
-    SEARCH("search_256.png");
+    SEARCH("search_256.png"),
+    EXPRESSION("expression_256.png");
 
     private String name;
 

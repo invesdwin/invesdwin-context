@@ -23,7 +23,8 @@ public class SeriesInitialSettings {
     private final boolean priceLineVisible;
     private final boolean priceLabelVisible;
     private final String rangeAxisId;
-    private final IExpression[] seriesArguments;
+    private final IExpression[] indicatorSeriesArguments;
+    private final String expressionSeriesArguments;
 
     public SeriesInitialSettings(final IDatasetSourceXYItemRenderer initialRenderer) {
         final SeriesRendererType seriesRendererType = SeriesRendererType.valueOf(initialRenderer);
@@ -47,7 +48,8 @@ public class SeriesInitialSettings {
         priceLineVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
         priceLabelVisible = HighlightedLegendInfo.isPriceLineVisible(initialRenderer);
         rangeAxisId = initialRenderer.getDataset().getRangeAxisId();
-        seriesArguments = initialRenderer.getDataset().getIndicatorSeriesArguments();
+        indicatorSeriesArguments = initialRenderer.getDataset().getIndicatorSeriesArguments();
+        expressionSeriesArguments = initialRenderer.getDataset().getExpressionSeriesArguments();
     }
 
     public void reset(final HighlightedLegendInfo highlighted) {
@@ -107,8 +109,12 @@ public class SeriesInitialSettings {
         return rangeAxisId;
     }
 
-    public IExpression[] getSeriesArguments() {
-        return seriesArguments;
+    public IExpression[] getIndicatorSeriesArguments() {
+        return indicatorSeriesArguments;
+    }
+
+    public String getExpressionSeriesArguments() {
+        return expressionSeriesArguments;
     }
 
 }

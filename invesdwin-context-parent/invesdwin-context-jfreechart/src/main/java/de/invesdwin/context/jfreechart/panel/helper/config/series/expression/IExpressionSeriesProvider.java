@@ -6,12 +6,12 @@ import de.invesdwin.util.math.expression.IExpression;
 
 public interface IExpressionSeriesProvider {
 
-    IExpression newExpression(String arguments);
-
     String getPlotPaneId();
 
-    IPlotSourceDataset newInstance(InteractiveChartPanel chartPanel, IExpression expression);
+    IExpression parseExpression(String expression);
 
-    void modifyDataset(InteractiveChartPanel chartPanel, IPlotSourceDataset dataset, IExpression expression);
+    IPlotSourceDataset newInstance(InteractiveChartPanel chartPanel, String expression);
+
+    void modifyDataset(InteractiveChartPanel chartPanel, IPlotSourceDataset dataset, String expression);
 
 }

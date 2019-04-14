@@ -30,6 +30,18 @@ public interface IPlotSourceDataset extends XYDataset, Closeable {
 
     boolean isLegendValueVisible(int series, int item);
 
+    default String getSeriesId() {
+        return (String) getSeriesKey(0);
+    }
+
+    /**
+     * Use getSeriesId() instead
+     */
+    @SuppressWarnings("rawtypes")
+    @Deprecated
+    @Override
+    Comparable getSeriesKey(int series);
+
     String getSeriesTitle();
 
     void setSeriesTitle(String seriesTitle);

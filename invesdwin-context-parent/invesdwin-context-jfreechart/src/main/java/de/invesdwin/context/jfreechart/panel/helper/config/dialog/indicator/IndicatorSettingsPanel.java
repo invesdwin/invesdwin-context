@@ -78,7 +78,7 @@ public class IndicatorSettingsPanel extends JPanel implements ISettingsPanelActi
     @Override
     public void reset() {
         final IExpression[] seriesArgumentsInitial = plotConfigurationHelper.getSeriesInitialSettings(highlighted)
-                .getSeriesArguments();
+                .getIndicatorSeriesArguments();
         setModifierValues(seriesArgumentsInitial);
         if (hasChanges(seriesArgumentsInitial, dataset.getIndicatorSeriesArguments())) {
             apply(seriesArgumentsInitial);
@@ -117,14 +117,13 @@ public class IndicatorSettingsPanel extends JPanel implements ISettingsPanelActi
             dataset.setSeriesTitle(toExpression);
         } catch (final Throwable t) {
             final String fromExpression = dataset.getSeriesTitle();
-            LOG.warn("Error modifying series [" + indicatorSeriesProvider.getName() + "] expression from [" + fromExpression
-                    + "] to [" + toExpression + "]:\n" + Throwables.getFullStackTrace(t));
-            Dialogs.showMessageDialog(this,
-                    "<html><b>Name:</b><br><pre>  " + indicatorSeriesProvider.getName() + "</pre><b>Expression:</b><br><pre>  "
-                            + fromExpression + "</pre><b>Invalid:</b><br><pre>  " + toExpression
-                            + "</pre><br><b>Error:</b><br><pre>  "
-                            + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>",
-                    "Invalid Inputs", Dialogs.ERROR_MESSAGE);
+            LOG.warn("Error modifying series [" + indicatorSeriesProvider.getName() + "] expression from ["
+                    + fromExpression + "] to [" + toExpression + "]:\n" + Throwables.getFullStackTrace(t));
+            Dialogs.showMessageDialog(this, "<html><b>Name:</b><br><pre>  " + indicatorSeriesProvider.getName()
+                    + "</pre><b>Valid Before:</b><br><pre>  " + fromExpression
+                    + "</pre><b>Invalid After:</b><br><pre>  " + toExpression + "</pre><br><b>Error:</b><br><pre>  "
+                    + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>",
+                    "Invalid Expression", Dialogs.ERROR_MESSAGE);
 
             final IExpression[] seriesArgumentsValid = dataset.getIndicatorSeriesArguments();
             setModifierValues(seriesArgumentsValid);

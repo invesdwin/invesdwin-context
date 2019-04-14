@@ -26,6 +26,7 @@ import de.invesdwin.context.jfreechart.panel.helper.config.LineStyleType;
 import de.invesdwin.context.jfreechart.panel.helper.config.LineWidthType;
 import de.invesdwin.context.jfreechart.panel.helper.config.SeriesRendererType;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.SeriesParameterType;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesParameter;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.plot.XYPlots;
@@ -37,7 +38,9 @@ import de.invesdwin.context.jfreechart.plot.dataset.basis.XYDataItemOHLC;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.lang.UniqueNameGenerator;
 import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.math.expression.ExpressionParser;
 import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.math.expression.eval.BooleanExpression;
 import de.invesdwin.util.math.expression.eval.ConstantExpression;
@@ -48,6 +51,7 @@ import de.invesdwin.util.time.fdate.FDate;
 public class CandlestickDemo extends JFrame {
 
     private static final String PRICE_PLOT_PANE_ID = "Price";
+    private static final UniqueNameGenerator SERIES_ID_GENERATOR = new UniqueNameGenerator();
 
     public CandlestickDemo() {
         super("CandlestickDemo");
@@ -58,6 +62,8 @@ public class CandlestickDemo extends JFrame {
         add(chartPanel);
         chartPanel.getPlotConfigurationHelper().putIndicatorSeriesProvider(new CustomIndicatorSeriesProvider());
         chartPanel.getPlotConfigurationHelper().putIndicatorSeriesProvider(new ThrowExceptionIndicatorSeriesProvider());
+
+        chartPanel.getPlotConfigurationHelper().setExpressionSeriesProvider(new CustomExpressionSeriesProvider());
         this.pack();
     }
 
@@ -124,6 +130,89 @@ public class CandlestickDemo extends JFrame {
         new CandlestickDemo().setVisible(true);
     }
 
+    private final class CustomExpressionSeriesProvider implements IExpressionSeriesProvider {
+        @Override
+        public IPlotSourceDataset newInstance(final InteractiveChartPanel chartPanel, final String expression) {
+            final Stroke stroke = chartPanel.getPlotConfigurationHelper().getPriceInitialSettings().getSeriesStroke();
+            final LineStyleType lineStyleType = LineStyleType.valueOf(stroke);
+            final LineWidthType lineWidthType = LineWidthType.valueOf(stroke);
+            final Color color = Color.GREEN;
+            final boolean priceLineVisible = false;
+            final boolean priceLabelVisible = false;
+
+            final String seriesId = SERIES_ID_GENERATOR.get(getPlotPaneId());
+            final PlotSourceXYSeriesCollection dataset = new PlotSourceXYSeriesCollection(seriesId);
+            dataset.setSeriesTitle(expression);
+            final XYPlot plot = chartPanel.getOhlcPlot();
+            dataset.setPlot(plot);
+            dataset.setPrecision(4);
+            dataset.setRangeAxisId(getPlotPaneId());
+            final IndexedDateTimeXYSeries series = newSeriesPrefilled(chartPanel, expression, seriesId);
+            final int datasetIndex = plot.getDatasetCount();
+            dataset.addSeries(series);
+            final SeriesRendererType seriesRendererType = SeriesRendererType.Line;
+            final XYItemRenderer renderer = seriesRendererType.newRenderer(dataset, lineStyleType, lineWidthType, color,
+                    priceLineVisible, priceLabelVisible);
+            plot.setDataset(datasetIndex, dataset);
+            plot.setRenderer(datasetIndex, renderer);
+            XYPlots.updateRangeAxes(plot);
+            chartPanel.update();
+
+            if (!chartPanel.getCombinedPlot().isSubplotVisible(plot)) {
+                chartPanel.getCombinedPlot().add(plot, CustomCombinedDomainXYPlot.INITIAL_PLOT_WEIGHT);
+            }
+
+            return dataset;
+        }
+
+        @Override
+        public void modifyDataset(final InteractiveChartPanel chartPanel, final IPlotSourceDataset dataset,
+                final String expression) {
+            final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
+            cDataset.setSeriesTitle(expression);
+            cDataset.setNotify(false);
+            cDataset.removeAllSeries();
+            final String seriesId = dataset.getSeriesId();
+            cDataset.addSeries(newSeriesPrefilled(chartPanel, expression, seriesId));
+            cDataset.setNotify(true);
+        }
+
+        private IndexedDateTimeXYSeries newSeriesPrefilled(final InteractiveChartPanel chartPanel,
+                final String expressionStr, final String seriesId) {
+            final IndexedDateTimeXYSeries series = new IndexedDateTimeXYSeries(seriesId);
+
+            final IExpression expression = parseExpression(expressionStr);
+            final List<XYDataItemOHLC> list = series.getData();
+            final List<OHLCDataItem> ohlc = chartPanel.getDataset().getData();
+            for (int i = 0; i < ohlc.size(); i++) {
+                final FDate time = new FDate(ohlc.get(i).getDate());
+                final double value = expression.evaluateDouble(time);
+                final XYDataItemOHLC item = new XYDataItemOHLC(
+                        new OHLCDataItem(time.dateValue(), Double.NaN, Double.NaN, Double.NaN, value, Double.NaN));
+                final int index = list.size();
+                final double xValueAsDateTime = chartPanel.getDataset().getXValueAsDateTime(0, index);
+                if (xValueAsDateTime != item.getXValue()) {
+                    throw new IllegalStateException(
+                            "Async at index [" + index + "]: ohlc[" + new FDate((long) xValueAsDateTime)
+                                    + "] != series[" + new FDate((long) item.getXValue()) + "]");
+                }
+                list.add(item);
+                series.updateBoundsForAddedItem(item);
+            }
+            return series;
+        }
+
+        @Override
+        public IExpression parseExpression(final String expression) {
+            return new ExpressionParser(expression).parse();
+        }
+
+        @Override
+        public String getPlotPaneId() {
+            return "Expression";
+        }
+    }
+
     private final class ThrowExceptionIndicatorSeriesProvider implements IIndicatorSeriesProvider {
         @Override
         public IPlotSourceDataset newInstance(final InteractiveChartPanel chartPanel, final IExpression[] args) {
@@ -177,7 +266,8 @@ public class CandlestickDemo extends JFrame {
             dataset.setPlot(plot);
             dataset.setPrecision(4);
             dataset.setRangeAxisId(getPlotPaneId());
-            final IndexedDateTimeXYSeries series = newSeriesPrefilled(chartPanel, args);
+            final String seriesId = SERIES_ID_GENERATOR.get(getPlotPaneId());
+            final IndexedDateTimeXYSeries series = newSeriesPrefilled(chartPanel, args, seriesId);
             final int datasetIndex = plot.getDatasetCount();
             dataset.addSeries(series);
             final SeriesRendererType seriesRendererType = SeriesRendererType.Line;
@@ -196,7 +286,7 @@ public class CandlestickDemo extends JFrame {
         }
 
         private IndexedDateTimeXYSeries newSeriesPrefilled(final InteractiveChartPanel chartPanel,
-                final IExpression[] args) {
+                final IExpression[] args, final String seriesId) {
             Assertions.checkEquals(4, args.length);
             final boolean invertAddition = args[0].evaluateBoolean();
             final int lagBars = args[1].evaluateInteger();
@@ -237,7 +327,8 @@ public class CandlestickDemo extends JFrame {
             final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
             cDataset.setNotify(false);
             cDataset.removeAllSeries();
-            cDataset.addSeries(newSeriesPrefilled(chartPanel, args));
+            final String seriesId = dataset.getSeriesId();
+            cDataset.addSeries(newSeriesPrefilled(chartPanel, args, seriesId));
             cDataset.setNotify(true);
         }
 

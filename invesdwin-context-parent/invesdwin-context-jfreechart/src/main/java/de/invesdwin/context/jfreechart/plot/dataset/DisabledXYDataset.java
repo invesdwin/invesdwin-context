@@ -49,6 +49,8 @@ public class DisabledXYDataset extends AbstractXYDataset implements IPlotSourceD
         return enabledDataset.getSeriesCount();
     }
 
+    @SuppressWarnings("rawtypes")
+    @Deprecated
     @Override
     public Comparable getSeriesKey(final int series) {
         return enabledDataset.getSeriesKey(series);

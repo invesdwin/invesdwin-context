@@ -43,7 +43,7 @@ public class PlotConfigurationHelper {
     private final InteractiveChartPanel chartPanel;
 
     private final PriceInitialSettings priceInitialSettings;
-    private final Map<String, SeriesInitialSettings> seriesKey_initialSettings = new HashMap<>();
+    private final Map<String, SeriesInitialSettings> seriesId_initialSettings = new HashMap<>();
 
     private JPopupMenu popupMenu;
     private JMenuItem titleItem;
@@ -109,7 +109,7 @@ public class PlotConfigurationHelper {
                         addSeriesConfigMenuItems();
                     }
                 } else {
-                    if (!indicatorSeriesProviders.isEmpty()) {
+                    if (!indicatorSeriesProviders.isEmpty() || expressionSeriesProvider != null) {
                         popupMenu.add(addSeriesItem);
                         popupMenu.addSeparator();
                     }
@@ -124,9 +124,9 @@ public class PlotConfigurationHelper {
 
             private void addSeriesConfigMenuItems() {
                 if (highlighted.isPriceSeries()) {
-                    titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesKey(0) + " - Series"));
+                    titleItem.setText(String.valueOf(chartPanel.getDataset().getSeriesTitle() + " - Series"));
                 } else {
-                    titleItem.setText(highlighted.getSeriesKey() + " - Series");
+                    titleItem.setText(highlighted.getSeriesTitle() + " - Series");
                 }
                 popupMenu.add(titleItem);
                 popupMenu.addSeparator();
@@ -154,16 +154,16 @@ public class PlotConfigurationHelper {
     }
 
     public SeriesInitialSettings getOrCreateSeriesInitialSettings(final HighlightedLegendInfo highlighted) {
-        SeriesInitialSettings seriesInitialSettings = seriesKey_initialSettings.get(highlighted.getSeriesKey());
+        SeriesInitialSettings seriesInitialSettings = seriesId_initialSettings.get(highlighted.getSeriesId());
         if (seriesInitialSettings == null) {
             seriesInitialSettings = new SeriesInitialSettings(highlighted.getRenderer());
-            seriesKey_initialSettings.put(highlighted.getSeriesKey(), seriesInitialSettings);
+            seriesId_initialSettings.put(highlighted.getSeriesId(), seriesInitialSettings);
         }
         return seriesInitialSettings;
     }
 
     public SeriesInitialSettings getSeriesInitialSettings(final HighlightedLegendInfo highlighted) {
-        return seriesKey_initialSettings.get(highlighted.getSeriesKey());
+        return seriesId_initialSettings.get(highlighted.getSeriesId());
     }
 
     private void initSeriesVisibilityItems() {
@@ -325,8 +325,8 @@ public class PlotConfigurationHelper {
         return popupMenu.isShowing();
     }
 
-    public void removeInitialSeriesSettings(final String seriesKey) {
-        seriesKey_initialSettings.remove(seriesKey);
+    public void removeInitialSeriesSettings(final String seriesId) {
+        seriesId_initialSettings.remove(seriesId);
     }
 
     public void putIndicatorSeriesProvider(final IIndicatorSeriesProvider indicatorSeriesProvider) {
@@ -352,7 +352,7 @@ public class PlotConfigurationHelper {
     public Set<String> getRangeAxisIds() {
         final Set<String> rangeAxisIds = new TreeSet<>();
         addRangeAxisId(rangeAxisIds, getPriceInitialSettings().getRangeAxisId());
-        for (final SeriesInitialSettings series : seriesKey_initialSettings.values()) {
+        for (final SeriesInitialSettings series : seriesId_initialSettings.values()) {
             addRangeAxisId(rangeAxisIds, series.getRangeAxisId());
         }
         for (final XYPlot plot : chartPanel.getCombinedPlot().getSubplots()) {

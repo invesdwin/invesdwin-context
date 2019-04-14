@@ -141,8 +141,8 @@ public class PlotLegendHelper {
                 for (int datasetIndex = 0; datasetIndex < visibleTrashPlot.getDatasetCount(); datasetIndex++) {
                     final IPlotSourceDataset dataset = (IPlotSourceDataset) visibleTrashPlot.getDataset(datasetIndex);
                     if (dataset != null) {
-                        final String seriesKey = String.valueOf(dataset.getSeriesKey(0));
-                        chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(seriesKey);
+                        final String seriesId = String.valueOf(dataset.getSeriesId());
+                        chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(seriesId);
                         dataset.close();
                     }
                 }

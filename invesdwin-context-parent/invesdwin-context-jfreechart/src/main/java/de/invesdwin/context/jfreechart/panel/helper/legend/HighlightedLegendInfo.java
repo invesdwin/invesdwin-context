@@ -48,8 +48,12 @@ public class HighlightedLegendInfo {
         return datasetIndex;
     }
 
-    public String getSeriesKey() {
-        return String.valueOf(getDataset().getSeriesKey(0));
+    public String getSeriesId() {
+        return String.valueOf(getDataset().getSeriesId());
+    }
+
+    public String getSeriesTitle() {
+        return getDataset().getSeriesTitle();
     }
 
     public boolean isPriceSeries() {
@@ -82,7 +86,7 @@ public class HighlightedLegendInfo {
 
     public void removeSeries() {
         Assertions.checkTrue(isRemovable());
-        chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(getSeriesKey());
+        chartPanel.getPlotConfigurationHelper().removeInitialSeriesSettings(getSeriesId());
         final IPlotSourceDataset dataset = getDataset();
         dataset.close();
         XYPlots.removeDataset(plot, datasetIndex);

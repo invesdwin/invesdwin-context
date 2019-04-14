@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import org.springframework.web.util.HtmlUtils;
 
 import de.invesdwin.context.jfreechart.panel.helper.config.PlotConfigurationHelper;
+import de.invesdwin.context.jfreechart.panel.helper.config.series.expression.IExpressionSeriesProvider;
 import de.invesdwin.context.jfreechart.panel.helper.config.series.indicator.IIndicatorSeriesProvider;
 import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.error.Throwables;
@@ -42,25 +43,26 @@ public class AddSeriesPanel extends JPanel {
         panel = new AddSeriesPanelLayout();
         add(panel, BorderLayout.CENTER);
 
-        panel.tbl_series.setModel(newTableModel(""));
+        panel.tbl_indicator.setModel(newTableModel(""));
 
-        panel.tbl_series.setCursor(HAND_CURSOR);
-        panel.tbl_series.addMouseMotionListener(new MouseMotionListenerSupport() {
+        panel.tbl_indicator.setCursor(HAND_CURSOR);
+        panel.tbl_indicator.addMouseMotionListener(new MouseMotionListenerSupport() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-                final int selectedRow = panel.tbl_series.rowAtPoint(e.getPoint());
-                panel.tbl_series.setRowSelectionInterval(selectedRow, selectedRow);
-                final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
-                final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper.getIndicatorSeriesProvider(selectedName);
-                panel.tbl_series.setToolTipText(selectedValue.getDescription());
+                final int selectedRow = panel.tbl_indicator.rowAtPoint(e.getPoint());
+                panel.tbl_indicator.setRowSelectionInterval(selectedRow, selectedRow);
+                final String selectedName = (String) panel.tbl_indicator.getModel().getValueAt(selectedRow, 0);
+                final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper
+                        .getIndicatorSeriesProvider(selectedName);
+                panel.tbl_indicator.setToolTipText(selectedValue.getDescription());
             }
         });
-        panel.tbl_series.addMouseListener(new MouseListenerSupport() {
+        panel.tbl_indicator.addMouseListener(new MouseListenerSupport() {
             @Override
             public void mouseReleased(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    final int selectedRow = panel.tbl_series.getSelectedRow();
-                    final String selectedName = (String) panel.tbl_series.getModel().getValueAt(selectedRow, 0);
+                    final int selectedRow = panel.tbl_indicator.getSelectedRow();
+                    final String selectedName = (String) panel.tbl_indicator.getModel().getValueAt(selectedRow, 0);
                     final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper
                             .getIndicatorSeriesProvider(selectedName);
                     final IExpression[] args = selectedValue.getDefaultValues();
@@ -96,12 +98,47 @@ public class AddSeriesPanel extends JPanel {
         panel.tf_search.getDocument().addDocumentListener(new DocumentListenerSupport() {
             @Override
             protected void update(final DocumentEvent e) {
-                panel.tbl_series.setModel(newTableModel(panel.tf_search.getText()));
+                panel.tbl_indicator.setModel(newTableModel(panel.tf_search.getText()));
+            }
+        });
+        panel.btn_addExpression.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final String expression = panel.tf_expression.getText();
+                if (Strings.isBlank(expression)) {
+                    Dialogs.showMessageDialog(panel, "Expression should not be blank.", "Error", Dialogs.ERROR_MESSAGE);
+                } else {
+                    final IExpressionSeriesProvider provider = plotConfigurationHelper.getExpressionSeriesProvider();
+                    try {
+                        final IPlotSourceDataset dataset = provider.newInstance(plotConfigurationHelper.getChartPanel(),
+                                expression);
+                        dataset.setExpressionSeriesProvider(provider);
+                        dataset.setExpressionSeriesArguments(expression);
+                        dataset.setSeriesTitle(expression);
+                    } catch (final Throwable t) {
+                        LOG.warn("Error adding series with expression [" + expression + "]\n"
+                                + Throwables.getFullStackTrace(t));
+
+                        Dialogs.showMessageDialog(panel,
+                                "<html><b>Expression:</b><br><pre>  " + expression
+                                        + "</pre><br><b>Error:</b><br><pre>  "
+                                        + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  "))
+                                        + "</pre>",
+                                "Error", Dialogs.ERROR_MESSAGE);
+                    }
+                }
             }
         });
 
         if (dialog != null) {
             dialog.getRootPane().setDefaultButton(panel.btn_close);
+        }
+
+        if (plotConfigurationHelper.getExpressionSeriesProvider() == null) {
+            panel.pnl_expression.setVisible(false);
+        }
+        if (plotConfigurationHelper.getIndicatorSeriesProviders().isEmpty()) {
+            panel.pnl_indicator.setVisible(false);
         }
     }
 
@@ -109,7 +146,8 @@ public class AddSeriesPanel extends JPanel {
         final DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Name");
         model.addColumn("Expression");
-        final Collection<IIndicatorSeriesProvider> seriesProviders = plotConfigurationHelper.getIndicatorSeriesProviders();
+        final Collection<IIndicatorSeriesProvider> seriesProviders = plotConfigurationHelper
+                .getIndicatorSeriesProviders();
         if (Strings.isBlank(search)) {
             for (final IIndicatorSeriesProvider seriesProvider : seriesProviders) {
                 model.addRow(new Object[] { seriesProvider.getName(),

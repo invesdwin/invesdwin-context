@@ -44,7 +44,7 @@ public class HighlightableLegendTitle extends CustomLegendTitle {
             final String label = dataset.getSeriesTitle();
             if (label == null) {
                 throw new NullPointerException(
-                        "seriesTitle should not be null for seriesKey: " + dataset.getSeriesKey(0));
+                        "seriesTitle should not be null for seriesKey: " + dataset.getSeriesId());
             }
             final int series = item.getSeriesIndex();
             final int lastItem = dataset.getItemCount(series) - 1;

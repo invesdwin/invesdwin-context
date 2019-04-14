@@ -73,6 +73,9 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     @Override
     public void reset() {
+        if (expressionSettings != null) {
+            expressionSettings.reset();
+        }
         if (parameterSettings != null) {
             parameterSettings.reset();
         }
@@ -81,6 +84,9 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     @Override
     public void cancel() {
+        if (expressionSettings != null) {
+            expressionSettings.cancel();
+        }
         if (parameterSettings != null) {
             parameterSettings.cancel();
         }
@@ -89,7 +95,9 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     @Override
     public void ok() {
-        final boolean ok = true;
+        if (expressionSettings != null) {
+            expressionSettings.ok();
+        }
         if (parameterSettings != null) {
             parameterSettings.ok();
         }
