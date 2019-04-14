@@ -26,7 +26,7 @@ public class AddSeriesDialog extends JDialog {
         System.out.println("TODO: "//
                 + "\ndocument this feature in help;"//
                 + "\nallow to plot expression components individually (only API or also via popup?);"//
-                + "\nmaybe make expression column click in add series add to expression builder?"//
+                + "\nmaybe make expression column click in add series add to expression builder? maybe make this dynamic when focus is on expression?"//
         );
         final Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
