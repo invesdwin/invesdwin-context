@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,6 +21,8 @@ import de.invesdwin.util.swing.icon.JIconTextField;
 @NotThreadSafe
 public class AddSeriesPanelLayout extends JPanel {
 
+    public static final Dimension DIMENSION_TEXTFIELD = new Dimension(50, 28);
+    public static final ImageIcon ICON_EXPRESSION = PlotIcons.EXPRESSION.newIcon(14);
     //CHECKSTYLE:OFF
     public final JPanel pnl_expression;
     public final JIconTextField tf_expression;
@@ -34,19 +37,19 @@ public class AddSeriesPanelLayout extends JPanel {
         setLayout(new BorderLayout());
 
         pnl_expression = new JPanel();
+        pnl_expression.setLayout(new BorderLayout(5, 5));
         pnl_expression.setBorder(new CompoundBorder(
                 new TitledBorder(null, "Expression", TitledBorder.LEADING, TitledBorder.TOP, null, null),
                 new EmptyBorder(0, 5, 5, 5)));
         add(pnl_expression, BorderLayout.NORTH);
-        pnl_expression.setLayout(new BorderLayout(5, 5));
 
         btn_addExpression = new JButton("Add");
         pnl_expression.add(btn_addExpression, BorderLayout.EAST);
 
         tf_expression = new JIconTextField();
-        tf_expression.setMinimumSize(new Dimension(50, 24));
-        tf_expression.setPreferredSize(new Dimension(50, 24));
-        tf_expression.setIcon(PlotIcons.EXPRESSION.newIcon(14));
+        tf_expression.setMinimumSize(DIMENSION_TEXTFIELD);
+        tf_expression.setPreferredSize(tf_expression.getMinimumSize());
+        tf_expression.setIcon(ICON_EXPRESSION);
         pnl_expression.add(tf_expression, BorderLayout.CENTER);
 
         pnl_indicator = new JPanel();
@@ -58,8 +61,8 @@ public class AddSeriesPanelLayout extends JPanel {
 
         tf_search = new JIconTextField();
         tf_search.setIcon(PlotIcons.SEARCH.newIcon(14));
-        tf_search.setMinimumSize(new Dimension(50, 24));
-        tf_search.setPreferredSize(new Dimension(50, 24));
+        tf_search.setMinimumSize(DIMENSION_TEXTFIELD);
+        tf_search.setPreferredSize(tf_search.getMinimumSize());
         pnl_indicator.add(tf_search, BorderLayout.NORTH);
 
         final JScrollPane scrl_indicator = new JScrollPane();

@@ -169,11 +169,12 @@ public class CandlestickDemo extends JFrame {
         public void modifyDataset(final InteractiveChartPanel chartPanel, final IPlotSourceDataset dataset,
                 final String expression) {
             final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
+            final String seriesId = dataset.getSeriesId();
+            final IndexedDateTimeXYSeries newSeriesPrefilled = newSeriesPrefilled(chartPanel, expression, seriesId);
             cDataset.setSeriesTitle(expression);
             cDataset.setNotify(false);
             cDataset.removeAllSeries();
-            final String seriesId = dataset.getSeriesId();
-            cDataset.addSeries(newSeriesPrefilled(chartPanel, expression, seriesId));
+            cDataset.addSeries(newSeriesPrefilled);
             cDataset.setNotify(true);
         }
 
@@ -325,10 +326,11 @@ public class CandlestickDemo extends JFrame {
         public void modifyDataset(final InteractiveChartPanel chartPanel, final IPlotSourceDataset dataset,
                 final IExpression[] args) {
             final PlotSourceXYSeriesCollection cDataset = (PlotSourceXYSeriesCollection) dataset;
+            final String seriesId = dataset.getSeriesId();
+            final IndexedDateTimeXYSeries newSeriesPrefilled = newSeriesPrefilled(chartPanel, args, seriesId);
             cDataset.setNotify(false);
             cDataset.removeAllSeries();
-            final String seriesId = dataset.getSeriesId();
-            cDataset.addSeries(newSeriesPrefilled(chartPanel, args, seriesId));
+            cDataset.addSeries(newSeriesPrefilled);
             cDataset.setNotify(true);
         }
 

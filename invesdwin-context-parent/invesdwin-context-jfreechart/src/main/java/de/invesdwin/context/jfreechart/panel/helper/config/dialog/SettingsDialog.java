@@ -29,7 +29,7 @@ public class SettingsDialog extends JDialog {
         contentPane.setLayout(new BorderLayout());
         panel = new SettingsPanel(plotConfigurationHelper, highlighted, this);
         contentPane.add(panel);
-        setTitle(highlighted.getSeriesId() + " - Series Settings");
+        setTitle(highlighted.getSeriesTitle() + " - Series Settings");
 
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowListenerSupport() {
@@ -47,7 +47,7 @@ public class SettingsDialog extends JDialog {
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        setResizable(false);
+        setResizable(true);
         pack();
         setLocationRelativeTo(plotConfigurationHelper.getChartPanel());
     }

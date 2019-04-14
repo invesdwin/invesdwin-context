@@ -44,10 +44,9 @@ public class IndicatorSettingsPanel extends JPanel implements ISettingsPanelActi
 
         final FlowLayout flowLayout = (FlowLayout) getLayout();
         flowLayout.setVgap(0);
-        final TitledBorder titleBorder = new TitledBorder(null, "Indicator", TitledBorder.LEADING, TitledBorder.TOP,
-                null, null);
-        final EmptyBorder marginBorder = new EmptyBorder(10, 10, 10, 10);
-        setBorder(new CompoundBorder(new CompoundBorder(marginBorder, titleBorder), marginBorder));
+        setBorder(new CompoundBorder(
+                new TitledBorder(null, "Indicator", TitledBorder.LEADING, TitledBorder.TOP, null, null),
+                new EmptyBorder(0, 5, 5, 5)));
 
         this.plotConfigurationHelper = plotConfigurationHelper;
         this.highlighted = highlighted;

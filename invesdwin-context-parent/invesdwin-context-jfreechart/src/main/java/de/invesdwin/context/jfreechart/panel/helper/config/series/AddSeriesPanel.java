@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.series;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.swing.Icon;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +25,7 @@ import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.swing.Dialogs;
+import de.invesdwin.util.swing.icon.ChangeColorImageFilter;
 import de.invesdwin.util.swing.listener.DocumentListenerSupport;
 import de.invesdwin.util.swing.listener.MouseListenerSupport;
 import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
@@ -30,39 +33,48 @@ import de.invesdwin.util.swing.listener.MouseMotionListenerSupport;
 @NotThreadSafe
 public class AddSeriesPanel extends JPanel {
 
+    public static final Color COLOR_EXPRESSION_PENDING_INVALID = Color.RED;
+    public static final Color COLOR_EXPRESSION_PENDING_VALID = Color.GREEN.darker();
+
+    public static final Icon ICON_EXPRESSION = AddSeriesPanelLayout.ICON_EXPRESSION;
+    public static final Icon ICON_EXPRESSION_PENDING_INVALID = ChangeColorImageFilter
+            .apply(AddSeriesPanelLayout.ICON_EXPRESSION, COLOR_EXPRESSION_PENDING_INVALID);
+    public static final Icon ICON_EXPRESSION_PENDING_VALID = ChangeColorImageFilter
+            .apply(AddSeriesPanelLayout.ICON_EXPRESSION, COLOR_EXPRESSION_PENDING_VALID);
+
     private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory.getXLogger(AddSeriesPanel.class);
     private static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     private final PlotConfigurationHelper plotConfigurationHelper;
 
-    private final AddSeriesPanelLayout panel;
+    private final AddSeriesPanelLayout layout;
 
     public AddSeriesPanel(final PlotConfigurationHelper plotConfigurationHelper, final AddSeriesDialog dialog) {
         this.plotConfigurationHelper = plotConfigurationHelper;
         setLayout(new BorderLayout());
 
-        panel = new AddSeriesPanelLayout();
-        add(panel, BorderLayout.CENTER);
+        layout = new AddSeriesPanelLayout();
+        add(layout, BorderLayout.CENTER);
 
-        panel.tbl_indicator.setModel(newTableModel(""));
+        layout.tbl_indicator.setModel(newTableModel(""));
 
-        panel.tbl_indicator.setCursor(HAND_CURSOR);
-        panel.tbl_indicator.addMouseMotionListener(new MouseMotionListenerSupport() {
+        layout.tbl_indicator.setCursor(HAND_CURSOR);
+        layout.tbl_indicator.addMouseMotionListener(new MouseMotionListenerSupport() {
             @Override
             public void mouseMoved(final MouseEvent e) {
-                final int selectedRow = panel.tbl_indicator.rowAtPoint(e.getPoint());
-                panel.tbl_indicator.setRowSelectionInterval(selectedRow, selectedRow);
-                final String selectedName = (String) panel.tbl_indicator.getModel().getValueAt(selectedRow, 0);
+                final int selectedRow = layout.tbl_indicator.rowAtPoint(e.getPoint());
+                layout.tbl_indicator.setRowSelectionInterval(selectedRow, selectedRow);
+                final String selectedName = (String) layout.tbl_indicator.getModel().getValueAt(selectedRow, 0);
                 final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper
                         .getIndicatorSeriesProvider(selectedName);
-                panel.tbl_indicator.setToolTipText(selectedValue.getDescription());
+                layout.tbl_indicator.setToolTipText(selectedValue.getDescription());
             }
         });
-        panel.tbl_indicator.addMouseListener(new MouseListenerSupport() {
+        layout.tbl_indicator.addMouseListener(new MouseListenerSupport() {
             @Override
             public void mouseReleased(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    final int selectedRow = panel.tbl_indicator.getSelectedRow();
-                    final String selectedName = (String) panel.tbl_indicator.getModel().getValueAt(selectedRow, 0);
+                    final int selectedRow = layout.tbl_indicator.getSelectedRow();
+                    final String selectedName = (String) layout.tbl_indicator.getModel().getValueAt(selectedRow, 0);
                     final IIndicatorSeriesProvider selectedValue = plotConfigurationHelper
                             .getIndicatorSeriesProvider(selectedName);
                     final IExpression[] args = selectedValue.getDefaultValues();
@@ -77,7 +89,7 @@ public class AddSeriesPanel extends JPanel {
                         LOG.warn("Error adding series [" + selectedValue.getName() + "] with expression ["
                                 + expressionString + "]\n" + Throwables.getFullStackTrace(t));
 
-                        Dialogs.showMessageDialog(panel,
+                        Dialogs.showMessageDialog(layout,
                                 "<html><b>Name:</b><br><pre>  " + selectedValue.getName()
                                         + "</pre><b>Expression:</b><br><pre>  " + expressionString
                                         + "</pre><br><b>Error:</b><br><pre>  "
@@ -89,24 +101,25 @@ public class AddSeriesPanel extends JPanel {
             }
         });
 
-        panel.btn_close.addActionListener(new ActionListener() {
+        layout.btn_close.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 dialog.close();
             }
         });
-        panel.tf_search.getDocument().addDocumentListener(new DocumentListenerSupport() {
+        layout.tf_search.getDocument().addDocumentListener(new DocumentListenerSupport() {
             @Override
             protected void update(final DocumentEvent e) {
-                panel.tbl_indicator.setModel(newTableModel(panel.tf_search.getText()));
+                layout.tbl_indicator.setModel(newTableModel(layout.tf_search.getText()));
             }
         });
-        panel.btn_addExpression.addActionListener(new ActionListener() {
+        layout.btn_addExpression.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final String expression = panel.tf_expression.getText();
+                final String expression = layout.tf_expression.getText();
                 if (Strings.isBlank(expression)) {
-                    Dialogs.showMessageDialog(panel, "Expression should not be blank.", "Error", Dialogs.ERROR_MESSAGE);
+                    Dialogs.showMessageDialog(layout, "Expression should not be blank.", "Error",
+                            Dialogs.ERROR_MESSAGE);
                 } else {
                     final IExpressionSeriesProvider provider = plotConfigurationHelper.getExpressionSeriesProvider();
                     try {
@@ -115,11 +128,13 @@ public class AddSeriesPanel extends JPanel {
                         dataset.setExpressionSeriesProvider(provider);
                         dataset.setExpressionSeriesArguments(expression);
                         dataset.setSeriesTitle(expression);
+
+                        layout.tf_expression.setIcon(ICON_EXPRESSION);
                     } catch (final Throwable t) {
                         LOG.warn("Error adding series with expression [" + expression + "]\n"
                                 + Throwables.getFullStackTrace(t));
 
-                        Dialogs.showMessageDialog(panel,
+                        Dialogs.showMessageDialog(layout,
                                 "<html><b>Expression:</b><br><pre>  " + expression
                                         + "</pre><br><b>Error:</b><br><pre>  "
                                         + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  "))
@@ -129,16 +144,40 @@ public class AddSeriesPanel extends JPanel {
                 }
             }
         });
+        layout.tf_expression.getDocument().addDocumentListener(new DocumentListenerSupport() {
+            @Override
+            protected void update(final DocumentEvent e) {
+                final String expression = layout.tf_expression.getText();
+                if (Strings.isNotBlank(expression)) {
+                    try {
+                        final IExpressionSeriesProvider provider = plotConfigurationHelper
+                                .getExpressionSeriesProvider();
+                        final IExpression parsedExpression = provider.parseExpression(expression);
+                        layout.tf_expression.setIcon(ICON_EXPRESSION_PENDING_VALID);
+                        layout.tf_expression.setToolTipText("<html><b>Validated:</b><br><pre>  "
+                                + HtmlUtils.htmlEscape(parsedExpression.toString().replace("\n", "\n  ")) + "</pre>");
+                    } catch (final Throwable t) {
+                        layout.tf_expression.setIcon(ICON_EXPRESSION_PENDING_INVALID);
+                        layout.tf_expression.setToolTipText("<html><b>Error:</b><br><pre>  "
+                                + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  "))
+                                + "</pre>");
+                    }
+                } else {
+                    layout.tf_expression.setIcon(ICON_EXPRESSION);
+                    layout.tf_expression.setToolTipText(null);
+                }
+            }
+        });
 
         if (dialog != null) {
-            dialog.getRootPane().setDefaultButton(panel.btn_close);
+            dialog.getRootPane().setDefaultButton(layout.btn_close);
         }
 
         if (plotConfigurationHelper.getExpressionSeriesProvider() == null) {
-            panel.pnl_expression.setVisible(false);
+            layout.pnl_expression.setVisible(false);
         }
         if (plotConfigurationHelper.getIndicatorSeriesProviders().isEmpty()) {
-            panel.pnl_indicator.setVisible(false);
+            layout.pnl_indicator.setVisible(false);
         }
     }
 

@@ -1,12 +1,11 @@
 package de.invesdwin.context.jfreechart.panel.helper.config.dialog.expression;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.CompoundBorder;
@@ -25,15 +24,17 @@ import de.invesdwin.context.jfreechart.plot.dataset.IPlotSourceDataset;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.math.expression.IExpression;
 import de.invesdwin.util.swing.Dialogs;
 import de.invesdwin.util.swing.listener.DocumentListenerSupport;
 
 @NotThreadSafe
 public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelActions {
 
-    private static final Color COLOR_EXPRESSION_PENDING_INVALID = Color.RED;
-
-    private static final Color COLOR_EXPRESSION_PENDING_VALID = Color.GREEN;
+    public static final Icon ICON_EXPRESSION = AddSeriesPanel.ICON_EXPRESSION;
+    public static final Icon ICON_EXPRESSION_PENDING_INVALID = AddSeriesPanel.ICON_EXPRESSION_PENDING_INVALID;
+    public static final Icon ICON_EXPRESSION_PENDING_VALID = AddSeriesPanel.ICON_EXPRESSION_PENDING_VALID;
 
     private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory.getXLogger(AddSeriesPanel.class);
 
@@ -50,10 +51,9 @@ public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelAct
         Assertions.checkNotNull(highlighted.getDataset().getExpressionSeriesProvider());
 
         setLayout(new BorderLayout());
-        final TitledBorder titleBorder = new TitledBorder(null, "Expression", TitledBorder.LEADING, TitledBorder.TOP,
-                null, null);
-        final EmptyBorder marginBorder = new EmptyBorder(10, 10, 10, 10);
-        setBorder(new CompoundBorder(new CompoundBorder(marginBorder, titleBorder), marginBorder));
+        setBorder(new CompoundBorder(
+                new TitledBorder(null, "Expression", TitledBorder.LEADING, TitledBorder.TOP, null, null),
+                new EmptyBorder(0, 5, 5, 5)));
 
         this.plotConfigurationHelper = plotConfigurationHelper;
         this.highlighted = highlighted;
@@ -62,34 +62,44 @@ public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelAct
         this.layout = new ExpressionSettingsPanelLayout();
         add(layout, BorderLayout.CENTER);
         setExpressionValue(expressionArgumentsBefore);
-        layout.ta_expression.getDocument().addDocumentListener(new DocumentListenerSupport() {
+        layout.tf_expression.getDocument().addDocumentListener(new DocumentListenerSupport() {
             @Override
             protected void update(final DocumentEvent e) {
                 final String fromExpression = dataset.getExpressionSeriesArguments();
                 final String toExpression = getExpressionValue();
-                if (hasChanges(fromExpression, toExpression)) {
-                    try {
-                        dataset.getExpressionSeriesProvider().parseExpression(toExpression);
-                        layout.ta_expression.setBorder(BorderFactory.createLineBorder(COLOR_EXPRESSION_PENDING_VALID));
-                        layout.ta_expression.setToolTipText(null);
-                    } catch (final Throwable t) {
-                        layout.ta_expression
-                                .setBorder(BorderFactory.createLineBorder(COLOR_EXPRESSION_PENDING_INVALID));
-                        layout.ta_expression
-                                .setToolTipText(newInvalidExpressionMessage(fromExpression, toExpression, t));
-                    }
-                } else {
-                    layout.ta_expression.setBorder(null);
-                }
+                validateExpression(fromExpression, toExpression);
             }
+
         });
-        layout.btn_apply.addActionListener(new ActionListener() {
+        layout.btn_applyExpression.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(final ActionEvent e) {
                 ok();
             }
         });
+        //set tooltip but use default icon
+        validateExpression(null, getExpressionValue());
+        layout.tf_expression.setIcon(ICON_EXPRESSION);
+    }
+
+    private void validateExpression(final String fromExpression, final String toExpression) {
+        if (hasChanges(fromExpression, toExpression) && Strings.isNotBlank(toExpression)) {
+            try {
+                final IExpression parsedExpression = dataset.getExpressionSeriesProvider()
+                        .parseExpression(toExpression);
+                layout.tf_expression.setIcon(ICON_EXPRESSION_PENDING_VALID);
+                layout.tf_expression.setToolTipText("<html><b>Validated:</b><br><pre>  "
+                        + HtmlUtils.htmlEscape(parsedExpression.toString().replace("\n", "\n  ")) + "</pre>");
+            } catch (final Throwable t) {
+                layout.tf_expression.setIcon(ICON_EXPRESSION_PENDING_INVALID);
+                layout.tf_expression.setToolTipText("<html><b>Error:</b><br><pre>  "
+                        + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>");
+            }
+        } else {
+            layout.tf_expression.setIcon(ICON_EXPRESSION);
+            layout.tf_expression.setToolTipText(null);
+        }
     }
 
     @Override
@@ -103,8 +113,8 @@ public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelAct
     }
 
     private void setExpressionValue(final String value) {
-        layout.ta_expression.setText(value);
-        layout.ta_expression.setBorder(null);
+        layout.tf_expression.setText(value);
+        layout.tf_expression.setIcon(ICON_EXPRESSION);
     }
 
     @Override
@@ -120,12 +130,12 @@ public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelAct
         if (hasChanges(dataset.getExpressionSeriesArguments(), newExpression)) {
             apply(newExpression);
         } else {
-            layout.ta_expression.setBorder(null);
+            layout.tf_expression.setIcon(ICON_EXPRESSION);
         }
     }
 
     private String getExpressionValue() {
-        return layout.ta_expression.getText();
+        return layout.tf_expression.getText();
     }
 
     public void apply(final String toExpression) {
@@ -134,22 +144,17 @@ public class ExpressionSettingsPanel extends JPanel implements ISettingsPanelAct
             seriesProvider.modifyDataset(plotConfigurationHelper.getChartPanel(), dataset, toExpression);
             dataset.setExpressionSeriesArguments(toExpression);
             dataset.setSeriesTitle(toExpression);
-            layout.ta_expression.setBorder(null);
+            layout.tf_expression.setIcon(ICON_EXPRESSION);
         } catch (final Throwable t) {
             final String fromExpression = dataset.getSeriesTitle();
             LOG.warn("Error modifying series expression from [" + fromExpression + "] to [" + toExpression + "]:\n"
                     + Throwables.getFullStackTrace(t));
-            layout.ta_expression.setBorder(BorderFactory.createLineBorder(COLOR_EXPRESSION_PENDING_INVALID));
-            Dialogs.showMessageDialog(this, newInvalidExpressionMessage(fromExpression, toExpression, t),
+            Dialogs.showMessageDialog(this,
+                    "<html><b>Valid Before:</b><br><pre>  " + fromExpression + "</pre><b>Invalid After:</b><br><pre>  "
+                            + toExpression + "</pre><br><b>Error:</b><br><pre>  "
+                            + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>",
                     "Invalid Expression", Dialogs.ERROR_MESSAGE);
         }
-    }
-
-    private String newInvalidExpressionMessage(final String fromExpression, final String toExpression,
-            final Throwable t) {
-        return "<html><b>Valid Before:</b><br><pre>  " + fromExpression + "</pre><b>Invalid After:</b><br><pre>  "
-                + toExpression + "</pre><br><b>Error:</b><br><pre>  "
-                + HtmlUtils.htmlEscape(Throwables.concatMessagesShort(t).replace("\n", "\n  ")) + "</pre>";
     }
 
     private boolean hasChanges(final String arguments1, final String arguments2) {

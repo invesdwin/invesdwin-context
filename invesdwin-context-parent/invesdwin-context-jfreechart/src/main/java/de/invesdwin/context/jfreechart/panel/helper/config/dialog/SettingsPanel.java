@@ -24,7 +24,7 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
 
     public SettingsPanel(final PlotConfigurationHelper plotConfigurationHelper, final HighlightedLegendInfo highlighted,
             final JDialog dialog) {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0, 0));
 
         styleSettings = new StyleSettingsPanel(plotConfigurationHelper, highlighted, dialog);
         add(styleSettings, BorderLayout.CENTER);
@@ -32,11 +32,11 @@ public class SettingsPanel extends JPanel implements ISettingsPanelActions {
         if (highlighted.getDataset().hasIndicatorSeriesArguments()) {
             expressionSettings = null;
             parameterSettings = new IndicatorSettingsPanel(plotConfigurationHelper, highlighted, dialog);
-            add(parameterSettings, BorderLayout.EAST);
+            add(parameterSettings, BorderLayout.WEST);
         } else if (highlighted.getDataset().hasExpressionSeriesArguments()) {
             parameterSettings = null;
             expressionSettings = new ExpressionSettingsPanel(plotConfigurationHelper, highlighted, dialog);
-            add(expressionSettings, BorderLayout.EAST);
+            add(expressionSettings, BorderLayout.NORTH);
         } else {
             parameterSettings = null;
             expressionSettings = null;

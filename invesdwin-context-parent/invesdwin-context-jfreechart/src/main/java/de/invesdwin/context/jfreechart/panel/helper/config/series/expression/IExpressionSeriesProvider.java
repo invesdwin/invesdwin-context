@@ -8,6 +8,9 @@ public interface IExpressionSeriesProvider {
 
     String getPlotPaneId();
 
+    /**
+     * This method will be called to validate the expression. Thus eager exceptions should be thrown here.
+     */
     IExpression parseExpression(String expression);
 
     IPlotSourceDataset newInstance(InteractiveChartPanel chartPanel, String expression);
