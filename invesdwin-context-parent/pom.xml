@@ -58,7 +58,7 @@
 		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
 		<version.maven-dependency-analyzer>1.11.1</version.maven-dependency-analyzer>
 		<version.versions-maven-plugin>2.5</version.versions-maven-plugin>
-		<version.checkstyle>8.2</version.checkstyle>
+		<version.checkstyle>8.19</version.checkstyle>
 		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
 		<version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
 
