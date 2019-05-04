@@ -40,8 +40,9 @@ public class ListXYSeriesOHLC extends XYSeries {
         }
     }
 
-    public ListXYSeriesOHLC(final Comparable<?> key) {
+    public ListXYSeriesOHLC(final Comparable<?> key, final List<XYDataItemOHLC> data) {
         super(key, false, false);
+        this.data = data;
     }
 
     @SuppressWarnings("unchecked")
