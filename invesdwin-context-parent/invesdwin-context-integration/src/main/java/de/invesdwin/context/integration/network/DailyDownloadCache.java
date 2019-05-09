@@ -10,6 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.commons.io.FileUtils;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
 import de.invesdwin.util.time.fdate.FDates;
@@ -47,7 +48,7 @@ public class DailyDownloadCache {
     }
 
     public static File newFile(final String name) {
-        return new File(FOLDER, name.replace(":", "_") + ".txt");
+        return new File(FOLDER, Strings.normalizeFilename(name) + ".txt");
     }
 
     public static void delete(final String name) {
