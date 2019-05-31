@@ -27,7 +27,7 @@ public class IntegrationTest extends ATest {
     @Override
     public void setUpContext(final TestContext ctx) throws Exception {
         super.setUpContext(ctx);
-        ctx.activate(IntegrationTestContextLocation.class);
+        ctx.activateBean(IntegrationTestContextLocation.class);
     }
 
     @Test

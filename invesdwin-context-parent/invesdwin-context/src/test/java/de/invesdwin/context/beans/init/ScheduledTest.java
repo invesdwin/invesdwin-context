@@ -19,7 +19,7 @@ public class ScheduledTest extends ATest {
     @Override
     public void setUpContext(final TestContext ctx) throws Exception {
         super.setUpContext(ctx);
-        ctx.activate(ScheduledTestBean.class);
+        ctx.activateBean(ScheduledTestBean.class);
     }
 
     @Test

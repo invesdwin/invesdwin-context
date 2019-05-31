@@ -264,20 +264,6 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
         delegate.removeBeanDefinition(beanName);
     }
 
-    public void removeBeanDefinitionsOfType(final Class<?> bean) {
-        ApplicationContext ctx = delegate;
-        while (ctx != null) {
-            if (ctx instanceof GenericApplicationContext) {
-                final GenericApplicationContext genericCtx = (GenericApplicationContext) ctx;
-                final String[] matches = genericCtx.getBeanFactory().getBeanNamesForType(bean, false, false);
-                for (final String beanName : matches) {
-                    removeBeanDefinition(beanName);
-                }
-            }
-            ctx = ctx.getParent();
-        }
-    }
-
     @Override
     public BeanDefinition getBeanDefinition(final String beanName) {
         return delegate.getBeanDefinition(beanName);
@@ -322,7 +308,7 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     public void refresh() {
         if (!ContextProperties.IS_TEST_ENVIRONMENT) {
             //disable mock beans if this is in the production environment
-            removeBeanDefinitionsOfType(IStub.class);
+            ApplicationContexts.deactivateBean(this, IStub.class);
         }
         delegate.refresh();
     }
