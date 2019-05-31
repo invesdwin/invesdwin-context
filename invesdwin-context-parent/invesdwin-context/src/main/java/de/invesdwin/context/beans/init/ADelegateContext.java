@@ -80,7 +80,8 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     @Override
     public String[] getBeanNamesForType(final Class<?> type, final boolean includeNonSingletons,
             final boolean allowEagerInit) {
-        return delegate.getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
+        //prevent exception about bean factory not having been refreshed yet by going directly against the bean factory
+        return delegate.getBeanFactory().getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
     }
 
     @Override
