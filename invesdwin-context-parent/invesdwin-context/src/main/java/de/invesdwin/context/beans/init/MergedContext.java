@@ -126,6 +126,7 @@ public final class MergedContext extends ADelegateContext {
     private static void autowireReplacement(final ADelegateContext delegateCtx) {
         final MergedContext prevInstance = instance;
         instance = new MergedContext(delegateCtx);
+        configureInstance();
         if (prevInstance != null) {
             //during tests the transaction manager cache inside spring needs to be reset
             try {
@@ -248,22 +249,21 @@ public final class MergedContext extends ADelegateContext {
         //set the reference
         instance = new MergedContext(delegate);
 
-        while (TO_BE_SET_PARENTS.size() > 0) {
-            final ParentContext parentCtx = TO_BE_SET_PARENTS.iterator().next();
-            Assertions.assertThat(TO_BE_SET_PARENTS.remove(parentCtx)).isTrue();
-            autowireParentContext(parentCtx);
-        }
-        while (TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS.size() > 0) {
-            final BeanFactoryPostProcessor beanFactoryPostProcessor = TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS.iterator()
-                    .next();
-            Assertions.assertThat(TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS.remove(beanFactoryPostProcessor)).isTrue();
-            autowireBeanFactoryPostProcessor(beanFactoryPostProcessor);
-        }
+        configureInstance();
 
         //now load the beans
         instance.refresh();
 
         logBootstrapFinished();
+    }
+
+    private static void configureInstance() {
+        for (final ParentContext parentCtx : TO_BE_SET_PARENTS) {
+            autowireParentContext(parentCtx);
+        }
+        for (final BeanFactoryPostProcessor beanFactoryPostProcessor : TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS) {
+            autowireBeanFactoryPostProcessor(beanFactoryPostProcessor);
+        }
     }
 
     public static void assertBootstrapFinished() {
