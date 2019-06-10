@@ -68,19 +68,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-collections</artifactId>
-		</dependency>
-		<dependency>
-    		<groupId>org.eclipse.jdt</groupId>
-    		<artifactId>ecj</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>com.github.ben-manes.caffeine</groupId>
 			<artifactId>jcache</artifactId>
 		</dependency>
