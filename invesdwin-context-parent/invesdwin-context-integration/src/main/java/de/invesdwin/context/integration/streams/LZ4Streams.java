@@ -62,8 +62,9 @@ public final class LZ4Streams {
     public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out, final int blockSize,
             final int compressionLevel) {
         return new LZ4BlockOutputStream(out, blockSize,
+                //fastestInstance picks jni which flushes too slow
                 LZ4Factory.fastestJavaInstance().highCompressor(compressionLevel),
-                XXHashFactory.fastestJavaInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+                XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
     }
 
     public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
@@ -75,12 +76,12 @@ public final class LZ4Streams {
     }
 
     public static LZ4BlockOutputStream newFastLZ4OutputStream(final OutputStream out, final int blockSize) {
-        return new LZ4BlockOutputStream(out, blockSize, LZ4Factory.fastestJavaInstance().fastCompressor(),
-                XXHashFactory.fastestJavaInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+        return new LZ4BlockOutputStream(out, blockSize, LZ4Factory.fastestInstance().fastCompressor(),
+                XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
     }
 
     public static LZ4BlockInputStream newDefaultLZ4InputStream(final InputStream in) {
-        return new LZ4BlockInputStream(in, LZ4Factory.fastestJavaInstance().fastDecompressor());
+        return new LZ4BlockInputStream(in, LZ4Factory.fastestInstance().fastDecompressor());
     }
 
 }
