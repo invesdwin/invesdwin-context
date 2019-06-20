@@ -39,7 +39,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
         }
 
         @Override
-        public boolean isClosed() {
+        protected boolean isCleaned() {
             return itemReader == null;
         }
 

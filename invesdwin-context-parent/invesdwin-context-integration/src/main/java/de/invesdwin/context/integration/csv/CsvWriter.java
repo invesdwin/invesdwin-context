@@ -149,7 +149,7 @@ public class CsvWriter implements Closeable {
         }
 
         @Override
-        public boolean isClosed() {
+        protected boolean isCleaned() {
             return out == null;
         }
 
