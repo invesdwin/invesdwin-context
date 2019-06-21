@@ -35,6 +35,7 @@ public final class LZ4Streams {
     public static final int DEFAULT_SEED = 0x9747b28c;
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;
+    private static boolean allowJniCompressor = false;
 
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -51,6 +52,10 @@ public final class LZ4Streams {
 
     private LZ4Streams() {}
 
+    public static void setAllowJniCompressor(final boolean allowJniCompressor) {
+        LZ4Streams.allowJniCompressor = allowJniCompressor;
+    }
+
     public static LZ4BlockOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
     }
@@ -61,10 +66,17 @@ public final class LZ4Streams {
 
     public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out, final int blockSize,
             final int compressionLevel) {
-        return new LZ4BlockOutputStream(out, blockSize,
-                //fastestInstance picks jni which flushes too slow
-                LZ4Factory.fastestJavaInstance().highCompressor(compressionLevel),
-                XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+        if (allowJniCompressor) {
+            return new LZ4BlockOutputStream(out, blockSize,
+                    //fastestInstance picks jni which flushes too slow
+                    LZ4Factory.fastestInstance().highCompressor(compressionLevel),
+                    XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+        } else {
+            return new LZ4BlockOutputStream(out, blockSize,
+                    //fastestInstance picks jni which flushes too slow
+                    LZ4Factory.fastestJavaInstance().highCompressor(compressionLevel),
+                    XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+        }
     }
 
     public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
