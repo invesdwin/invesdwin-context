@@ -60,6 +60,7 @@ public final class ContextProperties {
                 initializer.initXmlTransformerConfigurer();
                 initializer.initLogbackConfigurationLoader();
                 initializer.initSystemPropertiesLoader();
+                initializer.initJavaUtilPrefsBackingStoreDirectory();
 
                 initializer.initDefaultCache(DEFAULT_CACHE_NAME);
             } catch (final Throwable t) {
@@ -83,8 +84,9 @@ public final class ContextProperties {
      */
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
-            homeDirectory = PlatformInitializerProperties.getInitializer().initHomeDirectory(getSystemHomeDirectory(),
-                    IS_TEST_ENVIRONMENT && !PlatformInitializerProperties.isKeepSystemHomeDuringTests());
+            homeDirectory = PlatformInitializerProperties.getInitializer()
+                    .initHomeDirectory(getSystemHomeDirectory(),
+                            IS_TEST_ENVIRONMENT && !PlatformInitializerProperties.isKeepSystemHomeDuringTests());
         }
         return homeDirectory;
     }

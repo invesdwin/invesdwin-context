@@ -23,6 +23,8 @@ public interface IPlatformInitializer {
 
     void initLogbackConfigurationLoader();
 
+    void initJavaUtilPrefsBackingStoreDirectory();
+
     void initSystemPropertiesLoader();
 
     void initDefaultCache(String defaultCacheName);

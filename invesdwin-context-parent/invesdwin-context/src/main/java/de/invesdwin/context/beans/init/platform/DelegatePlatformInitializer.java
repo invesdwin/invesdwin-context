@@ -54,6 +54,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initJavaUtilPrefsBackingStoreDirectory() {
+        delegate.initJavaUtilPrefsBackingStoreDirectory();
+    }
+
+    @Override
     public void initSystemPropertiesLoader() {
         delegate.initSystemPropertiesLoader();
     }

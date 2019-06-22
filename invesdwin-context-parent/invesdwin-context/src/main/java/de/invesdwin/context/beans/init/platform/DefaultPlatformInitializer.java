@@ -30,7 +30,6 @@ import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConf
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
 import de.invesdwin.context.jcache.CacheBuilder;
 import de.invesdwin.context.log.error.Err;
-import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
@@ -88,6 +87,15 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initJavaUtilPrefsBackingStoreDirectory() {
+        //https://stackoverflow.com/questions/2027566/java-util-prefs-throwing-backingstoreexception-why
+        //CHECKSTYLE:OFF
+        System.setProperty("java.util.prefs.userRoot", ContextProperties.getHomeDirectory().getAbsolutePath());
+        System.setProperty("java.util.prefs.systemRoot", ContextProperties.getHomeDirectory().getAbsolutePath());
+        //CHECKSTYLE:ON
+    }
+
+    @Override
     public void initSystemPropertiesLoader() {
         SystemPropertiesLoader.loadSystemProperties();
     }
@@ -102,9 +110,12 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initDefaultTimeoutSystemProperties(final Duration duration) {
-        final SystemProperties sysProps = new SystemProperties();
-        sysProps.setInteger("sun.net.client.defaultConnectTimeout", duration.intValue(FTimeUnit.MILLISECONDS));
-        sysProps.setInteger("sun.net.client.defaultReadTimeout", duration.intValue(FTimeUnit.MILLISECONDS));
+        //CHECKSTYLE:OFF
+        System.setProperty("sun.net.client.defaultConnectTimeout",
+                String.valueOf(duration.intValue(FTimeUnit.MILLISECONDS)));
+        System.setProperty("sun.net.client.defaultReadTimeout",
+                String.valueOf(duration.intValue(FTimeUnit.MILLISECONDS)));
+        //CHECKSTYLE:ON
     }
 
     @Override
