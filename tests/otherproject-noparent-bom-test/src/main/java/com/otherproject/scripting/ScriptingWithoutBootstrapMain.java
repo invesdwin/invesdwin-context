@@ -1,6 +1,8 @@
 package com.otherproject.scripting;
 
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.context.beans.init.MergedContext;
+import de.invesdwin.context.beans.init.platform.DelegatePlatformInitializer;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.context.integration.script.IScriptTaskInputs;
 import de.invesdwin.context.integration.script.IScriptTaskResults;
@@ -8,15 +10,36 @@ import de.invesdwin.context.matlab.runtime.contract.AScriptTaskMatlab;
 import de.invesdwin.context.python.runtime.contract.AScriptTaskPython;
 import de.invesdwin.context.python.runtime.py4j.Py4jProperties;
 import de.invesdwin.context.r.runtime.contract.AScriptTaskR;
-import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 
 public class ScriptingWithoutBootstrapMain {
 
+	private static final boolean DISABLE_INVESDWIN_BOOTSTRAP = true;
+
 	public static void main(String[] args) {
+		if (DISABLE_INVESDWIN_BOOTSTRAP) {
+			disableInvesdwinBootstrap();
+		} else {
+			customizeInvesdwinBootstrap();
+		}
+
+		callScriptPython();
+		callScriptR();
+		callScriptMatlab();
+
+		// need to explicitly call system.exit so that threads are stopped properly
+		System.exit(0);
+	}
+
+	private static void disableInvesdwinBootstrap() {
 		// disable invesdwin bootstrap to make this more lightweight
 		PlatformInitializerProperties.setAllowed(false);
+		// this is how you can override the scripting properties (e.g. to use pypy
+		// instead of python)
+		System.setProperty("de.invesdwin.context.python.runtime.py4j.Py4jProperties.PYTHON_COMMAND", "pypy");
+	}
 
+	private static void customizeInvesdwinBootstrap() {
 		/*
 		 * alternatively only disable e.g. logback configuration so that you can use
 		 * your existing logger configuration
@@ -25,22 +48,28 @@ public class ScriptingWithoutBootstrapMain {
 		 * artifact, include the slf4j redirect for logback and add the dependency for
 		 * slf4j-log4j2
 		 */
-//		PlatformInitializerProperties.setInitializer(new DelegatePlatformInitializer(PlatformInitializerProperties.getInitializer()) {
-//			@Override
-//			public void initLogbackConfigurationLoader() {
-//				//noop to disable this bootstrap step
-//			}
-//		});
-		
-		//this is how you can override the scripting properties (e.g. to use pypy instead of python)
-//		System.setProperty("de.invesdwin.context.python.runtime.py4j.Py4jProperties.PYTHON_COMMAND", "pypy");
+		PlatformInitializerProperties
+				.setInitializer(new DelegatePlatformInitializer(PlatformInitializerProperties.getInitializer()) {
+					@Override
+					public void initLogbackConfigurationLoader() {
+						// noop to disable this bootstrap step
+					}
 
-		callScriptPython();
-		callScriptR();
-		callScriptMatlab();
-
-		// need to explicitly call system.exit so that threads are stopped properly
-		System.exit(0);
+					@Override
+					public void initSystemPropertiesLoader() {
+						// load all default system properties
+						super.initSystemPropertiesLoader();
+						/*
+						 * you can override system properties here afterwards as well if you cannot use
+						 * any of the other documented ways of doing this with invesdwin-context (e.g.
+						 * just setting them before the bootstrap occurs would also work fine)
+						 */
+						System.setProperty("de.invesdwin.context.python.runtime.py4j.Py4jProperties.PYTHON_COMMAND",
+								"pypy");
+					}
+				});
+		// explictly trigger bootstrap
+		MergedContext.autowire(null);
 	}
 
 	private static void callScriptPython() {
@@ -66,7 +95,7 @@ public class ScriptingWithoutBootstrapMain {
 		};
 		final String result = script.run(); // optionally pass a specific runner as an argument here
 		Assertions.assertThat(result).isEqualTo("Hello World!");
-		System.out.println("Python: " + result);
+		System.out.println(Py4jProperties.PYTHON_COMMAND + ": " + result);
 	}
 
 	private static void callScriptMatlab() {
