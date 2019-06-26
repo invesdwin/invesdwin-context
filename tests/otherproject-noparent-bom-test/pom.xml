@@ -10,6 +10,9 @@
 
 	<properties>
 		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
+		<version.invesdwin-context-r>1.0.0-SNAPSHOT</version.invesdwin-context-r>
+		<version.invesdwin-context-python>1.0.0-SNAPSHOT</version.invesdwin-context-python>
+		<version.invesdwin-context-matlab>1.0.0-SNAPSHOT</version.invesdwin-context-matlab>
 		<version.invesdwin-maven-plugin>1.0.4-SNAPSHOT</version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
@@ -38,6 +41,27 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-python-parent</artifactId>
+				<version>${version.invesdwin-context-python}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-matlab-parent</artifactId>
+				<version>${version.invesdwin-context-matlab}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-r-parent</artifactId>
+				<version>${version.invesdwin-context-r}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -57,6 +81,19 @@
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-jpa-hibernate</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-r-runtime-rcaller</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-matlab-runtime-javaoctave</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-python-runtime-py4j</artifactId>
 		</dependency>
 
 		<dependency>
