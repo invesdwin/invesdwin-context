@@ -6,7 +6,9 @@ import de.invesdwin.context.integration.script.IScriptTaskInputs;
 import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.matlab.runtime.contract.AScriptTaskMatlab;
 import de.invesdwin.context.python.runtime.contract.AScriptTaskPython;
+import de.invesdwin.context.python.runtime.py4j.Py4jProperties;
 import de.invesdwin.context.r.runtime.contract.AScriptTaskR;
+import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 
 public class ScriptingWithoutBootstrapMain {
@@ -29,6 +31,9 @@ public class ScriptingWithoutBootstrapMain {
 //				//noop to disable this bootstrap step
 //			}
 //		});
+		
+		//this is how you can override the scripting properties (e.g. to use pypy instead of python)
+//		System.setProperty("de.invesdwin.context.python.runtime.py4j.Py4jProperties.PYTHON_COMMAND", "pypy");
 
 		callScriptPython();
 		callScriptR();
