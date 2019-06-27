@@ -55,6 +55,10 @@ public final class LZ4Streams {
     public static void setAllowJniCompressor(final boolean allowJniCompressor) {
         LZ4Streams.allowJniCompressor = allowJniCompressor;
     }
+    
+    public static boolean isAllowJniCompressor() {
+        return allowJniCompressor;
+    }
 
     public static LZ4BlockOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
