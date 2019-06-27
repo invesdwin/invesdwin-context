@@ -35,6 +35,11 @@ public final class LZ4Streams {
     public static final int DEFAULT_SEED = 0x9747b28c;
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;
+    /**
+     * Currently LZ4HC is very slow with JNI:
+     * 
+     * https://github.com/lz4/lz4-java/issues/142
+     */
     private static boolean allowJniCompressor = false;
 
     static {
@@ -55,7 +60,7 @@ public final class LZ4Streams {
     public static void setAllowJniCompressor(final boolean allowJniCompressor) {
         LZ4Streams.allowJniCompressor = allowJniCompressor;
     }
-    
+
     public static boolean isAllowJniCompressor() {
         return allowJniCompressor;
     }
