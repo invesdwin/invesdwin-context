@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -30,6 +31,11 @@
 			case that checks that no conflicts occur when all top level dependencies 
 			are added (worst case); though it is recommended to use the BOM (bill of 
 			materials) approach as seen in otherproject-noparent-bom-test! -->
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-maven-plugin</artifactId>
+			<version>${version.invesdwin-maven-plugin}</version>
+		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context</artifactId>
