@@ -25,17 +25,22 @@
 		<version.h2>1.4.196</version.h2>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-maven-plugin</artifactId>
+				<version>${version.invesdwin-maven-plugin}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<!-- sometimes it is required to add top level dependencies from invesdwin 
 			to prevent issues with conflict resolution in maven, thus here is a test 
 			case that checks that no conflicts occur when all top level dependencies 
 			are added (worst case); though it is recommended to use the BOM (bill of 
 			materials) approach as seen in otherproject-noparent-bom-test! -->
-		<dependency>
-			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-maven-plugin</artifactId>
-			<version>${version.invesdwin-maven-plugin}</version>
-		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context</artifactId>
