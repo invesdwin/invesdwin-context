@@ -23,11 +23,6 @@
 			<artifactId>invesdwin-context</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-aspects</artifactId>
-			<type>test-jar</type>
-		</dependency>
-		<dependency>
 			<groupId>com.github.jbellis</groupId>
 			<artifactId>jamm</artifactId>
 		</dependency>
