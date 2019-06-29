@@ -19,6 +19,7 @@
 	</modules>
 
 	<properties>
+		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
 		<version.invesdwin-context-persistence>1.0.0-SNAPSHOT</version.invesdwin-context-persistence>
 		<version.invesdwin-context-integration>1.0.0-SNAPSHOT</version.invesdwin-context-integration>
 		<version.otherproject>0.0.1-SNAPSHOT</version.otherproject>

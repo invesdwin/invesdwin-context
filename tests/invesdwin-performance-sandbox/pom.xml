@@ -13,6 +13,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<properties>
+		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
