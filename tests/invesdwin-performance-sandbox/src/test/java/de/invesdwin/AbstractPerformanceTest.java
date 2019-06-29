@@ -6,7 +6,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.github.jamm.MemoryMeter;
 
-import de.invesdwin.aspects.InstrumentationTestInitializer;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.assertions.Assertions;
 
