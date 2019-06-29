@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-batch</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
