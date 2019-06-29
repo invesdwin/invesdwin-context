@@ -10,6 +10,9 @@
 
 	<properties>
 		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
+		<version.invesdwin-context-persistence>1.0.0-SNAPSHOT</version.invesdwin-context-persistence>
+		<version.invesdwin-context-integration>1.0.0-SNAPSHOT</version.invesdwin-context-integration>
+		<version.invesdwin-context-client>1.0.0-SNAPSHOT</version.invesdwin-context-client>
 		<version.invesdwin-maven-plugin>1.0.4</version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
 		<version.junit>4.12</version.junit>
@@ -35,87 +38,87 @@
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-batch</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-batch-admin</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-client-wicket</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-client}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-client-swing</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-client}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-amqp</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-hadoop</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-jms</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-ws</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-ws-jaxws</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-ws-registry</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-integration}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-jpa</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-jpa-hibernate</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-jpa-datanucleus</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-jpa-kundera</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-jpa-kundera-rdbms</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-timeseries</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
@@ -130,7 +133,7 @@
 		<dependency>
 			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-client-wicket-examples</artifactId>
-			<version>${version.invesdwin-context}</version>
+			<version>${version.invesdwin-context-client}</version>
 		</dependency>
 
 		<dependency>
