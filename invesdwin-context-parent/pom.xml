@@ -29,15 +29,15 @@
 	</licenses>
 
 	<properties>
-		<version.invesdwin-context>${project.version}</version.invesdwin-context>
+		<project.project.version.invesdwin-context>${project.version}</project.project.version.invesdwin-context>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.compiler>1.8</version.compiler>
 
-		<version.invesdwin-maven-plugin>1.0.5-SNAPSHOT</version.invesdwin-maven-plugin>
-		<version.invesdwin-checkstyle-plugin>1.0.0</version.invesdwin-checkstyle-plugin>
-		<version.invesdwin-nowicket>1.0.0-SNAPSHOT</version.invesdwin-nowicket>
+		<project.version.invesdwin-maven-plugin>1.0.5-SNAPSHOT</project.version.invesdwin-maven-plugin>
+		<project.version.invesdwin-checkstyle-plugin>1.0.0</project.version.invesdwin-checkstyle-plugin>
+		<project.version.invesdwin-nowicket>1.0.0-SNAPSHOT</project.version.invesdwin-nowicket>
 
 		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
@@ -102,52 +102,52 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-nowicket-parent</artifactId>
-				<version>${version.invesdwin-nowicket}</version>
+				<version>${project.version.invesdwin-nowicket}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-maven-plugin</artifactId>
-				<version>${version.invesdwin-maven-plugin}</version>
+				<version>${project.version.invesdwin-maven-plugin}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.project.version.invesdwin-context}</version>
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-webserver</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jasperreports</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jfreechart</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-integration</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.project.version.invesdwin-context}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-maven-plugin-util</artifactId>
-				<version>${version.invesdwin-maven-plugin}</version>
+				<version>${project.version.invesdwin-maven-plugin}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
@@ -312,7 +312,7 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-checkstyle-plugin</artifactId>
-				<version>${version.invesdwin-checkstyle-plugin}</version>
+				<version>${project.version.invesdwin-checkstyle-plugin}</version>
 			</dependency>
 
 			<dependency>
@@ -676,7 +676,7 @@
 				<plugin>
 					<groupId>de.invesdwin</groupId>
 					<artifactId>invesdwin-maven-plugin</artifactId>
-					<version>${version.invesdwin-maven-plugin}</version>
+					<version>${project.version.invesdwin-maven-plugin}</version>
 					<executions>
 						<execution>
 							<goals>
@@ -853,7 +853,7 @@
 						<dependency>
 							<groupId>de.invesdwin</groupId>
 							<artifactId>invesdwin-maven-plugin</artifactId>
-							<version>${version.invesdwin-maven-plugin}</version>
+							<version>${project.version.invesdwin-maven-plugin}</version>
 						</dependency>
 					</dependencies>
 					<configuration>
@@ -937,7 +937,7 @@
 							<!-- needs custom checks -->
 							<groupId>de.invesdwin</groupId>
 							<artifactId>invesdwin-checkstyle-plugin</artifactId>
-							<version>${version.invesdwin-checkstyle-plugin}</version>
+							<version>${project.version.invesdwin-checkstyle-plugin}</version>
 						</dependency>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>

@@ -19,10 +19,10 @@
 	</modules>
 
 	<properties>
-		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
-		<version.invesdwin-context-persistence>1.0.0-SNAPSHOT</version.invesdwin-context-persistence>
-		<version.invesdwin-context-integration>1.0.0-SNAPSHOT</version.invesdwin-context-integration>
-		<version.otherproject>0.0.1-SNAPSHOT</version.otherproject>
+		<project.version.invesdwin-context>1.0.0-SNAPSHOT</project.version.invesdwin-context>
+		<project.version.invesdwin-context-persistence>1.0.0-SNAPSHOT</project.version.invesdwin-context-persistence>
+		<project.version.invesdwin-context-integration>1.0.0-SNAPSHOT</project.version.invesdwin-context-integration>
+		<project.version.otherproject>0.0.1-SNAPSHOT</project.version.otherproject>
 	</properties>
 
 	<dependencyManagement>
@@ -31,14 +31,14 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-integration-parent</artifactId>
-				<version>${version.invesdwin-context-integration}</version>
+				<version>${project.version.invesdwin-context-integration}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-persistence-parent</artifactId>
-				<version>${version.invesdwin-context-persistence}</version>
+				<version>${project.version.invesdwin-context-persistence}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -46,7 +46,7 @@
 			<dependency>
 				<groupId>com.otherproject</groupId>
 				<artifactId>otherproject-basepackage-test</artifactId>
-				<version>${version.otherproject}</version>
+				<version>${project.version.otherproject}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

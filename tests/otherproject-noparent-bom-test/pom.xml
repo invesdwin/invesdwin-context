@@ -10,12 +10,12 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<version.invesdwin-context>1.0.0-SNAPSHOT</version.invesdwin-context>
-		<version.invesdwin-context-client>1.0.0-SNAPSHOT</version.invesdwin-context-client>
-		<version.invesdwin-context-r>1.0.0-SNAPSHOT</version.invesdwin-context-r>
-		<version.invesdwin-context-python>1.0.0-SNAPSHOT</version.invesdwin-context-python>
-		<version.invesdwin-context-matlab>1.0.0-SNAPSHOT</version.invesdwin-context-matlab>
-		<version.invesdwin-maven-plugin>1.0.5-SNAPSHOT</version.invesdwin-maven-plugin>
+		<project.version.invesdwin-context>1.0.0-SNAPSHOT</project.version.invesdwin-context>
+		<project.version.invesdwin-context-client>1.0.0-SNAPSHOT</project.version.invesdwin-context-client>
+		<project.version.invesdwin-context-r>1.0.0-SNAPSHOT</project.version.invesdwin-context-r>
+		<project.version.invesdwin-context-python>1.0.0-SNAPSHOT</project.version.invesdwin-context-python>
+		<project.version.invesdwin-context-matlab>1.0.0-SNAPSHOT</project.version.invesdwin-context-matlab>
+		<project.version.invesdwin-maven-plugin>1.0.5-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
 		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
@@ -32,42 +32,42 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-parent</artifactId>
-				<version>${version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-client-parent</artifactId>
-				<version>${version.invesdwin-context-client}</version>
+				<version>${project.version.invesdwin-context-client}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-python-parent</artifactId>
-				<version>${version.invesdwin-context-python}</version>
+				<version>${project.version.invesdwin-context-python}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-matlab-parent</artifactId>
-				<version>${version.invesdwin-context-matlab}</version>
+				<version>${project.version.invesdwin-context-matlab}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-r-parent</artifactId>
-				<version>${version.invesdwin-context-r}</version>
+				<version>${project.version.invesdwin-context-r}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-maven-plugin</artifactId>
-				<version>${version.invesdwin-maven-plugin}</version>
+				<version>${project.version.invesdwin-maven-plugin}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -175,7 +175,7 @@
 			<plugin>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-maven-plugin</artifactId>
-				<version>${version.invesdwin-maven-plugin}</version>
+				<version>${project.version.invesdwin-maven-plugin}</version>
 				<executions>
 					<execution>
 						<goals>
