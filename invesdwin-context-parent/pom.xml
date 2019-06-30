@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.invesdwin</groupId>
@@ -10,7 +8,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>invesdwin-context-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -860,50 +858,37 @@
 						<shadedArtifactAttached>true</shadedArtifactAttached>
 						<shadedClassifierName>standalone</shadedClassifierName>
 						<transformers>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+							<transformer implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
+							<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.handlers</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.schemas</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.tooling</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.factories</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/cxf/bus-extensions.txt</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/mime.types</resource>
 							</transformer>
-							<transformer
-								implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
+							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web-fragment.xml</resource>
 							</transformer>
-							<transformer
-								implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
+							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web/web-fragment.xml</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/aop.xml</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/wsdl.plugin.xml</resource>
 							</transformer>
 						</transformers>
@@ -991,24 +976,18 @@
 								<target>
 									<ac:if xmlns:ac="antlib:net.sf.antcontrib">
 										<and>
-											<available file="${project.build.outputDirectory}"
-												type="dir" />
+											<available file="${project.build.outputDirectory}" type="dir" />
 											<not>
-												<available
-													file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
+												<available file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
 											</not>
 										</and>
 										<then>
 											<mkdir dir="${project.build.outputDirectory}/META-INF/" />
-											<manifest
-												file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
+											<manifest file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
 												<attribute name="Built-By" value="${user.name}" />
-												<attribute name="Specification-Title"
-													value="${project.name}" />
-												<attribute name="Specification-Version"
-													value="${project.version}" />
-												<attribute name="Specification-Vendor-Id"
-													value="${project.groupId}" />
+												<attribute name="Specification-Title" value="${project.name}" />
+												<attribute name="Specification-Version" value="${project.version}" />
+												<attribute name="Specification-Vendor-Id" value="${project.groupId}" />
 											</manifest>
 										</then>
 									</ac:if>
@@ -1188,7 +1167,7 @@
 	<scm>
 		<url>https://github.com/subes/invesdwin-context</url>
 		<connection>scm:git:https://github.com/subes/invesdwin-context.git</connection>
-		<tag>HEAD</tag>
+		<tag>invesdwin-context-parent-1.0.0</tag>
 	</scm>
 	
 	<ciManagement>
