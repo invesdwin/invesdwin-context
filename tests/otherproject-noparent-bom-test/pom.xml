@@ -11,7 +11,7 @@
 
 	<properties>
 		<project.version.invesdwin-context>1.0.0</project.version.invesdwin-context>
-		<project.version.invesdwin-context-client>1.0.0-SNAPSHOT</project.version.invesdwin-context-client>
+		<project.version.invesdwin-context-client>1.0.0</project.version.invesdwin-context-client>
 		<project.version.invesdwin-context-r>1.0.0</project.version.invesdwin-context-r>
 		<project.version.invesdwin-context-python>1.0.0</project.version.invesdwin-context-python>
 		<project.version.invesdwin-context-matlab>1.0.0</project.version.invesdwin-context-matlab>
