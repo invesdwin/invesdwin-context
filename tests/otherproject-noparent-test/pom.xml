@@ -12,7 +12,7 @@
 	<properties>
 		<project.version.invesdwin-context>1.0.0</project.version.invesdwin-context>
 		<project.version.invesdwin-context-persistence>1.0.0</project.version.invesdwin-context-persistence>
-		<project.version.invesdwin-context-integration>1.0.0-SNAPSHOT</project.version.invesdwin-context-integration>
+		<project.version.invesdwin-context-integration>1.0.0</project.version.invesdwin-context-integration>
 		<project.version.invesdwin-context-client>1.0.0-SNAPSHOT</project.version.invesdwin-context-client>
 		<project.version.invesdwin-maven-plugin>1.0.5</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
