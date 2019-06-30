@@ -29,7 +29,7 @@
 	</licenses>
 
 	<properties>
-		<project.project.version.invesdwin-context>${project.version}</project.project.version.invesdwin-context>
+		<project.version.invesdwin-context>${project.version}</project.version.invesdwin-context>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -115,33 +115,33 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context</artifactId>
-				<version>${project.project.version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context</artifactId>
-				<version>${project.project.version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-webserver</artifactId>
-				<version>${project.project.version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jasperreports</artifactId>
-				<version>${project.project.version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jfreechart</artifactId>
-				<version>${project.project.version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-integration</artifactId>
-				<version>${project.project.version.invesdwin-context}</version>
+				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 
 			<dependency>
