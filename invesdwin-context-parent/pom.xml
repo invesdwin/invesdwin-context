@@ -35,7 +35,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.compiler>1.8</version.compiler>
 
-		<project.version.invesdwin-maven-plugin>1.0.5-SNAPSHOT</project.version.invesdwin-maven-plugin>
+		<project.version.invesdwin-maven-plugin>1.0.5</project.version.invesdwin-maven-plugin>
 		<project.version.invesdwin-checkstyle-plugin>1.0.0</project.version.invesdwin-checkstyle-plugin>
 		<project.version.invesdwin-nowicket>1.0.0-SNAPSHOT</project.version.invesdwin-nowicket>
 
