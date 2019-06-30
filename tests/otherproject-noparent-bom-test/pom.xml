@@ -13,7 +13,7 @@
 		<project.version.invesdwin-context>1.0.0</project.version.invesdwin-context>
 		<project.version.invesdwin-context-client>1.0.0-SNAPSHOT</project.version.invesdwin-context-client>
 		<project.version.invesdwin-context-r>1.0.0-SNAPSHOT</project.version.invesdwin-context-r>
-		<project.version.invesdwin-context-python>1.0.0-SNAPSHOT</project.version.invesdwin-context-python>
+		<project.version.invesdwin-context-python>1.0.0</project.version.invesdwin-context-python>
 		<project.version.invesdwin-context-matlab>1.0.0-SNAPSHOT</project.version.invesdwin-context-matlab>
 		<project.version.invesdwin-maven-plugin>1.0.5</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
