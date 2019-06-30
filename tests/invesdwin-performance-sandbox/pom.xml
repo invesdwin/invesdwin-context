@@ -14,8 +14,19 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<project.version.invesdwin-context>1.0.0-SNAPSHOT</project.version.invesdwin-context>
+		<project.version.invesdwin-context>1.0.0</project.version.invesdwin-context>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-parent</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
