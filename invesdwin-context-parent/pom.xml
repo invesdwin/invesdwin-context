@@ -59,6 +59,7 @@
 		<version.maven-dependency-analyzer>1.11.1</version.maven-dependency-analyzer>
 		<version.versions-maven-plugin>2.5</version.versions-maven-plugin>
 		<version.checkstyle>8.19</version.checkstyle>
+		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
 		<version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
 
 		<version.jetty>9.4.14.v20181114</version.jetty>
@@ -1048,6 +1049,56 @@
 					<version>${version.versions-maven-plugin}</version>
 				</plugin>
 				<plugin>
+					<groupId>com.google.code.maven-replacer-plugin</groupId>
+					<artifactId>replacer</artifactId>
+					<version>${version.maven-replacer-plugin}</version>
+					<executions>
+						<execution>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>replace</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<basedir>${basedir}</basedir>
+						<includes>
+							<include>src/**/*.properties</include>
+						</includes>
+						<encoding>ISO-8859-1</encoding>
+						<replacements>
+							<replacement>
+								<token>Ä</token>
+								<value>\\u00C4</value>
+							</replacement>
+							<replacement>
+								<token>ä</token>
+								<value>\\u00E4</value>
+							</replacement>
+							<replacement>
+								<token>Ö</token>
+								<value>\\u00D6</value>
+							</replacement>
+							<replacement>
+								<token>ö</token>
+								<value>\\u00F6</value>
+							</replacement>
+							<replacement>
+								<token>Ü</token>
+								<value>\\u00DC</value>
+							</replacement>
+							<replacement>
+								<token>ü</token>
+								<value>\\u00FC</value>
+							</replacement>
+							<replacement>
+								<token>ß</token>
+								<value>\\u00DF</value>
+							</replacement>
+						</replacements>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>keytool-maven-plugin</artifactId>
 					<version>${version.keytool-maven-plugin}</version>
@@ -1082,6 +1133,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
