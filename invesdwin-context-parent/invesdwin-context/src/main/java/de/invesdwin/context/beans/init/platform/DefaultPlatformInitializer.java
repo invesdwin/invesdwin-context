@@ -92,6 +92,12 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         //CHECKSTYLE:OFF
         System.setProperty("java.util.prefs.userRoot", ContextProperties.getHomeDirectory().getAbsolutePath());
         System.setProperty("java.util.prefs.systemRoot", ContextProperties.getHomeDirectory().getAbsolutePath());
+        try {
+            FileUtils.forceMkdir(new File(ContextProperties.getHomeDirectory(), ".java/.userPrefs"));
+            FileUtils.forceMkdir(new File(ContextProperties.getHomeDirectory(), ".systemPrefs"));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
         //CHECKSTYLE:ON
     }
 
