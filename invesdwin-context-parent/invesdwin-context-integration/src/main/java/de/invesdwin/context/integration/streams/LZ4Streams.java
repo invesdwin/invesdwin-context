@@ -21,7 +21,11 @@ import net.jpountz.xxhash.XXHashFactory;
 @Immutable
 public final class LZ4Streams {
 
-    public static final int DEFAULT_COMPRESSION_LEVEL = 99;
+    /**
+     * Compression level 99 is too high in JNI with LZ4HC, making it very slow:
+     * https://github.com/lz4/lz4-java/issues/142
+     */
+    public static final int DEFAULT_COMPRESSION_LEVEL = 9;
     public static final int LARGE_BLOCK_SIZE = Integers
             .checkedCast(new ByteSize(1D, ByteSizeScale.MEGABYTES).getValue(ByteSizeScale.BYTES));
     /*
@@ -35,12 +39,6 @@ public final class LZ4Streams {
     public static final int DEFAULT_SEED = 0x9747b28c;
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;
-    /**
-     * Currently LZ4HC is very slow with JNI:
-     * 
-     * https://github.com/lz4/lz4-java/issues/142
-     */
-    private static boolean allowJniCompressor = false;
 
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -57,14 +55,6 @@ public final class LZ4Streams {
 
     private LZ4Streams() {}
 
-    public static void setAllowJniCompressor(final boolean allowJniCompressor) {
-        LZ4Streams.allowJniCompressor = allowJniCompressor;
-    }
-
-    public static boolean isAllowJniCompressor() {
-        return allowJniCompressor;
-    }
-
     public static LZ4BlockOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
     }
@@ -75,17 +65,10 @@ public final class LZ4Streams {
 
     public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out, final int blockSize,
             final int compressionLevel) {
-        if (allowJniCompressor) {
-            return new LZ4BlockOutputStream(out, blockSize,
-                    //fastestInstance picks jni which flushes too slow
-                    LZ4Factory.fastestInstance().highCompressor(compressionLevel),
-                    XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
-        } else {
-            return new LZ4BlockOutputStream(out, blockSize,
-                    //fastestInstance picks jni which flushes too slow
-                    LZ4Factory.fastestJavaInstance().highCompressor(compressionLevel),
-                    XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
-        }
+        return new LZ4BlockOutputStream(out, blockSize,
+                //fastestInstance picks jni which flushes too slow
+                LZ4Factory.fastestInstance().highCompressor(compressionLevel),
+                XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
     }
 
     public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
