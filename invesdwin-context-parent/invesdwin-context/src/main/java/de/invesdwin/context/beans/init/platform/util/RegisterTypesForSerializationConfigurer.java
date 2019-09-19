@@ -29,7 +29,11 @@ public class RegisterTypesForSerializationConfigurer {
                 }
             });
             for (final Class<?> clazz : classesToRegister) {
-                Objects.SERIALIZATION_CONFIG.registerClass(clazz);
+                try {
+                    Objects.SERIALIZATION_CONFIG.registerClass(clazz);
+                } catch (final Throwable t) {
+                    throw new RuntimeException("At: " + clazz.getName(), t);
+                }
             }
         }
     }
