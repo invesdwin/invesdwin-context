@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.pool2.ObjectPool;
 
@@ -14,23 +15,28 @@ import de.invesdwin.util.concurrent.Threads;
 /**
  * Implements the lifecycle of pooled objects
  */
-@Immutable
+@ThreadSafe
 public abstract class AObjectPool<E> implements ObjectPool<E> {
 
     protected IPoolableObjectFactory<E> factory;
     private final AtomicInteger activeCount = new AtomicInteger();
-    private volatile boolean closed;
+    @GuardedBy("this")
+    private boolean closed;
 
     public AObjectPool(final IPoolableObjectFactory<E> factory) {
         this.factory = factory;
     }
 
     @Override
-    public final E borrowObject() throws Exception {
+    public final E borrowObject() {
         throwIfClosed();
         E obj;
         while (true) {
-            Threads.throwIfInterrupted();
+            try {
+                Threads.throwIfInterrupted();
+            } catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             obj = internalBorrowObject();
             if (obj != null) {
                 factory.activateObject(obj);
@@ -50,7 +56,7 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
     }
 
     @Override
-    public final void addObject() throws Exception {
+    public final void addObject() {
         throwIfClosed();
         final E obj = internalAddObject();
         if (factory.validateObject(obj)) {
@@ -60,13 +66,13 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
         }
     }
 
-    protected void removeObject(final E obj) throws Exception {
+    protected void removeObject(final E obj) {
         internalRemoveObject(obj);
         factory.destroyObject(obj);
     }
 
     @Override
-    public final void returnObject(final E obj) throws Exception {
+    public final void returnObject(final E obj) {
         if (obj != null) {
             activeCount.decrementAndGet();
             if (factory.validateObject(obj)) {
@@ -79,7 +85,7 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
     }
 
     @Override
-    public final void invalidateObject(final E obj) throws Exception {
+    public final void invalidateObject(final E obj) {
         if (obj != null) {
             activeCount.decrementAndGet();
             factory.destroyObject(obj);
@@ -88,7 +94,7 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
     }
 
     @Override
-    public final void clear() throws Exception {
+    public final void clear() {
         for (final E obj : internalClear()) {
             factory.destroyObject(obj);
         }
@@ -103,21 +109,21 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
 
     /*************************** templates ******************************************/
 
-    protected abstract E internalBorrowObject() throws Exception;
+    protected abstract E internalBorrowObject();
 
     /**
      * Returns the added object.
      */
-    protected abstract E internalAddObject() throws Exception;
+    protected abstract E internalAddObject();
 
     /**
      * If during the add the validation failed and destroy was called, the instance must be removed afterall.
      */
-    protected abstract void internalRemoveObject(E obj) throws Exception;
+    protected abstract void internalRemoveObject(E obj);
 
-    protected abstract void internalReturnObject(E obj) throws Exception;
+    protected abstract void internalReturnObject(E obj);
 
-    protected abstract void internalInvalidateObject(E obj) throws Exception;
+    protected abstract void internalInvalidateObject(E obj);
 
     @Override
     public abstract int getNumIdle();
@@ -125,7 +131,7 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
     /**
      * Returns the removed idle objects.
      */
-    public abstract Collection<E> internalClear() throws Exception;
+    public abstract Collection<E> internalClear();
 
     /**************************** unchangeable impl ***************************/
 
@@ -135,16 +141,23 @@ public abstract class AObjectPool<E> implements ObjectPool<E> {
     }
 
     @Override
-    public void close() {
-        closed = true;
+    public synchronized void close() {
+        if (!closed) {
+            try {
+                clear();
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+            closed = true;
+        }
     }
 
-    public final boolean isClosed() {
+    public final synchronized boolean isClosed() {
         return closed;
     }
 
     protected final void throwIfClosed() {
-        Assertions.assertThat(closed).as("Instance already closed!").isFalse();
+        Assertions.assertThat(isClosed()).as("Instance already closed!").isFalse();
     }
 
     public final void setFactory(final IPoolableObjectFactory<E> factory) {

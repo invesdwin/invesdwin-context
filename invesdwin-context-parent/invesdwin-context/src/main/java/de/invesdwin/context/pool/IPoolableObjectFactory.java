@@ -16,23 +16,18 @@ import org.apache.commons.pool2.ObjectPool;
  * <p>
  * By contract, when an {@link ObjectPool} delegates to a {@link PoolableObjectFactory},
  * <ol>
- * <li>
- * {@link #makeObject makeObject} is called whenever a new instance is needed.</li>
- * <li>
- * {@link #activateObject activateObject} is invoked on every instance that has been {@link #passivateObject passivated}
- * before it is {@link ObjectPool#borrowObject borrowed} from the pool.</li>
- * <li>
- * {@link #validateObject validateObject} is invoked on {@link #activateObject activated} instances to make sure they
- * can be {@link ObjectPool#borrowObject borrowed} from the pool. <code>validateObject</code> <strong>may</strong> also
- * be used to test an instance being {@link ObjectPool#returnObject returned} to the pool before it is
+ * <li>{@link #makeObject makeObject} is called whenever a new instance is needed.</li>
+ * <li>{@link #activateObject activateObject} is invoked on every instance that has been {@link #passivateObject
+ * passivated} before it is {@link ObjectPool#borrowObject borrowed} from the pool.</li>
+ * <li>{@link #validateObject validateObject} is invoked on {@link #activateObject activated} instances to make sure
+ * they can be {@link ObjectPool#borrowObject borrowed} from the pool. <code>validateObject</code> <strong>may</strong>
+ * also be used to test an instance being {@link ObjectPool#returnObject returned} to the pool before it is
  * {@link #passivateObject passivated}. It will only be invoked on an activated instance.</li>
- * <li>
- * {@link #passivateObject passivateObject} is invoked on every instance when it is returned to the pool.</li>
- * <li>
- * {@link #destroyObject destroyObject} is invoked on every instance when it is being "dropped" from the pool (whether
- * due to the response from <code>validateObject</code>, or for reasons specific to the pool implementation.) There is
- * no guarantee that the instance being destroyed will be considered active, passive or in a generally consistent state.
- * </li>
+ * <li>{@link #passivateObject passivateObject} is invoked on every instance when it is returned to the pool.</li>
+ * <li>{@link #destroyObject destroyObject} is invoked on every instance when it is being "dropped" from the pool
+ * (whether due to the response from <code>validateObject</code>, or for reasons specific to the pool implementation.)
+ * There is no guarantee that the instance being destroyed will be considered active, passive or in a generally
+ * consistent state.</li>
  * </ol>
  * </p>
  * <p>
@@ -61,7 +56,7 @@ public interface IPoolableObjectFactory<T> {
      *             if there is a problem creating a new instance, this will be propagated to the code requesting an
      *             object.
      */
-    T makeObject() throws Exception;
+    T makeObject();
 
     /**
      * Destroys an instance no longer needed by the pool.
@@ -81,7 +76,7 @@ public interface IPoolableObjectFactory<T> {
      * @see #validateObject
      * @see ObjectPool#invalidateObject
      */
-    void destroyObject(T obj) throws Exception;
+    void destroyObject(T obj);
 
     /**
      * Ensures that the instance is safe to be returned by the pool. Returns <code>false</code> if <code>obj</code>
@@ -103,7 +98,7 @@ public interface IPoolableObjectFactory<T> {
      *             if there is a problem activating <code>obj</code>, this exception may be swallowed by the pool.
      * @see #destroyObject
      */
-    void activateObject(T obj) throws Exception;
+    void activateObject(T obj);
 
     /**
      * Uninitialize an instance to be returned to the idle object pool.
@@ -114,5 +109,5 @@ public interface IPoolableObjectFactory<T> {
      *             if there is a problem passivating <code>obj</code>, this exception may be swallowed by the pool.
      * @see #destroyObject
      */
-    void passivateObject(T obj) throws Exception;
+    void passivateObject(T obj);
 }
