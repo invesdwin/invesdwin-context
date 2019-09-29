@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.retry.internal;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,12 +42,11 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //<property name="disallowedCauses">
     //    <set>
     //        <!-- specific exceptions that are children of allowedCauses should still not be allowed -->
-    //        <value>java.io.InterruptedIOException</value>
     //        <value>org.springframework.dao.OptimisticLockingFailureException</value>
     //        <value>javax.persistence.OptimisticLockException</value>
     //    </set>
     //</property>
-    private final List<Class<? extends Exception>> disallowedCauses = Arrays.asList(InterruptedIOException.class,
+    private final List<Class<? extends Exception>> disallowedCauses = Arrays.asList(
             OptimisticLockingFailureException.class, OptimisticLockException.class, ConstraintViolationException.class);
     //<property name="allowedCauses">
     //    <set>
