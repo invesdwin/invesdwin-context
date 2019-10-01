@@ -2,6 +2,7 @@ package de.invesdwin.context.jfreechart.visitor;
 
 import java.awt.Font;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -68,25 +69,33 @@ public abstract class AJFreeChartVisitor {
         //recurse
         if (plot instanceof CombinedDomainCategoryPlot) {
             final CombinedDomainCategoryPlot cPlot = (CombinedDomainCategoryPlot) plot;
-            for (final Object subPlotObj : cPlot.getSubplots()) {
+            final List<?> plots = cPlot.getSubplots();
+            for (int i = 0; i < plots.size(); i++) {
+                final Object subPlotObj = plots.get(i);
                 final Plot subPlot = (Plot) subPlotObj;
                 processPlotRecursive(subPlot, duplicateAxisFilter);
             }
         } else if (plot instanceof CombinedDomainXYPlot) {
             final CombinedDomainXYPlot cPlot = (CombinedDomainXYPlot) plot;
-            for (final Object subPlotObj : cPlot.getSubplots()) {
+            final List<?> plots = cPlot.getSubplots();
+            for (int i = 0; i < plots.size(); i++) {
+                final Object subPlotObj = plots.get(i);
                 final Plot subPlot = (Plot) subPlotObj;
                 processPlotRecursive(subPlot, duplicateAxisFilter);
             }
         } else if (plot instanceof CombinedRangeCategoryPlot) {
             final CombinedRangeCategoryPlot cPlot = (CombinedRangeCategoryPlot) plot;
-            for (final Object subPlotObj : cPlot.getSubplots()) {
+            final List<?> plots = cPlot.getSubplots();
+            for (int i = 0; i < plots.size(); i++) {
+                final Object subPlotObj = plots.get(i);
                 final Plot subPlot = (Plot) subPlotObj;
                 processPlotRecursive(subPlot, duplicateAxisFilter);
             }
         } else if (plot instanceof CombinedRangeXYPlot) {
             final CombinedRangeXYPlot cPlot = (CombinedRangeXYPlot) plot;
-            for (final Object subPlotObj : cPlot.getSubplots()) {
+            final List<?> plots = cPlot.getSubplots();
+            for (int i = 0; i < plots.size(); i++) {
+                final Object subPlotObj = plots.get(i);
                 final Plot subPlot = (Plot) subPlotObj;
                 processPlotRecursive(subPlot, duplicateAxisFilter);
             }
