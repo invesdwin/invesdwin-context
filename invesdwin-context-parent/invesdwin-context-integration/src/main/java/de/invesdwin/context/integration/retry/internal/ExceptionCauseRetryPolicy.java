@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.retry.internal;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Named;
@@ -61,7 +62,8 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //</property>
     private final List<Class<? extends Exception>> allowedCauses = Arrays.asList(IOException.class,
             MessageTimeoutException.class, TransientDataAccessException.class, LockTimeoutException.class,
-            TransactionSystemException.class, JpaSystemException.class, CannotCreateTransactionException.class);
+            TransactionSystemException.class, JpaSystemException.class, CannotCreateTransactionException.class,
+            TimeoutException.class);
     //java.sql.SQLException: Lock wait timeout exceeded; try restarting transaction
     private final List<String> allowedCauseMessageParts = Arrays.asList("try restarting transaction");
 
