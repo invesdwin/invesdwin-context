@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.context.test.TestContext;
 import de.invesdwin.context.test.stub.StubSupport;
 
 @Named
@@ -28,7 +27,7 @@ public class ContextDirectoriesStub extends StubSupport {
     }
 
     @Override
-    public void setUpOnce(final ATest test, final TestContext ctx) {
+    public void tearDownOnce(final ATest test) throws Exception {
         for (final File dir : new File[] { ContextProperties.getCacheDirectory(), ContextProperties.TEMP_DIRECTORY,
                 ContextProperties.getHomeDirectory() }) {
             if (dir != null && dir.exists()) {
