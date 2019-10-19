@@ -69,8 +69,8 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void initDefaultTimeoutSystemProperties(final Duration duration) {
-        delegate.initDefaultTimeoutSystemProperties(duration);
+    public void initDefaultNetworkTimeoutSystemProperties(final Duration duration) {
+        delegate.initDefaultNetworkTimeoutSystemProperties(duration);
     }
 
     @Override

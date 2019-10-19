@@ -115,7 +115,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void initDefaultTimeoutSystemProperties(final Duration duration) {
+    public void initDefaultNetworkTimeoutSystemProperties(final Duration duration) {
         //CHECKSTYLE:OFF
         System.setProperty("sun.net.client.defaultConnectTimeout",
                 String.valueOf(duration.intValue(FTimeUnit.MILLISECONDS)));

@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.properties.SystemProperties;
@@ -123,15 +125,20 @@ public final class ContextProperties {
 
     private static Duration readDefaultNetworkTimeout() {
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-        final String key = "DEFAULT_NETWORK_TIMEOUT";
+        final String durationKey = "DEFAULT_NETWORK_TIMEOUT";
         final Duration duration;
-        if (!PlatformInitializerProperties.isAllowed() || !systemProperties.containsValue(key)) {
+        if (!PlatformInitializerProperties.isAllowed() || !systemProperties.containsValue(durationKey)) {
             //default to 30 seconds if for some reason the properties were not loaded
             duration = new Duration(30, FTimeUnit.SECONDS);
         } else {
-            duration = systemProperties.getDuration(key);
+            duration = systemProperties.getDuration(durationKey);
             //So that Spring-WS also respects the timeouts...
-            PlatformInitializerProperties.getInitializer().initDefaultTimeoutSystemProperties(duration);
+            final String skipSystemPropertiesKey = "DEFAULT_NETWORK_TIMEOUT_SKIP_SYSTEM_PROPERTIES";
+            final boolean skipSystemProperties = systemProperties.containsValue(skipSystemPropertiesKey)
+                    && BooleanUtils.isTrue(systemProperties.getBoolean(skipSystemPropertiesKey));
+            if (!skipSystemProperties) {
+                PlatformInitializerProperties.getInitializer().initDefaultNetworkTimeoutSystemProperties(duration);
+            }
         }
         return duration;
     }

@@ -29,7 +29,7 @@ public interface IPlatformInitializer {
 
     void initDefaultCache(String defaultCacheName);
 
-    void initDefaultTimeoutSystemProperties(Duration duration);
+    void initDefaultNetworkTimeoutSystemProperties(Duration duration);
 
     boolean initIsTestEnvironment();
 
