@@ -21,6 +21,7 @@ import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 
+import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.integration.retry.RetryDisabledException;
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterException;
@@ -70,6 +71,9 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     @Override
     public boolean canRetry(final RetryContext context) {
         if (Threads.isInterrupted()) {
+            return false;
+        }
+        if (EventDispatchThreadUtil.isEventDispatchThread()) {
             return false;
         }
 
