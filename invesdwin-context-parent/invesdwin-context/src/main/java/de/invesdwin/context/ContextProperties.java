@@ -11,7 +11,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.properties.SystemProperties;
-import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.lang.uri.URIsConnect;
 import de.invesdwin.util.time.duration.Duration;
@@ -165,10 +164,6 @@ public final class ContextProperties {
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             return Runtime.getRuntime().availableProcessors();
         }
-    }
-
-    public static String getProcessId() {
-        return DynamicInstrumentationProperties.getProcessId();
     }
 
 }
