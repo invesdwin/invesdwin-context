@@ -70,16 +70,15 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
 
     @Override
     public boolean canRetry(final RetryContext context) {
+        //Allow first run
+        if (super.canRetry(context)) {
+            return true;
+        }
         if (Threads.isInterrupted()) {
             return false;
         }
         if (EventDispatchThreadUtil.isEventDispatchThread()) {
             return false;
-        }
-
-        //Allow first run
-        if (super.canRetry(context)) {
-            return true;
         }
         //After we check for exception we want to decide on
         final boolean retry = decideRetry(context);
