@@ -94,13 +94,13 @@ public class ListXYSeriesOHLC extends XYSeries {
     }
 
     public double getItemMaxY(final XYDataItemOHLC item) {
-        final OHLCDataItem ohlc = item.asOHLC();
+        final OHLCDataItem ohlc = item.getOHLC();
         return maxIgnoreNaN(ohlc.getOpen().doubleValue(), ohlc.getHigh().doubleValue(), ohlc.getLow().doubleValue(),
                 ohlc.getClose().doubleValue());
     }
 
     public double getItemMinY(final XYDataItemOHLC item) {
-        final OHLCDataItem ohlc = item.asOHLC();
+        final OHLCDataItem ohlc = item.getOHLC();
         return minIgnoreNaN(ohlc.getOpen().doubleValue(), ohlc.getHigh().doubleValue(), ohlc.getLow().doubleValue(),
                 ohlc.getClose().doubleValue());
     }
