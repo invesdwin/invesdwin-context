@@ -35,7 +35,7 @@ public class ExceptionCauseRetryTemplate extends RetryTemplate implements Factor
     public ExceptionCauseRetryTemplate() {
         final ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
         backOffPolicy.setInitialInterval(new Duration(1, FTimeUnit.SECONDS).longValue(FTimeUnit.MILLISECONDS));
-        backOffPolicy.setMaxInterval(new Duration(15, FTimeUnit.MINUTES).longValue(FTimeUnit.MILLISECONDS));
+        backOffPolicy.setMaxInterval(new Duration(1, FTimeUnit.MINUTES).longValue(FTimeUnit.MILLISECONDS));
         setBackOffPolicy(backOffPolicy);
         setRetryPolicy(ExceptionCauseRetryPolicy.INSTANCE);
     }
