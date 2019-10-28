@@ -12,10 +12,7 @@
 		init-method="start" destroy-method="stop">
 		<constructor-arg>
 			<bean id="ThreadPool"
-				class="org.eclipse.jetty.util.thread.QueuedThreadPool">
-				<property name="minThreads" value="1" />
-				<property name="maxThreads" value="50" />
-			</bean>
+				class="de.invesdwin.context.webserver.internal.FastQueuedThreadPool" />
 		</constructor-arg>
 		<property name="connectors">
 			<list>
