@@ -43,6 +43,11 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
             return itemReader == null;
         }
 
+        @Override
+        public boolean isThreadLocal() {
+            return true;
+        }
+
     }
 
     protected abstract FlatFileItemReader<E> newItemReader(InputStream in) throws Exception;

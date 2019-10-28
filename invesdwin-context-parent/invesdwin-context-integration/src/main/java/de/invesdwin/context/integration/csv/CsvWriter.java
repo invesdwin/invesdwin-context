@@ -153,6 +153,11 @@ public class CsvWriter implements Closeable {
             return out == null;
         }
 
+        @Override
+        public boolean isThreadLocal() {
+            return true;
+        }
+
     }
 
 }
