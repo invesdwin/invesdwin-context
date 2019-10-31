@@ -10,7 +10,8 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.io.FileUtils;
+
+import de.invesdwin.util.lang.Files;
 
 @NotThreadSafe
 public class FileProperties extends AProperties {
@@ -28,7 +29,7 @@ public class FileProperties extends AProperties {
         builder.setAutoSave(true);
         try {
             if (!file.exists()) {
-                FileUtils.touch(file);
+                Files.touch(file);
             }
             final PropertiesConfiguration conf = builder.configure(new Parameters().fileBased().setFile(file))
                     .getConfiguration();

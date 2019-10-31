@@ -5,10 +5,9 @@ import java.io.IOException;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.apache.commons.io.FileUtils;
-
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.UniqueNameGenerator;
 import net.sf.jasperreports.engine.JRVirtualizer;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
@@ -25,7 +24,7 @@ public final class Virtualizers {
     private static File getTempFolder() {
         final File tempFolder = new File(ContextProperties.TEMP_DIRECTORY, Virtualizers.class.getSimpleName());
         try {
-            FileUtils.forceMkdir(tempFolder);
+            Files.forceMkdir(tempFolder);
         } catch (final IOException e) {
             throw Err.process(e);
         }
@@ -42,7 +41,7 @@ public final class Virtualizers {
     public static JRVirtualizer newFileVirtualizer(final String name) {
         final File dir = new File(getTempFolder(), UNIQUE_NAME_GENERATOR.get(name));
         try {
-            FileUtils.forceMkdir(dir);
+            Files.forceMkdir(dir);
         } catch (final IOException e) {
             throw Err.process(e);
         }

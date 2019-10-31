@@ -2,6 +2,7 @@ package de.invesdwin.context.test;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -32,6 +32,7 @@ import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.test.stub.IStub;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Reflections;
 
 @ThreadSafe
@@ -130,7 +131,7 @@ public class TestContextLoader implements ContextLoader {
                 final File xmlFile = new File(ContextProperties.TEMP_DIRECTORY,
                         "ctx.component.scan_" + e.getKey() + ".xml");
                 final InputStream in = e.getValue().getInputStream();
-                FileUtils.write(xmlFile, IOUtils.toString(in));
+                Files.write(xmlFile, IOUtils.toString(in, Charset.defaultCharset()), Charset.defaultCharset());
                 in.close();
                 final FileSystemResource fsResource = new FileSystemResource(xmlFile);
                 newLocations.add(PositionedResource.of(fsResource, null));

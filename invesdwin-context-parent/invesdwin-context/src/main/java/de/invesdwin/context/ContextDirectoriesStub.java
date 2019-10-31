@@ -7,11 +7,11 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Named;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.context.test.stub.StubSupport;
+import de.invesdwin.util.lang.Files;
 
 @Named
 @NotThreadSafe
@@ -40,7 +40,7 @@ public class ContextDirectoriesStub extends StubSupport {
                         }
                     }
                     if (!isProtectedDir) {
-                        FileUtils.deleteQuietly(f);
+                        Files.deleteQuietly(f);
                     }
                 }
             }

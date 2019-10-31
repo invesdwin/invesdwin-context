@@ -9,13 +9,13 @@ import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.lang.Files;
 
 @ThreadSafe
 public final class AspectJWeaverIncludesConfigurer {
@@ -45,7 +45,7 @@ public final class AspectJWeaverIncludesConfigurer {
                 }
                 template = template.replace("<!--INCLUDES-->", includes);
                 final File file = new File(ContextProperties.TEMP_CLASSPATH_DIRECTORY, "META-INF/aop.xml");
-                FileUtils.writeStringToFile(file, template, Charset.defaultCharset());
+                Files.writeStringToFile(file, template, Charset.defaultCharset());
                 alreadyGenerated = file;
             }
         } catch (final IOException e) {

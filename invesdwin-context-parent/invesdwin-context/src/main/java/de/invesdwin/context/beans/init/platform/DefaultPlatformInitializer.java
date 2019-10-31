@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.UIManager;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
@@ -36,6 +35,7 @@ import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -93,8 +93,8 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         System.setProperty("java.util.prefs.userRoot", ContextProperties.getHomeDirectory().getAbsolutePath());
         System.setProperty("java.util.prefs.systemRoot", ContextProperties.getHomeDirectory().getAbsolutePath());
         try {
-            FileUtils.forceMkdir(new File(ContextProperties.getHomeDirectory(), ".java/.userPrefs"));
-            FileUtils.forceMkdir(new File(ContextProperties.getHomeDirectory(), ".systemPrefs"));
+            Files.forceMkdir(new File(ContextProperties.getHomeDirectory(), ".java/.userPrefs"));
+            Files.forceMkdir(new File(ContextProperties.getHomeDirectory(), ".systemPrefs"));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -153,7 +153,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     public void createDirectoryIfAllowed(final File dir) {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
-                FileUtils.forceMkdir(dir);
+                Files.forceMkdir(dir);
             } catch (final IOException e) {
                 throw Err.process(e);
             }

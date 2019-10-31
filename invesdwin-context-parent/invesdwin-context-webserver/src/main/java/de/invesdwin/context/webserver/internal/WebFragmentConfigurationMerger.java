@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
@@ -18,6 +17,7 @@ import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.maven.plugin.util.AWebFragmentConfigurationMerger;
 import de.invesdwin.maven.plugin.util.WebFragmentResource;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
@@ -60,8 +60,8 @@ public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMer
             final File webinfDirectory = new File(webappDirectory, "WEB-INF");
             final File webFragmentFile = new File(webinfDirectory, "web.xml");
             final String merged = mergeConfigs();
-            FileUtils.forceMkdir(webinfDirectory);
-            FileUtils.writeStringToFile(webFragmentFile, merged, Charset.defaultCharset());
+            Files.forceMkdir(webinfDirectory);
+            Files.writeStringToFile(webFragmentFile, merged, Charset.defaultCharset());
             alreadyGenerated = webappDirectory;
         }
         return alreadyGenerated.getAbsolutePath();

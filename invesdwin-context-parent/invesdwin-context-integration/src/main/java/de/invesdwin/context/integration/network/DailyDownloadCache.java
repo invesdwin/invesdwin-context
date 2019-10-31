@@ -7,9 +7,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.commons.io.FileUtils;
-
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
@@ -28,10 +27,10 @@ public class DailyDownloadCache {
             final File file = newFile(name);
             if (shouldUpdate(file)) {
                 final String content = request.call();
-                FileUtils.writeStringToFile(file, content, Charset.defaultCharset());
+                Files.writeStringToFile(file, content, Charset.defaultCharset());
                 return content;
             } else {
-                return FileUtils.readFileToString(file, Charset.defaultCharset());
+                return Files.readFileToString(file, Charset.defaultCharset());
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -53,7 +52,7 @@ public class DailyDownloadCache {
 
     public static void delete(final String name) {
         final File file = newFile(name);
-        FileUtils.deleteQuietly(file);
+        Files.deleteQuietly(file);
     }
 
     public boolean shouldUpdate(final FDate lastRequestTime) {
