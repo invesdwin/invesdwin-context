@@ -9,6 +9,7 @@ import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeExceptio
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.error.Throwables;
 import io.netty.util.concurrent.FastThreadLocal;
 
 @ThreadSafe
@@ -65,7 +66,7 @@ public class LoggingRetryHook implements IRetryHook {
         sb.append(originator);
         sb.append(" aborted after ");
         sb.append(retryCount);
-        sb.append(" retries. Cause: " + cause);
+        sb.append(" retries. Cause: " + Throwables.getShortStackTrace(cause, 3));
         return sb.toString();
     }
 
