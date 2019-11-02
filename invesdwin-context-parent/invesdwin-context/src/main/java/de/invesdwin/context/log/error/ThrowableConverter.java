@@ -21,7 +21,7 @@ final class ThrowableConverter {
         final StringBuilder s = new StringBuilder("processing ");
         s.append(e.getIdString());
 
-        s.append(throwableToString((Throwable) e, detailed));
+        s.append(throwableToString(e, detailed));
 
         if (detailed) {
             s.append("\n\n\n");
@@ -102,7 +102,7 @@ final class ThrowableConverter {
     }
 
     private static boolean isBasePackageTrace(final StackTraceElement e) {
-        return Strings.startsWithAny(e.toString(), ContextProperties.getBasePackages().toArray(new String[0]));
+        return Strings.startsWithAny(e.toString(), ContextProperties.getBasePackagesArray());
     }
 
 }

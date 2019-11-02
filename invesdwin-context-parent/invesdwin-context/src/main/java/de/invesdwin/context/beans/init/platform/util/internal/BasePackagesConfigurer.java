@@ -19,6 +19,7 @@ public final class BasePackagesConfigurer {
             .getXLogger(BasePackagesConfigurer.class);
     @GuardedBy("BasePackagesConfigurer.class")
     private static Set<String> basePackages;
+    private static String[] basePackagesArray;
 
     private BasePackagesConfigurer() {}
 
@@ -51,6 +52,13 @@ public final class BasePackagesConfigurer {
             }
         }
         return basePackages;
+    }
+
+    public static String[] getBasePackagesArray() {
+        if (basePackagesArray == null) {
+            basePackagesArray = getBasePackages().toArray(new String[0]);
+        }
+        return basePackagesArray;
     }
 
 }

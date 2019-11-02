@@ -4,6 +4,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.slf4j.ext.XLogger.Level;
 
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.log.Log;
@@ -66,7 +67,8 @@ public class LoggingRetryHook implements IRetryHook {
         sb.append(originator);
         sb.append(" aborted after ");
         sb.append(retryCount);
-        sb.append(" retries. Cause: " + Throwables.getShortStackTrace(cause, 3));
+        sb.append(" retries. Cause: "
+                + Throwables.getShortStackTrace(cause, 3, ContextProperties.getBasePackagesArray()));
         return sb.toString();
     }
 

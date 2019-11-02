@@ -122,6 +122,10 @@ public final class ContextProperties {
         return BasePackagesConfigurer.getBasePackages();
     }
 
+    public static String[] getBasePackagesArray() {
+        return BasePackagesConfigurer.getBasePackagesArray();
+    }
+
     private static Duration readDefaultNetworkTimeout() {
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String durationKey = "DEFAULT_NETWORK_TIMEOUT";
