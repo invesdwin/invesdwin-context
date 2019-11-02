@@ -8,7 +8,7 @@ import org.jfree.data.xy.XYDataItem;
 @Immutable
 public class XYDataItemOHLC extends XYDataItem {
 
-    private OHLCDataItem ohlc;
+    private volatile OHLCDataItem ohlc;
 
     public XYDataItemOHLC(final OHLCDataItem ohlc) {
         super(ohlc.getDate().getTime(), ohlc.getClose());
@@ -16,7 +16,9 @@ public class XYDataItemOHLC extends XYDataItem {
     }
 
     public void setOHLC(final OHLCDataItem ohlc) {
-        setY(ohlc.getClose());
+        if (ohlc != null) {
+            setY(ohlc.getClose());
+        }
         this.ohlc = ohlc;
     }
 
