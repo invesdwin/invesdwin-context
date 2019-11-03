@@ -14,6 +14,7 @@ import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.streams.ADelegateInputStream;
 
 /**
@@ -29,6 +30,10 @@ import de.invesdwin.util.streams.ADelegateInputStream;
 public abstract class ADecompressingInputStream extends ADelegateInputStream {
 
     private boolean oneArchiveEntryAlreadyExtraced = false;
+
+    public ADecompressingInputStream(final TextDescription name) {
+        super(name);
+    }
 
     private static InputStream wrap(final InputStream in) {
         final InputStream markableIn;

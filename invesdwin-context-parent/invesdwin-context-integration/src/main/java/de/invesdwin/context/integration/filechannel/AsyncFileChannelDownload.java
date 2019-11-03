@@ -15,6 +15,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.future.Futures;
+import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.streams.ADelegateInputStream;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.duration.Duration;
@@ -65,7 +66,8 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
                     }
                     channel.setFilename(channelFileName);
                     final InputStream input = download();
-                    return new ADelegateInputStream() {
+                    return new ADelegateInputStream(new TextDescription("%s[%s]: call()",
+                            AsyncFileChannelDownload.class.getSimpleName(), channel)) {
 
                         @Override
                         protected InputStream newDelegate() {

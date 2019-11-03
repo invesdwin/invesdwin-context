@@ -7,7 +7,7 @@ import org.slf4j.Marker;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.description.TextDescriptionFormatter;
 
 /**
  * A utility that provides standard mechanisms for logging certain kinds of activities.
@@ -51,157 +51,152 @@ public final class Log extends org.slf4j.ext.XLogger {
 
     @Override
     public void trace(final String format, final Object... args) {
-        super.trace(replacePercentS(format), args);
+        super.trace(TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void trace(final Marker marker, final String format, final Object... args) {
-        super.trace(marker, replacePercentS(format), args);
+        super.trace(marker, TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void debug(final String format, final Object... args) {
-        super.debug(replacePercentS(format), args);
+        super.debug(TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void debug(final Marker marker, final String format, final Object... args) {
-        super.debug(marker, replacePercentS(format), args);
+        super.debug(marker, TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void info(final String format, final Object... args) {
-        super.info(replacePercentS(format), args);
+        super.info(TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void info(final Marker marker, final String format, final Object... args) {
-        super.info(marker, replacePercentS(format), args);
+        super.info(marker, TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void warn(final String format, final Object... args) {
-        super.warn(replacePercentS(format), args);
+        super.warn(TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void warn(final Marker marker, final String format, final Object... args) {
-        super.warn(marker, replacePercentS(format), args);
+        super.warn(marker, TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void error(final String format, final Object... args) {
-        super.error(replacePercentS(format), args);
+        super.error(TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void error(final Marker marker, final String format, final Object... args) {
-        super.error(marker, replacePercentS(format), args);
+        super.error(marker, TextDescriptionFormatter.format(format, args), args);
     }
 
     @Override
     public void debug(final Marker marker, final String format, final Object arg) {
-        super.debug(marker, replacePercentS(format), arg);
+        super.debug(marker, TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.debug(marker, replacePercentS(format), arg1, arg2);
+        super.debug(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void debug(final String format, final Object arg) {
-        super.debug(replacePercentS(format), arg);
+        super.debug(TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void debug(final String format, final Object arg1, final Object arg2) {
-        super.debug(replacePercentS(format), arg1, arg2);
+        super.debug(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void error(final Marker marker, final String format, final Object arg) {
-        super.error(marker, replacePercentS(format), arg);
+        super.error(marker, TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.error(marker, replacePercentS(format), arg1, arg2);
+        super.error(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void error(final String format, final Object arg) {
-        super.error(replacePercentS(format), arg);
+        super.error(TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void error(final String format, final Object arg1, final Object arg2) {
-        super.error(replacePercentS(format), arg1, arg2);
+        super.error(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void info(final Marker marker, final String format, final Object arg) {
-        super.info(marker, replacePercentS(format), arg);
+        super.info(marker, TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.info(marker, replacePercentS(format), arg1, arg2);
+        super.info(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void info(final String format, final Object arg) {
-        super.info(replacePercentS(format), arg);
+        super.info(TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void info(final String format, final Object arg1, final Object arg2) {
-        super.info(replacePercentS(format), arg1, arg2);
+        super.info(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void trace(final Marker marker, final String format, final Object arg) {
-        super.trace(marker, replacePercentS(format), arg);
+        super.trace(marker, TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.trace(marker, replacePercentS(format), arg1, arg2);
+        super.trace(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void trace(final String format, final Object arg) {
-        super.trace(replacePercentS(format), arg);
+        super.trace(TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void trace(final String format, final Object arg1, final Object arg2) {
-        super.trace(replacePercentS(format), arg1, arg2);
+        super.trace(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void warn(final Marker marker, final String format, final Object arg) {
-        super.warn(marker, replacePercentS(format), arg);
+        super.warn(marker, TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.warn(marker, replacePercentS(format), arg1, arg2);
+        super.warn(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void warn(final String format, final Object arg) {
-        super.warn(replacePercentS(format), arg);
+        super.warn(TextDescriptionFormatter.format(format, arg), arg);
     }
 
     @Override
     public void warn(final String format, final Object arg1, final Object arg2) {
-        super.warn(replacePercentS(format), arg1, arg2);
+        super.warn(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
     }
 
-    private String replacePercentS(final String format) {
-        //CHECKSTYLE:OFF
-        return Strings.replace(format, "%s", "{}");
-        //CHECKSTYLE:ON
-    }
 }
