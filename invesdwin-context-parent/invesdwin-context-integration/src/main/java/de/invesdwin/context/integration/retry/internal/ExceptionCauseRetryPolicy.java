@@ -31,14 +31,12 @@ import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.Throwables;
-import io.netty.util.concurrent.FastThreadLocal;
 
 @NotThreadSafe
 @Named
 public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements FactoryBean<ExceptionCauseRetryPolicy> {
 
     public static final ExceptionCauseRetryPolicy INSTANCE = new ExceptionCauseRetryPolicy();
-    public static final FastThreadLocal<Boolean> RETRY_DISABLED = new FastThreadLocal<>();
 
     private static final String ATTRIBUTE_LAST_LOGGED_RETRY_COUNT = "ATTRIBUTE_LAST_LOGGED_RETRY_COUNT";
 
