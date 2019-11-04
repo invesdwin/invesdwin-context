@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.invesdwin.aspects.ProceedingJoinPoints;
 import de.invesdwin.context.beans.init.MergedContext;
+import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.integration.retry.Retry;
 import de.invesdwin.context.integration.retry.RetryDisabled;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
@@ -113,16 +114,11 @@ public class RetryAspect implements InitializingBean {
     public Object retryDisabled(final ProceedingJoinPoint pjp) throws Throwable {
         final RetryDisabled annotation = ProceedingJoinPoints.getAnnotation(pjp, RetryDisabled.class);
         if (annotation == null || annotation.value()) {
-            final Boolean retryDisabledBefore = ExceptionCauseRetryPolicy.RETRY_DISABLED.get();
-            ExceptionCauseRetryPolicy.RETRY_DISABLED.set(true);
+            final boolean registerRetryDisabled = IntegrationProperties.registerThreadRetryDisabled();
             try {
                 return pjp.proceed();
             } finally {
-                if (retryDisabledBefore == null) {
-                    ExceptionCauseRetryPolicy.RETRY_DISABLED.remove();
-                } else {
-                    ExceptionCauseRetryPolicy.RETRY_DISABLED.set(retryDisabledBefore);
-                }
+                IntegrationProperties.unregisterThreadRetryDisabled(registerRetryDisabled);
             }
         } else {
             return pjp.proceed();

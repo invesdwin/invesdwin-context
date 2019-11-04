@@ -4,26 +4,21 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.integration.IntegrationProperties;
+
 @ThreadSafe
 public abstract class ARetryDisabledCallable<E> implements Callable<E> {
 
     @Override
-    public final E call() throws Exception {
-        final Boolean retryDisabledBefore = de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryPolicy.RETRY_DISABLED
-                .get();
-        de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryPolicy.RETRY_DISABLED.set(true);
+    public final E call() {
+        final boolean registerRetryDisabled = IntegrationProperties.registerThreadRetryDisabled();
         try {
             return callRetryDisabled();
         } finally {
-            if (retryDisabledBefore == null) {
-                de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryPolicy.RETRY_DISABLED.remove();
-            } else {
-                de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryPolicy.RETRY_DISABLED
-                        .set(retryDisabledBefore);
-            }
+            IntegrationProperties.unregisterThreadRetryDisabled(registerRetryDisabled);
         }
     }
 
-    protected abstract E callRetryDisabled() throws Exception;
+    protected abstract E callRetryDisabled();
 
 }

@@ -33,9 +33,11 @@ public class FastQueuedThreadPool extends QueuedThreadPool {
 
     @Override
     protected void runJob(final Runnable job) {
+        IntegrationProperties.registerThreadRetryDisabled();
         try {
             super.runJob(job);
         } finally {
+            //no need to unregister retry disabled because we clear thread locals anyway
             FastThreadLocal.removeAll();
         }
     }

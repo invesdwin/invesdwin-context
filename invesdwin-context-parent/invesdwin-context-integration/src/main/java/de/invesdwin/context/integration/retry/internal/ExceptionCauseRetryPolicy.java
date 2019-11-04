@@ -11,7 +11,6 @@ import javax.persistence.LockTimeoutException;
 import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.TransientDataAccessException;
@@ -22,6 +21,7 @@ import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 
+import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.integration.retry.RetryDisabledException;
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterException;
@@ -30,7 +30,6 @@ import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.error.Throwables;
 import io.netty.util.concurrent.FastThreadLocal;
 
@@ -76,10 +75,7 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
         if (super.canRetry(context)) {
             return true;
         }
-        if (Threads.isInterrupted()) {
-            return false;
-        }
-        if (BooleanUtils.isTrue(RETRY_DISABLED.get())) {
+        if (IntegrationProperties.isThreadRetryDisabled()) {
             return false;
         }
         //After we check for exception we want to decide on
