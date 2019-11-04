@@ -7,7 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
-import de.invesdwin.context.integration.retry.task.ARetryingRunnable;
+import de.invesdwin.context.integration.retry.task.ARetryRunnable;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
@@ -38,10 +38,10 @@ public class AsyncFileChannelUpload implements Runnable {
 
     @Override
     public void run() {
-        final Runnable retry = new ARetryingRunnable(
+        final Runnable retry = new ARetryRunnable(
                 new RetryOriginator(AsyncFileChannelUpload.class, "run", channel, localTempFile)) {
             @Override
-            protected void runRetryable() throws Exception {
+            protected void runRetry() throws Exception {
                 cleanupForUpload();
                 try {
                     EXECUTOR.awaitPendingCount(MAX_PARALLEL_UPLOADS);
@@ -69,10 +69,10 @@ public class AsyncFileChannelUpload implements Runnable {
     }
 
     private void uploadAsync() {
-        EXECUTOR.execute(new ARetryingRunnable(
+        EXECUTOR.execute(new ARetryRunnable(
                 new RetryOriginator(AsyncFileChannelUpload.class, "upload", channel, localTempFile)) {
             @Override
-            protected void runRetryable() throws Exception {
+            protected void runRetry() throws Exception {
                 try {
                     cleanupForUpload();
                     upload();

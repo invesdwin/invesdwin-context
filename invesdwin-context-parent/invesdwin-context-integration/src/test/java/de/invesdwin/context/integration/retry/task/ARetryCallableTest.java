@@ -8,17 +8,16 @@ import de.invesdwin.util.assertions.Assertions;
 
 // CHECKSTYLE:OFF
 @NotThreadSafe
-public class ARetryingCallableTest {
+public class ARetryCallableTest {
 
     public static void main(final String[] args) throws Exception {
         PlatformInitializerProperties.setAllowed(false);
-        final Integer retries = new ARetryingCallable<Integer>(
-                new RetryOriginator(ARetryingCallableTest.class, "main")) {
+        final Integer retries = new ARetryCallable<Integer>(new RetryOriginator(ARetryCallableTest.class, "main")) {
 
             private int tries = 0;
 
             @Override
-            protected Integer callRetryable() {
+            protected Integer callRetry() {
                 if (tries == 0) {
                     tries++;
                     throw new RetryLaterRuntimeException("First try");

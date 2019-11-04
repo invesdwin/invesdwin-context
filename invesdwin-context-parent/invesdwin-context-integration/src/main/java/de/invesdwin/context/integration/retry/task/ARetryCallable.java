@@ -8,11 +8,11 @@ import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.util.error.Throwables;
 
 @ThreadSafe
-public abstract class ARetryingCallable<E> implements Callable<E> {
+public abstract class ARetryCallable<E> implements Callable<E> {
 
     private final RetryOriginator originator;
 
-    public ARetryingCallable(final RetryOriginator originator) {
+    public ARetryCallable(final RetryOriginator originator) {
         this.originator = originator;
     }
 
@@ -22,7 +22,7 @@ public abstract class ARetryingCallable<E> implements Callable<E> {
                 new Callable<E>() {
                     @Override
                     public E call() throws Exception {
-                        return callRetryable();
+                        return callRetry();
                     }
                 }, originator);
         try {
@@ -37,6 +37,6 @@ public abstract class ARetryingCallable<E> implements Callable<E> {
         }
     }
 
-    protected abstract E callRetryable() throws Exception;
+    protected abstract E callRetry() throws Exception;
 
 }

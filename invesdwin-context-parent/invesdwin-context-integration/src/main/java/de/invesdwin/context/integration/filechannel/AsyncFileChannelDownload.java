@@ -9,7 +9,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
-import de.invesdwin.context.integration.retry.task.ARetryingCallable;
+import de.invesdwin.context.integration.retry.task.ARetryCallable;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
@@ -48,10 +48,10 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
 
     @Override
     public InputStream call() throws Exception {
-        final Callable<InputStream> downloadAsync = new ARetryingCallable<InputStream>(
+        final Callable<InputStream> downloadAsync = new ARetryCallable<InputStream>(
                 new RetryOriginator(AsyncFileChannelDownload.class, "call", channel)) {
             @Override
-            protected InputStream callRetryable() {
+            protected InputStream callRetry() {
                 try {
                     if (!channel.isConnected()) {
                         channel.connect();
