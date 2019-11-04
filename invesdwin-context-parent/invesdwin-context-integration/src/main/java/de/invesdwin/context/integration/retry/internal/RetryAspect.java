@@ -17,9 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import de.invesdwin.aspects.ProceedingJoinPoints;
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.integration.retry.Retry;
-import de.invesdwin.context.integration.retry.RetryOriginator;
+import de.invesdwin.context.integration.retry.RetryDisabled;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.error.Throwables;
 import io.netty.util.concurrent.FastThreadLocal;
 
@@ -75,8 +76,8 @@ public class RetryAspect implements InitializingBean {
                 return retryTemplate.execute(retryCallback);
             } catch (final Throwable e) {
                 final Throwable cause = Throwables.ignoreType(e, WrappedRetryException.class);
-                RetryHookManager.getEventTrigger().onRetryAborted(retryCallback.getOriginator(),
-                        retryCallback.getRetryCount(), cause);
+                RetryHookManager.getEventTrigger()
+                        .onRetryAborted(retryCallback.getOriginator(), retryCallback.getRetryCount(), cause);
                 throw cause;
             }
         } else {
@@ -106,6 +107,31 @@ public class RetryAspect implements InitializingBean {
                 return pjp.proceed();
             }
         }
+    }
+
+    @Around("execution(* *(..)) &&  @annotation(de.invesdwin.context.integration.retry.RetryDisabled)")
+    public Object retryDisabled(final ProceedingJoinPoint pjp) throws Throwable {
+        final RetryDisabled annotation = ProceedingJoinPoints.getAnnotation(pjp, RetryDisabled.class);
+        if (annotation == null || annotation.value()) {
+            final Boolean retryDisabledBefore = ExceptionCauseRetryPolicy.RETRY_DISABLED.get();
+            ExceptionCauseRetryPolicy.RETRY_DISABLED.set(true);
+            try {
+                return pjp.proceed();
+            } finally {
+                if (retryDisabledBefore == null) {
+                    ExceptionCauseRetryPolicy.RETRY_DISABLED.remove();
+                } else {
+                    ExceptionCauseRetryPolicy.RETRY_DISABLED.set(retryDisabledBefore);
+                }
+            }
+        } else {
+            return pjp.proceed();
+        }
+    }
+
+    @Around("execution(* *(..)) && @annotation(org.springframework.web.bind.annotation.RequestMapping)")
+    public Object retryDisabledRequestMapping(final ProceedingJoinPoint pjp) throws Throwable {
+        return retryDisabled(pjp);
     }
 
 }

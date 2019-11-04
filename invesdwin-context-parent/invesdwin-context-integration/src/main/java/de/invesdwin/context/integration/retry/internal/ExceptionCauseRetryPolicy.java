@@ -11,6 +11,7 @@ import javax.persistence.LockTimeoutException;
 import javax.persistence.OptimisticLockException;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.TransientDataAccessException;
@@ -25,18 +26,20 @@ import de.invesdwin.context.integration.retry.RetryDisabledException;
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
-import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.error.Throwables;
+import io.netty.util.concurrent.FastThreadLocal;
 
 @NotThreadSafe
 @Named
 public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements FactoryBean<ExceptionCauseRetryPolicy> {
 
     public static final ExceptionCauseRetryPolicy INSTANCE = new ExceptionCauseRetryPolicy();
+    public static final FastThreadLocal<Boolean> RETRY_DISABLED = new FastThreadLocal<>();
 
     private static final String ATTRIBUTE_LAST_LOGGED_RETRY_COUNT = "ATTRIBUTE_LAST_LOGGED_RETRY_COUNT";
 
@@ -74,6 +77,9 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
             return true;
         }
         if (Threads.isInterrupted()) {
+            return false;
+        }
+        if (BooleanUtils.isTrue(RETRY_DISABLED.get())) {
             return false;
         }
         //After we check for exception we want to decide on

@@ -1,13 +1,10 @@
-package de.invesdwin.context.integration.retry;
+package de.invesdwin.context.integration.retry.task;
 
 import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
-import de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback;
-import de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryTemplate;
-import de.invesdwin.context.integration.retry.internal.WrappedRetryException;
 import de.invesdwin.util.error.Throwables;
 
 @ThreadSafe
@@ -21,7 +18,7 @@ public abstract class ARetryingRunnable implements Runnable {
 
     @Override
     public final void run() {
-        final ExceptionCauseRetryCallback<Void> retryCallback = new ExceptionCauseRetryCallback<Void>(
+        final de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<Void> retryCallback = new de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<Void>(
                 new Callable<Void>() {
                     @Override
                     public Void call() throws Exception {
@@ -30,11 +27,12 @@ public abstract class ARetryingRunnable implements Runnable {
                     }
                 }, originator);
         try {
-            ExceptionCauseRetryTemplate.INSTANCE.execute(retryCallback);
+            de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryTemplate.INSTANCE.execute(retryCallback);
         } catch (final Throwable e) {
-            final Throwable cause = Throwables.ignoreType(e, WrappedRetryException.class);
-            RetryHookManager.getEventTrigger().onRetryAborted(retryCallback.getOriginator(),
-                    retryCallback.getRetryCount(), cause);
+            final Throwable cause = Throwables.ignoreType(e,
+                    de.invesdwin.context.integration.retry.internal.WrappedRetryException.class);
+            RetryHookManager.getEventTrigger()
+                    .onRetryAborted(retryCallback.getOriginator(), retryCallback.getRetryCount(), cause);
             throw Throwables.propagate(cause);
         }
     }

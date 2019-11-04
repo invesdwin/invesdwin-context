@@ -1,6 +1,6 @@
 package de.invesdwin.context.integration.retry.hook;
 
-import de.invesdwin.context.integration.retry.RetryOriginator;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 
 public interface IRetryHook {
 

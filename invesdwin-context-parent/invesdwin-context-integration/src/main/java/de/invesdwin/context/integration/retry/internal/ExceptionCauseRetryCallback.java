@@ -7,8 +7,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 
-import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 
 @NotThreadSafe
 public class ExceptionCauseRetryCallback<E> implements RetryCallback<E, Exception> {

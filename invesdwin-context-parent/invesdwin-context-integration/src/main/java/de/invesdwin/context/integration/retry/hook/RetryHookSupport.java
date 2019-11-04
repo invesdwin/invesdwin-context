@@ -3,7 +3,7 @@ package de.invesdwin.context.integration.retry.hook;
 import javax.annotation.concurrent.Immutable;
 import javax.inject.Named;
 
-import de.invesdwin.context.integration.retry.RetryOriginator;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 
 @Immutable
 @Named

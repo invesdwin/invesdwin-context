@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.retry;
+package de.invesdwin.context.integration.retry.task;
 
 import javax.annotation.concurrent.Immutable;
 

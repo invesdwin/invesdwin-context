@@ -2,7 +2,7 @@ package de.invesdwin.context.integration.retry.internal;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.retry.RetryOriginator;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 
 @ThreadSafe
 public class WrappedRetryException extends Exception {

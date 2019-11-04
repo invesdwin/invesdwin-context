@@ -5,8 +5,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.ext.XLogger.Level;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;

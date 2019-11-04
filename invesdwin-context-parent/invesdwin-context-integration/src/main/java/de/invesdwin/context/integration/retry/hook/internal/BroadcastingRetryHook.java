@@ -5,8 +5,8 @@ import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.retry.RetryOriginator;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
+import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.collections.fast.concurrent.ASynchronizedFastIterableDelegateSet;
 
 @ThreadSafe
