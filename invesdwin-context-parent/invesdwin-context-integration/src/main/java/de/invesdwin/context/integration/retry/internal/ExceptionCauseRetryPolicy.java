@@ -48,7 +48,8 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //    </set>
     //</property>
     private final List<Class<? extends Exception>> disallowedCauses = Arrays.asList(
-            OptimisticLockingFailureException.class, OptimisticLockException.class, ConstraintViolationException.class);
+            OptimisticLockingFailureException.class, OptimisticLockException.class, ConstraintViolationException.class,
+            InterruptedException.class);
     //<property name="allowedCauses">
     //    <set>
     //        <!-- on connection problems there should always be retried -->
