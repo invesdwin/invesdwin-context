@@ -4,11 +4,10 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.listener.RetryListenerSupport;
 import org.springframework.retry.support.RetryTemplate;
-
-import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @NotThreadSafe
 @Named
@@ -33,11 +32,19 @@ public class ExceptionCauseRetryTemplate extends RetryTemplate implements Factor
     //        </property>
     //    </bean>
     public ExceptionCauseRetryTemplate() {
-        final ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
-        backOffPolicy.setInitialInterval(new Duration(1, FTimeUnit.SECONDS).longValue(FTimeUnit.MILLISECONDS));
-        backOffPolicy.setMaxInterval(new Duration(1, FTimeUnit.MINUTES).longValue(FTimeUnit.MILLISECONDS));
-        setBackOffPolicy(backOffPolicy);
+        setBackOffPolicy(ExceptionCauseBackOffPolicy.INSTANCE);
         setRetryPolicy(ExceptionCauseRetryPolicy.INSTANCE);
+        registerListener(new RetryListenerSupport() {
+            @Override
+            public <T, E extends Throwable> boolean open(final RetryContext context,
+                    final RetryCallback<T, E> callback) {
+                if (callback instanceof ExceptionCauseRetryCallback) {
+                    final ExceptionCauseRetryCallback<?> cCallback = (ExceptionCauseRetryCallback) callback;
+                    cCallback.open(context);
+                }
+                return true;
+            }
+        });
     }
 
     @Override

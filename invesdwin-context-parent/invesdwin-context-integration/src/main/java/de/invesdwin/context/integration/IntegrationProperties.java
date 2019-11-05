@@ -43,29 +43,38 @@ public final class IntegrationProperties {
     private IntegrationProperties() {}
 
     private static List<URI> readInternetCheckUris() {
-        final String[] uris = SYSTEM_PROPERTIES.getStringArray("INTERNET_CHECK_URIS");
-        final List<URI> uriList = new ArrayList<URI>();
-        for (final String uri : uris) {
-            uriList.add(URIs.asUri(uri));
+        final String key = "INTERNET_CHECK_URIS";
+        if (SYSTEM_PROPERTIES.containsValue(key)) {
+            final String[] uris = SYSTEM_PROPERTIES.getStringArray(key);
+            final List<URI> uriList = new ArrayList<URI>();
+            for (final String uri : uris) {
+                uriList.add(URIs.asUri(uri));
+            }
+            return Collections.unmodifiableList(uriList);
+        } else {
+            return Collections.emptyList();
         }
-        return Collections.unmodifiableList(uriList);
     }
 
     private static URI readWebserverBindUri() {
         final String key = "WEBSERVER_BIND_URI";
-        final String expectedFormat = "Expected Format: (http|https)://<host>:<port>";
-        final URL url = SYSTEM_PROPERTIES.getURL(key, true);
-        final int port = url.getPort();
-        if (!Addresses.isPort(port)) {
-            throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null,
-                    "Port [" + port + "] is incorrect. " + expectedFormat));
+        if (SYSTEM_PROPERTIES.containsValue(key)) {
+            final String expectedFormat = "Expected Format: (http|https)://<host>:<port>";
+            final URL url = SYSTEM_PROPERTIES.getURL(key, true);
+            final int port = url.getPort();
+            if (!Addresses.isPort(port)) {
+                throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null,
+                        "Port [" + port + "] is incorrect. " + expectedFormat));
+            }
+            final String protocol = url.getProtocol();
+            if (!("http".equals(protocol) || "https".equals(protocol))) {
+                throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null,
+                        "Protocol [" + protocol + "] is incorrect. " + expectedFormat));
+            }
+            return URIs.asUri(url);
+        } else {
+            return null;
         }
-        final String protocol = url.getProtocol();
-        if (!("http".equals(protocol) || "https".equals(protocol))) {
-            throw new IllegalArgumentException(SYSTEM_PROPERTIES.getErrorMessage(key, url, null,
-                    "Protocol [" + protocol + "] is incorrect. " + expectedFormat));
-        }
-        return URIs.asUri(url);
     }
 
     /**

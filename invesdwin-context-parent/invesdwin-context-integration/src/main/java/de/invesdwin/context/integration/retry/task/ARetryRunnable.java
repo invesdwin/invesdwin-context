@@ -4,6 +4,8 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import org.springframework.retry.backoff.BackOffPolicy;
+
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.util.error.Throwables;
 
@@ -18,14 +20,15 @@ public abstract class ARetryRunnable implements Runnable {
 
     @Override
     public final void run() {
+        final Callable<Void> callable = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                runRetry();
+                return null;
+            }
+        };
         final de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<Void> retryCallback = new de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<Void>(
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        runRetry();
-                        return null;
-                    }
-                }, originator);
+                callable, originator, getBackOffPolicyOverride());
         try {
             de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryTemplate.INSTANCE.execute(retryCallback);
         } catch (final Throwable e) {
@@ -35,6 +38,10 @@ public abstract class ARetryRunnable implements Runnable {
                     .onRetryAborted(retryCallback.getOriginator(), retryCallback.getRetryCount(), cause);
             throw Throwables.propagate(cause);
         }
+    }
+
+    protected BackOffPolicy getBackOffPolicyOverride() {
+        return null;
     }
 
     protected abstract void runRetry() throws Exception;

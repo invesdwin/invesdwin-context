@@ -21,6 +21,7 @@ import de.invesdwin.context.integration.retry.Retry;
 import de.invesdwin.context.integration.retry.RetryDisabled;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
+import de.invesdwin.context.integration.retry.task.BackOffPolicies;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.error.Throwables;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -72,7 +73,7 @@ public class RetryAspect implements InitializingBean {
                                 throw Throwables.propagate(t);
                             }
                         }
-                    }, new RetryOriginator(pjp));
+                    }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation));
             try {
                 return retryTemplate.execute(retryCallback);
             } catch (final Throwable e) {

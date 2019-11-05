@@ -20,4 +20,11 @@ public @interface Retry {
      */
     boolean value() default true;
 
+    /**
+     * A negative value keeps the default exponential back off policy (from 1 second to 1 minute).
+     * 
+     * 0 uses NoBackOffPolicy. A positive values uses a FixedBackOffPolicy.
+     */
+    long fixedBackOffMillis() default -1;
+
 }
