@@ -95,8 +95,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
     }
 
     @Override
-    public void close() {
-        super.close();
+    protected void innerClose() {
         finalizer.close();
     }
 
