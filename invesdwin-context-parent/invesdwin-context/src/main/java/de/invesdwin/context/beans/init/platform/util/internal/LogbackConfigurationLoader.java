@@ -37,6 +37,8 @@ public final class LogbackConfigurationLoader {
                         Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback.xml")));
                 orderedConfigs.addAll(
                         Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-test.xml")));
+                orderedConfigs.addAll(
+                        Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-dist.xml")));
 
                 final LoggerContext lc = (LoggerContext) lf;
                 final JoranConfigurator configurator = new JoranConfigurator();
