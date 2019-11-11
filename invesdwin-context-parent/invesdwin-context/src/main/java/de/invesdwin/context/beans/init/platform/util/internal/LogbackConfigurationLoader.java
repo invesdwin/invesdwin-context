@@ -15,6 +15,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.Resources;
@@ -35,10 +36,13 @@ public final class LogbackConfigurationLoader {
                 final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
                 orderedConfigs.addAll(
                         Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback.xml")));
-                orderedConfigs.addAll(
-                        Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-test.xml")));
-                orderedConfigs.addAll(
-                        Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-dist.xml")));
+                if (ContextProperties.IS_TEST_ENVIRONMENT) {
+                    orderedConfigs.addAll(Arrays
+                            .asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-test.xml")));
+                } else {
+                    orderedConfigs.addAll(Arrays
+                            .asList(resolver.getResources("classpath*:" + META_INF_LOGBACK + "*logback-dist.xml")));
+                }
 
                 final LoggerContext lc = (LoggerContext) lf;
                 final JoranConfigurator configurator = new JoranConfigurator();
