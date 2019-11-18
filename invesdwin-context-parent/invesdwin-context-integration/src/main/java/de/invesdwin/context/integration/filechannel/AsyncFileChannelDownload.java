@@ -59,7 +59,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
                     timeoutStart = new Instant();
                     while (shouldWaitForFinishedFile()) {
                         FTimeUnit.SECONDS.sleep(1);
-                        if (timeoutStart.toDuration().isGreaterThan(downloadTimeout)) {
+                        if (timeoutStart.isGreaterThan(downloadTimeout)) {
                             throw new TimeoutException(
                                     "Timeout of " + downloadTimeout + " exceeded while downloading: " + channel);
                         }

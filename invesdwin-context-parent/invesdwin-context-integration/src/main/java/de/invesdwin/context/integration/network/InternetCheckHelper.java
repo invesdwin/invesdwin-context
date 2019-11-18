@@ -70,8 +70,7 @@ final class InternetCheckHelper {
     public static boolean isInternetAvailable(final boolean allowCache) throws InterruptedException {
         //Decide if checking or waiting for another check
         synchronized (InternetCheckHelper.class) {
-            if (allowCache && lastCheck != Instant.DUMMY
-                    && new Duration(lastCheck).isLessThan(INTERNET_CHECK_FREQUENCY)) {
+            if (allowCache && lastCheck != Instant.DUMMY && lastCheck.isLessThan(INTERNET_CHECK_FREQUENCY)) {
                 //only check in the given frequency
                 return lastCheckResult;
             }
