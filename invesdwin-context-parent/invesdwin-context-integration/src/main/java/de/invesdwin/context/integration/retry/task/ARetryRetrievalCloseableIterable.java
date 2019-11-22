@@ -125,6 +125,7 @@ public abstract class ARetryRetrievalCloseableIterable<T> implements ICloseableI
 
             @Override
             public void close() {
+                queryRetry.close();
                 queryRetry = EmptyCloseableIterator.getInstance();
             }
         };
