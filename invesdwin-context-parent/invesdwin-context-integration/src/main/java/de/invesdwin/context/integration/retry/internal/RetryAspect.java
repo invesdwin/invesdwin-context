@@ -73,7 +73,7 @@ public class RetryAspect implements InitializingBean {
                                 throw Throwables.propagate(t);
                             }
                         }
-                    }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation));
+                    }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation), null);
             try {
                 return retryTemplate.execute(retryCallback);
             } catch (final Throwable e) {

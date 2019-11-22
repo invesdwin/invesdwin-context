@@ -17,6 +17,7 @@ public final class ExceptionCauseBackOffPolicy implements BackOffPolicy {
     public static final String ATTRIBUTE_BACK_OFF_POLICY_OVERRIDE = "ATTRIBUTE_BACK_OFF_POLICY_OVERRIDE";
 
     public static final ExceptionCauseBackOffPolicy INSTANCE = new ExceptionCauseBackOffPolicy();
+
     private final ExponentialBackOffPolicy defaultBackOffPolicy;
 
     private ExceptionCauseBackOffPolicy() {

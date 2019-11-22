@@ -6,6 +6,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.springframework.retry.backoff.BackOffPolicy;
 
+import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.util.error.Throwables;
 
@@ -26,18 +27,26 @@ public abstract class ARetryCallable<E> implements Callable<E> {
                 return callRetry();
             }
         };
+        final IRetryHook retryListener = getRetryListener();
         final de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<E> retryCallback = new de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<E>(
-                callable, originator, getBackOffPolicyOverride());
+                callable, originator, getBackOffPolicyOverride(), retryListener);
         try {
             return de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryTemplate.INSTANCE
                     .execute(retryCallback);
         } catch (final Throwable e) {
             final Throwable cause = Throwables.ignoreType(e,
                     de.invesdwin.context.integration.retry.internal.WrappedRetryException.class);
-            RetryHookManager.getEventTrigger()
-                    .onRetryAborted(retryCallback.getOriginator(), retryCallback.getRetryCount(), cause);
+            final int retryCount = retryCallback.getRetryCount();
+            RetryHookManager.getEventTrigger().onRetryAborted(originator, retryCount, cause);
+            if (retryListener != null) {
+                retryListener.onRetryAborted(originator, retryCount, cause);
+            }
             throw Throwables.propagate(cause);
         }
+    }
+
+    protected IRetryHook getRetryListener() {
+        return null;
     }
 
     protected BackOffPolicy getBackOffPolicyOverride() {

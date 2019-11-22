@@ -26,6 +26,7 @@ import de.invesdwin.context.integration.retry.RetryDisabledException;
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
+import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
@@ -37,6 +38,7 @@ import de.invesdwin.util.error.Throwables;
 public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements FactoryBean<ExceptionCauseRetryPolicy> {
 
     public static final ExceptionCauseRetryPolicy INSTANCE = new ExceptionCauseRetryPolicy();
+    public static final String ATTRIBUTE_RETRY_LISTENER = "ATTRIBUTE_RETRY_HOOK";
 
     private static final String ATTRIBUTE_LAST_LOGGED_RETRY_COUNT = "ATTRIBUTE_LAST_LOGGED_RETRY_COUNT";
 
@@ -133,6 +135,10 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
         Assertions.checkNotNull(cause);
         final int beforeRetryCount = retryCount - 1;
         RetryHookManager.getEventTrigger().onBeforeRetry(originator, beforeRetryCount, cause);
+        final IRetryHook retryListener = (IRetryHook) context.getAttribute(ATTRIBUTE_RETRY_LISTENER);
+        if (retryListener != null) {
+            retryListener.onBeforeRetry(originator, beforeRetryCount, cause);
+        }
 
         context.setAttribute(ATTRIBUTE_LAST_LOGGED_RETRY_COUNT, retryCount);
     }
