@@ -46,6 +46,9 @@ public abstract class ARetryRetrievalCloseableIterable<T> implements ICloseableI
                         public void onBeforeRetry(final RetryOriginator originator, final int retryCount,
                                 final Throwable cause) {
                             //reinitialize delegate
+                            if (delegate != null) {
+                                delegate.close();
+                            }
                             delegate = null;
                         }
                     };
