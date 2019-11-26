@@ -102,7 +102,12 @@ final class ThrowableConverter {
     }
 
     private static boolean isBasePackageTrace(final StackTraceElement e) {
-        return Strings.startsWithAny(e.toString(), ContextProperties.getBasePackagesArray());
+        String str = e.toString();
+        // workaround for app//de.invesdwin... on newer JDKs
+        if (str.contains("/")) {
+            str = Strings.substringAfterLast(str, "/");
+        }
+        return Strings.startsWithAny(str, ContextProperties.getBasePackagesArray());
     }
 
 }
