@@ -18,7 +18,7 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
     private final Comparable<?> key;
 
     /** Storage for the data items. */
-    private List<OHLCDataItem> data;
+    private List<? extends OHLCDataItem> data;
 
     /**
      * Creates a new dataset.
@@ -28,12 +28,12 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      * @param data
      *            the data items.
      */
-    public ListOHLCDataset(final Comparable<?> key, final List<OHLCDataItem> data) {
+    public ListOHLCDataset(final Comparable<?> key, final List<? extends OHLCDataItem> data) {
         this.key = key;
         this.data = data;
     }
 
-    public List<OHLCDataItem> getData() {
+    public List<? extends OHLCDataItem> getData() {
         return data;
     }
 

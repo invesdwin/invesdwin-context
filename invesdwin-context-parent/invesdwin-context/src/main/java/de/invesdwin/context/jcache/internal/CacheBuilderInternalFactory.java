@@ -19,7 +19,7 @@ import com.github.benmanes.caffeine.jcache.copy.Copier;
 import de.invesdwin.context.jcache.CacheBuilder;
 import de.invesdwin.context.jcache.CacheEntryListenerSupport;
 import de.invesdwin.context.jcache.MergedExpiryPolicy;
-import de.invesdwin.util.concurrent.Executors;
+import de.invesdwin.util.collections.loadingcache.caffeine.CaffeineLoadingCacheMapConfig;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -41,7 +41,7 @@ public final class CacheBuilderInternalFactory {
     private static final Factory<Executor> DISABLED_EXECUTOR_FACTORY = new Factory<Executor>() {
         @Override
         public Executor create() {
-            return Executors.DISABLED_EXECUTOR;
+            return CaffeineLoadingCacheMapConfig.DISABLED_EXECUTOR;
         }
     };
 

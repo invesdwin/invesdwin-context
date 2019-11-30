@@ -40,13 +40,13 @@ public class ListXYSeriesOHLC extends XYSeries {
         }
     }
 
-    public ListXYSeriesOHLC(final Comparable<?> key, final List<XYDataItemOHLC> data) {
+    public ListXYSeriesOHLC(final Comparable<?> key, final List<? extends MutableXYDataItemOHLC> data) {
         super(key, false, false);
         this.data = data;
     }
 
     @SuppressWarnings("unchecked")
-    public List<XYDataItemOHLC> getData() {
+    public List<MutableXYDataItemOHLC> getData() {
         return data;
     }
 
@@ -82,7 +82,7 @@ public class ListXYSeriesOHLC extends XYSeries {
         }
     }
 
-    public void updateBoundsForAddedItem(final XYDataItemOHLC item) {
+    public void updateBoundsForAddedItem(final MutableXYDataItemOHLC item) {
         final double x = item.getXValue();
         setMinX(minIgnoreNaN(getMinX(), getItemMinX(item)));
         setMaxX(maxIgnoreNaN(getMaxX(), getItemMaxX(item)));
@@ -93,23 +93,23 @@ public class ListXYSeriesOHLC extends XYSeries {
         }
     }
 
-    public double getItemMaxY(final XYDataItemOHLC item) {
+    public double getItemMaxY(final MutableXYDataItemOHLC item) {
         final OHLCDataItem ohlc = item.getOHLC();
         return maxIgnoreNaN(ohlc.getOpen().doubleValue(), ohlc.getHigh().doubleValue(), ohlc.getLow().doubleValue(),
                 ohlc.getClose().doubleValue());
     }
 
-    public double getItemMinY(final XYDataItemOHLC item) {
+    public double getItemMinY(final MutableXYDataItemOHLC item) {
         final OHLCDataItem ohlc = item.getOHLC();
         return minIgnoreNaN(ohlc.getOpen().doubleValue(), ohlc.getHigh().doubleValue(), ohlc.getLow().doubleValue(),
                 ohlc.getClose().doubleValue());
     }
 
-    public double getItemMaxX(final XYDataItemOHLC item) {
+    public double getItemMaxX(final MutableXYDataItemOHLC item) {
         return item.getXValue();
     }
 
-    public double getItemMinX(final XYDataItemOHLC item) {
+    public double getItemMinX(final MutableXYDataItemOHLC item) {
         return item.getXValue();
     }
 
