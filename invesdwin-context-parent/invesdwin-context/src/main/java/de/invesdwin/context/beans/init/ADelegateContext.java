@@ -390,4 +390,15 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
         return delegate.getBeanProvider(requiredType);
     }
 
+    @Override
+    public String[] getBeanNamesForType(final ResolvableType type, final boolean includeNonSingletons,
+            final boolean allowEagerInit) {
+        return delegate.getBeanNamesForType(type, includeNonSingletons, allowEagerInit);
+    }
+
+    @Override
+    public Class<?> getType(final String name, final boolean allowFactoryBeanInit)
+            throws NoSuchBeanDefinitionException {
+        return delegate.getType(name, allowFactoryBeanInit);
+    }
 }
