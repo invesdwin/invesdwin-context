@@ -232,7 +232,7 @@ public abstract class AProperties implements IProperties {
     }
 
     private String prefix(final String key) {
-        return Strings.eventuallyAddPrefix(key, getPropertyPrefix());
+        return Strings.putPrefix(key, getPropertyPrefix());
     }
 
     protected String getPropertyPrefix() {
@@ -389,7 +389,7 @@ public abstract class AProperties implements IProperties {
         }
         error += ".";
         if (Strings.isNotBlank(message)) {
-            error += Strings.eventuallyAddPrefix(message, " ");
+            error += Strings.putPrefix(message, " ");
         }
         return error;
     }

@@ -51,7 +51,7 @@ public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMer
         if (Strings.isBlank(contextPath)) {
             return "/";
         }
-        return Strings.eventuallyAddPrefix(contextPath, "/");
+        return Strings.putPrefix(contextPath, "/");
     }
 
     public String getResourceBase() throws IOException {
