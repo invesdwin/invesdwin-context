@@ -4,6 +4,8 @@ import java.awt.Font;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.util.swing.Fonts;
+
 @Immutable
 public class JFreeChartFontSizeChanger extends AJFreeChartVisitor {
 
@@ -15,15 +17,7 @@ public class JFreeChartFontSizeChanger extends AJFreeChartVisitor {
 
     @Override
     protected Font processFont(final Font font) {
-        return changeFontSize(font, fixedSize);
-    }
-
-    public static Font changeFontSize(final Font font, final int fixedSize) {
-        if (font.getSize() != fixedSize) {
-            return font.deriveFont(font.getStyle(), fixedSize);
-        } else {
-            return font;
-        }
+        return Fonts.resizeFont(font, fixedSize);
     }
 
 }
