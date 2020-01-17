@@ -21,7 +21,7 @@ public class TestLraHashMap extends AbstractPerformanceTest {
     private static final int REPETITIONS = 1000;
     private static final int TIMES = 10000;
     private static final int MAXIMUM_SIZE = TIMES / 10;
-    private static final int MAX = 5000000;
+    private static final int MAX = 50000;
     private static final double ELEMENTS_SIZE;
 
     private static Long[] add = new Long[TIMES], lookup = new Long[TIMES], remove = new Long[TIMES];
@@ -39,7 +39,7 @@ public class TestLraHashMap extends AbstractPerformanceTest {
         }
     }
 
-    public int lruMap() {
+    public int commonsLruMap() {
         final Map<Long, Double> map = new CommonsLeastRecentlyUsedMap<>(MAXIMUM_SIZE);
         return test(map);
     }
@@ -66,12 +66,12 @@ public class TestLraHashMap extends AbstractPerformanceTest {
         return r + map.size();
     }
 
-    public int lrmMap() {
+    public int commonsLrmMap() {
         final Map<Long, Double> map = new CommonsLeastRecentlyModifiedMap<>(MAXIMUM_SIZE);
         return test(map);
     }
 
-    public int lraMap() {
+    public int commonsLraMap() {
         final Map<Long, Double> map = new CommonsLeastRecentlyAddedMap<>(MAXIMUM_SIZE);
         return test(map);
     }
@@ -101,11 +101,6 @@ public class TestLraHashMap extends AbstractPerformanceTest {
         return test(map);
     }
 
-    public int linkedHashSetLraMap() {
-        final LinkedHashSetLraMap<Long, Double> map = new LinkedHashSetLraMap<>(MAXIMUM_SIZE);
-        return test(map);
-    }
-
     public static void main(final String[] argv) {
         testSize();
         testRuntime();
@@ -113,15 +108,14 @@ public class TestLraHashMap extends AbstractPerformanceTest {
 
     private static void testRuntime() {
         final TestLraHashMap test = new TestLraHashMap();
-        testRuntime("lruMap", test::lruMap);
-        testRuntime("lrmMap", test::lrmMap);
-        testRuntime("lraMap", test::lraMap);
+        testRuntime("commonsLruMap", test::commonsLruMap);
+        testRuntime("commonsLrmMap", test::commonsLrmMap);
+        testRuntime("commonsLraMap", test::commonsLraMap);
+        testRuntime("arrayLraMap", test::arrayLraMap);
         testRuntime("javaLruMap", test::javaLruMap);
         testRuntime("arrayListLraMap", test::arrayListLraMap);
-        testRuntime("arrayLraMap", test::arrayLraMap);
         testRuntime("arrayCustomLraMap", test::arrayCustomLraMap);
         testRuntime("linkedListLraMap", test::linkedListLraMap);
-        testRuntime("linkedHashSetLraMap", test::linkedHashSetLraMap);
     }
 
     private static void testRuntime(final String string, final Runnable object) {
@@ -136,23 +130,21 @@ public class TestLraHashMap extends AbstractPerformanceTest {
 
     private static void testSize() {
         final CommonsLeastRecentlyUsedMap lruMap = new CommonsLeastRecentlyUsedMap<>(MAXIMUM_SIZE);
-        testSize("lruMap", lruMap);
+        testSize("commonsLruMap", lruMap);
         final CommonsLeastRecentlyModifiedMap lrmMap = new CommonsLeastRecentlyModifiedMap<>(MAXIMUM_SIZE);
-        testSize("lrmMap", lrmMap);
+        testSize("commonsLrmMap", lrmMap);
         final CommonsLeastRecentlyAddedMap lraMap = new CommonsLeastRecentlyAddedMap<>(MAXIMUM_SIZE);
-        testSize("lraMap", lraMap);
+        testSize("commonsLraMap", lraMap);
+        final ArrayLeastRecentlyAddedMap<Long, Double> arrayLraMap = new ArrayLeastRecentlyAddedMap<>(MAXIMUM_SIZE);
+        testSize("arrayLraMap", arrayLraMap);
         final JavaLeastRecentlyUsedMap<Long, Double> javaLruMap = new JavaLeastRecentlyUsedMap(MAXIMUM_SIZE);
         testSize("javaLruMap", javaLruMap);
         final ArrayListLraMap<Long, Double> arrayListLraMap = new ArrayListLraMap<>(MAXIMUM_SIZE);
         testSize("arrayListLraMap", arrayListLraMap);
         final ArrayCustomLraMap<Long, Double> arrayCustomLraMap = new ArrayCustomLraMap<>(MAXIMUM_SIZE);
         testSize("arrayCustomLraMap", arrayCustomLraMap);
-        final ArrayLeastRecentlyAddedMap<Long, Double> arrayLraMap = new ArrayLeastRecentlyAddedMap<>(MAXIMUM_SIZE);
-        testSize("arrayLraMap", arrayLraMap);
         final LinkedListLraMap<Long, Double> linkedListLraMap = new LinkedListLraMap<>(MAXIMUM_SIZE);
         testSize("linkedListLraMap", linkedListLraMap);
-        final LinkedHashSetLraMap<Long, Double> linkedHashSetLraMap = new LinkedHashSetLraMap<>(MAXIMUM_SIZE);
-        testSize("linkedHashSetLraMap", linkedHashSetLraMap);
     }
 
     private static void testSize(final String name, final ObjectObjectHashMap map) {

@@ -175,8 +175,8 @@ import de.invesdwin.util.time.Instant;
 // CHECKSTYLE:OFF
 public class TestHashMap extends AbstractPerformanceTest {
 
-    private static final int REPETITIONS = 1000;
-    private static final int TIMES = 100000;
+    private static final int REPETITIONS = 100;
+    private static final int TIMES = 10000;
     private static final int MAX = 5000000;
     private static final double ELEMENTS_SIZE;
 
