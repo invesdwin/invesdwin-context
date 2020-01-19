@@ -79,7 +79,7 @@
 		<version.jasperreports>6.11.0</version.jasperreports>
 		<version.batik>1.10</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
-		<version.itext>2.1.7.js6</version.itext>
+		<version.itext>2.1.7.js7</version.itext>
 		<version.bcprov>1.60</version.bcprov>
 		<version.poi>3.16</version.poi>
 
