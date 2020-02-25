@@ -211,7 +211,8 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getClose(final int series, final int item) {
-        return this.data.get(item).getClose();
+        final TimeRangedOHLCDataItem value = this.data.get(item);
+        return value.getClose();
     }
 
     /**
