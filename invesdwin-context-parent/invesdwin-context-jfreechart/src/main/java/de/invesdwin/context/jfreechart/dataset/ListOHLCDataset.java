@@ -1,15 +1,15 @@
 package de.invesdwin.context.jfreechart.dataset;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.xy.AbstractXYDataset;
-import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.OHLCDataset;
+
+import de.invesdwin.util.time.fdate.FDate;
 
 @NotThreadSafe
 public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, PublicCloneable {
@@ -18,7 +18,7 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
     private final Comparable<?> key;
 
     /** Storage for the data items. */
-    private List<? extends OHLCDataItem> data;
+    private List<? extends TimeRangedOHLCDataItem> data;
 
     /**
      * Creates a new dataset.
@@ -28,12 +28,12 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      * @param data
      *            the data items.
      */
-    public ListOHLCDataset(final Comparable<?> key, final List<? extends OHLCDataItem> data) {
+    public ListOHLCDataset(final Comparable<?> key, final List<? extends TimeRangedOHLCDataItem> data) {
         this.key = key;
         this.data = data;
     }
 
-    public List<? extends OHLCDataItem> getData() {
+    public List<? extends TimeRangedOHLCDataItem> getData() {
         return data;
     }
 
@@ -62,7 +62,7 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getX(final int series, final int item) {
-        return new Long(this.data.get(item).getDate().getTime());
+        return this.data.get(item).getStartTime().millisValue();
     }
 
     /**
@@ -75,8 +75,8 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      *
      * @return The x-value as a date.
      */
-    public Date getXDate(final int series, final int item) {
-        return this.data.get(item).getDate();
+    public FDate getXDate(final int series, final int item) {
+        return this.data.get(item).getStartTime();
     }
 
     /**

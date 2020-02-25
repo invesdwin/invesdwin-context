@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataItem;
 
 import de.invesdwin.util.lang.Reflections;
@@ -33,14 +32,14 @@ public class MutableXYDataItemOHLC extends XYDataItem {
         }
 
         @Override
-        public void setOHLC(final OHLCDataItem ohlc) {
+        public void setOHLC(final TimeRangedOHLCDataItem ohlc) {
             throw new UnsupportedOperationException();
         }
     };
 
     private static final MethodHandle X_SETTER;
 
-    private OHLCDataItem ohlc;
+    private TimeRangedOHLCDataItem ohlc;
 
     static {
         try {
@@ -53,14 +52,14 @@ public class MutableXYDataItemOHLC extends XYDataItem {
         }
     }
 
-    public MutableXYDataItemOHLC(final OHLCDataItem ohlc) {
-        super(ohlc.getDate().getTime(), ohlc.getClose());
+    public MutableXYDataItemOHLC(final TimeRangedOHLCDataItem ohlc) {
+        super(ohlc.getStartTime().millisValue(), ohlc.getClose());
         this.ohlc = ohlc;
     }
 
-    public void setOHLC(final OHLCDataItem ohlc) {
+    public void setOHLC(final TimeRangedOHLCDataItem ohlc) {
         if (ohlc != null) {
-            setX(ohlc.getDate().getTime());
+            setX(ohlc.getStartTime().millisValue());
             setY(ohlc.getClose());
         }
         this.ohlc = ohlc;
@@ -74,7 +73,7 @@ public class MutableXYDataItemOHLC extends XYDataItem {
         }
     }
 
-    public OHLCDataItem getOHLC() {
+    public TimeRangedOHLCDataItem getOHLC() {
         return ohlc;
     }
 

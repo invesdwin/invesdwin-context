@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.jfree.data.xy.OHLCDataItem;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
@@ -94,15 +93,13 @@ public class ListXYSeriesOHLC extends XYSeries {
     }
 
     public double getItemMaxY(final MutableXYDataItemOHLC item) {
-        final OHLCDataItem ohlc = item.getOHLC();
-        return maxIgnoreNaN(ohlc.getOpen().doubleValue(), ohlc.getHigh().doubleValue(), ohlc.getLow().doubleValue(),
-                ohlc.getClose().doubleValue());
+        final TimeRangedOHLCDataItem ohlc = item.getOHLC();
+        return maxIgnoreNaN(ohlc.getOpen(), ohlc.getHigh(), ohlc.getLow(), ohlc.getClose());
     }
 
     public double getItemMinY(final MutableXYDataItemOHLC item) {
-        final OHLCDataItem ohlc = item.getOHLC();
-        return minIgnoreNaN(ohlc.getOpen().doubleValue(), ohlc.getHigh().doubleValue(), ohlc.getLow().doubleValue(),
-                ohlc.getClose().doubleValue());
+        final TimeRangedOHLCDataItem ohlc = item.getOHLC();
+        return minIgnoreNaN(ohlc.getOpen(), ohlc.getHigh(), ohlc.getLow(), ohlc.getClose());
     }
 
     public double getItemMaxX(final MutableXYDataItemOHLC item) {
