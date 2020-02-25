@@ -19,7 +19,7 @@ public class RegisterTypesForSerializationConfigurer {
     public static final Class<ISerializableValueObject> SERIALIZABLE_INTERFACE = ISerializableValueObject.class;
 
     public void registerTypesForSerialization() {
-        if (Objects.SERIALIZATION_CONFIG != null) {
+        if (Objects.SERIALIZATION_CONFIG_TEMPLATE != null) {
             final List<Class<?>> classesToRegister = scanSerializableClassesToRegister();
             //sort them so they always get the same index in registration
             classesToRegister.sort(new Comparator<Class<?>>() {
@@ -30,7 +30,7 @@ public class RegisterTypesForSerializationConfigurer {
             });
             for (final Class<?> clazz : classesToRegister) {
                 try {
-                    Objects.SERIALIZATION_CONFIG.registerClass(clazz);
+                    Objects.SERIALIZATION_CONFIG_TEMPLATE.registerClass(clazz);
                 } catch (final Throwable t) {
                     throw new RuntimeException("At: " + clazz.getName(), t);
                 }
