@@ -12,6 +12,7 @@ import com.carrotsearch.hppc.ObjectObjectHashMap;
 import de.invesdwin.util.collections.loadingcache.ILoadingCache;
 import de.invesdwin.util.collections.loadingcache.historical.AHistoricalCache;
 import de.invesdwin.util.collections.loadingcache.historical.IHistoricalEntry;
+import de.invesdwin.util.collections.loadingcache.historical.ImmutableHistoricalEntry;
 import de.invesdwin.util.collections.loadingcache.historical.query.IHistoricalCacheQuery;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.fdate.FDate;
@@ -214,7 +215,7 @@ public class TestHashMap extends AbstractPerformanceTest {
 
     private int test(final TestHistoricalCache map) {
         for (final Long o : add) {
-            map.getShiftKeyProvider().put(FDate.valueOf(o), o.doubleValue());
+            map.getValuesMap().put(FDate.valueOf(o), ImmutableHistoricalEntry.of(FDate.valueOf(o), o.doubleValue()));
         }
         int r = 0;
         final IHistoricalCacheQuery<Double> query = map.query();
@@ -224,7 +225,7 @@ public class TestHashMap extends AbstractPerformanceTest {
         for (int i = 0; i < TIMES; i++) {
             final long il = i;
             final double id = i;
-            map.getShiftKeyProvider().put(FDate.valueOf(il), id);
+            map.getValuesMap().put(FDate.valueOf(il), ImmutableHistoricalEntry.of(FDate.valueOf(il), id));
             query.getValue(FDate.valueOf(il));
             if (removeEnabled) {
                 map.remove(FDate.valueOf(il));
@@ -235,7 +236,7 @@ public class TestHashMap extends AbstractPerformanceTest {
                 map.remove(FDate.valueOf(o));
             }
         }
-        return r + map.size();
+        return r + map.getValuesMap().size();
     }
 
     private int test(final Map<Long, Double> map) {
@@ -407,9 +408,9 @@ public class TestHashMap extends AbstractPerformanceTest {
     private static void testSize(final String name, final TestHistoricalCache map) {
         final double emptyMapSize = measureHeapSize(map);
         for (final Long o : add) {
-            map.getShiftKeyProvider().put(FDate.valueOf(o), o.doubleValue());
+            map.getValuesMap().put(FDate.valueOf(o), ImmutableHistoricalEntry.of(FDate.valueOf(o), o.doubleValue()));
         }
-        final double size = map.size();
+        final double size = map.getValuesMap().size();
         final double elementsSize = ELEMENTS_SIZE / TIMES * size;
         System.out.printf("%s: %.1f bytes per element\n", name,
                 ((measureHeapSize(map) - elementsSize - emptyMapSize) * 1.0 / size));
