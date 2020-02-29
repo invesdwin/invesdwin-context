@@ -9,7 +9,10 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 
+import de.invesdwin.util.collections.loadingcache.historical.AHistoricalCache;
+import de.invesdwin.util.collections.loadingcache.historical.query.IHistoricalCacheQuery;
 import de.invesdwin.util.time.Instant;
+import de.invesdwin.util.time.fdate.FDate;
 
 // Openj9 java 8 -Xgcpolicy:gencon
 // hashMap: PT10.673.089.868S
@@ -195,6 +198,32 @@ public class TestHashMap extends AbstractPerformanceTest {
         }
     }
 
+    private int test(final AHistoricalCache<Double> map) {
+        for (final Long o : add) {
+            map.getShiftKeyProvider().put(FDate.valueOf(o), o.doubleValue());
+        }
+        int r = 0;
+        final IHistoricalCacheQuery<Double> query = map.query();
+        for (final Long o : lookup) {
+            r ^= query.getValue(FDate.valueOf(o)) != null ? 1 : 0;
+        }
+        for (int i = 0; i < TIMES; i++) {
+            final long il = i;
+            final double id = i;
+            map.getShiftKeyProvider().put(FDate.valueOf(il), id);
+            query.getValue(FDate.valueOf(il));
+            if (removeEnabled) {
+                map.remove(FDate.valueOf(il));
+            }
+        }
+        if (removeEnabled) {
+            for (final Long o : remove) {
+                map.remove(FDate.valueOf(o));
+            }
+        }
+        return r + map.size();
+    }
+
     private int test(final Map<Long, Double> map) {
         for (final Long o : add) {
             map.put(o, o.doubleValue());
@@ -250,6 +279,16 @@ public class TestHashMap extends AbstractPerformanceTest {
         return test(map);
     }
 
+    public int historicalCache() {
+        final AHistoricalCache<Double> map = new AHistoricalCache<Double>() {
+            @Override
+            protected Double loadValue(final FDate key) {
+                return null;
+            }
+        };
+        return test(map);
+    }
+
     public int compactHashMap() {
         final Map<Long, Double> map = new net.ontopia.utils.CompactHashMap<Long, Double>();
         return test(map);
@@ -295,6 +334,7 @@ public class TestHashMap extends AbstractPerformanceTest {
 
     private static void testRuntime() {
         final TestHashMap test = new TestHashMap();
+        testRuntime("historicalCache", test::historicalCache);
         testRuntime("hashMap", test::hashMap);
         testRuntime("compactHashMap", test::compactHashMap);
         testRuntime("hppcMap", test::hppcMap);
@@ -316,6 +356,13 @@ public class TestHashMap extends AbstractPerformanceTest {
     }
 
     private static void testSize() {
+        final AHistoricalCache<Double> historicalCache = new AHistoricalCache<Double>() {
+            @Override
+            protected Double loadValue(final FDate key) {
+                return null;
+            }
+        };
+        testSize("HistoricalCache", historicalCache);
         final HashMap hashMap = new HashMap();
         testSize("HashMap", hashMap);
         final net.ontopia.utils.CompactHashMap compactHashMap = new net.ontopia.utils.CompactHashMap();
@@ -347,6 +394,15 @@ public class TestHashMap extends AbstractPerformanceTest {
     private static void testSize(final String name, final Map map) {
         for (final Long o : add) {
             map.put(o, o.doubleValue());
+        }
+        final double size = map.size();
+        final double elementsSize = ELEMENTS_SIZE / TIMES * size;
+        System.out.printf("%s: %.1f bytes per element\n", name, ((measureHeapSize(map) - elementsSize) * 1.0 / size));
+    }
+
+    private static void testSize(final String name, final AHistoricalCache<Double> map) {
+        for (final Long o : add) {
+            map.getShiftKeyProvider().put(FDate.valueOf(o), o.doubleValue());
         }
         final double size = map.size();
         final double elementsSize = ELEMENTS_SIZE / TIMES * size;
