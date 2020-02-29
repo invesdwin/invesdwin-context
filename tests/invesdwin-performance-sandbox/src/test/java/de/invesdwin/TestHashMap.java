@@ -9,7 +9,9 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 
+import de.invesdwin.util.collections.loadingcache.ILoadingCache;
 import de.invesdwin.util.collections.loadingcache.historical.AHistoricalCache;
+import de.invesdwin.util.collections.loadingcache.historical.IHistoricalEntry;
 import de.invesdwin.util.collections.loadingcache.historical.query.IHistoricalCacheQuery;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.fdate.FDate;
@@ -178,6 +180,18 @@ import de.invesdwin.util.time.fdate.FDate;
 // CHECKSTYLE:OFF
 public class TestHashMap extends AbstractPerformanceTest {
 
+    private static final class TestHistoricalCache extends AHistoricalCache<Double> {
+        @Override
+        protected Double loadValue(final FDate key) {
+            return null;
+        }
+
+        @Override
+        public ILoadingCache<FDate, IHistoricalEntry<Double>> getValuesMap() {
+            return super.getValuesMap();
+        }
+    }
+
     private static final int REPETITIONS = 100;
     private static final int TIMES = 10000;
     private static final int MAX = 5000000;
@@ -198,7 +212,7 @@ public class TestHashMap extends AbstractPerformanceTest {
         }
     }
 
-    private int test(final AHistoricalCache<Double> map) {
+    private int test(final TestHistoricalCache map) {
         for (final Long o : add) {
             map.getShiftKeyProvider().put(FDate.valueOf(o), o.doubleValue());
         }
@@ -280,12 +294,7 @@ public class TestHashMap extends AbstractPerformanceTest {
     }
 
     public int historicalCache() {
-        final AHistoricalCache<Double> map = new AHistoricalCache<Double>() {
-            @Override
-            protected Double loadValue(final FDate key) {
-                return null;
-            }
-        };
+        final TestHistoricalCache map = new TestHistoricalCache();
         return test(map);
     }
 
@@ -356,12 +365,7 @@ public class TestHashMap extends AbstractPerformanceTest {
     }
 
     private static void testSize() {
-        final AHistoricalCache<Double> historicalCache = new AHistoricalCache<Double>() {
-            @Override
-            protected Double loadValue(final FDate key) {
-                return null;
-            }
-        };
+        final TestHistoricalCache historicalCache = new TestHistoricalCache();
         testSize("HistoricalCache", historicalCache);
         final HashMap hashMap = new HashMap();
         testSize("HashMap", hashMap);
@@ -400,12 +404,14 @@ public class TestHashMap extends AbstractPerformanceTest {
         System.out.printf("%s: %.1f bytes per element\n", name, ((measureHeapSize(map) - elementsSize) * 1.0 / size));
     }
 
-    private static void testSize(final String name, final AHistoricalCache<Double> map) {
+    private static void testSize(final String name, final TestHistoricalCache map) {
+        final double emptyMapSize = measureHeapSize(map);
         for (final Long o : add) {
             map.getShiftKeyProvider().put(FDate.valueOf(o), o.doubleValue());
         }
         final double size = map.size();
         final double elementsSize = ELEMENTS_SIZE / TIMES * size;
-        System.out.printf("%s: %.1f bytes per element\n", name, ((measureHeapSize(map) - elementsSize) * 1.0 / size));
+        System.out.printf("%s: %.1f bytes per element\n", name,
+                ((measureHeapSize(map) - elementsSize - emptyMapSize) * 1.0 / size));
     }
 }
