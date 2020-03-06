@@ -188,12 +188,17 @@ public class TestHashMap extends AbstractPerformanceTest {
         }
 
         @Override
+        protected Integer getInitialMaximumSize() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
         public ILoadingCache<FDate, IHistoricalEntry<Double>> getValuesMap() {
             return super.getValuesMap();
         }
     }
 
-    private static final int REPETITIONS = 100;
+    private static final int REPETITIONS = 10;
     private static final int TIMES = 10000;
     private static final int MAX = 5000000;
     private static final double ELEMENTS_SIZE;
