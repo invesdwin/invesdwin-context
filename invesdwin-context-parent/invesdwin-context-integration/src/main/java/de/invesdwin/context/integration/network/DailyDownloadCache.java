@@ -46,7 +46,7 @@ public class DailyDownloadCache {
     }
 
     public static File newFile(final String name) {
-        return new File(FOLDER, Files.normalizeFilename(name) + ".txt");
+        return new File(FOLDER, Files.normalizePath(name) + ".txt");
     }
 
     public static void delete(final String name) {
