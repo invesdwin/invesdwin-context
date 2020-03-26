@@ -19,6 +19,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.lang.Optionals;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
@@ -118,8 +120,11 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     private synchronized <T> void set(final String key, final T value, final Runnable setter) {
-        cache.put(key, Optional.ofNullable(value));
-        setter.run();
+        final Optional<T> next = Optional.ofNullable(value);
+        final Optional<?> prev = cache.put(key, next);
+        if (!Objects.equals(Optionals.orNull(prev), Optionals.orNull(next))) {
+            setter.run();
+        }
     }
 
     @Override
@@ -418,6 +423,16 @@ public final class CachingPropertiesWrapper implements IProperties {
             @Override
             public File call() {
                 return delegate.getFile(key);
+            }
+        });
+    }
+
+    @Override
+    public void setFile(final String key, final File value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setFile(key, value);
             }
         });
     }

@@ -362,7 +362,21 @@ public abstract class AProperties implements IProperties {
 
     @Override
     public synchronized File getFile(final String key) {
-        return new File(getString(key));
+        final String str = getString(key);
+        if (str == null) {
+            return null;
+        } else {
+            return new File(str);
+        }
+    }
+
+    @Override
+    public synchronized void setFile(final String key, final File value) {
+        if (value == null) {
+            setString(key, null);
+        } else {
+            setString(key, value.getAbsolutePath());
+        }
     }
 
     @Override

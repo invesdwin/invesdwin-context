@@ -82,6 +82,8 @@ public interface IProperties {
 
     File getFile(String key);
 
+    void setFile(String key, File value);
+
     String getEnumFormat(Class<? extends Enum<?>> enumType);
 
     String getErrorMessage(String key, Object value, Class<?> expectedType, String message);
