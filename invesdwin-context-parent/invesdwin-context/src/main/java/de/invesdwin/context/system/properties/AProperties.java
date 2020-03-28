@@ -25,6 +25,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
+import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
@@ -77,9 +78,8 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public void setBoolean(final String key, final Boolean value) {
-        final String keyPath = prefix(key);
-        setProperty(keyPath, Strings.asString(value));
+    public synchronized void setBoolean(final String key, final Boolean value) {
+        setProperty(key, Strings.asString(value));
     }
 
     @Override
@@ -89,15 +89,30 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public synchronized void setByte(final String key, final Byte value) {
+        setProperty(key, Strings.asString(value));
+    }
+
+    @Override
     public synchronized Double getDouble(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getDouble(keyPath, null));
     }
 
     @Override
+    public synchronized void setDouble(final String key, final Double value) {
+        setProperty(key, Strings.asString(value));
+    }
+
+    @Override
     public synchronized Float getFloat(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getFloat(keyPath, null));
+    }
+
+    @Override
+    public synchronized void setFloat(final String key, final Float value) {
+        setProperty(key, Strings.asString(value));
     }
 
     @Override
@@ -119,9 +134,19 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public synchronized void setLong(final String key, final Long value) {
+        setProperty(key, Strings.asString(value));
+    }
+
+    @Override
     public synchronized Short getShort(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getShort(keyPath, null));
+    }
+
+    @Override
+    public synchronized void setShort(final String key, final Short value) {
+        setProperty(key, Strings.asString(value));
     }
 
     @Override
@@ -131,14 +156,29 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public synchronized void setBigDecimal(final String key, final BigDecimal value) {
+        setProperty(key, Strings.asString(value));
+    }
+
+    @Override
     public synchronized BigInteger getBigInteger(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getBigInteger(keyPath));
     }
 
     @Override
+    public synchronized void setBigInteger(final String key, final BigInteger value) {
+        setProperty(key, Strings.asString(value));
+    }
+
+    @Override
     public synchronized Decimal getDecimal(final String key) {
-        return Decimal.valueOf(getBigDecimal(key));
+        return Decimal.valueOf(getDouble(key));
+    }
+
+    @Override
+    public void setDecimal(final String key, final Decimal value) {
+        setDouble(key, Doubles.checkedCastObj(value));
     }
 
     @Override
@@ -281,6 +321,11 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
+    public synchronized void setURL(final String key, final URL value) {
+        setProperty(key, Strings.asString(value));
+    }
+
+    @Override
     public synchronized URI getURI(final String key, final boolean validatePort) {
         final String str = getString(key);
         try {
@@ -309,6 +354,11 @@ public abstract class AProperties implements IProperties {
         } catch (final Throwable t) {
             throw new IllegalArgumentException(getErrorMessage(key, str, URI.class, t.getMessage()), t);
         }
+    }
+
+    @Override
+    public synchronized void setURI(final String key, final URI value) {
+        setProperty(key, Strings.asString(value));
     }
 
     @Override

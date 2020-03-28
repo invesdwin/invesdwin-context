@@ -26,14 +26,14 @@ import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
 
 @ThreadSafe
-public final class CachingPropertiesWrapper implements IProperties {
+public final class CachingDelegateProperties implements IProperties {
 
     private final IProperties delegate;
 
     @GuardedBy("this")
     private final Map<String, Optional<?>> cache;
 
-    public CachingPropertiesWrapper(final IProperties delegate) {
+    public CachingDelegateProperties(final IProperties delegate) {
         Assertions.assertThat(delegate).isNotInstanceOf(getClass());
         this.cache = newCache();
         this.delegate = delegate;
@@ -138,6 +138,16 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setByte(final String key, final Byte value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setByte(key, value);
+            }
+        });
+    }
+
+    @Override
     public Double getDouble(final String key) {
         return getOrLoad(key, new Callable<Double>() {
             @Override
@@ -148,11 +158,31 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setDouble(final String key, final Double value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setDouble(key, value);
+            }
+        });
+    }
+
+    @Override
     public Float getFloat(final String key) {
         return getOrLoad(key, new Callable<Float>() {
             @Override
             public Float call() {
                 return delegate.getFloat(key);
+            }
+        });
+    }
+
+    @Override
+    public void setFloat(final String key, final Float value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setFloat(key, value);
             }
         });
     }
@@ -188,11 +218,31 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setLong(final String key, final Long value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setLong(key, value);
+            }
+        });
+    }
+
+    @Override
     public Short getShort(final String key) {
         return getOrLoad(key, new Callable<Short>() {
             @Override
             public Short call() {
                 return delegate.getShort(key);
+            }
+        });
+    }
+
+    @Override
+    public void setShort(final String key, final Short value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setShort(key, value);
             }
         });
     }
@@ -208,6 +258,16 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setBigDecimal(final String key, final BigDecimal value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setBigDecimal(key, value);
+            }
+        });
+    }
+
+    @Override
     public BigInteger getBigInteger(final String key) {
         return getOrLoad(key, new Callable<BigInteger>() {
             @Override
@@ -218,11 +278,31 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setBigInteger(final String key, final BigInteger value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setBigInteger(key, value);
+            }
+        });
+    }
+
+    @Override
     public Decimal getDecimal(final String key) {
         return getOrLoad(key, new Callable<Decimal>() {
             @Override
             public Decimal call() {
                 return delegate.getDecimal(key);
+            }
+        });
+    }
+
+    @Override
+    public void setDecimal(final String key, final Decimal value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setDecimal(key, value);
             }
         });
     }
@@ -378,11 +458,31 @@ public final class CachingPropertiesWrapper implements IProperties {
     }
 
     @Override
+    public void setURL(final String key, final URL value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setURL(key, value);
+            }
+        });
+    }
+
+    @Override
     public URI getURI(final String key, final boolean validatePort) {
         return getOrLoad(key, new Callable<URI>() {
             @Override
             public URI call() {
                 return delegate.getURI(key, validatePort);
+            }
+        });
+    }
+
+    @Override
+    public void setURI(final String key, final URI value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setURI(key, value);
             }
         });
     }
