@@ -430,7 +430,11 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized String getEnumFormat(final Class<? extends Enum<?>> enumType) {
+    public String getEnumFormat(final Class<? extends Enum<?>> enumType) {
+        return newEnumFormat(enumType);
+    }
+
+    public static String newEnumFormat(final Class<? extends Enum<?>> enumType) {
         final String delimiter = " | ";
         final StringBuilder sb = new StringBuilder("(");
         for (final Enum<?> value : enumType.getEnumConstants()) {
