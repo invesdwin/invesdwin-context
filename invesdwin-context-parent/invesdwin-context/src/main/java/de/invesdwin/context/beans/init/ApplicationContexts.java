@@ -13,7 +13,8 @@ import de.invesdwin.util.assertions.Assertions;
 @Immutable
 public final class ApplicationContexts {
 
-    private ApplicationContexts() {}
+    private ApplicationContexts() {
+    }
 
     public static ApplicationContext getRootContext(final ApplicationContext ctx) {
         ApplicationContext parent = ctx;
@@ -30,6 +31,14 @@ public final class ApplicationContexts {
     public static boolean beanExists(final ListableBeanFactory factory, final Class<?> beanType) {
         final String[] beans = factory.getBeanNamesForType(beanType, false, false);
         return beans.length != 0;
+    }
+
+    public static <T> T getBeanIfExists(final ListableBeanFactory factory, final Class<T> beanType) {
+        if (beanExists(factory, beanType)) {
+            return factory.getBean(beanType);
+        } else {
+            return null;
+        }
     }
 
     public static void replaceBean(final ListableBeanFactory factory, final Class<?> bean, final Class<?> withBean) {
