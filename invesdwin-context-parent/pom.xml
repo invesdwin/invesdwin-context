@@ -879,6 +879,9 @@
 							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/mime.types</resource>
 							</transformer>
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>jasperreports_extension.properties</resource>
+							</transformer>
 							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web-fragment.xml</resource>
 							</transformer>
