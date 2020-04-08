@@ -10,20 +10,30 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.util.concurrent.ADelegateExecutorService;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
+import de.invesdwin.util.concurrent.nested.ANestedExecutor;
 import net.sf.jasperreports.engine.fill.JRFillContext;
 import net.sf.jasperreports.engine.fill.ThreadPoolSubreportRunnerFactory;
 
 @Immutable
 public class ConfiguredSubreportRunnerFactory extends ThreadPoolSubreportRunnerFactory {
 
-    private static final WrappedExecutorService EXECUTOR = Executors
-            .newFixedThreadPool(ConfiguredSubreportRunnerFactory.class.getSimpleName(),
-                    Executors.getCpuThreadPoolCount())
-            .withDynamicThreadName(false);
+    //prevent deadlocks by using caller runs with nested reports
+    private static final ANestedExecutor EXECUTOR = new ANestedExecutor(
+            ConfiguredSubreportRunnerFactory.class.getSimpleName()) {
+        @Override
+        protected WrappedExecutorService newNestedExecutor(final String nestedName) {
+            return Executors.newFixedThreadPool(nestedName, Executors.getCpuThreadPoolCount());
+        }
+    };
 
     @Override
     protected ExecutorService createThreadExecutor(final JRFillContext fillContext) {
-        return new ADelegateExecutorService(EXECUTOR) {
+        return new ADelegateExecutorService(null) {
+
+            @Override
+            public ExecutorService getDelegate() {
+                return EXECUTOR.getNestedExecutor();
+            }
 
             @Override
             protected Runnable newRunnable(final Runnable runnable) {
@@ -38,7 +48,8 @@ public class ConfiguredSubreportRunnerFactory extends ThreadPoolSubreportRunnerF
             @Override
             public void shutdown() {
                 try {
-                    EXECUTOR.awaitPendingCount(0);
+                    final WrappedExecutorService delegate = (WrappedExecutorService) getDelegate();
+                    delegate.awaitPendingCount(0);
                 } catch (final InterruptedException e) {
                     throw new RuntimeException(e);
                 }
