@@ -80,14 +80,14 @@
 		<version.batik>1.10</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
 		<version.itext>2.1.7.js7</version.itext>
-		<version.bcprov>1.62</version.bcprov>
+		<version.bcprov>1.64</version.bcprov>
 		<version.poi>3.16</version.poi>
 
 		<!-- integration -->
-		<version.spring-batch>4.1.2.RELEASE</version.spring-batch>
-		<version.spring-retry>1.2.4.RELEASE</version.spring-retry>
-		<version.spring-integration>5.1.5.RELEASE</version.spring-integration>
-		<version.spring-ws>3.0.7.RELEASE</version.spring-ws>
+		<version.spring-batch>4.2.2.RELEASE</version.spring-batch>
+		<version.spring-retry>1.2.5.RELEASE</version.spring-retry>
+		<version.spring-integration>5.2.5.RELEASE</version.spring-integration>
+		<version.spring-ws>3.0.8.RELEASE</version.spring-ws>
 
 		<version.h2>1.4.196</version.h2>
 		<!-- 6.0.4 still has this error: http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue -->
