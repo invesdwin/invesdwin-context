@@ -237,7 +237,7 @@ public abstract class AProperties implements IProperties {
             return null;
         }
         final String str = getDelegate().getString(prefix(keyPath));
-        return Strings.split(str, LIST_DELIMITER);
+        return Strings.splitPreserveAllTokens(str, LIST_DELIMITER);
     }
 
     @Override
@@ -385,7 +385,7 @@ public abstract class AProperties implements IProperties {
     @Override
     public synchronized InetSocketAddress getInetSocketAddress(final String key, final boolean validatePort) {
         final String value = getString(key);
-        final String[] split = Strings.split(value, ":");
+        final String[] split = Strings.splitPreserveAllTokens(value, ":");
         Throwable cause = null;
         if (split.length == 2) {
             try {
