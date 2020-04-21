@@ -104,13 +104,13 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public File initLogDirectory(final boolean isTestEnvironment) {
-        return delegate.initLogDirectory(isTestEnvironment);
+    public File initLogDirectory(final boolean isTestEnvironment, final File fallbackWorkDirectory) {
+        return delegate.initLogDirectory(isTestEnvironment, fallbackWorkDirectory);
     }
 
     @Override
-    public File initCacheDirectory() {
-        return delegate.initCacheDirectory();
+    public File initCacheDirectory(final File fallbackWorkDirectory) {
+        return delegate.initCacheDirectory(fallbackWorkDirectory);
     }
 
     @Override

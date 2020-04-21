@@ -76,7 +76,8 @@ public final class ContextProperties {
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
     }
 
-    private ContextProperties() {}
+    private ContextProperties() {
+    }
 
     /**
      * Invesdwin specific home dir that gets shared between multiple processes.
@@ -103,9 +104,14 @@ public final class ContextProperties {
 
     public static synchronized File getLogDirectory() {
         if (logDirectory == null) {
-            logDirectory = PlatformInitializerProperties.getInitializer().initLogDirectory(IS_TEST_ENVIRONMENT);
+            logDirectory = PlatformInitializerProperties.getInitializer()
+                    .initLogDirectory(IS_TEST_ENVIRONMENT, getFallbackWorkDirectory());
         }
         return logDirectory;
+    }
+
+    public static File getFallbackWorkDirectory() {
+        return new File(getHomeDirectory(), "work");
     }
 
     /**
@@ -113,7 +119,8 @@ public final class ContextProperties {
      */
     public static synchronized File getCacheDirectory() {
         if (cacheDirectory == null) {
-            cacheDirectory = PlatformInitializerProperties.getInitializer().initCacheDirectory();
+            cacheDirectory = PlatformInitializerProperties.getInitializer()
+                    .initCacheDirectory(getFallbackWorkDirectory());
         }
         return cacheDirectory;
     }

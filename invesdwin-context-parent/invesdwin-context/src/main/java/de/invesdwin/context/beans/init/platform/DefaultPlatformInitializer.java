@@ -179,7 +179,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public File initLogDirectory(final boolean isTestEnvironment) {
+    public File initLogDirectory(final boolean isTestEnvironment, final File fallbackWorkDirectory) {
         String logDirSr = "log";
         if (!isTestEnvironment) {
             //Productive logs should not mix each other between processes
@@ -188,16 +188,25 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
             logDirSr += "_";
             logDirSr += ManagementFactory.getRuntimeMXBean().getName();
         }
-        final File logDir = new File(logDirSr);
-        createDirectoryIfAllowed(logDir);
-        return logDir;
+        return createDirectoryWithFallback(logDirSr, fallbackWorkDirectory);
+    }
+
+    private File createDirectoryWithFallback(final String dirStr, final File fallbackWorkDirectory) {
+        try {
+            final File logDir = new File(dirStr);
+            createDirectoryIfAllowed(logDir);
+            return logDir;
+        } catch (final Throwable t) {
+            final File fallbackLogDir = new File(fallbackWorkDirectory, dirStr);
+            createDirectoryIfAllowed(fallbackLogDir);
+            return fallbackLogDir;
+        }
     }
 
     @Override
-    public File initCacheDirectory() {
-        final File cacheDir = new File("cache");
-        createDirectoryIfAllowed(cacheDir);
-        return cacheDir;
+    public File initCacheDirectory(final File fallbackWorkDirectory) {
+        final String cacheDirStr = "cache";
+        return createDirectoryWithFallback(cacheDirStr, fallbackWorkDirectory);
     }
 
     @Override

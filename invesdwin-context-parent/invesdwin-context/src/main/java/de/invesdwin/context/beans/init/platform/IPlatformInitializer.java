@@ -43,9 +43,9 @@ public interface IPlatformInitializer {
 
     File initHomeDirectory(String systemHomeDirectory, boolean isTestEnvironment);
 
-    File initLogDirectory(boolean isTestEnvironment);
+    File initLogDirectory(boolean isTestEnvironment, File fallbackWorkDirectory);
 
-    File initCacheDirectory();
+    File initCacheDirectory(File fallbackWorkDirectory);
 
     Resource initSystemPropertiesResource();
 
