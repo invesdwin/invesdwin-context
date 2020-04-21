@@ -28,7 +28,7 @@ public final class PlatformInitializerProperties {
 
     private static IPlatformInitializer initializer = new DefaultPlatformInitializer();
 
-    private static boolean initializationFailed;
+    private static Throwable initializationFailed;
 
     static {
         final String expectedPropertiesPrefix = PlatformInitializerProperties.class.getName();
@@ -38,10 +38,11 @@ public final class PlatformInitializerProperties {
         }
     }
 
-    private PlatformInitializerProperties() {}
+    private PlatformInitializerProperties() {
+    }
 
     public static synchronized boolean isAllowed() {
-        if (initializationFailed) {
+        if (initializationFailed != null) {
             return false;
         }
         //CHECKSTYLE:OFF single line
@@ -54,7 +55,7 @@ public final class PlatformInitializerProperties {
             }
         } catch (final Throwable t) {
             //maybe some webstart security control prevents reading system properties
-            return initializationFailed;
+            return initializationFailed != null;
         }
         //CHECKSTYLE:ON
     }
@@ -65,7 +66,7 @@ public final class PlatformInitializerProperties {
             System.setProperty(KEY_ALLOWED, String.valueOf(allowed));
         } catch (final Throwable t) {
             //maybe some webstart security control prevents setting system properties
-            initializationFailed = true;
+            initializationFailed = t;
         }
         //CHECKSTYLE:ON
     }
@@ -90,7 +91,8 @@ public final class PlatformInitializerProperties {
     public static synchronized void assertInitializationNotSkipped() {
         if (!isAllowed()) {
             throw new IllegalStateException(
-                    "invesdwin initialization was skipped either because there was an error or it was decided to do so, but this operation requires an initialization in order to work.");
+                    "invesdwin initialization was skipped either because there was an error or it was decided to do so, but this operation requires an initialization in order to work.",
+                    initializationFailed);
         }
     }
 
@@ -98,7 +100,7 @@ public final class PlatformInitializerProperties {
         //only log the first warning and ignore any subsequent ones
         if (isAllowed()) {
             setAllowed(false); //mark initialization as skipped after the error
-            initializationFailed = true;
+            initializationFailed = t;
             //CHECKSTYLE:OFF ignore if not in standalone environment
             new RuntimeException(
                     "invesdwin initialization failed, ignoring for now since this might be a restricted environment in which partial operation is possible. Please set system property "

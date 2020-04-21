@@ -10,6 +10,7 @@ import de.invesdwin.context.log.error.LoggedRuntimeException;
 public class ErrHookSupport implements IErrHook {
 
     @Override
-    public void loggedException(final LoggedRuntimeException e, final boolean uncaughtException) {}
+    public void loggedException(final LoggedRuntimeException e, final boolean uncaughtException) {
+    }
 
 }
