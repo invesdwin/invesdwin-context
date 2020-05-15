@@ -8,6 +8,7 @@ import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.backoff.BackOffPolicy;
 
+import de.invesdwin.context.integration.retry.ExceptionCauseRetryPolicy;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;

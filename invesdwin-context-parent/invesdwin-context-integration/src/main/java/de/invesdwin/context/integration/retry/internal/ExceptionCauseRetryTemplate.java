@@ -9,6 +9,8 @@ import org.springframework.retry.RetryContext;
 import org.springframework.retry.listener.RetryListenerSupport;
 import org.springframework.retry.support.RetryTemplate;
 
+import de.invesdwin.context.integration.retry.ExceptionCauseRetryPolicy;
+
 @NotThreadSafe
 @Named
 public class ExceptionCauseRetryTemplate extends RetryTemplate implements FactoryBean<ExceptionCauseRetryTemplate> {
