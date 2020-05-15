@@ -49,7 +49,7 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //        <value>javax.persistence.OptimisticLockException</value>
     //    </set>
     //</property>
-    private final List<Class<? extends Exception>> disallowedCauses = Arrays.asList(
+    private static final List<Class<? extends Exception>> DISALLOWED_CAUSES = Arrays.asList(
             OptimisticLockingFailureException.class, OptimisticLockException.class, ConstraintViolationException.class,
             InterruptedException.class);
     //<property name="allowedCauses">
@@ -63,12 +63,12 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //        <value>org.springframework.orm.jpa.JpaSystemException</value>
     //    </set>
     //</property>
-    private final List<Class<? extends Exception>> allowedCauses = Arrays.asList(IOException.class,
+    private static final List<Class<? extends Exception>> ALLOWED_CAUSES = Arrays.asList(IOException.class,
             MessageTimeoutException.class, TransientDataAccessException.class, LockTimeoutException.class,
             TransactionSystemException.class, JpaSystemException.class, CannotCreateTransactionException.class,
             TimeoutException.class);
     //java.sql.SQLException: Lock wait timeout exceeded; try restarting transaction
-    private final List<String> allowedCauseMessageParts = Arrays.asList("try restarting transaction");
+    private static final List<String> ALLOWED_CAUSE_MESSAGE_PARTS = Arrays.asList("try restarting transaction");
 
     @Override
     public boolean canRetry(final RetryContext context) {
@@ -89,6 +89,10 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
 
     private boolean decideRetry(final RetryContext context) {
         final Throwable lastThrowable = context.getLastThrowable();
+        return decideRetry(lastThrowable);
+    }
+
+    public static boolean decideRetry(final Throwable lastThrowable) {
         Throwable cause = lastThrowable;
         while (cause != null) {
             if (cause instanceof RetryDisabledException || cause instanceof RetryDisabledRuntimeException) {
@@ -100,17 +104,17 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
             }
             cause = cause.getCause();
         }
-        for (final Class<? extends Throwable> allowedCause : disallowedCauses) {
+        for (final Class<? extends Throwable> allowedCause : DISALLOWED_CAUSES) {
             if (Throwables.isCausedByType(lastThrowable, allowedCause)) {
                 return false;
             }
         }
-        for (final Class<? extends Throwable> allowedCause : allowedCauses) {
+        for (final Class<? extends Throwable> allowedCause : ALLOWED_CAUSES) {
             if (Throwables.isCausedByType(lastThrowable, allowedCause)) {
                 return true;
             }
         }
-        for (final String allowedCauseMessagePart : allowedCauseMessageParts) {
+        for (final String allowedCauseMessagePart : ALLOWED_CAUSE_MESSAGE_PARTS) {
             if (Throwables.isCausedByMessagePart(lastThrowable, allowedCauseMessagePart)) {
                 return true;
             }
