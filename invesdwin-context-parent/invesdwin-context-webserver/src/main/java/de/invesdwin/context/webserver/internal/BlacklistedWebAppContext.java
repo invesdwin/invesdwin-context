@@ -50,7 +50,7 @@ public class BlacklistedWebAppContext extends WebAppContext {
     @Override
     protected void startContext() throws Exception {
         final org.eclipse.jetty.websocket.jsr356.server.ServerContainer serverContainer = org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer
-                .configureContext(this);
+                .initialize(this);
         final Map<String, ServerEndpointConfig> endpointConfigs = MergedContext.getInstance()
                 .getBeansOfType(ServerEndpointConfig.class);
         if (endpointConfigs != null) {

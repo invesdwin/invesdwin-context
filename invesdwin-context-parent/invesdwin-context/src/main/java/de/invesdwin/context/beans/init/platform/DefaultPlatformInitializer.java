@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -11,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.UIManager;
 
+import org.conscrypt.OpenSSLProvider;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
@@ -240,6 +242,16 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*(Test|Stub)")));
         defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*\\.test\\..*")));
         ClassPathScanner.setDefaultExcludeFilters(defaultExcludeFilters);
+    }
+
+    /**
+     * make okhttp and jetty use the faster SSL provider
+     * 
+     * https://github.com/square/okhttp
+     */
+    @Override
+    public void initConscryptSecurityProvider() {
+        Security.insertProviderAt(new OpenSSLProvider(), 1);
     }
 
 }

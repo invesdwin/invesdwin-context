@@ -8,39 +8,8 @@
 	<bean id="webserverProperties"
 		class="de.invesdwin.context.system.properties.SystemPropertiesDefinition" />
 
-	<bean id="webServer" class="org.eclipse.jetty.server.Server"
+	<bean id="webServer" class="de.invesdwin.context.webserver.internal.ConfiguredHttpsServer"
 		init-method="start" destroy-method="stop">
-		<constructor-arg>
-			<bean id="ThreadPool"
-				class="de.invesdwin.context.webserver.internal.FastQueuedThreadPool" />
-		</constructor-arg>
-		<property name="connectors">
-			<list>
-				<bean id="connector"
-					class="org.eclipse.jetty.server.ServerConnector">
-					<constructor-arg ref="webServer" />
-					<constructor-arg>
-						<bean class="org.eclipse.jetty.util.ssl.SslContextFactory">
-							<property name="keyStoreResource">
-								<bean
-									class="de.invesdwin.context.webserver.internal.JettySpringResource">
-									<constructor-arg
-										value="${de.invesdwin.context.webserver.WebserverProperties.KEYSTORE_RESOURCE}" />
-								</bean>
-							</property>
-							<property name="keyStorePassword"
-								value="${de.invesdwin.context.webserver.WebserverProperties.KEYSTORE_KEYPASS}" />
-							<property name="certAlias"
-								value="${de.invesdwin.context.webserver.WebserverProperties.KEYSTORE_ALIAS}"></property>
-							<property name="keyManagerPassword"
-								value="${de.invesdwin.context.webserver.WebserverProperties.KEYSTORE_STOREPASS}"></property>
-						</bean>
-					</constructor-arg>
-					<property name="port"
-						value="#{T(de.invesdwin.context.integration.IntegrationProperties).WEBSERVER_BIND_URI.getPort()}" />
-				</bean>
-			</list>
-		</property>
 		<property name="handler">
 			<bean
 				class="de.invesdwin.context.webserver.internal.BlacklistedWebAppContext">

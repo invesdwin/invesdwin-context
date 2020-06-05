@@ -27,7 +27,7 @@ public class FastQueuedThreadPool extends QueuedThreadPool {
     }
 
     @Override
-    protected Thread newThread(final Runnable runnable) {
+    public Thread newThread(final Runnable runnable) {
         return new FastThreadLocalThread(runnable);
     }
 

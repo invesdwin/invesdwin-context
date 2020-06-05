@@ -73,6 +73,7 @@ public final class ContextProperties {
         }
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
+        initializer.initConscryptSecurityProvider();
         URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         URIsConnect.setDefaultProxy(getSystemProxy());
         DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);

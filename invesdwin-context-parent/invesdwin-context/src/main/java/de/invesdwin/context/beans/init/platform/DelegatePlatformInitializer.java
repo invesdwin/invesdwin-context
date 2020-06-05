@@ -133,4 +133,9 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
         delegate.initClassPathScanner();
     }
 
+    @Override
+    public void initConscryptSecurityProvider() {
+        delegate.initConscryptSecurityProvider();
+    }
+
 }
