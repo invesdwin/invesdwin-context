@@ -1,7 +1,5 @@
 package de.invesdwin.context.integration;
 
-import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,7 +38,8 @@ public final class IntegrationProperties {
         WEBSERVER_BIND_URI = readWebserverBindUri();
     }
 
-    private IntegrationProperties() {}
+    private IntegrationProperties() {
+    }
 
     private static List<URI> readInternetCheckUris() {
         final String key = "INTERNET_CHECK_URIS";
@@ -89,19 +88,6 @@ public final class IntegrationProperties {
      */
     public static void setWebserverTest(final boolean webserverTest) {
         IntegrationProperties.webserverTest = webserverTest;
-    }
-
-    public static Proxy getSystemProxy() {
-        final SystemProperties properties = new SystemProperties();
-        final String httpProxyHostKey = "http.proxyHost";
-        final String httpProxyPortKey = "http.proxyPort";
-        if (properties.containsKey(httpProxyHostKey) && properties.containsKey(httpProxyPortKey)) {
-            final String httpProxyHost = properties.getString(httpProxyHostKey);
-            final Integer httpProxyPort = properties.getInteger(httpProxyPortKey);
-            return new Proxy(Type.HTTP, Addresses.asAddress(httpProxyHost, httpProxyPort));
-        } else {
-            return null;
-        }
     }
 
     private static String determineHostname() {
