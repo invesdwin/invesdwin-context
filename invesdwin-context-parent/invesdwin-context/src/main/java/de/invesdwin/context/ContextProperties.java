@@ -1,6 +1,8 @@
 package de.invesdwin.context;
 
 import java.io.File;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -12,6 +14,7 @@ import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.concurrent.Executors;
+import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIsConnect;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
@@ -71,6 +74,7 @@ public final class ContextProperties {
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
+        URIsConnect.setDefaultProxy(getSystemProxy());
         DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
@@ -174,6 +178,19 @@ public final class ContextProperties {
             //webstart safety for access control
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             return Runtime.getRuntime().availableProcessors();
+        }
+    }
+
+    public static Proxy getSystemProxy() {
+        final SystemProperties properties = new SystemProperties();
+        final String httpProxyHostKey = "http.proxyHost";
+        final String httpProxyPortKey = "http.proxyPort";
+        if (properties.containsKey(httpProxyHostKey) && properties.containsKey(httpProxyPortKey)) {
+            final String httpProxyHost = properties.getString(httpProxyHostKey);
+            final Integer httpProxyPort = properties.getInteger(httpProxyPortKey);
+            return new Proxy(Type.HTTP, Addresses.asAddress(httpProxyHost, httpProxyPort));
+        } else {
+            return null;
         }
     }
 
