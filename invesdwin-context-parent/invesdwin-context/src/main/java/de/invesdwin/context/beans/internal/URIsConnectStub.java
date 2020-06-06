@@ -16,7 +16,7 @@ public class URIsConnectStub extends StubSupport {
 
     @Override
     public void tearDown(final ATest test, final TestContext ctx) throws IOException {
-        URIsConnect.reset();
+        URIsConnect.resetHttpClient();
     }
 
 }
