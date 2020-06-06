@@ -15,6 +15,7 @@ import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfig
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.lang.uri.Addresses;
+import de.invesdwin.util.lang.uri.InputStreamResponseConsumer;
 import de.invesdwin.util.lang.uri.URIsConnect;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
@@ -75,7 +76,8 @@ public final class ContextProperties {
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         initializer.initConscryptSecurityProvider();
         URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
-        URIsConnect.setDefaultProxy(getSystemProxy());
+        InputStreamResponseConsumer
+                .setDefaultTempDir(new File(TEMP_DIRECTORY, InputStreamResponseConsumer.class.getSimpleName()));
         DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);

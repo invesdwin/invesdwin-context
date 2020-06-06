@@ -62,8 +62,6 @@
 		<version.maven-replacer-plugin>1.5.3</version.maven-replacer-plugin>
 		<version.keytool-maven-plugin>1.5</version.keytool-maven-plugin>
 
-		<version.jetty>9.4.29.v20200521</version.jetty>
-
 		<version.jboss-transaction-api_1.1_spec>1.0.1.Final</version.jboss-transaction-api_1.1_spec>
 		<version.javax.annotation-api>1.3.1</version.javax.annotation-api>
 
@@ -148,41 +146,6 @@
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-maven-plugin-util</artifactId>
 				<version>${project.version.invesdwin-maven-plugin}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-webapp</artifactId>
-				<version>${version.jetty}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty.http2</groupId>
-				<artifactId>http2-server</artifactId>
-				<version>${version.jetty}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty.websocket</groupId>
-				<artifactId>javax-websocket-server-impl</artifactId>
-				<version>${version.jetty}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty.websocket</groupId>
-				<artifactId>websocket-client</artifactId>
-				<version>${version.jetty}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-server</artifactId>
-				<version>${version.jetty}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-conscrypt-server</artifactId>
-				<version>${version.jetty}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-openjdk8-server</artifactId>
-				<version>${version.jetty}</version>
 			</dependency>
 
 			<dependency>
