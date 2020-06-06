@@ -2,7 +2,6 @@ package de.invesdwin.context.webserver.internal;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
@@ -17,9 +16,8 @@ public class ConfiguredHttpServer extends Server {
         super(new FastQueuedThreadPool());
         final HttpConfiguration config = createHttpConfiguration();
         final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(config);
-        final HTTP2CServerConnectionFactory http2cServerConnectionFactory = new HTTP2CServerConnectionFactory(config);
-        final ServerConnector connector = new ServerConnector(this, httpConnectionFactory,
-                http2cServerConnectionFactory);
+        //        final HTTP2CServerConnectionFactory http2cServerConnectionFactory = new HTTP2CServerConnectionFactory(config);
+        final ServerConnector connector = new ServerConnector(this, httpConnectionFactory);
         connector.setPort(IntegrationProperties.WEBSERVER_BIND_URI.getPort());
         addConnector(connector);
     }
