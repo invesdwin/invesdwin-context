@@ -1,8 +1,6 @@
 package de.invesdwin.context;
 
 import java.io.File;
-import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -14,10 +12,8 @@ import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.lang.uri.Addresses;
+import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;
-import de.invesdwin.util.lang.uri.connect.apache.URIsConnectApache;
-import de.invesdwin.util.lang.uri.connect.okhttp.URIsConnectOkHttp;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -76,9 +72,7 @@ public final class ContextProperties {
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         initializer.initConscryptSecurityProvider();
-        URIsConnectOkHttp.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
-        URIsConnectOkHttp.setDefaultProxy(getSystemProxy());
-        URIsConnectApache.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
+        URIs.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         InputStreamHttpResponseConsumer
                 .setDefaultTempDir(new File(TEMP_DIRECTORY, InputStreamHttpResponseConsumer.class.getSimpleName()));
         DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);
@@ -184,19 +178,6 @@ public final class ContextProperties {
             //webstart safety for access control
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             return Runtime.getRuntime().availableProcessors();
-        }
-    }
-
-    public static Proxy getSystemProxy() {
-        final SystemProperties properties = new SystemProperties();
-        final String httpProxyHostKey = "http.proxyHost";
-        final String httpProxyPortKey = "http.proxyPort";
-        if (properties.containsKey(httpProxyHostKey) && properties.containsKey(httpProxyPortKey)) {
-            final String httpProxyHost = properties.getString(httpProxyHostKey);
-            final Integer httpProxyPort = properties.getInteger(httpProxyPortKey);
-            return new Proxy(Type.HTTP, Addresses.asAddress(httpProxyHost, httpProxyPort));
-        } else {
-            return null;
         }
     }
 
