@@ -1,7 +1,10 @@
 package de.invesdwin.context.log.error;
 
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.PlatformInitializerProperties;
@@ -9,6 +12,8 @@ import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.hook.ErrHookManager;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.time.Instant;
+import de.invesdwin.util.time.duration.Duration;
 
 /**
  * A util class to log exceptions and convert them to RuntimeExceptions that have an ID associated with them to be
@@ -24,6 +29,10 @@ public final class Err {
 
     private static final Log LOG = new Log("de.invesdwin.ERROR");
     private static final Log LOG_DETAIL = new Log("de.invesdwin.ERROR_DETAIL");
+    @GuardedBy("this.class")
+    private static final List<IntervalException> INTERVAL_EXCEPTIONS = new ArrayList<>();
+
+    private static final int MAX_INTERVAL_EXCEPTIONS = 1000;
 
     static {
         final UncaughtExceptionHandler handler = new ErrUncaughtExceptionHandler();
@@ -33,7 +42,8 @@ public final class Err {
         UNCAUGHT_EXCEPTION_HANDLER = handler;
     }
 
-    private Err() {}
+    private Err() {
+    }
 
     /**
      * Logs an Exception as an error and returns it so that it can be analyzed or rethrown.
@@ -123,6 +133,52 @@ public final class Err {
 
     public static String getSimplifiedStackTrace(final Throwable e) {
         return ThrowableConverter.throwableToString(e, false);
+    }
+
+    /**
+     * Only logs the exception in the given interval if it has the same meaning, otherwise returns the previous logged
+     * exception and ignores the new one.
+     */
+    public static synchronized LoggedRuntimeException processInterval(final Exception exception,
+            final Duration interval) {
+        for (int i = 0; i < INTERVAL_EXCEPTIONS.size(); i++) {
+            final IntervalException candidate = INTERVAL_EXCEPTIONS.get(i);
+            if (candidate.isTimeout()) {
+                INTERVAL_EXCEPTIONS.remove(i);
+                i--;
+            } else {
+                if (isSameMeaning(candidate.getException(), exception)) {
+                    return candidate.getException();
+                }
+            }
+        }
+        final LoggedRuntimeException logged = process(exception);
+        INTERVAL_EXCEPTIONS.add(new IntervalException(logged, interval));
+        while (INTERVAL_EXCEPTIONS.size() > MAX_INTERVAL_EXCEPTIONS) {
+            INTERVAL_EXCEPTIONS.remove(0);
+        }
+        return logged;
+    }
+
+    private static final class IntervalException {
+        private final LoggedRuntimeException exception;
+        private final Duration interval;
+        private final Instant instant;
+
+        private IntervalException(final LoggedRuntimeException exception, final Duration interval) {
+            this.exception = exception;
+            this.interval = interval;
+            this.instant = new Instant();
+        }
+
+        public boolean isTimeout() {
+            return instant.isGreaterThan(interval);
+        }
+
+        public LoggedRuntimeException getException() {
+            return exception;
+        }
+
     }
 
 }
