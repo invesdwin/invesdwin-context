@@ -15,8 +15,9 @@ import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfig
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.lang.uri.Addresses;
-import de.invesdwin.util.lang.uri.InputStreamHttpResponseConsumer;
-import de.invesdwin.util.lang.uri.URIsConnect;
+import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;
+import de.invesdwin.util.lang.uri.connect.apache.URIsConnectApache;
+import de.invesdwin.util.lang.uri.connect.okhttp.URIsConnectOkHttp;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -75,7 +76,9 @@ public final class ContextProperties {
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         initializer.initConscryptSecurityProvider();
-        URIsConnect.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
+        URIsConnectOkHttp.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
+        URIsConnectOkHttp.setDefaultProxy(getSystemProxy());
+        URIsConnectApache.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         InputStreamHttpResponseConsumer
                 .setDefaultTempDir(new File(TEMP_DIRECTORY, InputStreamHttpResponseConsumer.class.getSimpleName()));
         DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);
