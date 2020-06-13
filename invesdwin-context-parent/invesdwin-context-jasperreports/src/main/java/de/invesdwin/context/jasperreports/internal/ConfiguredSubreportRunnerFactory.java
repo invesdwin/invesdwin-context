@@ -7,7 +7,9 @@ import java.util.concurrent.ExecutorService;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.util.concurrent.ADelegateExecutorService;
+import com.google.common.util.concurrent.ListeningExecutorService;
+
+import de.invesdwin.util.concurrent.ASimpleDelegateExecutorService;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.nested.ANestedExecutor;
@@ -28,10 +30,10 @@ public class ConfiguredSubreportRunnerFactory extends ThreadPoolSubreportRunnerF
 
     @Override
     protected ExecutorService createThreadExecutor(final JRFillContext fillContext) {
-        return new ADelegateExecutorService(null) {
+        return new ASimpleDelegateExecutorService(null) {
 
             @Override
-            public ExecutorService getDelegate() {
+            public ListeningExecutorService getDelegate() {
                 return EXECUTOR.getNestedExecutor();
             }
 
@@ -60,6 +62,7 @@ public class ConfiguredSubreportRunnerFactory extends ThreadPoolSubreportRunnerF
                 //noop
                 return Collections.emptyList();
             }
+
         };
     }
 

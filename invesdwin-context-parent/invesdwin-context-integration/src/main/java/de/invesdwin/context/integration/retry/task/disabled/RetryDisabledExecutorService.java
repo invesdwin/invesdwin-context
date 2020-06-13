@@ -1,16 +1,17 @@
 package de.invesdwin.context.integration.retry.task.disabled;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.util.concurrent.ADelegateExecutorService;
+import com.google.common.util.concurrent.ListeningExecutorService;
+
+import de.invesdwin.util.concurrent.ASimpleDelegateExecutorService;
 
 @ThreadSafe
-public class RetryDisabledExecutorService extends ADelegateExecutorService {
+public class RetryDisabledExecutorService extends ASimpleDelegateExecutorService {
 
-    public RetryDisabledExecutorService(final ExecutorService delegate) {
+    public RetryDisabledExecutorService(final ListeningExecutorService delegate) {
         super(delegate);
     }
 
