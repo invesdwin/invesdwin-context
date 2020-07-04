@@ -9,7 +9,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.classpath.FastClassPathScanner;
 import de.invesdwin.util.lang.Objects;
-import de.invesdwin.util.lang.Reflections;
+import de.invesdwin.util.lang.reflection.Reflections;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 

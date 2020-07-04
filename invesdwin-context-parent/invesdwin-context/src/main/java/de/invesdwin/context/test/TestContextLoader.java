@@ -33,7 +33,7 @@ import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.lang.Reflections;
+import de.invesdwin.util.lang.reflection.Reflections;
 
 @ThreadSafe
 public class TestContextLoader implements ContextLoader {

@@ -2,7 +2,7 @@ package de.invesdwin.context.beans.init.platform.util.internal;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.util.lang.Reflections;
+import de.invesdwin.util.lang.reflection.Reflections;
 
 @Immutable
 public final class XmlTransformerConfigurer {

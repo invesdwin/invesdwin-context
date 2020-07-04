@@ -9,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.jfree.data.xy.XYDataItem;
 
-import de.invesdwin.util.lang.Reflections;
+import de.invesdwin.util.lang.reflection.Reflections;
 
 @Immutable
 public class MutableXYDataItemOHLC extends XYDataItem {

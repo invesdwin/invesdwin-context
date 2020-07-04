@@ -10,7 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
-import de.invesdwin.util.lang.Reflections;
+import de.invesdwin.util.lang.reflection.Reflections;
 
 @NotThreadSafe
 public class ListXYSeriesOHLC extends XYSeries {

@@ -30,8 +30,8 @@ import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Reflections;
 import de.invesdwin.util.lang.Resources;
+import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.time.duration.Duration;
 
 /**
