@@ -27,4 +27,10 @@ public @interface Retry {
      */
     long fixedBackOffMillis() default -1;
 
+    /**
+     * A negative or 0 value allows infinite retries. A positive value aborts the retry after the retry count has been
+     * reached.
+     */
+    int maxRetries() default -1;
+
 }
