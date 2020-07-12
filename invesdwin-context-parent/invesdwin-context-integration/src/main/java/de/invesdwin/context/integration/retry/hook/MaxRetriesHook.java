@@ -39,7 +39,11 @@ public class MaxRetriesHook implements IRetryHook {
     }
 
     public static IRetryHook of(final Retry annotation) {
-        return of(annotation.maxRetries());
+        if (annotation != null) {
+            return of(annotation.maxRetries());
+        } else {
+            return null;
+        }
     }
 
 }
