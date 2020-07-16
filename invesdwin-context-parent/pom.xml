@@ -89,10 +89,10 @@
 		<version.spring-integration>5.2.5.RELEASE</version.spring-integration>
 		<version.spring-ws>3.0.8.RELEASE</version.spring-ws>
 
-		<version.h2>1.4.196</version.h2>
+		<version.h2>1.4.200</version.h2>
 		<!-- 6.0.4 still has this error: http://stackoverflow.com/questions/26515700/mysql-jdbc-driver-5-1-33-time-zone-issue -->
-		<version.mysql-connector-java>5.1.40</version.mysql-connector-java>
-		<version.postgresql>9.4.1211.jre7</version.postgresql>
+		<version.mysql-connector-java>8.0.21</version.mysql-connector-java>
+		<version.postgresql>42.2.14</version.postgresql>
 	</properties>
 
 	<dependencyManagement>
