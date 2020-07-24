@@ -401,4 +401,9 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
             throws NoSuchBeanDefinitionException {
         return delegate.getType(name, allowFactoryBeanInit);
     }
+
+    @Override
+    public void setClassLoader(final ClassLoader classLoader) {
+        delegate.setClassLoader(classLoader);
+    }
 }
