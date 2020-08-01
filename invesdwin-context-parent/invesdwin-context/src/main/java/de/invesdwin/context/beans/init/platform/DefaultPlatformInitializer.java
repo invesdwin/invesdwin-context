@@ -252,7 +252,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
      */
     @Override
     public void initConscryptSecurityProvider() {
-        final String className = "org.conscrypt.OpenSSLProvider.OpenSSLProvider";
+        final String className = "org.conscrypt.OpenSSLProvider";
         if (Reflections.classExists(className)) {
             try {
                 final Class<Object> clazz = Reflections.classForName(className);
