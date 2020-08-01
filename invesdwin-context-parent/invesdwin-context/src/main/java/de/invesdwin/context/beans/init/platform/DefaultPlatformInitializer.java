@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
+import java.security.Provider;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.regex.Pattern;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.UIManager;
 
-import org.conscrypt.OpenSSLProvider;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
@@ -38,6 +38,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -251,7 +252,16 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
      */
     @Override
     public void initConscryptSecurityProvider() {
-        Security.insertProviderAt(new OpenSSLProvider(), 1);
+        final String className = "org.conscrypt.OpenSSLProvider.OpenSSLProvider";
+        if (Reflections.classExists(className)) {
+            try {
+                final Class<Object> clazz = Reflections.classForName(className);
+                final Provider instance = (Provider) clazz.getConstructor().newInstance();
+                Security.insertProviderAt(instance, 1);
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
