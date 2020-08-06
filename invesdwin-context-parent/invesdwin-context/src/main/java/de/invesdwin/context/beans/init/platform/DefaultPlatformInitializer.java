@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
-import java.security.Provider;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -21,6 +19,7 @@ import org.springframework.core.type.filter.TypeFilter;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
+import de.invesdwin.context.beans.init.platform.util.ConscryptConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
 import de.invesdwin.context.beans.init.platform.util.RegisterTypesForSerializationConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
@@ -252,15 +251,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
      */
     @Override
     public void initConscryptSecurityProvider() {
-        final String className = "org.conscrypt.OpenSSLProvider";
-        if (Reflections.classExists(className)) {
-            try {
-                final Class<Object> clazz = Reflections.classForName(className);
-                final Provider instance = (Provider) clazz.getConstructor().newInstance();
-                Security.insertProviderAt(instance, 1);
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
-            }
+        //conscrypt dependency can be removed if desired
+        if (Reflections.classExists("org.conscrypt.Conscrypt")) {
+            ConscryptConfigurer.configure();
         }
     }
 
