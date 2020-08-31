@@ -58,7 +58,6 @@ public class TestContextLoader implements ContextLoader {
             }
         };
     };
-    private static TestContext prevTestContext;
 
     static void setCurrentTest(final ATest currentTest) {
         TestContextLoader.currentTest = currentTest;
@@ -145,13 +144,8 @@ public class TestContextLoader implements ContextLoader {
                 final String resourceString = resource.getURI().toString();
                 locationStrings.add(resourceString);
             }
-            if (prevTestContext != null) {
-                prevTestContext.close();
-                prevTestContext = null;
-            }
             final ConfigurableApplicationContext delegate = PARENT.loadContext(locationStrings.toArray(new String[0]));
             final TestContext ctx = new TestContext(delegate);
-            prevTestContext = ctx;
             if (FIRST_INITIALIZATION.getAndSet(false)) {
                 MergedContext.logBootstrapFinished();
             }
