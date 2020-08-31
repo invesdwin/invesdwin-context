@@ -48,7 +48,7 @@ public class TestContextLoader implements ContextLoader {
         PreMergedContext.getInstance();
     }
 
-    private final GenericXmlContextLoader parent = new GenericXmlContextLoader() {
+    private static final GenericXmlContextLoader PARENT = new GenericXmlContextLoader() {
         @Override
         protected void customizeContext(final GenericApplicationContext ctx) {
             try {
@@ -58,6 +58,7 @@ public class TestContextLoader implements ContextLoader {
             }
         };
     };
+    private static TestContext prevTestContext;
 
     static void setCurrentTest(final ATest currentTest) {
         TestContextLoader.currentTest = currentTest;
@@ -85,7 +86,7 @@ public class TestContextLoader implements ContextLoader {
         return mergedContexts;
     }
 
-    protected void configureContext(final TestContext ctx) throws Exception {
+    protected static void configureContext(final TestContext ctx) throws Exception {
         MergedContext.autowire(ctx);
         currentTest.setUpContext(ctx);
         for (final IStub testHook : getTestHooks(ctx)) {
@@ -97,7 +98,7 @@ public class TestContextLoader implements ContextLoader {
      * Load instances manually so that they dont get injection and thus dont get their dependencies initilized too early
      * when they cannot be resolved yet
      */
-    private List<IStub> getTestHooks(final ConfigurableApplicationContext ctx) {
+    private static List<IStub> getTestHooks(final ConfigurableApplicationContext ctx) {
         final String[] testHookNames = ctx.getBeanFactory().getBeanNamesForType(IStub.class);
         final List<IStub> testHooks = new ArrayList<IStub>();
         for (final String testHookName : testHookNames) {
@@ -144,8 +145,13 @@ public class TestContextLoader implements ContextLoader {
                 final String resourceString = resource.getURI().toString();
                 locationStrings.add(resourceString);
             }
-            final ConfigurableApplicationContext delegate = parent.loadContext(locationStrings.toArray(new String[0]));
+            if (prevTestContext != null) {
+                prevTestContext.close();
+                prevTestContext = null;
+            }
+            final ConfigurableApplicationContext delegate = PARENT.loadContext(locationStrings.toArray(new String[0]));
             final TestContext ctx = new TestContext(delegate);
+            prevTestContext = ctx;
             if (FIRST_INITIALIZATION.getAndSet(false)) {
                 MergedContext.logBootstrapFinished();
             }
