@@ -29,6 +29,8 @@ import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 
+import de.invesdwin.util.math.Doubles;
+
 /**
  * The annotated element has to be in the appropriate range. Apply on numeric values or string representation of the
  * numeric value.
@@ -47,7 +49,7 @@ public @interface DecimalRange {
     String min() default "0";
 
     @OverridesAttribute(constraint = DecimalMax.class, name = "value")
-    String max() default "" + Double.MAX_VALUE;
+    String max() default "" + Doubles.MAX_VALUE;
 
     String message() default "{org.hibernate.validator.constraints.Range.message}";
 
