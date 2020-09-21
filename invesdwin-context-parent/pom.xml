@@ -75,11 +75,11 @@
 
 		<!-- reports -->
 		<version.jfreechart>1.5.0</version.jfreechart>
-		<version.dynamicreports>6.1.0</version.dynamicreports>
-		<version.jasperreports>6.11.0</version.jasperreports>
-		<version.batik>1.10</version.batik>
+		<version.dynamicreports>6.11.1</version.dynamicreports>
+		<version.jasperreports>6.14.0</version.jasperreports>
+		<version.batik>1.12</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
-		<version.itext>2.1.7.js7</version.itext>
+		<version.itext>2.1.7.js8</version.itext>
 		<version.bcprov>1.64</version.bcprov>
 		<version.poi>3.16</version.poi>
 
