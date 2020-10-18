@@ -67,7 +67,7 @@ public abstract class ATest implements ITestLifecycle {
     private static int testMethodId;
 
     protected final Log log = new Log(this);
-    protected TestContext ctx;
+    private TestContext ctx;
     private Instant testMethodTimeMeasurement = new Instant();
 
     //CHECKSTYLE:OFF public
