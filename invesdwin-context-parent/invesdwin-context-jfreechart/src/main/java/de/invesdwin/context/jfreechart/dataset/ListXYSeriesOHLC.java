@@ -82,11 +82,9 @@ public class ListXYSeriesOHLC extends XYSeries {
     }
 
     public void updateBoundsForAddedItem(final MutableXYDataItemOHLC item) {
-        final double x = item.getXValue();
         setMinX(minIgnoreNaN(getMinX(), getItemMinX(item)));
         setMaxX(maxIgnoreNaN(getMaxX(), getItemMaxX(item)));
         if (item.getY() != null) {
-            final double y = item.getYValue();
             setMinY(minIgnoreNaN(getMinY(), getItemMinY(item)));
             setMaxY(maxIgnoreNaN(getMaxY(), getItemMaxY(item)));
         }

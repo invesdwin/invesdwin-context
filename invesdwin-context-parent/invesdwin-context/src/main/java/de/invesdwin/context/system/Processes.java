@@ -44,11 +44,12 @@ public final class Processes {
             final Process pr = rt.exec(command);
 
             final InputStreamReader isReader = new InputStreamReader(pr.getInputStream());
-            final BufferedReader bReader = new BufferedReader(isReader);
-            String strLine = null;
-            while ((strLine = bReader.readLine()) != null) {
-                if (strLine.contains(" " + pid + " ")) {
-                    return true;
+            try (BufferedReader bReader = new BufferedReader(isReader)) {
+                String strLine = null;
+                while ((strLine = bReader.readLine()) != null) {
+                    if (strLine.contains(" " + pid + " ")) {
+                        return true;
+                    }
                 }
             }
 

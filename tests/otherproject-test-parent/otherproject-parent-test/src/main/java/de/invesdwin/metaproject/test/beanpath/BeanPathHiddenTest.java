@@ -38,7 +38,7 @@ public class BeanPathHiddenTest extends ABeanPathRoot {
         return new InterceptedType();
     }
 
-    public class Internal {
+    public static class Internal {
         public InternalInternal internalInternal;
         public String internalField;
         private final String internalGetter = null;
@@ -48,11 +48,11 @@ public class BeanPathHiddenTest extends ABeanPathRoot {
         }
     }
 
-    public class InternalInternal {
+    public static class InternalInternal {
         public String shouldNotBeVisibleViaInterceptorTypeRedirect;
     }
 
-    public class InterceptedType {
+    public static class InterceptedType {
         public String thisWasIntercepted;
     }
 

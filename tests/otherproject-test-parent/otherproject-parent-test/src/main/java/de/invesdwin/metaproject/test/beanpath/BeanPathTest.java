@@ -20,7 +20,7 @@ public class BeanPathTest extends ABeanPathRoot {
             public boolean someChoice1;
         }
 
-        public class Option2Config {
+        public static class Option2Config {
             public boolean someChoice21;
             public Integer someChoice22;
             public int someChoice23;
