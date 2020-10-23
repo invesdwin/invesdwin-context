@@ -52,7 +52,7 @@ public class WebserverTestStub extends StubSupport {
     @Override
     public void setUpOnce(final ATest test, final TestContext ctx) throws Exception {
         try {
-            lastServer = MergedContext.getInstance().getBean(Server.class);
+            WebserverTestStub.lastServer = MergedContext.getInstance().getBean(Server.class);
         } catch (final NoSuchBeanDefinitionException e) { //SUPPRESS CHECKSTYLE empty block
             //ignore
         }

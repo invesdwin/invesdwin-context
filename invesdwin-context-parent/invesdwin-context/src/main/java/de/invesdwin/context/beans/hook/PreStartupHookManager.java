@@ -62,7 +62,7 @@ public final class PreStartupHookManager implements ApplicationContextAware, Fac
             Assertions.assertThat(alreadyStarted)
                     .as("%s may only be started once initially!", IPreStartupHook.class.getSimpleName())
                     .isFalse();
-            alreadyStarted = true;
+            PreStartupHookManager.alreadyStarted = true;
             for (final IPreStartupHook hook : REGISTERED_HOOKS) {
                 try {
                     hook.preStartup();

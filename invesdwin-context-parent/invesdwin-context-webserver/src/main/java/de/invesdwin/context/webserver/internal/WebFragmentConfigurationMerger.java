@@ -62,7 +62,7 @@ public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMer
             final String merged = mergeConfigs();
             Files.forceMkdir(webinfDirectory);
             Files.writeStringToFile(webFragmentFile, merged, Charset.defaultCharset());
-            alreadyGenerated = webappDirectory;
+            WebFragmentConfigurationMerger.alreadyGenerated = webappDirectory;
         }
         return alreadyGenerated.getAbsolutePath();
     }

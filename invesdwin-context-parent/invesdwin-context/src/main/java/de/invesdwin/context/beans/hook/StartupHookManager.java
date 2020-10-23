@@ -126,7 +126,7 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
             Assertions.assertThat(alreadyStarted)
                     .as("%s may only be started once initially!", IStartupHook.class.getSimpleName())
                     .isFalse();
-            alreadyStarted = true;
+            StartupHookManager.alreadyStarted = true;
             final WrappedExecutorService executor = Executors.newFixedThreadPool(getClass().getSimpleName(),
                     Math.max(10, Executors.getCpuThreadPoolCount() * 2));
             final List<Future<?>> blockingHooks = new ArrayList<Future<?>>();
