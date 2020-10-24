@@ -138,4 +138,9 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
         delegate.initConscryptSecurityProvider();
     }
 
+    @Override
+    public void initCryptoPolicyUnlimited() {
+        delegate.initCryptoPolicyUnlimited();
+    }
+
 }

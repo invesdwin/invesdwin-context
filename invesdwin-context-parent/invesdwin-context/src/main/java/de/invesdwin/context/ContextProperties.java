@@ -72,6 +72,7 @@ public final class ContextProperties {
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
         initializer.initConscryptSecurityProvider();
+        initializer.initCryptoPolicyUnlimited();
         URIs.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         InputStreamHttpResponseConsumer
                 .setDefaultTempDir(new File(TEMP_DIRECTORY, InputStreamHttpResponseConsumer.class.getSimpleName()));

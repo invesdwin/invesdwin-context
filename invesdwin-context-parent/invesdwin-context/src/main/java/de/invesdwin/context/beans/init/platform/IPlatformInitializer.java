@@ -57,4 +57,6 @@ public interface IPlatformInitializer {
 
     void initConscryptSecurityProvider();
 
+    void initCryptoPolicyUnlimited();
+
 }

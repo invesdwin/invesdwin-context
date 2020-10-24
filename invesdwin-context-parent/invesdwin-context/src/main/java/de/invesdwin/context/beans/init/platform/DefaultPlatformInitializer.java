@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -255,6 +256,14 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         if (Reflections.classExists("org.conscrypt.Conscrypt")) {
             ConscryptConfigurer.configure();
         }
+    }
+
+    /**
+     * Might be needed in some circumstances: https://www.baeldung.com/java-bouncy-castle
+     */
+    @Override
+    public void initCryptoPolicyUnlimited() {
+        Security.setProperty("crypto.policy", "unlimited");
     }
 
 }
