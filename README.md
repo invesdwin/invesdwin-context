@@ -14,7 +14,7 @@ For more information on the concept and ideas behind this platform you can have 
 
 Releases and snapshots are deployed to this maven repository:
 ```
-https://invesdwin.de/repo/invesdwin-oss-remote
+https://invesdwin.de/repo/invesdwin-oss-remote/
 ```
 
 Dependency declaration:
