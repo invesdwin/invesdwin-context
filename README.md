@@ -26,6 +26,10 @@ Dependency declaration:
 </dependency>
 ```
 
+## Contributing
+
+Tips for handling multiple projects and IDE configuration are [here](https://github.com/subes/invesdwin-maven-plugin/blob/master/README.md#handling-multiple-projectsrepositories). Pull requests are welcome. Direct repo access can be granted upon request.
+
 ## Parent Pom
 
 When setting up modules or distributions it is recommended to make `invesdwin-context-parent` the parent pom of your specific module/distribution pom.xml. This provides the following benefits respectively. This enables:
