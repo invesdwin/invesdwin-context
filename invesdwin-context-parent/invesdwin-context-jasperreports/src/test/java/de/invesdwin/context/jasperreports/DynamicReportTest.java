@@ -52,7 +52,7 @@ public class DynamicReportTest extends ATest {
     public void testPdfExport() throws FileNotFoundException, DRException {
         final DynamicReportDesign design = new DynamicReportDesign();
         final JasperReportBuilder report = design.build();
-        final File exportFile = new File(ContextProperties.getCacheDirectory(), "DynamicReports.pdf");
+        final File exportFile = new File(ContextProperties.TEMP_DIRECTORY, "DynamicReports.pdf");
         Assertions.assertThat(exportFile).doesNotExist();
         report.toPdf(new FileOutputStream(exportFile));
         Assertions.assertThat(exportFile).exists();
