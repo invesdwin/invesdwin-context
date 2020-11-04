@@ -3,7 +3,6 @@ package de.invesdwin.context.test;
 import java.util.List;
 
 import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
 
 import org.junit.After;
@@ -52,7 +51,7 @@ import de.invesdwin.util.time.Instant;
  */
 @RunWith(LoadTimeWeavingClassRunner.class)
 @ContextConfiguration(locations = { TestContextLoader.CTX_DUMMY }, loader = TestContextLoader.class)
-@ThreadSafe
+@NotThreadSafe
 //TransactionalTestExecutionListener collides with CTW transactions
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 public abstract class ATest implements ITestLifecycle {
