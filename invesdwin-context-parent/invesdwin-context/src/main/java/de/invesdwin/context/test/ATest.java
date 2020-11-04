@@ -3,6 +3,7 @@ package de.invesdwin.context.test;
 import java.util.List;
 
 import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 
 import org.junit.After;
