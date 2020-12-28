@@ -32,6 +32,8 @@ public final class ContextProperties {
     public static final Duration DEFAULT_NETWORK_TIMEOUT;
     public static final int DEFAULT_NETWORK_TIMEOUT_MILLIS;
     public static final int CPU_THREAD_POOL_COUNT;
+    public static final String USER_NAME;
+
     @GuardedBy("ContextProperties.class")
     private static File cacheDirectory;
     @GuardedBy("ContextProperties.class")
@@ -79,6 +81,8 @@ public final class ContextProperties {
         DEFAULT_NETWORK_TIMEOUT_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT.intValue(FTimeUnit.MILLISECONDS);
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
+
+        USER_NAME = new SystemProperties().getString("user.name");
     }
 
     private ContextProperties() {
