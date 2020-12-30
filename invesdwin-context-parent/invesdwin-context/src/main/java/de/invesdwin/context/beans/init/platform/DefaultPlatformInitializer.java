@@ -144,7 +144,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         DynamicInstrumentationProperties.setDeleteTempDirectoryRunner(new Runnable() {
             @Override
             public void run() {
-                Files.deleteFast(DynamicInstrumentationProperties.TEMP_DIRECTORY);
+                Files.deleteNative(DynamicInstrumentationProperties.TEMP_DIRECTORY);
             }
         });
         return DynamicInstrumentationProperties.TEMP_DIRECTORY;
