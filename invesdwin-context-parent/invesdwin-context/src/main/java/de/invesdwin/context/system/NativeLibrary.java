@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.log.Log;
+import de.invesdwin.util.lang.OperatingSystem;
 
 /**
  * This class can be added as a private static final member in a class so that during initialization of the object the
@@ -272,9 +273,11 @@ public final class NativeLibrary {
             // to do so
             if (!deleteNativeLibrary(nativeLibraryPath, unpacked)) {
                 try {
-                    Runtime.getRuntime().exec(new String[] {
-                            System.getProperty("java.home") + File.separator + "bin" + File.separator + "java", "-cp",
-                            System.getProperty("java.class.path"), getClass().getName(), file.getAbsolutePath(), });
+                    Runtime.getRuntime()
+                            .exec(new String[] {
+                                    System.getProperty("java.home") + File.separator + "bin" + File.separator + "java",
+                                    "-cp", System.getProperty("java.class.path"), getClass().getName(),
+                                    file.getAbsolutePath(), });
                 } catch (final IOException e) {
                     e.printStackTrace();
                 }

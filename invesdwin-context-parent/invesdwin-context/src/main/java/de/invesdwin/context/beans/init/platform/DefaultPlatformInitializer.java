@@ -7,7 +7,6 @@ import java.lang.management.ManagementFactory;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -38,11 +37,8 @@ import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
-import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
-import de.invesdwin.util.shutdown.IShutdownHook;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -148,27 +144,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         DynamicInstrumentationProperties.setDeleteTempDirectoryRunner(new Runnable() {
             @Override
             public void run() {
-                final ExecutorService delegate = java.util.concurrent.Executors
-                        .newFixedThreadPool(Executors.getCpuThreadPoolCount());
-                final WrappedExecutorService executor = new WrappedExecutorService(delegate, "DELETE_TEMP_DIRECTORY") {
-                    @Override
-                    protected IShutdownHook newShutdownHook(final ExecutorService delegate) {
-                        //we are already shutting down
-                        return null;
-                    }
-
-                    @Override
-                    protected void throwIfInterrupted() throws InterruptedException {
-                        //noop, don't check for shutdown
-                    }
-                }.withDynamicThreadName(false).withWaitOnFullPendingCount(Executors.getCpuThreadPoolCount() * 10);
-                try {
-                    Files.deleteInParallel(executor, DynamicInstrumentationProperties.TEMP_DIRECTORY);
-                } catch (final InterruptedException e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    executor.shutdownNow();
-                }
+                Files.deleteFast(DynamicInstrumentationProperties.TEMP_DIRECTORY);
             }
         });
         return DynamicInstrumentationProperties.TEMP_DIRECTORY;
