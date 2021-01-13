@@ -24,7 +24,8 @@ public final class SystemPropertiesLoader {
     private static final String META_INF_ENV = META_INF + "env/";
     private static final Log LOG = new Log(SystemPropertiesLoader.class);
 
-    private SystemPropertiesLoader() {}
+    private SystemPropertiesLoader() {
+    }
 
     /**
      * This should only be used by infrastructure classes.
@@ -47,7 +48,7 @@ public final class SystemPropertiesLoader {
             overridePropertiesNames.add(Resources.resourceToPatternString(systemPropertiesResource) + "("
                     + overrideProperties.size() + ")");
             final String distributionPropertiesName;
-            if (ContextProperties.IS_TEST_ENVIRONMENT) {
+            if (ContextProperties.IS_TEST_ENVIRONMENT || ContextProperties.isIgnoreDistributionProperties()) {
                 distributionPropertiesName = new SystemProperties().getString("user.name") + ".properties";
             } else {
                 distributionPropertiesName = "distribution.properties";

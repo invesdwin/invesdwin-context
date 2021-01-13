@@ -186,4 +186,14 @@ public final class ContextProperties {
         }
     }
 
+    public static boolean isIgnoreDistributionProperties() {
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String keyIgnoreDistributionProperties = "IGNORE_DISTRIBUTION_PROPERTIES";
+        if (systemProperties.containsValue(keyIgnoreDistributionProperties)) {
+            return systemProperties.getBoolean(keyIgnoreDistributionProperties);
+        } else {
+            return false;
+        }
+    }
+
 }
