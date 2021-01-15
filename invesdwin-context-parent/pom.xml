@@ -80,7 +80,7 @@
 		<version.xml-apis>1.4.01</version.xml-apis>
 		<version.itext>2.1.7.js8</version.itext>
 		<version.bcprov>1.66</version.bcprov>
-		<version.poi>3.16</version.poi>
+		<version.poi>4.1.2</version.poi>
 
 		<!-- integration -->
 		<version.spring-batch>4.2.4.RELEASE</version.spring-batch>
