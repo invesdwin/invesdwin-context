@@ -7,7 +7,6 @@ import org.slf4j.Marker;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.description.TextDescriptionFormatter;
 
 /**
  * A utility that provides standard mechanisms for logging certain kinds of activities.
@@ -51,152 +50,166 @@ public final class Log extends org.slf4j.ext.XLogger {
 
     @Override
     public void trace(final String format, final Object... args) {
-        super.trace(TextDescriptionFormatter.format(format, args), args);
+        super.trace(format(format, args), args);
     }
 
     @Override
     public void trace(final Marker marker, final String format, final Object... args) {
-        super.trace(marker, TextDescriptionFormatter.format(format, args), args);
+        super.trace(marker, format(format, args), args);
     }
 
     @Override
     public void debug(final String format, final Object... args) {
-        super.debug(TextDescriptionFormatter.format(format, args), args);
+        super.debug(format(format, args), args);
     }
 
     @Override
     public void debug(final Marker marker, final String format, final Object... args) {
-        super.debug(marker, TextDescriptionFormatter.format(format, args), args);
+        super.debug(marker, format(format, args), args);
     }
 
     @Override
     public void info(final String format, final Object... args) {
-        super.info(TextDescriptionFormatter.format(format, args), args);
+        super.info(format(format, args), args);
     }
 
     @Override
     public void info(final Marker marker, final String format, final Object... args) {
-        super.info(marker, TextDescriptionFormatter.format(format, args), args);
+        super.info(marker, format(format, args), args);
     }
 
     @Override
     public void warn(final String format, final Object... args) {
-        super.warn(TextDescriptionFormatter.format(format, args), args);
+        super.warn(format(format, args), args);
     }
 
     @Override
     public void warn(final Marker marker, final String format, final Object... args) {
-        super.warn(marker, TextDescriptionFormatter.format(format, args), args);
+        super.warn(marker, format(format, args), args);
     }
 
     @Override
     public void error(final String format, final Object... args) {
-        super.error(TextDescriptionFormatter.format(format, args), args);
+        super.error(format(format, args), args);
     }
 
     @Override
     public void error(final Marker marker, final String format, final Object... args) {
-        super.error(marker, TextDescriptionFormatter.format(format, args), args);
+        super.error(marker, format(format, args), args);
     }
 
     @Override
     public void debug(final Marker marker, final String format, final Object arg) {
-        super.debug(marker, TextDescriptionFormatter.format(format, arg), arg);
+        super.debug(marker, format(format, arg), arg);
     }
 
     @Override
     public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.debug(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.debug(marker, format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void debug(final String format, final Object arg) {
-        super.debug(TextDescriptionFormatter.format(format, arg), arg);
+        super.debug(format(format, arg), arg);
     }
 
     @Override
     public void debug(final String format, final Object arg1, final Object arg2) {
-        super.debug(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.debug(format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void error(final Marker marker, final String format, final Object arg) {
-        super.error(marker, TextDescriptionFormatter.format(format, arg), arg);
+        super.error(marker, format(format, arg), arg);
     }
 
     @Override
     public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.error(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.error(marker, format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void error(final String format, final Object arg) {
-        super.error(TextDescriptionFormatter.format(format, arg), arg);
+        super.error(format(format, arg), arg);
     }
 
     @Override
     public void error(final String format, final Object arg1, final Object arg2) {
-        super.error(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.error(format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void info(final Marker marker, final String format, final Object arg) {
-        super.info(marker, TextDescriptionFormatter.format(format, arg), arg);
+        super.info(marker, format(format, arg), arg);
     }
 
     @Override
     public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.info(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.info(marker, format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void info(final String format, final Object arg) {
-        super.info(TextDescriptionFormatter.format(format, arg), arg);
+        super.info(format(format, arg), arg);
     }
 
     @Override
     public void info(final String format, final Object arg1, final Object arg2) {
-        super.info(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.info(format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void trace(final Marker marker, final String format, final Object arg) {
-        super.trace(marker, TextDescriptionFormatter.format(format, arg), arg);
+        super.trace(marker, format(format, arg), arg);
     }
 
     @Override
     public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.trace(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.trace(marker, format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void trace(final String format, final Object arg) {
-        super.trace(TextDescriptionFormatter.format(format, arg), arg);
+        super.trace(format(format, arg), arg);
     }
 
     @Override
     public void trace(final String format, final Object arg1, final Object arg2) {
-        super.trace(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.trace(format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void warn(final Marker marker, final String format, final Object arg) {
-        super.warn(marker, TextDescriptionFormatter.format(format, arg), arg);
+        super.warn(marker, format(format, arg), arg);
     }
 
     @Override
     public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.warn(marker, TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.warn(marker, format(format, arg1, arg2), arg1, arg2);
     }
 
     @Override
     public void warn(final String format, final Object arg) {
-        super.warn(TextDescriptionFormatter.format(format, arg), arg);
+        super.warn(format(format, arg), arg);
     }
 
     @Override
     public void warn(final String format, final Object arg1, final Object arg2) {
-        super.warn(TextDescriptionFormatter.format(format, arg1, arg2), arg1, arg2);
+        super.warn(format(format, arg1, arg2), arg1, arg2);
+    }
+
+    private static String format(final String messagePattern, final Object arg) {
+        return de.invesdwin.util.lang.description.internal.TextDescriptionFormatter.format(messagePattern,
+                new Object[] { arg });
+    }
+
+    private static String format(final String messagePattern, final Object arg1, final Object arg2) {
+        return de.invesdwin.util.lang.description.internal.TextDescriptionFormatter.format(messagePattern,
+                new Object[] { arg1, arg2 });
+    }
+
+    private static String format(final String messagePattern, final Object[] argArray) {
+        return de.invesdwin.util.lang.description.internal.TextDescriptionFormatter.format(messagePattern, argArray);
     }
 
 }
