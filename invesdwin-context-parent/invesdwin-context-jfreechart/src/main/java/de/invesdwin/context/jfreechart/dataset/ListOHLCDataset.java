@@ -37,6 +37,10 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
         return data;
     }
 
+    public void setData(final List<? extends TimeRangedOHLCDataItem> data) {
+        this.data = data;
+    }
+
     /**
      * Returns the series key.
      *
