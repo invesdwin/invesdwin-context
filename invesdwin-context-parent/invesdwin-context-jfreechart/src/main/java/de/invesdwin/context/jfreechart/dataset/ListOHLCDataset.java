@@ -62,7 +62,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getX(final int series, final int item) {
-        return this.data.get(item).getStartTime().millisValue();
+        try {
+            return this.data.get(item).getStartTime().millisValue();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -76,7 +80,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      * @return The x-value as a date.
      */
     public FDate getXDate(final int series, final int item) {
-        return this.data.get(item).getStartTime();
+        try {
+            return this.data.get(item).getStartTime();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -106,7 +114,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getHigh(final int series, final int item) {
-        return this.data.get(item).getHigh();
+        try {
+            return this.data.get(item).getHigh();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -121,12 +133,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public double getHighValue(final int series, final int item) {
-        double result = Double.NaN;
-        final Number high = getHigh(series, item);
-        if (high != null) {
-            result = high.doubleValue();
+        try {
+            return this.data.get(item).getHigh();
+        } catch (final IndexOutOfBoundsException e) {
+            return Double.NaN;
         }
-        return result;
     }
 
     /**
@@ -141,7 +152,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getLow(final int series, final int item) {
-        return this.data.get(item).getLow();
+        try {
+            return this.data.get(item).getLow();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -156,12 +171,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public double getLowValue(final int series, final int item) {
-        double result = Double.NaN;
-        final Number low = getLow(series, item);
-        if (low != null) {
-            result = low.doubleValue();
+        try {
+            return this.data.get(item).getLow();
+        } catch (final IndexOutOfBoundsException e) {
+            return Double.NaN;
         }
-        return result;
     }
 
     /**
@@ -176,7 +190,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getOpen(final int series, final int item) {
-        return this.data.get(item).getOpen();
+        try {
+            return this.data.get(item).getOpen();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -191,12 +209,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public double getOpenValue(final int series, final int item) {
-        double result = Double.NaN;
-        final Number open = getOpen(series, item);
-        if (open != null) {
-            result = open.doubleValue();
+        try {
+            return this.data.get(item).getOpen();
+        } catch (final IndexOutOfBoundsException e) {
+            return Double.NaN;
         }
-        return result;
     }
 
     /**
@@ -211,8 +228,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getClose(final int series, final int item) {
-        final TimeRangedOHLCDataItem value = this.data.get(item);
-        return value.getClose();
+        try {
+            return this.data.get(item).getClose();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -227,12 +247,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public double getCloseValue(final int series, final int item) {
-        double result = Double.NaN;
-        final Number close = getClose(series, item);
-        if (close != null) {
-            result = close.doubleValue();
+        try {
+            return this.data.get(item).getClose();
+        } catch (final IndexOutOfBoundsException e) {
+            return Double.NaN;
         }
-        return result;
     }
 
     /**
@@ -247,7 +266,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public Number getVolume(final int series, final int item) {
-        return this.data.get(item).getVolume();
+        try {
+            return this.data.get(item).getVolume();
+        } catch (final IndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     /**
@@ -262,12 +285,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
      */
     @Override
     public double getVolumeValue(final int series, final int item) {
-        double result = Double.NaN;
-        final Number volume = getVolume(series, item);
-        if (volume != null) {
-            result = volume.doubleValue();
+        try {
+            return this.data.get(item).getVolume();
+        } catch (final IndexOutOfBoundsException e) {
+            return Double.NaN;
         }
-        return result;
     }
 
     /**
