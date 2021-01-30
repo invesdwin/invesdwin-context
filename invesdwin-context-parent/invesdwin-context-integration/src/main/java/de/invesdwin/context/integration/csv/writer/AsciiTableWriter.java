@@ -1,6 +1,8 @@
 package de.invesdwin.context.integration.csv.writer;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.math.Integers;
 
@@ -19,6 +22,10 @@ public class AsciiTableWriter implements ITableWriter {
     private Integer assertColumnCount;
     private final List<String[]> rows = new ArrayList<>();
     private AsciiTableTheme theme = AsciiTableTheme.DEFAULT;
+
+    public AsciiTableWriter(final OutputStream out) {
+        this(new OutputStreamWriter(out));
+    }
 
     public AsciiTableWriter(final Appendable out) {
         this.out = out;
@@ -99,6 +106,8 @@ public class AsciiTableWriter implements ITableWriter {
         theme.renderOuterBorderForBottom(columnWidths, out);
 
         rows.clear();
+
+        Closeables.closeQuietly(out);
     }
 
     protected int[] calculateColumnWidths() {

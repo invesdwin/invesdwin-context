@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.apache.commons.io.output.AppendableOutputStream;
+
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.loadingcache.ALoadingCache;
 import de.invesdwin.util.lang.Strings;
@@ -43,6 +45,10 @@ public class CsvTableWriter implements Closeable, ITableWriter {
 
     private final List<Object> currentLine = new ArrayList<Object>();
     private Integer assertColumnCount;
+
+    public CsvTableWriter(final Appendable out) {
+        this(new AppendableOutputStream<>(out));
+    }
 
     public CsvTableWriter(final OutputStream out) {
         this.finalizer = new CsvTableWriterFinalizer();

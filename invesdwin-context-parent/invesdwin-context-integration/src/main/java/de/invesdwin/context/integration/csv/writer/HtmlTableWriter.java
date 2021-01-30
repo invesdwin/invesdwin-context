@@ -1,6 +1,8 @@
 package de.invesdwin.context.integration.csv.writer;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
@@ -19,6 +22,10 @@ public class HtmlTableWriter implements ITableWriter {
     private boolean firstLine = true;
     private boolean headerRowEnabled = true;
     private HtmlTableTheme theme = HtmlTableTheme.DEFAULT;
+
+    public HtmlTableWriter(final OutputStream out) {
+        this(new OutputStreamWriter(out));
+    }
 
     public HtmlTableWriter(final Appendable out) {
         this.out = out;
@@ -131,6 +138,7 @@ public class HtmlTableWriter implements ITableWriter {
         out.append(theme.tableCloseTag());
         currentLine.clear();
         firstLine = true;
+        Closeables.closeQuietly(out);
     }
 
     @Override
