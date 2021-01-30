@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.csv;
+package de.invesdwin.context.integration.csv.writer;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
 
 @NotThreadSafe
-public class CsvWriter implements Closeable {
+public class CsvTableWriter implements Closeable, ITableWriter {
 
     public static final String DEFAULT_QUOTE = "\"";
     public static final String DEFAULT_COLUMN_SEPARATOR = ",";
@@ -36,7 +36,7 @@ public class CsvWriter implements Closeable {
         }
     };
 
-    private final CsvWriterFinalizer finalizer;
+    private final CsvTableWriterFinalizer finalizer;
     private byte[] quoteBytes;
     private byte[] columnSeparatorBytes;
     private byte[] newlineBytes;
@@ -44,8 +44,8 @@ public class CsvWriter implements Closeable {
     private final List<Object> currentLine = new ArrayList<Object>();
     private Integer assertColumnCount;
 
-    public CsvWriter(final OutputStream out) {
-        this.finalizer = new CsvWriterFinalizer();
+    public CsvTableWriter(final OutputStream out) {
+        this.finalizer = new CsvTableWriterFinalizer();
         this.finalizer.out = out;
         this.finalizer.register(this);
         withQuote(DEFAULT_QUOTE);
@@ -53,12 +53,13 @@ public class CsvWriter implements Closeable {
         withNewLine(DEFAULT_NEWLINE);
     }
 
-    public CsvWriter withAssertColumnCount(final Integer assertColumnCount) {
+    @Override
+    public CsvTableWriter withAssertColumnCount(final Integer assertColumnCount) {
         this.assertColumnCount = assertColumnCount;
         return this;
     }
 
-    public CsvWriter withQuote(final String quote) {
+    public CsvTableWriter withQuote(final String quote) {
         if (Strings.isBlank(quote)) {
             quoteBytes = null;
         } else {
@@ -67,31 +68,35 @@ public class CsvWriter implements Closeable {
         return this;
     }
 
-    public CsvWriter withColumnSeparator(final String columnSeparator) {
+    public CsvTableWriter withColumnSeparator(final String columnSeparator) {
         Assertions.assertThat(columnSeparator).isNotEmpty();
         columnSeparatorBytes = STR_BYTES.get(columnSeparator);
         return this;
     }
 
-    public CsvWriter withNewLine(final String newline) {
+    public CsvTableWriter withNewLine(final String newline) {
         Assertions.assertThat(newline).isNotEmpty();
         newlineBytes = STR_BYTES.get(newline);
         return this;
     }
 
+    @Override
     public Integer getAssertColumnCount() {
         return assertColumnCount;
     }
 
+    @Override
     public void column(final Object column) {
         currentLine.add(Strings.asString(column));
     }
 
+    @Override
     public void newLine() throws IOException {
         line(currentLine);
         currentLine.clear();
     }
 
+    @Override
     public void line(final List<?> columns) throws IOException {
         assertColumnCount(columns.size());
         for (int i = 0; i < columns.size(); i++) {
@@ -112,6 +117,7 @@ public class CsvWriter implements Closeable {
         finalizer.out.write(newlineBytes);
     }
 
+    @Override
     public void line(final Object... columns) throws IOException {
         line(Arrays.asList(columns));
     }
@@ -130,11 +136,12 @@ public class CsvWriter implements Closeable {
         finalizer.close();
     }
 
+    @Override
     public void flush() throws IOException {
         finalizer.out.flush();
     }
 
-    private static final class CsvWriterFinalizer extends AFinalizer {
+    private static final class CsvTableWriterFinalizer extends AFinalizer {
 
         private OutputStream out;
 

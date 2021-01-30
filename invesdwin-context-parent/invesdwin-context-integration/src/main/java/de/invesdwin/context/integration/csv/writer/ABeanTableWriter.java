@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.csv;
+package de.invesdwin.context.integration.csv.writer;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -7,17 +7,17 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 @NotThreadSafe
-public abstract class ABeanCsvWriter<E> implements IBeanWriter<E> {
+public abstract class ABeanTableWriter<E> implements IBeanTableWriter<E> {
 
-    private final CsvWriter csvWriter;
+    private final ITableWriter csvWriter;
     private boolean headerWritten = false;
 
-    public ABeanCsvWriter(final OutputStream out) throws IOException {
-        this.csvWriter = newCsvWriter(out);
+    public ABeanTableWriter(final OutputStream out) throws IOException {
+        this.csvWriter = newTableWriter(out);
     }
 
-    protected CsvWriter newCsvWriter(final OutputStream out) throws IOException {
-        final CsvWriter csvWriter = new CsvWriter(out);
+    protected ITableWriter newTableWriter(final OutputStream out) throws IOException {
+        final CsvTableWriter csvWriter = new CsvTableWriter(out);
         return csvWriter;
     }
 
