@@ -272,7 +272,6 @@
 							<sources>
 								<source>target/generated-sources/apt</source>
 								<source>target/generated-sources/invesdwin</source>
-								<source>target/generated-test-sources/apt</source>
 							</sources>
 						</configuration>
 					</execution>

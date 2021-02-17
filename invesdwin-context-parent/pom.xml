@@ -743,7 +743,6 @@
 								<sources>
 									<source>${project.build.directory}/generated-sources/apt</source>
 									<source>${project.build.directory}/generated-sources/invesdwin</source>
-									<source>${project.build.directory}/generated-test-sources/apt</source>
 								</sources>
 							</configuration>
 						</execution>
