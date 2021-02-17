@@ -701,6 +701,17 @@
 								<failOnError>false</failOnError>
 							</configuration>
 						</execution>
+						<execution>
+							<id>process-test</id>
+							<goals>
+								<goal>process-test</goal>
+							</goals>
+							<phase>generate-test-sources</phase>
+							<configuration>
+								<outputDirectory>${project.build.directory}/generated-test-sources/apt</outputDirectory>
+								<failOnError>false</failOnError>
+							</configuration>
+						</execution>
 					</executions>
 					<dependencies>
 						<!-- jpamodelgen processor needs jaxb -->
@@ -732,6 +743,7 @@
 								<sources>
 									<source>${project.build.directory}/generated-sources/apt</source>
 									<source>${project.build.directory}/generated-sources/invesdwin</source>
+									<source>${project.build.directory}/generated-test-sources/apt</source>
 								</sources>
 							</configuration>
 						</execution>
