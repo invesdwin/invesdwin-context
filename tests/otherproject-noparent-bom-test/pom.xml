@@ -204,18 +204,8 @@
 							<sources>
 								<source>target/generated-sources/apt</source>
 								<source>target/generated-sources/invesdwin</source>
+								<source>target/generated-test-sources/apt</source>
 							</sources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>process-test</id>
-						<goals>
-							<goal>process-test</goal>
-						</goals>
-						<phase>generate-test-sources</phase>
-						<configuration>
-							<outputDirectory>${project.build.directory}/generated-test-sources/apt</outputDirectory>
-							<failOnError>false</failOnError>
 						</configuration>
 					</execution>
 				</executions>
