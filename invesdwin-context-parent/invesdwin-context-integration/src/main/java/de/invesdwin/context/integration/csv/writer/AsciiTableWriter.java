@@ -90,7 +90,7 @@ public class AsciiTableWriter implements ITableWriter {
     @Override
     public final void close() throws IOException {
         currentLine.clear();
-        if (rows.isEmpty()) {
+        if (rows.size() <= 1) {
             return;
         }
 
