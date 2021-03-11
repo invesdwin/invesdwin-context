@@ -12,8 +12,10 @@ import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.concurrent.Executors;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;
+import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FTimeUnit;
 
@@ -65,7 +67,6 @@ public final class ContextProperties {
                 initializer.initLogbackConfigurationLoader();
                 initializer.initSystemPropertiesLoader();
                 initializer.initJavaUtilPrefsBackingStoreDirectory();
-
                 initializer.initDefaultCache(DEFAULT_CACHE_NAME);
             } catch (final Throwable t) {
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
@@ -82,10 +83,20 @@ public final class ContextProperties {
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
 
+        initDebugStacktraces();
+
         USER_NAME = new SystemProperties().getString("user.name");
     }
 
     private ContextProperties() {
+    }
+
+    private static void initDebugStacktraces() {
+        final SystemProperties systemProperties = new SystemProperties();
+        final String key = "DEBUG_STACKTRACES";
+        if (systemProperties.containsKey(key) && Booleans.isTrue(systemProperties.getBoolean(key))) {
+            Throwables.setDebugStackTraceEnabled(true);
+        }
     }
 
     /**
