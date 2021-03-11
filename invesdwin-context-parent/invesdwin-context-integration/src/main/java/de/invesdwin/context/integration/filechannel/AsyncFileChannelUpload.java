@@ -44,7 +44,7 @@ public class AsyncFileChannelUpload implements Runnable {
             protected void runRetry() throws Exception {
                 cleanupForUpload();
                 try {
-                    EXECUTOR.awaitPendingCount(MAX_PARALLEL_UPLOADS);
+                    EXECUTOR.awaitPendingCountFull();
                 } catch (final InterruptedException e) {
                     channel.close();
                     throw new RuntimeException(e);

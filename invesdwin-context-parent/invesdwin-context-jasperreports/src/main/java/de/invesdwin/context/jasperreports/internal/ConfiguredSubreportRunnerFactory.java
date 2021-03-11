@@ -51,7 +51,7 @@ public class ConfiguredSubreportRunnerFactory extends ThreadPoolSubreportRunnerF
             public void shutdown() {
                 try {
                     final WrappedExecutorService delegate = (WrappedExecutorService) getDelegate();
-                    delegate.awaitPendingCount(0);
+                    delegate.awaitPendingCountZero();
                 } catch (final InterruptedException e) {
                     throw new RuntimeException(e);
                 }

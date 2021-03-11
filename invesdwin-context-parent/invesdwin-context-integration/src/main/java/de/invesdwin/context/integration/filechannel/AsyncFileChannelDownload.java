@@ -95,7 +95,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
             }
 
         };
-        EXECUTOR.awaitPendingCount(MAX_PARALLEL_DOWNLOADS);
+        EXECUTOR.awaitPendingCountFull();
         return Futures.submitAndGet(EXECUTOR, downloadAsync);
     }
 
