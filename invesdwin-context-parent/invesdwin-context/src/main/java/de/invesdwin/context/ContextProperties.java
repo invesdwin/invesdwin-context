@@ -92,7 +92,7 @@ public final class ContextProperties {
     }
 
     private static void initDebugStacktraces() {
-        final SystemProperties systemProperties = new SystemProperties();
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String key = "DEBUG_STACKTRACES";
         if (systemProperties.containsKey(key) && Booleans.isTrue(systemProperties.getBoolean(key))) {
             Throwables.setDebugStackTraceEnabled(true);
