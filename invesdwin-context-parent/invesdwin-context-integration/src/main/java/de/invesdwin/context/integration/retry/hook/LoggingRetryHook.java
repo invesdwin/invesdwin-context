@@ -16,15 +16,15 @@ import io.netty.util.concurrent.FastThreadLocal;
 @ThreadSafe
 public class LoggingRetryHook implements IRetryHook {
 
+    private static final FastThreadLocal<Throwable> PREVIOUS_CAUSE = new FastThreadLocal<Throwable>();
     private final Log log = new Log(this);
-    private final FastThreadLocal<Throwable> previousCause = new FastThreadLocal<Throwable>();
 
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
-        if (!Err.isSameMeaning(cause, previousCause.get())) {
+        if (!Err.isSameMeaning(cause, PREVIOUS_CAUSE.get())) {
             log.catching(Level.ERROR,
                     new FastRetryLaterRuntimeException(createFailureMessage(originator, retryCount), cause));
-            previousCause.set(cause);
+            PREVIOUS_CAUSE.set(cause);
         }
     }
 
@@ -33,13 +33,13 @@ public class LoggingRetryHook implements IRetryHook {
         if (retryCount > 0) {
             log.warn(createAbortedMessage(originator, retryCount, cause));
         }
-        previousCause.remove();
+        PREVIOUS_CAUSE.remove();
     }
 
     @Override
     public void onRetrySucceeded(final RetryOriginator originator, final int retryCount) {
         log.warn(createSuccessMessage(originator, retryCount));
-        previousCause.remove();
+        PREVIOUS_CAUSE.remove();
     }
 
     /**

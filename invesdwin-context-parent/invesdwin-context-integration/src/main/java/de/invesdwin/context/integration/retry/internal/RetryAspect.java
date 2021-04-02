@@ -40,17 +40,17 @@ import io.netty.util.concurrent.FastThreadLocal;
 @Configurable
 public class RetryAspect implements InitializingBean {
 
-    @Inject
-    private RetryTemplate retryTemplate;
-    @Inject
-    private IRetryHook[] listeners;
-
-    private final FastThreadLocal<Boolean> parentTransactionAlreadyConsidered = new FastThreadLocal<Boolean>() {
+    private static final FastThreadLocal<Boolean> PARENT_TRANSACTION_ALREADY_CONSIDERED = new FastThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
             return false;
         }
     };
+
+    @Inject
+    private RetryTemplate retryTemplate;
+    @Inject
+    private IRetryHook[] listeners;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -91,18 +91,18 @@ public class RetryAspect implements InitializingBean {
 
     @Around("execution(* *(..)) && @annotation(org.springframework.transaction.annotation.Transactional) || execution(* org.springframework.transaction.interceptor.TransactionInterceptor.invoke(*))")
     public Object retryTransaction(final ProceedingJoinPoint pjp) throws Throwable {
-        final boolean alreadyConsidered = parentTransactionAlreadyConsidered.get();
+        final boolean alreadyConsidered = PARENT_TRANSACTION_ALREADY_CONSIDERED.get();
         final Transactional annotation = ProceedingJoinPoints.getAnnotation(pjp, Transactional.class);
         if (!alreadyConsidered) {
             //propagation never should allow retry, but smaller internal transactions should still have their own retry
             final boolean considerNow = annotation == null || annotation.propagation() == Propagation.NESTED
                     || annotation.propagation() == Propagation.REQUIRED
                     || annotation.propagation() == Propagation.REQUIRES_NEW;
-            parentTransactionAlreadyConsidered.set(considerNow);
+            PARENT_TRANSACTION_ALREADY_CONSIDERED.set(considerNow);
             try {
                 return retry(pjp);
             } finally {
-                parentTransactionAlreadyConsidered.remove();
+                PARENT_TRANSACTION_ALREADY_CONSIDERED.remove();
             }
         } else {
             if (annotation != null && annotation.propagation() == Propagation.REQUIRES_NEW) {
