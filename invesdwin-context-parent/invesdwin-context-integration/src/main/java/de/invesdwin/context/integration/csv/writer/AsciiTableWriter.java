@@ -17,10 +17,10 @@ import de.invesdwin.util.math.Integers;
 @NotThreadSafe
 public class AsciiTableWriter implements ITableWriter {
 
+    protected final List<String[]> rows = new ArrayList<>();
     private final Appendable out;
     private final List<Object> currentLine = new ArrayList<Object>();
     private Integer assertColumnCount;
-    private final List<String[]> rows = new ArrayList<>();
     private AsciiTableTheme theme = AsciiTableTheme.DEFAULT;
 
     public AsciiTableWriter(final OutputStream out) {
