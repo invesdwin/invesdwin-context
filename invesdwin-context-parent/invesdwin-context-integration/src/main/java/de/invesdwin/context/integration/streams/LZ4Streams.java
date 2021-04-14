@@ -10,6 +10,7 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
+import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
@@ -53,7 +54,8 @@ public final class LZ4Streams {
         COMPRESSED_EMPTY_VALUE = out.toByteArray();
     }
 
-    private LZ4Streams() {}
+    private LZ4Streams() {
+    }
 
     public static LZ4BlockOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
@@ -65,10 +67,14 @@ public final class LZ4Streams {
 
     public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out, final int blockSize,
             final int compressionLevel) {
-        return new LZ4BlockOutputStream(out, blockSize,
-                //fastestInstance picks jni which flushes too slow
-                LZ4Factory.fastestInstance().highCompressor(compressionLevel),
-                XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+        if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
+            return newFastLZ4OutputStream(out, blockSize);
+        } else {
+            return new LZ4BlockOutputStream(out, blockSize,
+                    //fastestInstance picks jni which flushes too slow
+                    LZ4Factory.fastestInstance().highCompressor(compressionLevel),
+                    XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
+        }
     }
 
     public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
