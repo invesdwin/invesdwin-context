@@ -79,7 +79,7 @@
 		<version.batik>1.13</version.batik>
 		<version.xml-apis>1.4.01</version.xml-apis>
 		<version.itext>2.1.7.js8</version.itext>
-		<version.bcprov>1.66</version.bcprov>
+		<version.bcprov>1.68</version.bcprov>
 		<version.poi>5.0.0</version.poi>
 
 		<!-- integration -->
