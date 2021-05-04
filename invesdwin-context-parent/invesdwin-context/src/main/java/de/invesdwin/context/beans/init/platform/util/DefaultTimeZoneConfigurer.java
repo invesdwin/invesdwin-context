@@ -15,6 +15,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.time.TimeZones;
 import de.invesdwin.util.time.fdate.FDate;
 import de.invesdwin.util.time.fdate.FDates;
+import de.invesdwin.util.time.fdate.FTimeZone;
 
 @Immutable
 public final class DefaultTimeZoneConfigurer {
@@ -36,7 +37,8 @@ public final class DefaultTimeZoneConfigurer {
         ORIGINAL_TIMEZONE = originalTimeZone;
     }
 
-    private DefaultTimeZoneConfigurer() {}
+    private DefaultTimeZoneConfigurer() {
+    }
 
     public static void configure() {
         final SystemProperties systemProperties = new SystemProperties();
@@ -66,32 +68,32 @@ public final class DefaultTimeZoneConfigurer {
             //joda needs another call explicitly since it might have cached the value too early...
             DateTimeZone.setDefault(DateTimeZone.forTimeZone(newTimeZone));
             //same with FDate
-            FDates.setDefaultTimeZone(newTimeZone);
+            FDates.setDefaultTimeZone(new FTimeZone(newTimeZone));
             LocaleContextHolder.setDefaultTimeZone(newTimeZone);
-            Assertions.assertThat(getDefaultTimeZone().getID())
+            Assertions.assertThat(getDefaultTimeZone().getId())
                     .as("java has inconsistent default %s", TimeZone.class.getSimpleName())
                     .isEqualTo(newTimeZone.getID());
         } catch (final Throwable t) {
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             //webstart safety for access control
             //we want to at least use in the strategy UTC even if it failed for the jvm
-            FDates.setDefaultTimeZone(newTimeZone);
+            FDates.setDefaultTimeZone(new FTimeZone(newTimeZone));
             LocaleContextHolder.setDefaultTimeZone(newTimeZone);
         }
     }
 
-    public static TimeZone getDefaultTimeZone() {
+    public static FTimeZone getDefaultTimeZone() {
         if (PlatformInitializerProperties.isAllowed()) {
             final TimeZone defaultTimeZone = TimeZone.getDefault();
             Assertions.assertThat(DateTimeZone.getDefault().toTimeZone().getID())
                     .as("joda-time (%s) has inconsistent default %s", DateTimeZone.class.getSimpleName(),
                             TimeZone.class.getSimpleName())
                     .isEqualTo(defaultTimeZone.getID());
-            Assertions.assertThat(FDates.getDefaultTimeZone().getID())
+            Assertions.assertThat(FDates.getDefaultTimeZone().getId())
                     .as("invesdwin-util (%s) has inconsistent default %s", FDate.class.getSimpleName(),
                             TimeZone.class.getSimpleName())
                     .isEqualTo(defaultTimeZone.getID());
-            return defaultTimeZone;
+            return new FTimeZone(defaultTimeZone);
         } else {
             return FDates.getDefaultTimeZone();
         }
