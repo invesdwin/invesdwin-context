@@ -31,7 +31,7 @@ public final class LoggedRuntimeException extends RuntimeException {
         return createIdTrace(getId(), getCause()).toString();
     }
 
-    static LoggedRuntimeException newInstance(final Throwable t) {
+    public static LoggedRuntimeException newInstance(final Throwable t) {
         final int id = ID.incrementAndGet();
         return new LoggedRuntimeException(id, t);
     }
