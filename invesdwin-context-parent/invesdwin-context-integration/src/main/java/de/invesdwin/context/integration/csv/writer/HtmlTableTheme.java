@@ -13,6 +13,33 @@ public class HtmlTableTheme {
     };
     public static final HtmlTableTheme DEFAULT = new HtmlTableTheme();
 
+    public static final HtmlTableTheme BOOTSTRAP = new HtmlTableTheme() {
+        @Override
+        public String styleOpenCloseTag() {
+            return "";
+        }
+
+        @Override
+        public String tableOpenTag() {
+            return "<div class=\"table-responsive\"><table class=\"table table-condensed table-hover table-bordered table-striped\">";
+        }
+
+        @Override
+        public String tableCloseTag() {
+            return "</table></div>";
+        }
+
+        @Override
+        public String thOpenTag() {
+            return "<th class=\"text-center\">";
+        }
+
+        @Override
+        public String tdOpenTag() {
+            return "<td class=\"text-right\">";
+        }
+    };
+
     public char lineFeed() {
         return '\n';
     }

@@ -22,6 +22,7 @@ public class HtmlTableWriter implements ITableWriter {
     private boolean firstLine = true;
     private boolean headerRowEnabled = true;
     private HtmlTableTheme theme = HtmlTableTheme.DEFAULT;
+    private boolean closeOut = true;
 
     public HtmlTableWriter(final OutputStream out) {
         this(new OutputStreamWriter(out));
@@ -29,6 +30,15 @@ public class HtmlTableWriter implements ITableWriter {
 
     public HtmlTableWriter(final Appendable out) {
         this.out = out;
+    }
+
+    public HtmlTableWriter withCloseOut(final boolean closeOut) {
+        this.closeOut = closeOut;
+        return this;
+    }
+
+    public boolean isCloseOut() {
+        return closeOut;
     }
 
     @Override
@@ -138,7 +148,9 @@ public class HtmlTableWriter implements ITableWriter {
         out.append(theme.tableCloseTag());
         currentLine.clear();
         firstLine = true;
-        Closeables.closeQuietly(out);
+        if (isCloseOut()) {
+            Closeables.closeQuietly(out);
+        }
     }
 
     @Override
