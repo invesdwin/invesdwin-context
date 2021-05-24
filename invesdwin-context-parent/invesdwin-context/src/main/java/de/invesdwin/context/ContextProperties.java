@@ -74,7 +74,9 @@ public final class ContextProperties {
         }
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
-        initializer.initConscryptSecurityProvider();
+        if (!readConscryptSecurityProviderDisabled()) {
+            initializer.initConscryptSecurityProvider();
+        }
         initializer.initCryptoPolicyUnlimited();
         URIs.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         InputStreamHttpResponseConsumer
@@ -171,6 +173,20 @@ public final class ContextProperties {
             }
         }
         return duration;
+    }
+
+    private static boolean readConscryptSecurityProviderDisabled() {
+        if (!PlatformInitializerProperties.isAllowed()) {
+            return true;
+        }
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "CONSCRYPT_SECURITY_PROVIDER_DISABLED";
+        if (!systemProperties.containsValue(key)) {
+            //default to 30 seconds if for some reason the properties were not loaded
+            return false;
+        } else {
+            return systemProperties.getBoolean(key);
+        }
     }
 
     private static int readCpuThreadPoolCount() {
