@@ -259,7 +259,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public void initConscryptSecurityProvider() {
         //conscrypt dependency can be added/removed if desired
-        if (Reflections.classExists("org.conscrypt.Conscrypt")) {
+        if (Reflections.classExists(ConscryptConfigurer.CONSCRYPT_CLASS)) {
             ConscryptConfigurer.configure();
         }
     }
