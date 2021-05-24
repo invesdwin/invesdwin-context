@@ -35,6 +35,8 @@
 		<dependency>
 			<groupId>org.conscrypt</groupId>
 			<artifactId>conscrypt-openjdk-uber</artifactId>
+			<!-- causes login errors with jforex as of 2.5.2 -->
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
