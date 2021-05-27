@@ -1,13 +1,19 @@
 package de.invesdwin.context.integration.network;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.integration.streams.LZ4Streams;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.time.duration.Duration;
 import de.invesdwin.util.time.fdate.FDate;
@@ -21,7 +27,7 @@ public class DailyDownloadCache {
     private static final File FOLDER = new File(ContextProperties.getHomeDirectory(),
             DailyDownloadCache.class.getSimpleName());
 
-    public String download(final String name, final Callable<String> request) throws Exception {
+    public String downloadString(final String name, final Callable<String> request) throws Exception {
         try {
             final File file = newFile(name);
             if (shouldUpdate(file)) {
@@ -31,6 +37,20 @@ public class DailyDownloadCache {
             } else {
                 return Files.readFileToString(file, Charset.defaultCharset());
             }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public InputStream downloadStream(final String name, final Consumer<OutputStream> request) throws Exception {
+        try {
+            final File file = newFile(name);
+            if (shouldUpdate(file)) {
+                try (OutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(file))) {
+                    request.accept(fos);
+                }
+            }
+            return LZ4Streams.newDefaultLZ4InputStream(new FileInputStream(file));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +66,7 @@ public class DailyDownloadCache {
     }
 
     public static File newFile(final String name) {
-        return new File(FOLDER, Files.normalizePath(name) + ".txt");
+        return new File(FOLDER, Files.normalizePath(name));
     }
 
     public static void delete(final String name) {
