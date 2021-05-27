@@ -46,6 +46,7 @@ public class DailyDownloadCache {
         try {
             final File file = newFile(name);
             if (shouldUpdate(file)) {
+                Files.forceMkdirParent(file);
                 try (OutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(file))) {
                     request.accept(fos);
                 }
