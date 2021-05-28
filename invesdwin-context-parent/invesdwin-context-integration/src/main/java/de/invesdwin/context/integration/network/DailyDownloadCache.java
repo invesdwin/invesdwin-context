@@ -28,9 +28,13 @@ public class DailyDownloadCache {
             DailyDownloadCache.class.getSimpleName());
 
     public String downloadString(final String name, final Callable<String> request) throws Exception {
+        return downloadString(name, request, new FDate());
+    }
+
+    public String downloadString(final String name, final Callable<String> request, final FDate now) throws Exception {
         try {
             final File file = newFile(name);
-            if (shouldUpdate(file)) {
+            if (shouldUpdate(file, now)) {
                 final String content = request.call();
                 Files.writeStringToFile(file, content, Charset.defaultCharset());
                 return content;
@@ -43,13 +47,20 @@ public class DailyDownloadCache {
     }
 
     public InputStream downloadStream(final String name, final Consumer<OutputStream> request) throws Exception {
+        return downloadStream(name, request, new FDate());
+    }
+
+    public InputStream downloadStream(final String name, final Consumer<OutputStream> request, final FDate now)
+            throws Exception {
         try {
             final File file = newFile(name);
-            if (shouldUpdate(file)) {
+            if (shouldUpdate(file, now)) {
                 Files.forceMkdirParent(file);
-                try (OutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(file))) {
+                final File tmpFile = new File(file.getAbsolutePath() + ".tmp");
+                try (OutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(tmpFile))) {
                     request.accept(fos);
                 }
+                Files.moveFile(tmpFile, file);
             }
             return LZ4Streams.newDefaultLZ4InputStream(new FileInputStream(file));
         } catch (final IOException e) {
@@ -57,13 +68,15 @@ public class DailyDownloadCache {
         }
     }
 
-    public boolean shouldUpdate(final String name) {
-        return shouldUpdate(newFile(name));
+    public boolean shouldUpdate(final String name, final FDate now) {
+        return shouldUpdate(newFile(name), now);
     }
 
-    private boolean shouldUpdate(final File file) {
-        return !file.exists()
-                || !ContextProperties.IS_TEST_ENVIRONMENT && shouldUpdate(FDate.valueOf(file.lastModified()));
+    private boolean shouldUpdate(final File file, final FDate now) {
+        if (!file.exists()) {
+            return true;
+        }
+        return !ContextProperties.IS_TEST_ENVIRONMENT && shouldUpdate(FDate.valueOf(file.lastModified()), now);
     }
 
     public static File newFile(final String name) {
@@ -75,8 +88,11 @@ public class DailyDownloadCache {
         Files.deleteQuietly(file);
     }
 
-    public boolean shouldUpdate(final FDate lastRequestTime) {
-        return new Duration(lastRequestTime).isGreaterThan(DAILY_REFRESH_DURATION)
-                || !FDates.isSameJulianDay(lastRequestTime, new FDate());
+    public boolean shouldUpdate(final FDate lastRequestTime, final FDate now) {
+        if (lastRequestTime.isAfterOrEqualToNotNullSafe(now)) {
+            return false;
+        }
+        return new Duration(lastRequestTime, now).isGreaterThan(DAILY_REFRESH_DURATION)
+                || !FDates.isSameJulianDay(lastRequestTime, now);
     }
 }
