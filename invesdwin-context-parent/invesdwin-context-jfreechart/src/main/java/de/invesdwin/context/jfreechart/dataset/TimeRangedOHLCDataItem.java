@@ -2,6 +2,7 @@ package de.invesdwin.context.jfreechart.dataset;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.time.fdate.FDate;
 
 @NotThreadSafe
@@ -52,6 +53,19 @@ public class TimeRangedOHLCDataItem {
 
     public double getVolume() {
         return volume;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("startTime", startTime)
+                .add("endTime", endTime)
+                .add("open", open)
+                .add("high", high)
+                .add("low", low)
+                .add("close", close)
+                .add("volume", volume)
+                .toString();
     }
 
 }
