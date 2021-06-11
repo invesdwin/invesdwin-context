@@ -1,7 +1,5 @@
 package de.invesdwin.context.integration.retry.internal;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
 
@@ -64,18 +62,13 @@ public class RetryAspect implements InitializingBean {
     public Object retry(final ProceedingJoinPoint pjp) throws Throwable {
         final Retry annotation = ProceedingJoinPoints.getAnnotation(pjp, Retry.class);
         if (annotation == null || annotation.value()) {
-            final ExceptionCauseRetryCallback<Object> retryCallback = new ExceptionCauseRetryCallback<Object>(
-                    new Callable<Object>() {
-                        @Override
-                        public Object call() throws Exception {
-                            try {
-                                return pjp.proceed();
-                            } catch (final Throwable t) {
-                                throw Throwables.propagate(t);
-                            }
-                        }
-                    }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation),
-                    MaxRetriesHook.of(annotation));
+            final ExceptionCauseRetryCallback<Object> retryCallback = new ExceptionCauseRetryCallback<Object>(() -> {
+                try {
+                    return pjp.proceed();
+                } catch (final Throwable t) {
+                    throw Throwables.propagate(t);
+                }
+            }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation), MaxRetriesHook.of(annotation));
             try {
                 return retryTemplate.execute(retryCallback);
             } catch (final Throwable e) {
