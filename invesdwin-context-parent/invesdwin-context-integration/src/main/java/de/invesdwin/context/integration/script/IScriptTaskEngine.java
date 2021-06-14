@@ -11,6 +11,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
+import de.invesdwin.util.concurrent.lock.ILock;
+
 @NotThreadSafe
 public interface IScriptTaskEngine extends Closeable {
 
@@ -54,5 +56,11 @@ public interface IScriptTaskEngine extends Closeable {
     void close();
 
     Object unwrap();
+
+    /**
+     * Always acquire this lock first before accessing the engine. Might be a disabled lock if the engine underneath is
+     * not shared between instances.
+     */
+    ILock getSharedLock();
 
 }
