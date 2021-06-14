@@ -7,6 +7,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
+import ch.qos.logback.core.util.FileSize;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.logback.internal.LogbackProperties;
 
@@ -46,7 +47,7 @@ public class ConfiguredFileAppender extends RollingFileAppender<ILoggingEvent> {
         //          <maxFileSize>${file.maxsize}</maxFileSize>
         //      </triggeringPolicy>
         final SizeBasedTriggeringPolicy<ILoggingEvent> triggeringPolicy = new SizeBasedTriggeringPolicy<ILoggingEvent>();
-        triggeringPolicy.setMaxFileSize("20MB");
+        triggeringPolicy.setMaxFileSize(FileSize.valueOf("20MB"));
         triggeringPolicy.setContext(getContext());
         triggeringPolicy.start();
         setTriggeringPolicy(triggeringPolicy);
