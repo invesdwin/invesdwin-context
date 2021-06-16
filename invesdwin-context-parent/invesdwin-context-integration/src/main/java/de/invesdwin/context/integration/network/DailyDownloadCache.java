@@ -24,7 +24,7 @@ import de.invesdwin.util.time.fdate.FTimeUnit;
 public class DailyDownloadCache {
 
     private static final Duration DAILY_REFRESH_DURATION = new Duration(1, FTimeUnit.DAYS);
-    private static final File FOLDER = new File(ContextProperties.getHomeDirectory(),
+    private static final File FOLDER = new File(ContextProperties.getHomeDataDirectory(),
             DailyDownloadCache.class.getSimpleName());
 
     public String downloadString(final String name, final Callable<String> request) throws Exception {

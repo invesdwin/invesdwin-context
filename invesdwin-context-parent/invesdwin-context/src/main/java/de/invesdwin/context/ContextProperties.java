@@ -41,6 +41,8 @@ public final class ContextProperties {
     @GuardedBy("ContextProperties.class")
     private static File homeDirectory;
     @GuardedBy("ContextProperties.class")
+    private static File homeDataDirectory;
+    @GuardedBy("ContextProperties.class")
     private static File logDirectory;
 
     static {
@@ -109,10 +111,28 @@ public final class ContextProperties {
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
             homeDirectory = PlatformInitializerProperties.getInitializer()
-                    .initHomeDirectory(getSystemHomeDirectory(),
-                            IS_TEST_ENVIRONMENT && !PlatformInitializerProperties.isKeepSystemHomeDuringTests());
+                    .initHomeDirectory(getSystemHomeDirectory(), isTestEnvironmentForHomeDirectory());
         }
         return homeDirectory;
+    }
+
+    private static boolean isTestEnvironmentForHomeDirectory() {
+        return IS_TEST_ENVIRONMENT && !PlatformInitializerProperties.isKeepSystemHomeDuringTests();
+    }
+
+    /**
+     * Invesdwin specific home data dir that gets shared between multiple processes.
+     * 
+     * this should be $HOME/.invesdwin
+     * 
+     * Though this can be redirected/overridden to a different location.
+     */
+    public static synchronized File getHomeDataDirectory() {
+        if (homeDataDirectory == null) {
+            homeDataDirectory = PlatformInitializerProperties.getInitializer()
+                    .initHomeDataDirectory(getHomeDirectory(), isTestEnvironmentForHomeDirectory());
+        }
+        return homeDataDirectory;
     }
 
     /**
@@ -133,7 +153,7 @@ public final class ContextProperties {
     }
 
     public static File getFallbackWorkDirectory() {
-        return new File(getHomeDirectory(), "work");
+        return new File(getHomeDataDirectory(), "work");
     }
 
     /**

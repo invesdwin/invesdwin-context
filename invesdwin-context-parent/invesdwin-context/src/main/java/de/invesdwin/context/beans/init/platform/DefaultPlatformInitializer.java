@@ -31,6 +31,7 @@ import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConf
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
 import de.invesdwin.context.jcache.CacheBuilder;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
@@ -178,13 +179,35 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public File initHomeDirectory(final String systemHomeDirectory, final boolean isTestEnvironment) {
-        String home = systemHomeDirectory;
+        final String home;
         if (isTestEnvironment) {
+            //use project root
             home = ".";
+        } else {
+            home = systemHomeDirectory;
         }
         final File homeDir = new File(home, ".invesdwin");
         createDirectoryIfAllowed(homeDir);
         return homeDir;
+    }
+
+    @Override
+    public File initHomeDataDirectory(final File homeDirectory, final boolean isTestEnvironment) {
+        final File homeDataDir;
+        if (isTestEnvironment) {
+            //stick to project root
+            homeDataDir = homeDirectory;
+        } else {
+            final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+            final String key = "HOME_DATA_DIR_OVERRIDE";
+            if (systemProperties.containsValue(key)) {
+                homeDataDir = systemProperties.getFile(key);
+            } else {
+                homeDataDir = homeDirectory;
+            }
+        }
+        createDirectoryIfAllowed(homeDataDir);
+        return homeDataDir;
     }
 
     @Override
