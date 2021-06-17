@@ -153,7 +153,7 @@ public final class ContextProperties {
     }
 
     public static File getFallbackWorkDirectory() {
-        return new File(getHomeDataDirectory(), "work");
+        return new File(getHomeDirectory(), "work");
     }
 
     /**
