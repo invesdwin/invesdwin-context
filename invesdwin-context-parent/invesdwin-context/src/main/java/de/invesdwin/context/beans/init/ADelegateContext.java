@@ -26,6 +26,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.ProtocolResolver;
 import org.springframework.core.io.Resource;
+import org.springframework.core.metrics.ApplicationStartup;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.test.stub.IStub;
@@ -405,5 +406,25 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     @Override
     public void setClassLoader(final ClassLoader classLoader) {
         delegate.setClassLoader(classLoader);
+    }
+
+    @Override
+    public void setApplicationStartup(final ApplicationStartup applicationStartup) {
+        delegate.setApplicationStartup(applicationStartup);
+    }
+
+    @Override
+    public ApplicationStartup getApplicationStartup() {
+        return delegate.getApplicationStartup();
+    }
+
+    @Override
+    public <T> ObjectProvider<T> getBeanProvider(final Class<T> requiredType, final boolean allowEagerInit) {
+        return delegate.getBeanProvider(requiredType, allowEagerInit);
+    }
+
+    @Override
+    public <T> ObjectProvider<T> getBeanProvider(final ResolvableType requiredType, final boolean allowEagerInit) {
+        return delegate.getBeanProvider(requiredType, allowEagerInit);
     }
 }
