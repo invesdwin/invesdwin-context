@@ -9,11 +9,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 
-import de.invesdwin.util.collections.loadingcache.ILoadingCache;
 import de.invesdwin.util.collections.loadingcache.historical.AHistoricalCache;
-import de.invesdwin.util.collections.loadingcache.historical.IHistoricalEntry;
 import de.invesdwin.util.collections.loadingcache.historical.ImmutableHistoricalEntry;
+import de.invesdwin.util.collections.loadingcache.historical.internal.IValuesMap;
 import de.invesdwin.util.collections.loadingcache.historical.query.IHistoricalCacheQuery;
+import de.invesdwin.util.math.expression.lambda.IEvaluateGenericFDate;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.fdate.FDate;
 
@@ -182,9 +182,10 @@ import de.invesdwin.util.time.fdate.FDate;
 public class TestHashMap extends AbstractPerformanceTest {
 
     private static final class TestHistoricalCache extends AHistoricalCache<Double> {
+
         @Override
-        protected Double loadValue(final FDate key) {
-            return null;
+        protected IEvaluateGenericFDate<Double> newLoadValue() {
+            return key -> null;
         }
 
         @Override
@@ -193,7 +194,7 @@ public class TestHashMap extends AbstractPerformanceTest {
         }
 
         @Override
-        public ILoadingCache<FDate, IHistoricalEntry<Double>> getValuesMap() {
+        public IValuesMap<Double> getValuesMap() {
             return super.getValuesMap();
         }
     }
