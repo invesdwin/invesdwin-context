@@ -8,7 +8,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>invesdwin-context-parent</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -1142,7 +1142,7 @@
 	<scm>
 		<url>https://github.com/invesdwin/invesdwin-context</url>
 		<connection>scm:git:https://github.com/invesdwin/invesdwin-context.git</connection>
-		<tag>invesdwin-context-parent-1.0.3</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<ciManagement>
