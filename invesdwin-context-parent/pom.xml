@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.invesdwin</groupId>
 		<artifactId>invesdwin-bom</artifactId>
-		<version>1.0.14-SNAPSHOT</version>
+		<version>1.0.14</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>invesdwin-context-parent</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -35,9 +33,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.compiler>1.8</version.compiler>
 
-		<project.version.invesdwin-maven-plugin>1.0.10-SNAPSHOT</project.version.invesdwin-maven-plugin>
+		<project.version.invesdwin-maven-plugin>1.0.10</project.version.invesdwin-maven-plugin>
 		<project.version.invesdwin-checkstyle-plugin>1.0.3</project.version.invesdwin-checkstyle-plugin>
-		<project.version.invesdwin-nowicket>1.0.3-SNAPSHOT</project.version.invesdwin-nowicket>
+		<project.version.invesdwin-nowicket>1.0.3</project.version.invesdwin-nowicket>
 
 		<version.maven-source-plugin>3.0.1</version.maven-source-plugin>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
@@ -836,54 +834,40 @@
 						<shadedArtifactAttached>true</shadedArtifactAttached>
 						<shadedClassifierName>standalone</shadedClassifierName>
 						<transformers>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+							<transformer implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
+							<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.handlers</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.schemas</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.tooling</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.factories</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/cxf/bus-extensions.txt</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/mime.types</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>jasperreports_extension.properties</resource>
 							</transformer>
-							<transformer
-								implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
+							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web-fragment.xml</resource>
 							</transformer>
-							<transformer
-								implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
+							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web/web-fragment.xml</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/aop.xml</resource>
 							</transformer>
-							<transformer
-								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+							<transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/wsdl.plugin.xml</resource>
 							</transformer>
 						</transformers>
@@ -971,24 +955,18 @@
 								<target>
 									<ac:if xmlns:ac="antlib:net.sf.antcontrib">
 										<and>
-											<available file="${project.build.outputDirectory}"
-												type="dir" />
+											<available file="${project.build.outputDirectory}" type="dir" />
 											<not>
-												<available
-													file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
+												<available file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
 											</not>
 										</and>
 										<then>
 											<mkdir dir="${project.build.outputDirectory}/META-INF/" />
-											<manifest
-												file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
+											<manifest file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
 												<attribute name="Built-By" value="${user.name}" />
-												<attribute name="Specification-Title"
-													value="${project.name}" />
-												<attribute name="Specification-Version"
-													value="${project.version}" />
-												<attribute name="Specification-Vendor-Id"
-													value="${project.groupId}" />
+												<attribute name="Specification-Title" value="${project.name}" />
+												<attribute name="Specification-Version" value="${project.version}" />
+												<attribute name="Specification-Vendor-Id" value="${project.groupId}" />
 											</manifest>
 										</then>
 									</ac:if>
