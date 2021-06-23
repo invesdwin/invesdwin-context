@@ -22,7 +22,7 @@ Dependency declaration:
 <dependency>
 	<groupId>de.invesdwin</groupId>
 	<artifactId>invesdwin-context</artifactId>
-	<version>1.0.2</version><!---project.version.invesdwin-context-parent-->
+	<version>1.0.3</version><!---project.version.invesdwin-context-parent-->
 </dependency>
 ```
 

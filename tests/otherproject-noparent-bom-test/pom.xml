@@ -10,12 +10,12 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<project.version.invesdwin-context>1.0.3</project.version.invesdwin-context>
-		<project.version.invesdwin-context-client>1.0.2</project.version.invesdwin-context-client>
-		<project.version.invesdwin-context-r>1.0.3</project.version.invesdwin-context-r>
-		<project.version.invesdwin-context-python>1.0.3</project.version.invesdwin-context-python>
-		<project.version.invesdwin-context-matlab>1.0.3</project.version.invesdwin-context-matlab>
-		<project.version.invesdwin-maven-plugin>1.0.10</project.version.invesdwin-maven-plugin>
+		<project.version.invesdwin-context>1.0.4-SNAPSHOT</project.version.invesdwin-context>
+		<project.version.invesdwin-context-client>1.0.3-SNAPSHOT</project.version.invesdwin-context-client>
+		<project.version.invesdwin-context-r>1.0.4-SNAPSHOT</project.version.invesdwin-context-r>
+		<project.version.invesdwin-context-python>1.0.4-SNAPSHOT</project.version.invesdwin-context-python>
+		<project.version.invesdwin-context-matlab>1.0.4-SNAPSHOT</project.version.invesdwin-context-matlab>
+		<project.version.invesdwin-maven-plugin>1.0.11-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
 		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
