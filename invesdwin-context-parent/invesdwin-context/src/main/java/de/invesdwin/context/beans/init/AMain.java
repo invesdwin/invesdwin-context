@@ -16,7 +16,7 @@ import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.context.system.properties.ResourceBundles;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.time.fdate.FTimeUnit;
+import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
 public abstract class AMain {

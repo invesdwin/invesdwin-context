@@ -8,7 +8,7 @@ import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.Instant;
-import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.date.FDate;
 
 /**
  * This is a separate class so that it can be used without initalizing the PreMergedContext.

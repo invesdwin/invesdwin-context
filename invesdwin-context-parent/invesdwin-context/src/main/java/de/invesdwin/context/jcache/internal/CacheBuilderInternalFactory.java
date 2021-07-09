@@ -21,7 +21,7 @@ import de.invesdwin.context.jcache.CacheEntryListenerSupport;
 import de.invesdwin.context.jcache.MergedExpiryPolicy;
 import de.invesdwin.util.collections.loadingcache.caffeine.CaffeineLoadingCacheMapConfig;
 import de.invesdwin.util.lang.Objects;
-import de.invesdwin.util.time.fdate.FTimeUnit;
+import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
 public final class CacheBuilderInternalFactory {

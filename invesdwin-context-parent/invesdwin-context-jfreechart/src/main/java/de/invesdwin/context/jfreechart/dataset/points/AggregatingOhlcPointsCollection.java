@@ -9,8 +9,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.FastNoSuchElementException;
 import de.invesdwin.util.lang.ADelegateComparator;
-import de.invesdwin.util.time.fdate.FDate;
-import de.invesdwin.util.time.fdate.FDates;
+import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDates;
 
 @NotThreadSafe
 public class AggregatingOhlcPointsCollection<E extends IOhlcPoint> extends APointsCollection<E> {

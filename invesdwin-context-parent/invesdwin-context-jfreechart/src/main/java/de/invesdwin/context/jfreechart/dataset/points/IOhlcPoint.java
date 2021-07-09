@@ -1,6 +1,6 @@
 package de.invesdwin.context.jfreechart.dataset.points;
 
-import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.date.FDate;
 
 public interface IOhlcPoint {
 

@@ -22,8 +22,8 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.Optionals;
 import de.invesdwin.util.math.decimal.Decimal;
+import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FDate;
 
 @ThreadSafe
 public final class CachingDelegateProperties implements IProperties {

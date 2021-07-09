@@ -15,7 +15,7 @@ import de.invesdwin.metaproject.test.schema.JavaTypesTestContainer;
 import de.invesdwin.metaproject.test.schema.JavaTypesTestPayload;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.math.decimal.Decimal;
-import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.date.FDate;
 
 @ThreadSafe
 public class XjcTest extends ATest {

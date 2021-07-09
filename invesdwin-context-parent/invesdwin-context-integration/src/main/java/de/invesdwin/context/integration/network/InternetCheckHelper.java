@@ -12,8 +12,8 @@ import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.time.Instant;
+import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @ThreadSafe
 final class InternetCheckHelper {

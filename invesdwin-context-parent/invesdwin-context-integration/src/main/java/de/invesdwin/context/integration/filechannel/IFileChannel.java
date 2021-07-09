@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import de.invesdwin.norva.marker.ISerializableValueObject;
-import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.date.FDate;
 
 public interface IFileChannel<FILEINFO> extends Closeable, ISerializableValueObject {
 

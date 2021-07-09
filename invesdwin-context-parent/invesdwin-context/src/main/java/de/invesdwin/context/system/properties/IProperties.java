@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 import de.invesdwin.util.math.decimal.Decimal;
+import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FDate;
 
 public interface IProperties {
 

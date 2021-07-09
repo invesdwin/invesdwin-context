@@ -12,10 +12,10 @@ import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.time.fdate.FDate;
-import de.invesdwin.util.time.fdate.FDates;
-import de.invesdwin.util.time.fdate.ftimezone.FTimeZone;
-import de.invesdwin.util.time.fdate.ftimezone.TimeZones;
+import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDates;
+import de.invesdwin.util.time.date.timezone.FTimeZone;
+import de.invesdwin.util.time.date.timezone.TimeZones;
 
 @Immutable
 public final class DefaultTimeZoneConfigurer {

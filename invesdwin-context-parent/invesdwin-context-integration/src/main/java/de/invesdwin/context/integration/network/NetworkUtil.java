@@ -21,7 +21,7 @@ import org.springframework.util.SocketUtils;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.Strings;
-import de.invesdwin.util.time.fdate.FTimeUnit;
+import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
 public final class NetworkUtil extends SocketUtils {

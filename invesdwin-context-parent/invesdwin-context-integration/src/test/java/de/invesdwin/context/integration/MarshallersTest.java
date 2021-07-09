@@ -13,8 +13,8 @@ import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.bean.AValueObject;
 import de.invesdwin.util.math.decimal.Decimal;
-import de.invesdwin.util.time.fdate.FDate;
-import de.invesdwin.util.time.fdate.FDateBuilder;
+import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDateBuilder;
 
 @ThreadSafe
 public class MarshallersTest extends ATest {

@@ -8,8 +8,8 @@ import org.springframework.retry.backoff.NoBackOffPolicy;
 import org.springframework.retry.backoff.UniformRandomBackOffPolicy;
 
 import de.invesdwin.context.integration.retry.Retry;
+import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @Immutable
 public final class BackOffPolicies {

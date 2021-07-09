@@ -18,9 +18,9 @@ import de.invesdwin.util.concurrent.future.Futures;
 import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.streams.ADelegateInputStream;
 import de.invesdwin.util.time.Instant;
+import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FDate;
-import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @NotThreadSafe
 public class AsyncFileChannelDownload implements Callable<InputStream> {

@@ -40,8 +40,8 @@ import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FTimeUnit;
 
 /**
  * You can override this class and disable individual methods to skip specific invesdwin initialization features.

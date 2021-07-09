@@ -15,10 +15,10 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.streams.LZ4Streams;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDates;
+import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
-import de.invesdwin.util.time.fdate.FDate;
-import de.invesdwin.util.time.fdate.FDates;
-import de.invesdwin.util.time.fdate.FTimeUnit;
 
 @NotThreadSafe
 public class DailyDownloadCache {

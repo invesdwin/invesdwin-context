@@ -9,7 +9,7 @@ import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.OHLCDataset;
 
-import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.date.FDate;
 
 @NotThreadSafe
 public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, PublicCloneable {
