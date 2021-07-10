@@ -15,7 +15,7 @@ import de.invesdwin.util.collections.loadingcache.historical.internal.IValuesMap
 import de.invesdwin.util.collections.loadingcache.historical.query.IHistoricalCacheQuery;
 import de.invesdwin.util.math.expression.lambda.IEvaluateGenericFDate;
 import de.invesdwin.util.time.Instant;
-import de.invesdwin.util.time.fdate.FDate;
+import de.invesdwin.util.time.date.FDate;
 
 // Openj9 java 8 -Xgcpolicy:gencon
 // hashMap: PT10.673.089.868S
