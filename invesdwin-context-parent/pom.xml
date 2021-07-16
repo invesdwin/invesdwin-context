@@ -64,7 +64,6 @@
 
 		<version.commons-configuration>1.10</version.commons-configuration>
 		<version.commons-configuration2>2.7</version.commons-configuration2>
-		<version.commons-pool2>2.8.1</version.commons-pool2>
 		<version.commons-compress>1.20</version.commons-compress>
 
 		<version.logback>1.2.0</version.logback>
@@ -176,11 +175,6 @@
 						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-pool2</artifactId>
-				<version>${version.commons-pool2}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
