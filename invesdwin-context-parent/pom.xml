@@ -64,7 +64,7 @@
 
 		<version.commons-configuration>1.10</version.commons-configuration>
 		<version.commons-configuration2>2.7</version.commons-configuration2>
-		<version.commons-compress>1.20</version.commons-compress>
+		<version.commons-compress>1.21</version.commons-compress>
 
 		<version.logback>1.2.0</version.logback>
 		<version.janino>2.7.8</version.janino>
