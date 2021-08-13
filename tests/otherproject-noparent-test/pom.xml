@@ -14,7 +14,7 @@
 		<project.version.invesdwin-context-persistence>1.0.4-SNAPSHOT</project.version.invesdwin-context-persistence>
 		<project.version.invesdwin-context-integration>1.0.3-SNAPSHOT</project.version.invesdwin-context-integration>
 		<project.version.invesdwin-context-client>1.0.3-SNAPSHOT</project.version.invesdwin-context-client>
-		<project.version.invesdwin-maven-plugin>1.0.13</project.version.invesdwin-maven-plugin>
+		<project.version.invesdwin-maven-plugin>1.0.14-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
 		<version.junit>4.13.1</version.junit>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
