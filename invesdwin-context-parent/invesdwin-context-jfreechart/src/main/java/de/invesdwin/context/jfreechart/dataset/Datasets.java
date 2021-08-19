@@ -16,6 +16,8 @@ import de.invesdwin.util.math.Integers;
 @Immutable
 public final class Datasets {
 
+    private static final int INCREMENT_THRESHOLD = 10000;
+
     private Datasets() {
     }
 
@@ -45,6 +47,7 @@ public final class Datasets {
 
         final int firstX = Integers.max(0, (int) xRange.getLowerBound() - 1);
         final int lastX = Integers.min(dataset.getItemCount(0), (int) xRange.getUpperBound() + 1);
+        final int increment = Integers.max(1, (int) xRange.getLength() / INCREMENT_THRESHOLD);
 
         // handle three cases by dataset type
         if (includeInterval && dataset instanceof OHLCDataset) {
@@ -55,7 +58,7 @@ public final class Datasets {
                 final Comparable seriesKey = (Comparable) iterator.next();
                 final int series = dataset.indexOf(seriesKey);
                 final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-                for (int item = firstX; item < itemCount; item++) {
+                for (int item = firstX; item < itemCount; item += increment) {
                     final double x = ohlc.getXValue(series, item);
                     if (xRange.contains(x)) {
                         final double lvalue = ohlc.getLowValue(series, item);
@@ -77,7 +80,7 @@ public final class Datasets {
                 final Comparable seriesKey = (Comparable) iterator.next();
                 final int series = dataset.indexOf(seriesKey);
                 final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-                for (int item = firstX; item < itemCount; item++) {
+                for (int item = firstX; item < itemCount; item += increment) {
                     final double x = bx.getXValue(series, item);
                     if (xRange.contains(x)) {
                         final Number lvalue = bx.getMinRegularValue(series, item);
@@ -99,7 +102,7 @@ public final class Datasets {
                 final Comparable seriesKey = (Comparable) iterator.next();
                 final int series = dataset.indexOf(seriesKey);
                 final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-                for (int item = firstX; item < itemCount; item++) {
+                for (int item = firstX; item < itemCount; item += increment) {
                     final double x = ixyd.getXValue(series, item);
                     if (xRange.contains(x)) {
                         final double yvalue = ixyd.getYValue(series, item);
@@ -125,7 +128,7 @@ public final class Datasets {
                 final Comparable seriesKey = (Comparable) iterator.next();
                 final int series = dataset.indexOf(seriesKey);
                 final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-                for (int item = firstX; item < itemCount; item++) {
+                for (int item = firstX; item < itemCount; item += increment) {
                     final double x = dataset.getXValue(series, item);
                     final double y = dataset.getYValue(series, item);
                     if (xRange.contains(x)) {
@@ -153,6 +156,7 @@ public final class Datasets {
 
             final int firstX = Integers.max(0, (int) xRange.getLowerBound() - 1);
             final int lastX = Integers.min(dataset.getItemCount(0), (int) xRange.getUpperBound() + 1);
+            final int increment = Integers.max(1, (int) xRange.getLength() / INCREMENT_THRESHOLD);
 
             // handle special case of OHLCDataset
             final OHLCDataset ohlc = dataset;
@@ -161,7 +165,7 @@ public final class Datasets {
                 final Comparable seriesKey = (Comparable) iterator.next();
                 final int series = dataset.indexOf(seriesKey);
                 final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-                for (int item = firstX; item < itemCount; item++) {
+                for (int item = firstX; item < itemCount; item += increment) {
                     final double x = ohlc.getXValue(series, item);
                     if (xRange.contains(x)) {
                         final double lvalue = ohlc.getLowValue(series, item);
@@ -194,6 +198,7 @@ public final class Datasets {
 
             final int firstX = Integers.max(0, (int) xRange.getLowerBound() - 1);
             final int lastX = Integers.min(dataset.getItemCount(0), (int) xRange.getUpperBound() + 1);
+            final int increment = Integers.max(1, (int) xRange.getLength() / INCREMENT_THRESHOLD);
 
             // handle special case of IntervalXYDataset
             final IntervalXYDataset ixyd = dataset;
@@ -202,7 +207,7 @@ public final class Datasets {
                 final Comparable seriesKey = (Comparable) iterator.next();
                 final int series = dataset.indexOf(seriesKey);
                 final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-                for (int item = firstX; item < itemCount; item++) {
+                for (int item = firstX; item < itemCount; item += increment) {
                     final double x = ixyd.getXValue(series, item);
                     if (xRange.contains(x)) {
                         final double yvalue = ixyd.getYValue(series, item);
@@ -239,6 +244,7 @@ public final class Datasets {
 
         final int firstX = Integers.max(0, (int) xRange.getLowerBound() - 1);
         final int lastX = Integers.min(dataset.getItemCount(0), (int) xRange.getUpperBound() + 1);
+        final int increment = Integers.max(1, (int) xRange.getLength() / INCREMENT_THRESHOLD);
 
         // standard case - plain XYDataset
         final Iterator iterator = visibleSeriesKeys.iterator();
@@ -246,7 +252,7 @@ public final class Datasets {
             final Comparable seriesKey = (Comparable) iterator.next();
             final int series = dataset.indexOf(seriesKey);
             final int itemCount = Integers.min(lastX, dataset.getItemCount(series));
-            for (int item = firstX; item < itemCount; item++) {
+            for (int item = firstX; item < itemCount; item += increment) {
                 final double x = dataset.getXValue(series, item);
                 final double y = dataset.getYValue(series, item);
                 if (xRange.contains(x)) {
