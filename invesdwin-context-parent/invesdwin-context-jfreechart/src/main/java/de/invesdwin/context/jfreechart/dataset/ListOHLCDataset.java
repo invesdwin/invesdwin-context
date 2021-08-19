@@ -6,13 +6,15 @@ import java.util.List;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.util.PublicCloneable;
+import org.jfree.data.Range;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.OHLCDataset;
+import org.jfree.data.xy.XYRangeInfo;
 
 import de.invesdwin.util.time.date.FDate;
 
 @NotThreadSafe
-public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, PublicCloneable {
+public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, PublicCloneable, XYRangeInfo {
 
     /** The series key. */
     private final Comparable<?> key;
@@ -361,6 +363,11 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
         final ListOHLCDataset clone = (ListOHLCDataset) super.clone();
         clone.data = new ArrayList<>(clone.data);
         return clone;
+    }
+
+    @Override
+    public Range getRangeBounds(final List visibleSeriesKeys, final Range xRange, final boolean includeInterval) {
+        return Datasets.iterateToFindRangeBoundsOHLCDataset(this, visibleSeriesKeys, xRange, includeInterval);
     }
 
 }
