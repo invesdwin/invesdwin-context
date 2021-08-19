@@ -42,6 +42,10 @@ public final class Datasets {
     @SuppressWarnings("rawtypes")
     public static Range iterateToFindRangeBounds(final XYDataset dataset, final List visibleSeriesKeys,
             final Range xRange, final boolean includeInterval) {
+        if (dataset.getSeriesCount() <= 0) {
+            return null;
+        }
+
         double minimum = Double.POSITIVE_INFINITY;
         double maximum = Double.NEGATIVE_INFINITY;
 
@@ -151,6 +155,10 @@ public final class Datasets {
     public static Range iterateToFindRangeBoundsOHLCDataset(final OHLCDataset dataset, final List visibleSeriesKeys,
             final Range xRange, final boolean includeInterval) {
         if (includeInterval) {
+            if (dataset.getSeriesCount() <= 0) {
+                return null;
+            }
+
             double minimum = Double.POSITIVE_INFINITY;
             double maximum = Double.NEGATIVE_INFINITY;
 
@@ -193,6 +201,10 @@ public final class Datasets {
     public static Range iterateToFindRangeBoundsXYIntervalDataset(final IntervalXYDataset dataset,
             final List visibleSeriesKeys, final Range xRange, final boolean includeInterval) {
         if (includeInterval) {
+            if (dataset.getSeriesCount() <= 0) {
+                return null;
+            }
+
             double minimum = Double.POSITIVE_INFINITY;
             double maximum = Double.NEGATIVE_INFINITY;
 
@@ -239,6 +251,10 @@ public final class Datasets {
     @SuppressWarnings("rawtypes")
     public static Range iterateToFindRangeBoundsXYDataset(final XYDataset dataset, final List visibleSeriesKeys,
             final Range xRange, final boolean includeInterval) {
+        if (dataset.getSeriesCount() <= 0) {
+            return null;
+        }
+
         double minimum = Double.POSITIVE_INFINITY;
         double maximum = Double.NEGATIVE_INFINITY;
 
