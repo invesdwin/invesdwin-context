@@ -104,6 +104,8 @@ For applications that also rely on IO (Input/Output of files and streams) and IP
 - **IRetryHook**: this hook interface allows you to abort retries (by throwing another exception in `onBeforeRetry(...)`) or do additional retry logic, like sending out an email to an administrator when a system is down or trying to reinitialize some remote service automatically (e.g. when a dynamic service vanished and you have to switch to a different instance which you rediscover from the central service registry). The `RetryOriginator` object should provide all meta-information needed to decide about special cases in your retry logic.
 - **Marshallers**: convert to/from [XML](https://en.wikipedia.org/wiki/XML)/[JSON](https://en.wikipedia.org/wiki/JSON) with [JAXB](https://en.wikipedia.org/wiki/Java_Architecture_for_XML_Binding)/[Jackson](https://github.com/FasterXML/jackson-databind). Initially [gson](https://github.com/google/gson) was used for JSON processing, but jackson was found to be faster by a magnitude and to provide better configurability even though it is a bit less easy or intuitive to use. 
 - **CSV**: the `ABeanCsvReader`, `ABeanCsvWriter` and other classes provide some utilities to easily read/write CSV files. This utilizes the popular [spring-batch](http://projects.spring.io/spring-batch/) `FlatFileItemReader` and Mapper functionality. Though a complete spring-batch integration is found in a different invesdwin integration module.
+- **ISerde**: simplified and fast conversion from/to bytes for value objects.
+- **LZ4Streams**: Factory for fast compression/decompression using LZ4.
 
 ## Webserver Module
 
