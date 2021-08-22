@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 
 /**
  * This serializing serde is only suitable inside the current JVM
@@ -23,6 +24,16 @@ public class LocalFastSerializingSerde<E extends Serializable> implements ISerde
     @Override
     public byte[] toBytes(final E obj) {
         return Objects.serialize(obj);
+    }
+
+    @Override
+    public E fromBuffer(final IByteBuffer buffer) {
+        return Objects.deserialize(buffer.asInputStream());
+    }
+
+    @Override
+    public int toBuffer(final E obj, final IByteBuffer buffer) {
+        return Objects.serialize(obj, buffer.asOutputStream());
     }
 
     @SuppressWarnings("unchecked")

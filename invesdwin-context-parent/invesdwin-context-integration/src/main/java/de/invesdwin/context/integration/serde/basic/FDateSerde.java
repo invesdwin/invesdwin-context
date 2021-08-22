@@ -1,10 +1,10 @@
 package de.invesdwin.context.integration.serde.basic;
 
-import java.nio.ByteBuffer;
-
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.serde.ISerde;
+import de.invesdwin.context.integration.serde.SerdeBaseMethods;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 
@@ -16,15 +16,23 @@ public class FDateSerde implements ISerde<FDate> {
 
     @Override
     public FDate fromBytes(final byte[] bytes) {
-        final ByteBuffer buf = ByteBuffer.wrap(bytes);
-        return FDates.extractFDate(buf);
+        return SerdeBaseMethods.fromBytes(this, bytes);
     }
 
     @Override
     public byte[] toBytes(final FDate obj) {
-        final ByteBuffer buf = ByteBuffer.allocate(FIXED_LENGTH);
-        FDates.putFDate(buf, obj);
-        return buf.array();
+        return SerdeBaseMethods.toBytes(this, obj, FIXED_LENGTH);
+    }
+
+    @Override
+    public FDate fromBuffer(final IByteBuffer buffer) {
+        return FDates.extractFDate(buffer, 0);
+    }
+
+    @Override
+    public int toBuffer(final FDate obj, final IByteBuffer buffer) {
+        FDates.putFDate(buffer, 0, obj);
+        return FIXED_LENGTH;
     }
 
 }

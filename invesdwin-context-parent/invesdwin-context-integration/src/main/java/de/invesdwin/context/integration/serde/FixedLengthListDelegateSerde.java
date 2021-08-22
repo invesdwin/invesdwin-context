@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.util.lang.buffer.IByteBuffer;
+
 @Immutable
 public class FixedLengthListDelegateSerde<E> implements ISerde<List<? extends E>> {
 
@@ -18,13 +20,23 @@ public class FixedLengthListDelegateSerde<E> implements ISerde<List<? extends E>
 
     @Override
     public List<? extends E> fromBytes(final byte[] bytes) {
-        final int size = bytes.length / fixedLength;
+        return SerdeBaseMethods.fromBytes(this, bytes);
+    }
+
+    @Override
+    public byte[] toBytes(final List<? extends E> objs) {
+        final int length = fixedLength * objs.size();
+        return SerdeBaseMethods.toBytes(this, objs, length);
+    }
+
+    @Override
+    public List<? extends E> fromBuffer(final IByteBuffer buffer) {
+        final int size = buffer.capacity() / fixedLength;
         final List<E> result = new ArrayList<E>(size);
         int curOffset = 0;
-        final byte[] byteBuffer = new byte[fixedLength];
         for (int i = 0; i < size; i++) {
-            System.arraycopy(bytes, curOffset, byteBuffer, 0, fixedLength);
-            final E obj = delegate.fromBytes(byteBuffer);
+            final IByteBuffer slice = buffer.slice(curOffset, fixedLength);
+            final E obj = delegate.fromBuffer(slice);
             result.add(obj);
             curOffset += fixedLength;
         }
@@ -32,21 +44,21 @@ public class FixedLengthListDelegateSerde<E> implements ISerde<List<? extends E>
     }
 
     @Override
-    public byte[] toBytes(final List<? extends E> objs) {
-        final byte[] result = new byte[objs.size() * fixedLength];
+    public int toBuffer(final List<? extends E> objs, final IByteBuffer buffer) {
+        final int length = objs.size() * fixedLength;
         final int size = objs.size();
         int curOffset = 0;
         for (int i = 0; i < size; i++) {
             final E obj = objs.get(i);
-            final byte[] objResult = delegate.toBytes(obj);
-            if (objResult.length != fixedLength) {
+            final IByteBuffer slice = buffer.slice(curOffset, fixedLength);
+            final int objLength = delegate.toBuffer(obj, slice);
+            if (objLength != fixedLength) {
                 throw new IllegalArgumentException("Serialized object [" + obj + "] has unexpected byte length of ["
-                        + objResult.length + "] while fixed length [" + fixedLength + "] was expected!");
+                        + objLength + "] while fixed length [" + fixedLength + "] was expected!");
             }
-            System.arraycopy(objResult, 0, result, curOffset, fixedLength);
             curOffset += fixedLength;
         }
-        return result;
+        return length;
     }
 
 }

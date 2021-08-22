@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.serde.ISerde;
+import de.invesdwin.context.integration.serde.SerdeBaseMethods;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 
 @Immutable
 public class CalendarSerde implements ISerde<Calendar> {
@@ -15,7 +17,17 @@ public class CalendarSerde implements ISerde<Calendar> {
 
     @Override
     public Calendar fromBytes(final byte[] bytes) {
-        final Date date = DateSerde.GET.fromBytes(bytes);
+        return SerdeBaseMethods.fromBytes(this, bytes);
+    }
+
+    @Override
+    public byte[] toBytes(final Calendar obj) {
+        return SerdeBaseMethods.toBytes(this, obj, FIXED_LENGTH);
+    }
+
+    @Override
+    public Calendar fromBuffer(final IByteBuffer buffer) {
+        final Date date = DateSerde.GET.fromBuffer(buffer);
         if (date == null) {
             return null;
         } else {
@@ -28,14 +40,14 @@ public class CalendarSerde implements ISerde<Calendar> {
     }
 
     @Override
-    public byte[] toBytes(final Calendar obj) {
+    public int toBuffer(final Calendar obj, final IByteBuffer buffer) {
         final Date date;
         if (obj == null) {
             date = null;
         } else {
             date = obj.getTime();
         }
-        return DateSerde.GET.toBytes(date);
+        return DateSerde.GET.toBuffer(date, buffer);
     }
 
 }

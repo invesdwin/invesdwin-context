@@ -1,10 +1,11 @@
 package de.invesdwin.context.integration.serde.basic;
 
-import java.nio.ByteBuffer;
-
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.serde.ISerde;
+import de.invesdwin.context.integration.serde.SerdeBaseMethods;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
+import de.invesdwin.util.math.Longs;
 
 @Immutable
 public class LongSerde implements ISerde<Long> {
@@ -14,14 +15,22 @@ public class LongSerde implements ISerde<Long> {
 
     @Override
     public Long fromBytes(final byte[] bytes) {
-        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        return buffer.getLong();
+        return SerdeBaseMethods.fromBytes(this, bytes);
     }
 
     @Override
     public byte[] toBytes(final Long obj) {
-        final ByteBuffer buffer = ByteBuffer.allocate(8);
-        buffer.putLong(obj);
-        return buffer.array();
+        return SerdeBaseMethods.toBytes(this, obj, FIXED_LENGTH);
+    }
+
+    @Override
+    public Long fromBuffer(final IByteBuffer buffer) {
+        return Longs.extractLong(buffer, 0);
+    }
+
+    @Override
+    public int toBuffer(final Long obj, final IByteBuffer buffer) {
+        Longs.putLong(buffer, 0, obj);
+        return FIXED_LENGTH;
     }
 }

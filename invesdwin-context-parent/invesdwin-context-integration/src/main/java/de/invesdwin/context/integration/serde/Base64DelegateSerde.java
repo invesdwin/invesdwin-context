@@ -4,6 +4,8 @@ import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.codec.binary.Base64;
 
+import de.invesdwin.util.lang.buffer.IByteBuffer;
+
 @Immutable
 public class Base64DelegateSerde<E> implements ISerde<E> {
 
@@ -24,6 +26,16 @@ public class Base64DelegateSerde<E> implements ISerde<E> {
         final byte[] bytes = delegate.toBytes(obj);
         final byte[] encodedBytes = Base64.encodeBase64(bytes);
         return encodedBytes;
+    }
+
+    @Override
+    public E fromBuffer(final IByteBuffer buffer) {
+        return SerdeBaseMethods.fromBuffer(this, buffer);
+    }
+
+    @Override
+    public int toBuffer(final E obj, final IByteBuffer buffer) {
+        return SerdeBaseMethods.toBuffer(this, obj, buffer);
     }
 
 }

@@ -1,10 +1,10 @@
 package de.invesdwin.context.integration.serde.basic;
 
-import java.nio.ByteBuffer;
-
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.serde.ISerde;
+import de.invesdwin.context.integration.serde.SerdeBaseMethods;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.math.Booleans;
 
 @Immutable
@@ -15,15 +15,23 @@ public class BooleanSerde implements ISerde<Boolean> {
 
     @Override
     public Boolean fromBytes(final byte[] bytes) {
-        final ByteBuffer buf = ByteBuffer.wrap(bytes);
-        return Booleans.extractBoolean(buf);
+        return SerdeBaseMethods.fromBytes(this, bytes);
     }
 
     @Override
     public byte[] toBytes(final Boolean obj) {
-        final ByteBuffer buf = ByteBuffer.allocate(FIXED_LENGTH);
-        Booleans.putBoolean(buf, obj);
-        return buf.array();
+        return SerdeBaseMethods.toBytes(this, obj, FIXED_LENGTH);
+    }
+
+    @Override
+    public Boolean fromBuffer(final IByteBuffer buffer) {
+        return Booleans.extractBoolean(buffer, 0);
+    }
+
+    @Override
+    public int toBuffer(final Boolean obj, final IByteBuffer buffer) {
+        Booleans.putBoolean(buffer, 0, obj);
+        return FIXED_LENGTH;
     }
 
 }

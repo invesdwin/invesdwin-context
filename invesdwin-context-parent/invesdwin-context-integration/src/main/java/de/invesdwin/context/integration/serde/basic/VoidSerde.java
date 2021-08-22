@@ -3,12 +3,14 @@ package de.invesdwin.context.integration.serde.basic;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.serde.ISerde;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.math.Bytes;
 
 @Immutable
 public class VoidSerde implements ISerde<Void> {
 
     public static final VoidSerde GET = new VoidSerde();
+    public static final int FIXED_LENGTH = 0;
 
     @Override
     public Void fromBytes(final byte[] bytes) {
@@ -18,6 +20,16 @@ public class VoidSerde implements ISerde<Void> {
     @Override
     public byte[] toBytes(final Void obj) {
         return Bytes.EMPTY_ARRAY;
+    }
+
+    @Override
+    public Void fromBuffer(final IByteBuffer buffer) {
+        return null;
+    }
+
+    @Override
+    public int toBuffer(final Void obj, final IByteBuffer buffer) {
+        return 0;
     }
 
 }

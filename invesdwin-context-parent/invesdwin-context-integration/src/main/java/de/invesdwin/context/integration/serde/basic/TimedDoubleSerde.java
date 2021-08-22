@@ -1,21 +1,29 @@
 package de.invesdwin.context.integration.serde.basic;
 
-import java.nio.ByteBuffer;
-
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.serde.FixedLengthBufferingIteratorDelegateSerde;
 import de.invesdwin.context.integration.serde.ISerde;
+import de.invesdwin.context.integration.serde.SerdeBaseMethods;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.math.Bytes;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.math.TimedDouble;
 import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDates;
 
 @ThreadSafe
 public class TimedDoubleSerde implements ISerde<TimedDouble> {
 
     public static final TimedDoubleSerde GET = new TimedDoubleSerde();
-    public static final Integer FIXED_LENGTH = 8 + 8;
+
+    public static final int TIME_INDEX = 0;
+    public static final int TIME_SIZE = FDate.BYTES;
+
+    public static final int DOUBLE_INDEX = TIME_INDEX + TIME_SIZE;
+    public static final int DOUBLE_SIZE = Double.BYTES;
+
+    public static final int FIXED_LENGTH = DOUBLE_INDEX + DOUBLE_SIZE;
+
     public static final FixedLengthBufferingIteratorDelegateSerde<TimedDouble> GET_LIST = new FixedLengthBufferingIteratorDelegateSerde<TimedDouble>(
             GET, FIXED_LENGTH);
 
@@ -25,31 +33,28 @@ public class TimedDoubleSerde implements ISerde<TimedDouble> {
 
     @Override
     public TimedDouble fromBytes(final byte[] bytes) {
-        if (bytes == null || bytes.length == 0) {
-            return null;
-        }
-
-        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        final long time = buffer.getLong();
-        final double value = buffer.getDouble();
-
-        final TimedDouble dto = new TimedDouble(FDate.valueOf(time), value);
-        return dto;
+        return SerdeBaseMethods.fromBytes(this, bytes);
     }
 
     @Override
     public byte[] toBytes(final TimedDouble obj) {
-        if (obj == null) {
-            return Bytes.EMPTY_ARRAY;
-        }
+        return SerdeBaseMethods.toBytes(this, obj, FIXED_LENGTH);
+    }
 
-        final long time = obj.getTime().millisValue();
-        final double value = obj.getValue();
+    @Override
+    public TimedDouble fromBuffer(final IByteBuffer buffer) {
+        final FDate time = FDates.extractFDate(buffer, TIME_INDEX);
+        final double value = buffer.getDouble(DOUBLE_INDEX);
 
-        final ByteBuffer buffer = ByteBuffer.allocate(16);
-        buffer.putLong(time);
-        buffer.putDouble(value);
-        return buffer.array();
+        final TimedDouble timedMoney = new TimedDouble(time, value);
+        return timedMoney;
+    }
+
+    @Override
+    public int toBuffer(final TimedDouble obj, final IByteBuffer buffer) {
+        FDates.putFDate(buffer, TIME_INDEX, obj.getTime());
+        buffer.putDouble(DOUBLE_INDEX, obj.doubleValue());
+        return FIXED_LENGTH;
     }
 
 }

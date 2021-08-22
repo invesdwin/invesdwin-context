@@ -1,6 +1,5 @@
 package de.invesdwin.context.integration.serde.reference;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -33,8 +32,8 @@ public class SerdeCompressingWeakReference<T> extends ACompressingWeakReference<
             }
 
             @Override
-            protected InputStream newDecompressor(final ByteArrayInputStream bis) {
-                return SerdeCompressingWeakReference.this.newDecompressor(bis);
+            protected InputStream newDecompressor(final InputStream in) {
+                return SerdeCompressingWeakReference.this.newDecompressor(in);
             }
         };
     }
@@ -53,8 +52,8 @@ public class SerdeCompressingWeakReference<T> extends ACompressingWeakReference<
         return LZ4Streams.newDefaultLZ4OutputStream(out);
     }
 
-    protected InputStream newDecompressor(final ByteArrayInputStream bis) {
-        return LZ4Streams.newDefaultLZ4InputStream(bis);
+    protected InputStream newDecompressor(final InputStream in) {
+        return LZ4Streams.newDefaultLZ4InputStream(in);
     }
 
 }

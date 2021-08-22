@@ -17,6 +17,7 @@ import de.invesdwin.context.integration.serde.basic.LongSerde;
 import de.invesdwin.context.integration.serde.basic.StringSerde;
 import de.invesdwin.context.integration.serde.basic.TimedDecimalSerde;
 import de.invesdwin.context.integration.serde.basic.VoidSerde;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.TimedDecimal;
@@ -84,6 +85,16 @@ public class TypeDelegateSerde<O> implements ISerde<O> {
     @Override
     public byte[] toBytes(final O obj) {
         return delegate.toBytes(obj);
+    }
+
+    @Override
+    public O fromBuffer(final IByteBuffer buffer) {
+        return delegate.fromBuffer(buffer);
+    }
+
+    @Override
+    public int toBuffer(final O obj, final IByteBuffer buffer) {
+        return delegate.toBuffer(obj, buffer);
     }
 
 }

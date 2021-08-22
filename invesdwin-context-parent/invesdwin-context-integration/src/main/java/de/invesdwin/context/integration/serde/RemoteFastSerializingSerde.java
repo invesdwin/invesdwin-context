@@ -9,6 +9,7 @@ import org.apache.commons.lang3.SerializationException;
 import org.nustaq.serialization.simpleapi.DefaultCoder;
 import org.nustaq.serialization.simpleapi.FSTCoder;
 
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.math.Bytes;
 
 /**
@@ -51,6 +52,16 @@ public class RemoteFastSerializingSerde<E> implements ISerde<E> {
             return Bytes.EMPTY_ARRAY;
         }
         return coder.toByteArray(obj);
+    }
+
+    @Override
+    public E fromBuffer(final IByteBuffer buffer) {
+        return SerdeBaseMethods.fromBuffer(this, buffer);
+    }
+
+    @Override
+    public int toBuffer(final E obj, final IByteBuffer buffer) {
+        return SerdeBaseMethods.toBuffer(this, obj, buffer);
     }
 
 }

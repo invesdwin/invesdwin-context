@@ -489,7 +489,7 @@
 				<artifactId>poi-ooxml</artifactId>
 				<version>${version.poi}</version>
 			</dependency>
-
+			
 			<dependency>
 				<groupId>org.springframework.batch</groupId>
 				<artifactId>spring-batch-core</artifactId>

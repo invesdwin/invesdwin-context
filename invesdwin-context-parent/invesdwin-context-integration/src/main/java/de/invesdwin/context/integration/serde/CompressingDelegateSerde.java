@@ -11,6 +11,9 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.io.IOUtils;
 
 import de.invesdwin.context.integration.streams.LZ4Streams;
+import de.invesdwin.norva.beanpath.CountingOutputStream;
+import de.invesdwin.util.lang.buffer.ByteBuffers;
+import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.math.Bytes;
 
 @Immutable
@@ -23,6 +26,22 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
     }
 
     @Override
+    public E fromBuffer(final IByteBuffer buffer) {
+        if (buffer.capacity() == 0) {
+            return null;
+        }
+        try {
+            final InputStream in = newDecompressor(buffer.asInputStream());
+            final IByteBuffer buf = ByteBuffers.threadLocalExpandable();
+            final int length = IOUtils.copy(in, buf.asOutputStream());
+            in.close();
+            return delegate.fromBuffer(buf.slice(length));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public E fromBytes(final byte[] bytes) {
         if (bytes.length == 0) {
             return null;
@@ -30,9 +49,28 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         try {
             final ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
             final InputStream in = newDecompressor(bis);
-            final byte[] decompressedBytes = IOUtils.toByteArray(in);
+            final IByteBuffer buf = ByteBuffers.threadLocalExpandable();
+            final int length = IOUtils.copy(in, buf.asOutputStream());
             in.close();
-            return delegate.fromBytes(decompressedBytes);
+            return delegate.fromBuffer(buf.slice(length));
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int toBuffer(final E obj, final IByteBuffer buffer) {
+        if (obj == null) {
+            return 0;
+        }
+        try {
+            final CountingOutputStream cout = new CountingOutputStream(buffer.asOutputStream());
+            final OutputStream out = newCompressor(cout);
+            final IByteBuffer buf = ByteBuffers.threadLocalExpandable();
+            final int length = delegate.toBuffer(obj, buf);
+            IOUtils.copy(buf.asInputStream(length), out);
+            out.close();
+            return cout.getCount();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +84,9 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         try {
             final ByteArrayOutputStream bos = new ByteArrayOutputStream();
             final OutputStream out = newCompressor(bos);
-            out.write(delegate.toBytes(obj));
+            final IByteBuffer buf = ByteBuffers.threadLocalExpandable();
+            final int length = delegate.toBuffer(obj, buf);
+            IOUtils.copy(buf.asInputStream(length), out);
             out.close();
             return bos.toByteArray();
         } catch (final IOException e) {
@@ -58,8 +98,8 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         return LZ4Streams.newDefaultLZ4OutputStream(out);
     }
 
-    protected InputStream newDecompressor(final ByteArrayInputStream bis) {
-        return LZ4Streams.newDefaultLZ4InputStream(bis);
+    protected InputStream newDecompressor(final InputStream in) {
+        return LZ4Streams.newDefaultLZ4InputStream(in);
     }
 
 }
