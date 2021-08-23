@@ -6,6 +6,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.buffer.IByteBuffer;
+import de.invesdwin.util.marshallers.serde.ISerde;
 
 /**
  * This serializing serde is only suitable inside the current JVM

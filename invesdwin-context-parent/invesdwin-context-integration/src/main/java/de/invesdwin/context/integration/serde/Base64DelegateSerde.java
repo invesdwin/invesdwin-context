@@ -5,6 +5,8 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.codec.binary.Base64;
 
 import de.invesdwin.util.lang.buffer.IByteBuffer;
+import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.marshallers.serde.SerdeBaseMethods;
 
 @Immutable
 public class Base64DelegateSerde<E> implements ISerde<E> {

@@ -5,20 +5,21 @@ import java.util.Date;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.serde.basic.BooleanSerde;
-import de.invesdwin.context.integration.serde.basic.ByteSerde;
-import de.invesdwin.context.integration.serde.basic.CalendarSerde;
-import de.invesdwin.context.integration.serde.basic.DateSerde;
-import de.invesdwin.context.integration.serde.basic.DecimalSerde;
-import de.invesdwin.context.integration.serde.basic.DoubleSerde;
-import de.invesdwin.context.integration.serde.basic.FDateSerde;
-import de.invesdwin.context.integration.serde.basic.IntegerSerde;
-import de.invesdwin.context.integration.serde.basic.LongSerde;
-import de.invesdwin.context.integration.serde.basic.StringSerde;
-import de.invesdwin.context.integration.serde.basic.TimedDecimalSerde;
-import de.invesdwin.context.integration.serde.basic.VoidSerde;
 import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.marshallers.serde.basic.BooleanSerde;
+import de.invesdwin.util.marshallers.serde.basic.ByteSerde;
+import de.invesdwin.util.marshallers.serde.basic.CalendarSerde;
+import de.invesdwin.util.marshallers.serde.basic.DateSerde;
+import de.invesdwin.util.marshallers.serde.basic.DecimalSerde;
+import de.invesdwin.util.marshallers.serde.basic.DoubleSerde;
+import de.invesdwin.util.marshallers.serde.basic.FDateSerde;
+import de.invesdwin.util.marshallers.serde.basic.IntegerSerde;
+import de.invesdwin.util.marshallers.serde.basic.LongSerde;
+import de.invesdwin.util.marshallers.serde.basic.StringSerde;
+import de.invesdwin.util.marshallers.serde.basic.TimedDecimalSerde;
+import de.invesdwin.util.marshallers.serde.basic.VoidSerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.TimedDecimal;
 import de.invesdwin.util.time.date.FDate;
@@ -38,23 +39,17 @@ public class TypeDelegateSerde<O> implements ISerde<O> {
         //CHECKSTYLE:ON
         if (Reflections.isVoid(type)) {
             return VoidSerde.GET;
-        }
-        if (double.class.isAssignableFrom(type) || Double.class.isAssignableFrom(type)) {
+        } else if (Double.class.isAssignableFrom(type) || double.class.isAssignableFrom(type)) {
             return DoubleSerde.GET;
-        }
-        if (Decimal.class.isAssignableFrom(type)) {
+        } else if (Decimal.class.isAssignableFrom(type)) {
             return DecimalSerde.GET;
-        }
-        if (FDate.class.isAssignableFrom(type)) {
+        } else if (FDate.class.isAssignableFrom(type)) {
             return FDateSerde.GET;
-        }
-        if (Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
+        } else if (Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
             return BooleanSerde.GET;
-        }
-        if (Integer.class.isAssignableFrom(type) || int.class.isAssignableFrom(type)) {
+        } else if (Integer.class.isAssignableFrom(type) || int.class.isAssignableFrom(type)) {
             return IntegerSerde.GET;
-        }
-        if (TimedDecimal.class.isAssignableFrom(type)) {
+        } else if (TimedDecimal.class.isAssignableFrom(type)) {
             return TimedDecimalSerde.GET;
         } else if (Byte.class.isAssignableFrom(type) || byte.class.isAssignableFrom(type)) {
             return ByteSerde.GET;
@@ -68,8 +63,6 @@ public class TypeDelegateSerde<O> implements ISerde<O> {
             return CalendarSerde.GET;
         } else if (String.class.isAssignableFrom(type)) {
             return StringSerde.GET;
-        } else if (Void.class.isAssignableFrom(type) || void.class.isAssignableFrom(type)) {
-            return VoidSerde.GET;
         } else {
             // fallback to slower serialization
             // do not check type to gracefully fall back on interface types like List

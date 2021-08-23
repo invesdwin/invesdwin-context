@@ -6,9 +6,9 @@ import java.io.OutputStream;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.serde.CompressingDelegateSerde;
-import de.invesdwin.context.integration.serde.ISerde;
 import de.invesdwin.context.integration.streams.LZ4Streams;
 import de.invesdwin.util.concurrent.reference.persistent.ACompressingWeakReference;
+import de.invesdwin.util.marshallers.serde.ISerde;
 
 /**
  * Behaves just like a WeakReference, with the distinction that the value is not discarded, but instead serialized until
