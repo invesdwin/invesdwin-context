@@ -5,19 +5,22 @@ import java.util.Date;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.opengamma.strata.basics.currency.Currency;
+
 import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.basic.BooleanSerde;
 import de.invesdwin.util.marshallers.serde.basic.ByteSerde;
 import de.invesdwin.util.marshallers.serde.basic.CalendarSerde;
+import de.invesdwin.util.marshallers.serde.basic.CurrencySerde;
 import de.invesdwin.util.marshallers.serde.basic.DateSerde;
 import de.invesdwin.util.marshallers.serde.basic.DecimalSerde;
 import de.invesdwin.util.marshallers.serde.basic.DoubleSerde;
 import de.invesdwin.util.marshallers.serde.basic.FDateSerde;
 import de.invesdwin.util.marshallers.serde.basic.IntegerSerde;
 import de.invesdwin.util.marshallers.serde.basic.LongSerde;
-import de.invesdwin.util.marshallers.serde.basic.StringSerde;
+import de.invesdwin.util.marshallers.serde.basic.StringUtf8Serde;
 import de.invesdwin.util.marshallers.serde.basic.TimedDecimalSerde;
 import de.invesdwin.util.marshallers.serde.basic.VoidSerde;
 import de.invesdwin.util.math.decimal.Decimal;
@@ -62,7 +65,9 @@ public class TypeDelegateSerde<O> implements ISerde<O> {
         } else if (Calendar.class.isAssignableFrom(type)) {
             return CalendarSerde.GET;
         } else if (String.class.isAssignableFrom(type)) {
-            return StringSerde.GET;
+            return StringUtf8Serde.GET;
+        } else if (Currency.class.isAssignableFrom(type)) {
+            return CurrencySerde.GET;
         } else {
             // fallback to slower serialization
             // do not check type to gracefully fall back on interface types like List
