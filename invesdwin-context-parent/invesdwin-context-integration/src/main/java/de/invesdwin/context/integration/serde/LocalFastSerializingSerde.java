@@ -28,8 +28,8 @@ public class LocalFastSerializingSerde<E extends Serializable> implements ISerde
     }
 
     @Override
-    public E fromBuffer(final IByteBuffer buffer) {
-        return Objects.deserialize(buffer.asInputStream());
+    public E fromBuffer(final IByteBuffer buffer, final int length) {
+        return Objects.deserialize(buffer.asInputStreamTo(length));
     }
 
     @Override

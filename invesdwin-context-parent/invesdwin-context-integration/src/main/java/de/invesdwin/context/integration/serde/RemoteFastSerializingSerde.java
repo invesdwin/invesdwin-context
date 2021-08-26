@@ -57,8 +57,8 @@ public class RemoteFastSerializingSerde<E> implements ISerde<E> {
     }
 
     @Override
-    public E fromBuffer(final IByteBuffer buffer) {
-        return SerdeBaseMethods.fromBuffer(this, buffer);
+    public E fromBuffer(final IByteBuffer buffer, final int length) {
+        return SerdeBaseMethods.fromBuffer(this, buffer, length);
     }
 
     @Override

@@ -35,16 +35,16 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
     }
 
     @Override
-    public E fromBuffer(final IByteBuffer buffer) {
+    public E fromBuffer(final IByteBuffer buffer, final int length) {
         if (buffer.capacity() == 0) {
             return null;
         }
         try {
             final InputStream in = newDecompressor(buffer.asInputStream());
             final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-            final int length = IOUtils.copy(in, buf.asOutputStream());
+            final int actualLength = IOUtils.copy(in, buf.asOutputStream());
             in.close();
-            return delegate.fromBuffer(buf.sliceTo(length));
+            return delegate.fromBuffer(buf.sliceTo(actualLength), actualLength);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -61,7 +61,7 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
             final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
             final int length = IOUtils.copy(in, buf.asOutputStream());
             in.close();
-            return delegate.fromBuffer(buf.sliceTo(length));
+            return delegate.fromBuffer(buf.sliceTo(length), length);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
