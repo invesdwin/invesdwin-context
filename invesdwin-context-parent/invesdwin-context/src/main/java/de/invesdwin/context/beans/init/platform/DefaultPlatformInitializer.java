@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.UIManager;
 
+import org.agrona.concurrent.UnsafeBuffer;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
@@ -38,6 +39,7 @@ import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -293,6 +295,18 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public void initCryptoPolicyUnlimited() {
         Security.setProperty("crypto.policy", "unlimited");
+    }
+
+    @Override
+    public void initAgronaBoundsChecks() {
+        if (!Throwables.isDebugStackTraceEnabled()) {
+            //CHECKSTYLE:OFF
+            final String key = "agrona.disable.bounds.checks";
+            System.setProperty(key, "true");
+            //CHECKSTYLE:ON
+            Assertions.checkEquals(UnsafeBuffer.DISABLE_BOUNDS_CHECKS_PROP_NAME, key);
+            Assertions.checkFalse(UnsafeBuffer.SHOULD_BOUNDS_CHECK);
+        }
     }
 
 }

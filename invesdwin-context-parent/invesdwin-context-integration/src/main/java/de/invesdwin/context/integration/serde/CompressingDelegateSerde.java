@@ -35,22 +35,6 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
     }
 
     @Override
-    public E fromBuffer(final IByteBuffer buffer, final int length) {
-        if (buffer.capacity() == 0) {
-            return null;
-        }
-        try {
-            final InputStream in = newDecompressor(buffer.asInputStream());
-            final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-            final int actualLength = IOUtils.copy(in, buf.asOutputStream());
-            in.close();
-            return delegate.fromBuffer(buf.sliceTo(actualLength), actualLength);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public E fromBytes(final byte[] bytes) {
         if (bytes.length == 0) {
             return null;
@@ -62,24 +46,6 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
             final int length = IOUtils.copy(in, buf.asOutputStream());
             in.close();
             return delegate.fromBuffer(buf.sliceTo(length), length);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public int toBuffer(final E obj, final IByteBuffer buffer) {
-        if (obj == null) {
-            return 0;
-        }
-        try {
-            final CountingOutputStream cout = new CountingOutputStream(buffer.asOutputStream());
-            final OutputStream out = newCompressor(cout);
-            final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-            final int length = delegate.toBuffer(obj, buf);
-            IOUtils.copy(buf.asInputStreamTo(length), out);
-            out.close();
-            return cout.getCount();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -98,6 +64,40 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
             IOUtils.copy(buf.asInputStreamTo(length), out);
             out.close();
             return bos.toByteArray();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public E fromBuffer(final IByteBuffer buffer, final int length) {
+        if (buffer.capacity() == 0) {
+            return null;
+        }
+        try {
+            final InputStream in = newDecompressor(buffer.asInputStream());
+            final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
+            final int actualLength = IOUtils.copy(in, buf.asOutputStream());
+            in.close();
+            return delegate.fromBuffer(buf.sliceTo(actualLength), actualLength);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int toBuffer(final E obj, final IByteBuffer buffer) {
+        if (obj == null) {
+            return 0;
+        }
+        try {
+            final CountingOutputStream cout = new CountingOutputStream(buffer.asOutputStream());
+            final OutputStream out = newCompressor(cout);
+            final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
+            final int length = delegate.toBuffer(obj, buf);
+            IOUtils.copy(buf.asInputStreamTo(length), out);
+            out.close();
+            return cout.getCount();
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
