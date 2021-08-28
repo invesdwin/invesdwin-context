@@ -91,8 +91,8 @@ public class TypeDelegateSerde<O> implements ISerde<O> {
     }
 
     @Override
-    public int toBuffer(final O obj, final IByteBuffer buffer) {
-        return delegate.toBuffer(obj, buffer);
+    public int toBuffer(final IByteBuffer buffer, final O obj) {
+        return delegate.toBuffer(buffer, obj);
     }
 
 }

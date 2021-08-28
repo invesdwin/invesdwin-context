@@ -60,7 +60,7 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
             final ByteArrayOutputStream bos = new ByteArrayOutputStream();
             final OutputStream out = newCompressor(bos);
             final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-            final int length = delegate.toBuffer(obj, buf);
+            final int length = delegate.toBuffer(buf, obj);
             IOUtils.copy(buf.asInputStreamTo(length), out);
             out.close();
             return bos.toByteArray();
@@ -86,7 +86,7 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
     }
 
     @Override
-    public int toBuffer(final E obj, final IByteBuffer buffer) {
+    public int toBuffer(final IByteBuffer buffer, final E obj) {
         if (obj == null) {
             return 0;
         }
@@ -94,7 +94,7 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
             final CountingOutputStream cout = new CountingOutputStream(buffer.asOutputStream());
             final OutputStream out = newCompressor(cout);
             final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-            final int length = delegate.toBuffer(obj, buf);
+            final int length = delegate.toBuffer(buf, obj);
             IOUtils.copy(buf.asInputStreamTo(length), out);
             out.close();
             return cout.getCount();
