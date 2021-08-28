@@ -49,8 +49,6 @@ public final class ContextProperties {
         final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
         IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
 
-        initializer.initAgronaBoundsChecks();
-
         File tempDirectory = null;
         File tempClasspathDirectory = null;
         try {

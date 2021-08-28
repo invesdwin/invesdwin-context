@@ -71,7 +71,7 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
 
     @Override
     public E fromBuffer(final IByteBuffer buffer, final int length) {
-        if (buffer.capacity() == 0) {
+        if (length == 0) {
             return null;
         }
         try {

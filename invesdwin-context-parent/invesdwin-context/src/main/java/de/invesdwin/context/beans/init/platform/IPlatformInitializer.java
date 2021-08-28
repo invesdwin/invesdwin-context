@@ -61,6 +61,4 @@ public interface IPlatformInitializer {
 
     void initCryptoPolicyUnlimited();
 
-    void initAgronaBoundsChecks();
-
 }
