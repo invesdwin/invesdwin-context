@@ -148,4 +148,9 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
         delegate.initCryptoPolicyUnlimited();
     }
 
+    @Override
+    public void initAgronaBoundsChecks() {
+        delegate.initAgronaBoundsChecks();
+    }
+
 }
