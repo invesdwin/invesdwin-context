@@ -12,10 +12,10 @@ import org.apache.commons.io.IOUtils;
 
 import de.invesdwin.context.integration.streams.LZ4Streams;
 import de.invesdwin.norva.beanpath.CountingOutputStream;
-import de.invesdwin.util.lang.buffer.ByteBuffers;
-import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.Bytes;
+import de.invesdwin.util.streams.buffer.ByteBuffers;
+import de.invesdwin.util.streams.buffer.IByteBuffer;
 import io.netty.util.concurrent.FastThreadLocal;
 
 @Immutable

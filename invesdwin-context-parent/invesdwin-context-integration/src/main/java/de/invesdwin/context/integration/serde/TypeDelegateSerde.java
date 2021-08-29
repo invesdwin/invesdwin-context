@@ -7,7 +7,6 @@ import javax.annotation.concurrent.Immutable;
 
 import com.opengamma.strata.basics.currency.Currency;
 
-import de.invesdwin.util.lang.buffer.IByteBuffer;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.basic.BooleanSerde;
@@ -25,6 +24,7 @@ import de.invesdwin.util.marshallers.serde.basic.TimedDecimalSerde;
 import de.invesdwin.util.marshallers.serde.basic.VoidSerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.TimedDecimal;
+import de.invesdwin.util.streams.buffer.IByteBuffer;
 import de.invesdwin.util.time.date.FDate;
 
 @Immutable
