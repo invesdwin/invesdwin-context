@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams;
+package de.invesdwin.context.integration.streams.compressor.lz4;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +58,10 @@ public final class LZ4Streams {
     }
 
     public static LZ4BlockOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
+        return newHighLZ4OutputStream(out);
+    }
+
+    public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
     }
 

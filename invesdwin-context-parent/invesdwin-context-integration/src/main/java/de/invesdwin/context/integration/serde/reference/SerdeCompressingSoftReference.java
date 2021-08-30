@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.serde.CompressingDelegateSerde;
-import de.invesdwin.context.integration.streams.LZ4Streams;
+import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
 import de.invesdwin.util.concurrent.reference.persistent.ACompressingSoftReference;
 import de.invesdwin.util.marshallers.serde.ISerde;
 

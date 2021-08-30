@@ -10,7 +10,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.io.IOUtils;
 
-import de.invesdwin.context.integration.streams.LZ4Streams;
+import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
 import de.invesdwin.norva.beanpath.CountingOutputStream;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.Bytes;
