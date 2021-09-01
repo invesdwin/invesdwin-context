@@ -3,13 +3,12 @@ package de.invesdwin.context.integration.streams.compressor.lz4.output.pool;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.concurrent.pool.AObjectPool;
 import net.jpountz.lz4.LZ4Compressor;
-import net.jpountz.lz4.LZ4FrameOutputStream.BLOCKSIZE;
-import net.jpountz.xxhash.XXHash32;
 
 @NotThreadSafe
 public final class PooledLZ4BlockOutputStreamObjectPool extends AObjectPool<PooledLZ4BlockOutputStream> {
@@ -17,8 +16,8 @@ public final class PooledLZ4BlockOutputStreamObjectPool extends AObjectPool<Pool
     private final int maxPoolSize;
     private final List<PooledLZ4BlockOutputStream> pooledLZ4BlockOutputStreamRotation = new ArrayList<PooledLZ4BlockOutputStream>();
 
-    public PooledLZ4BlockOutputStreamObjectPool(final BLOCKSIZE blockSize, final LZ4Compressor compressor,
-            final XXHash32 checksum, final int maxPoolSize) {
+    public PooledLZ4BlockOutputStreamObjectPool(final int blockSize, final LZ4Compressor compressor,
+            final Checksum checksum, final int maxPoolSize) {
         super(null);
         setFactory(new PooledLZ4BlockOutputStreamObjectFactory(this, blockSize, compressor, checksum));
         this.maxPoolSize = maxPoolSize;

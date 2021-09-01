@@ -12,178 +12,59 @@
  */
 package de.invesdwin.context.integration.streams.compressor.lz4.input;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteOrder;
+import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.kafka.common.compress.KafkaLZ4BlockInputStream;
-import org.apache.kafka.common.compress.KafkaLZ4BlockOutputStream;
-import org.apache.kafka.common.compress.KafkaLZ4BlockOutputStream.BD;
-import org.apache.kafka.common.compress.KafkaLZ4BlockOutputStream.FLG;
-import org.apache.kafka.common.utils.BufferSupplier;
-import org.apache.kafka.common.utils.BufferSupplier.GrowableBufferSupplier;
-
-import de.invesdwin.util.lang.Closeables;
-import de.invesdwin.util.lang.description.TextDescription;
-import de.invesdwin.util.streams.buffer.ByteBuffers;
-import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.context.integration.streams.compressor.lz4.output.ReusableLZ4BlockOutputStream;
 import net.jpountz.lz4.LZ4Exception;
-import net.jpountz.lz4.LZ4SafeDecompressor;
-import net.jpountz.xxhash.XXHash32;
+import net.jpountz.lz4.LZ4FastDecompressor;
+import net.jpountz.util.SafeUtils;
 
 @NotThreadSafe
 public class ReusableLZ4BlockInputStream extends InputStream {
 
-    private final IByteBuffer buffer = ByteBuffers.allocateExpandable();
-    private final BufferSupplier bufferSupplier = new GrowableBufferSupplier();
-
-    private final LZ4SafeDecompressor decompressor;
-    private final XXHash32 checksum;
-
-    private InputStream in;
-    private java.nio.ByteBuffer inBuffer;
-    private java.nio.ByteBuffer decompressionBuffer;
-    // `flg` and `maxBlockSize` are effectively final, they are initialised in the `readHeader` method that is only
-    // invoked from the constructor
-    private FLG flg;
-    private int maxBlockSize;
-
-    // If a block is compressed, this is the same as `decompressionBuffer`. If a block is not compressed, this is
-    // a slice of `in` to avoid unnecessary copies.
-    private java.nio.ByteBuffer decompressedBuffer;
-    private boolean started;
+    private final LZ4FastDecompressor decompressor;
+    private final Checksum checksum;
+    private byte[] buffer;
+    private byte[] compressedBuffer;
+    private int originalLen;
+    private int o;
     private boolean finished;
+    private InputStream in;
 
-    public ReusableLZ4BlockInputStream(final LZ4SafeDecompressor decompressor, final XXHash32 checksum) {
+    /**
+     * Creates a new LZ4 input stream to read from the specified underlying InputStream.
+     *
+     * @param in
+     *            the {@link InputStream} to poll
+     * @param decompressor
+     *            the {@link LZ4FastDecompressor decompressor} instance to use
+     * @param checksum
+     *            the {@link Checksum} instance to use, must be equivalent to the instance which has been used to write
+     *            the stream
+     */
+    public ReusableLZ4BlockInputStream(final LZ4FastDecompressor decompressor, final Checksum checksum) {
         this.decompressor = decompressor;
         this.checksum = checksum;
+        this.buffer = new byte[0];
+        this.compressedBuffer = new byte[ReusableLZ4BlockOutputStream.HEADER_LENGTH];
     }
 
     public ReusableLZ4BlockInputStream init(final InputStream in) {
-        if (this.inBuffer != null) {
-            throw new IllegalStateException("inBuffer should be null, thus close() was not called after use");
-        }
-        if (this.in != null) {
-            throw new IllegalStateException("in should be null, thus close() was not called after use");
-        }
         this.in = in;
+        o = 0;
+        originalLen = 0;
         finished = false;
-        started = false;
         return this;
     }
 
-    private void maybeStart() throws IOException {
-        if (started) {
-            return;
-        }
-        started = true;
-        final int length = ByteBuffers.readExpandable(in, buffer, 0);
-        this.inBuffer = buffer.asByteBufferTo(length).order(ByteOrder.LITTLE_ENDIAN);
-        in.close();
-        in = null;
-
-        readHeader();
-        decompressionBuffer = bufferSupplier.get(maxBlockSize);
-    }
-
-    /**
-     * Reads the magic number and frame descriptor from input buffer.
-     *
-     * @throws IOException
-     */
-    private void readHeader() throws IOException {
-        // read first 6 bytes into buffer to check magic and FLG/BD descriptor flags
-        if (inBuffer.remaining() < 6) {
-            throw new IOException(KafkaLZ4BlockInputStream.PREMATURE_EOS);
-        }
-
-        if (KafkaLZ4BlockOutputStream.MAGIC != inBuffer.getInt()) {
-            throw new IOException(KafkaLZ4BlockInputStream.NOT_SUPPORTED);
-        }
-        // mark start of data to checksum
-        inBuffer.mark();
-
-        flg = FLG.fromByte(inBuffer.get());
-        maxBlockSize = BD.fromByte(inBuffer.get()).getBlockMaximumSize();
-
-        if (flg.isContentSizeSet()) {
-            if (inBuffer.remaining() < 8) {
-                throw new IOException(KafkaLZ4BlockInputStream.PREMATURE_EOS);
-            }
-            inBuffer.position(inBuffer.position() + 8);
-        }
-
-        // Final byte of Frame Descriptor is HC checksum
-
-        final int len = inBuffer.position() - inBuffer.reset().position();
-
-        final int hash = checksum.hash(inBuffer, inBuffer.position(), len, 0);
-        inBuffer.position(inBuffer.position() + len);
-        if (inBuffer.get() != (byte) ((hash >> 8) & 0xFF)) {
-            throw new IOException(KafkaLZ4BlockInputStream.DESCRIPTOR_HASH_MISMATCH);
-        }
-    }
-
-    /**
-     * Decompresses (if necessary) buffered data, optionally computes and validates a XXHash32 checksum, and writes the
-     * result to a buffer.
-     *
-     * @throws IOException
-     */
-    //CHECKSTYLE:OFF
-    private void readBlock() throws IOException {
-        //CHECKSTYLE:ON
-        maybeStart();
-        if (inBuffer.remaining() < 4) {
-            throw new IOException(KafkaLZ4BlockInputStream.PREMATURE_EOS);
-        }
-
-        int blockSize = inBuffer.getInt();
-        final boolean compressed = (blockSize & KafkaLZ4BlockOutputStream.LZ4_FRAME_INCOMPRESSIBLE_MASK) == 0;
-        blockSize &= ~KafkaLZ4BlockOutputStream.LZ4_FRAME_INCOMPRESSIBLE_MASK;
-
-        // Check for EndMark
-        if (blockSize == 0) {
-            finished = true;
-            if (flg.isContentChecksumSet()) {
-                inBuffer.getInt(); // TODO: verify this content checksum
-            }
-            return;
-        } else if (blockSize > maxBlockSize) {
-            throw new IOException(TextDescription.format("Block size %s exceeded max: %s", blockSize, maxBlockSize));
-        }
-
-        if (inBuffer.remaining() < blockSize) {
-            throw new IOException(KafkaLZ4BlockInputStream.PREMATURE_EOS);
-        }
-
-        if (compressed) {
-            try {
-                final int bufferSize = decompressor.decompress(inBuffer, inBuffer.position(), blockSize,
-                        decompressionBuffer, 0, maxBlockSize);
-                decompressionBuffer.position(0);
-                decompressionBuffer.limit(bufferSize);
-                decompressedBuffer = decompressionBuffer;
-            } catch (final LZ4Exception e) {
-                throw new IOException(e);
-            }
-        } else {
-            decompressedBuffer = inBuffer.slice();
-            decompressedBuffer.limit(blockSize);
-        }
-
-        // verify checksum
-        if (flg.isBlockChecksumSet()) {
-            final int hash = checksum.hash(inBuffer, inBuffer.position(), blockSize, 0);
-            inBuffer.position(inBuffer.position() + blockSize);
-            if (hash != inBuffer.getInt()) {
-                throw new IOException(KafkaLZ4BlockInputStream.BLOCK_HASH_MISMATCH);
-            }
-        } else {
-            inBuffer.position(inBuffer.position() + blockSize);
-        }
+    @Override
+    public int available() throws IOException {
+        return originalLen - o;
     }
 
     @Override
@@ -191,81 +72,179 @@ public class ReusableLZ4BlockInputStream extends InputStream {
         if (finished) {
             return -1;
         }
-        if (available() == 0) {
-            readBlock();
+        if (o == originalLen) {
+            refill();
         }
         if (finished) {
             return -1;
         }
-
-        return decompressedBuffer.get() & 0xFF;
+        return buffer[o++] & 0xFF;
     }
 
-    //CHECKSTYLE:OFF
     @Override
-    public int read(final byte[] b, final int off, int len) throws IOException {
-        net.jpountz.util.SafeUtils.checkRange(b, off, len);
+    public int read(final byte[] b, final int off, final int pLen) throws IOException {
+        SafeUtils.checkRange(b, off, pLen);
         if (finished) {
             return -1;
         }
-        if (available() == 0) {
-            readBlock();
+        if (o == originalLen) {
+            refill();
         }
         if (finished) {
             return -1;
         }
-        len = Math.min(len, available());
-
-        decompressedBuffer.get(b, off, len);
+        final int len = Math.min(pLen, originalLen - o);
+        System.arraycopy(buffer, o, b, off, len);
+        o += len;
         return len;
     }
-    //CHECKSTYLE:ON
+
+    @Override
+    public int read(final byte[] b) throws IOException {
+        return read(b, 0, b.length);
+    }
 
     @Override
     public long skip(final long n) throws IOException {
+        if (n <= 0 || finished) {
+            return 0;
+        }
+        if (o == originalLen) {
+            refill();
+        }
         if (finished) {
             return 0;
         }
-        if (available() == 0) {
-            readBlock();
-        }
-        if (finished) {
-            return 0;
-        }
-        final int skipped = (int) Math.min(n, available());
-        decompressedBuffer.position(decompressedBuffer.position() + skipped);
+        final int skipped = (int) Math.min(n, originalLen - o);
+        o += skipped;
         return skipped;
     }
 
-    @Override
-    public int available() {
-        return decompressedBuffer == null ? 0 : decompressedBuffer.remaining();
-    }
-
-    @Override
-    public void close() {
-        bufferSupplier.release(decompressionBuffer);
-        inBuffer = null;
-        decompressedBuffer = null;
-        if (in != null) {
-            Closeables.closeQuietly(in);
-            in = null;
+    //CHECKSTYLE:OFF
+    private void refill() throws IOException {
+        //CHECKSTYLE:ON
+        if (!tryReadFully(compressedBuffer, ReusableLZ4BlockOutputStream.HEADER_LENGTH)) {
+            throw new EOFException("Stream ended prematurely");
         }
-        finished = true;
+        for (int i = 0; i < ReusableLZ4BlockOutputStream.MAGIC_LENGTH; ++i) {
+            if (compressedBuffer[i] != ReusableLZ4BlockOutputStream.MAGIC[i]) {
+                throw new IOException("Stream is corrupted");
+            }
+        }
+        final int token = compressedBuffer[ReusableLZ4BlockOutputStream.MAGIC_LENGTH] & 0xFF;
+        final int compressionMethod = token & 0xF0;
+        final int compressionLevel = ReusableLZ4BlockOutputStream.COMPRESSION_LEVEL_BASE + (token & 0x0F);
+        if (compressionMethod != ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_RAW
+                && compressionMethod != ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_LZ4) {
+            throw new IOException("Stream is corrupted");
+        }
+        final int compressedLen = SafeUtils.readIntLE(compressedBuffer, ReusableLZ4BlockOutputStream.MAGIC_LENGTH + 1);
+        originalLen = SafeUtils.readIntLE(compressedBuffer, ReusableLZ4BlockOutputStream.MAGIC_LENGTH + 5);
+        final int check = SafeUtils.readIntLE(compressedBuffer, ReusableLZ4BlockOutputStream.MAGIC_LENGTH + 9);
+        assert ReusableLZ4BlockOutputStream.HEADER_LENGTH == ReusableLZ4BlockOutputStream.MAGIC_LENGTH + 13;
+        //CHECKSTYLE:OFF
+        if (originalLen > 1 << compressionLevel || originalLen < 0 || compressedLen < 0
+                || (originalLen == 0 && compressedLen != 0) || (originalLen != 0 && compressedLen == 0)
+                || (compressionMethod == ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_RAW
+                        && originalLen != compressedLen)) {
+            //CHECKSTYLE:ON
+            throw new IOException("Stream is corrupted");
+        }
+        if (originalLen == 0 && compressedLen == 0) {
+            if (check != 0) {
+                throw new IOException("Stream is corrupted");
+            }
+            finished = true;
+            return;
+        }
+        if (buffer.length < originalLen) {
+            buffer = new byte[Math.max(originalLen, buffer.length * 3 / 2)];
+        }
+        switch (compressionMethod) {
+        case ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_RAW:
+            readFully(buffer, originalLen);
+            break;
+        case ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_LZ4:
+            if (compressedBuffer.length < compressedLen) {
+                compressedBuffer = new byte[Math.max(compressedLen, compressedBuffer.length * 3 / 2)];
+            }
+            readFully(compressedBuffer, compressedLen);
+            try {
+                final int compressedLen2 = decompressor.decompress(compressedBuffer, 0, buffer, 0, originalLen);
+                if (compressedLen != compressedLen2) {
+                    throw new IOException("Stream is corrupted");
+                }
+            } catch (final LZ4Exception e) {
+                throw new IOException("Stream is corrupted", e);
+            }
+            break;
+        default:
+            throw new AssertionError();
+        }
+        checksum.reset();
+        checksum.update(buffer, 0, originalLen);
+        if ((int) checksum.getValue() != check) {
+            throw new IOException("Stream is corrupted");
+        }
+        o = 0;
     }
 
-    @Override
-    public void mark(final int readlimit) {
-        throw new RuntimeException("mark not supported");
+    // Like readFully(), except it signals incomplete reads by returning
+    // false instead of throwing EOFException.
+    private boolean tryReadFully(final byte[] b, final int len) throws IOException {
+        int read = 0;
+        while (read < len) {
+            final int r = in.read(b, read, len - read);
+            if (r < 0) {
+                return false;
+            }
+            read += r;
+        }
+        assert len == read;
+        return true;
     }
 
-    @Override
-    public void reset() {
-        throw new RuntimeException("reset not supported");
+    private void readFully(final byte[] b, final int len) throws IOException {
+        if (!tryReadFully(b, len)) {
+            throw new EOFException("Stream ended prematurely");
+        }
     }
 
     @Override
     public boolean markSupported() {
         return false;
     }
+
+    @SuppressWarnings("sync-override")
+    @Override
+    public void mark(final int readlimit) {
+        // unsupported
+    }
+
+    @SuppressWarnings("sync-override")
+    @Override
+    public void reset() throws IOException {
+        throw new IOException("mark/reset not supported");
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(in=" + in + ", decompressor=" + decompressor + ", checksum=" + checksum
+                + ")";
+    }
+
+    /**
+     * Closes this input stream and releases any system resources associated with the stream. This method simply
+     * performs {@code in.close()}.
+     *
+     * @throws IOException
+     *             if an I/O error occurs.
+     * @see java.io.FilterInputStream#in
+     */
+    @Override
+    public void close() throws IOException {
+        in.close();
+        in = null;
+    }
+
 }

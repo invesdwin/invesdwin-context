@@ -12,11 +12,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
+import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
-import net.jpountz.lz4.LZ4BlockInputStream;
-import net.jpountz.lz4.LZ4BlockOutputStream;
+import io.netty.util.concurrent.FastThreadLocal;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
@@ -52,42 +53,42 @@ public final class LZ4Streams {
     //normally compressors/decompressors should not be nested in one thread
     private static final int MAX_POOL_SIZE = 2;
 
-    //    private static final FastThreadLocal<PooledLZ4BlockInputStreamObjectPool> INPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockInputStreamObjectPool>() {
-    //        @Override
-    //        protected PooledLZ4BlockInputStreamObjectPool initialValue() throws Exception {
-    //            return new PooledLZ4BlockInputStreamObjectPool(newDefaultLZ4Decompressor(), newDefaultChecksum(),
-    //                    MAX_POOL_SIZE);
-    //        }
-    //    };
-    //
-    //    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> FAST_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
-    //        @Override
-    //        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
-    //            return new PooledLZ4BlockOutputStreamObjectPool(DEFAULT_BLOCK_SIZE, newFastLZ4Compressor(),
-    //                    newDefaultChecksum(), MAX_POOL_SIZE);
-    //        }
-    //    };
-    //    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> LARGE_FAST_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
-    //        @Override
-    //        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
-    //            return new PooledLZ4BlockOutputStreamObjectPool(LARGE_BLOCK_SIZE, newFastLZ4Compressor(),
-    //                    newDefaultChecksum(), MAX_POOL_SIZE);
-    //        }
-    //    };
-    //    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> HIGH_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
-    //        @Override
-    //        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
-    //            return new PooledLZ4BlockOutputStreamObjectPool(DEFAULT_BLOCK_SIZE, newHighLZ4Compressor(),
-    //                    newDefaultChecksum(), MAX_POOL_SIZE);
-    //        }
-    //    };
-    //    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> LARGE_HIGH_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
-    //        @Override
-    //        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
-    //            return new PooledLZ4BlockOutputStreamObjectPool(LARGE_BLOCK_SIZE, newHighLZ4Compressor(),
-    //                    newDefaultChecksum(), MAX_POOL_SIZE);
-    //        }
-    //    };
+    private static final FastThreadLocal<PooledLZ4BlockInputStreamObjectPool> INPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockInputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockInputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockInputStreamObjectPool(newDefaultLZ4Decompressor(), newDefaultChecksum(),
+                    MAX_POOL_SIZE);
+        }
+    };
+
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> FAST_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(DEFAULT_BLOCK_SIZE_BYTES, newFastLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> LARGE_FAST_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(LARGE_BLOCK_SIZE_BYTES, newFastLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> HIGH_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(DEFAULT_BLOCK_SIZE_BYTES, newHighLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> LARGE_HIGH_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(LARGE_BLOCK_SIZE_BYTES, newHighLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
 
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -112,9 +113,9 @@ public final class LZ4Streams {
         if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
             return newFastLZ4OutputStream(out);
         } else {
-            //            return HIGH_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
-            return new LZ4BlockOutputStream(out, DEFAULT_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), newDefaultChecksum(),
-                    true);
+            return HIGH_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
+            //            return new LZ4BlockOutputStream(out, DEFAULT_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), newDefaultChecksum(),
+            //                    true);
         }
     }
 
@@ -122,27 +123,27 @@ public final class LZ4Streams {
         if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
             return newLargeFastLZ4OutputStream(out);
         } else {
-            //            return LARGE_HIGH_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
-            return new LZ4BlockOutputStream(out, LARGE_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), newDefaultChecksum(),
-                    true);
+            return LARGE_HIGH_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
+            //            return new LZ4BlockOutputStream(out, LARGE_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), newDefaultChecksum(),
+            //                    true);
         }
     }
 
     public static OutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
-        //        return LARGE_FAST_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
-        return new LZ4BlockOutputStream(out, LARGE_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(),
-                true);
+        return LARGE_FAST_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
+        //        return new LZ4BlockOutputStream(out, LARGE_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(),
+        //                true);
     }
 
     public static OutputStream newFastLZ4OutputStream(final OutputStream out) {
-        //        return FAST_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
-        return new LZ4BlockOutputStream(out, DEFAULT_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(),
-                true);
+        return FAST_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
+        //        return new LZ4BlockOutputStream(out, DEFAULT_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(),
+        //                true);
     }
 
     public static InputStream newDefaultLZ4InputStream(final InputStream in) {
-        //        return INPUT_POOL_HOLDER.get().borrowObject().init(in);
-        return new LZ4BlockInputStream(in, newDefaultLZ4Decompressor(), newDefaultChecksum(), true);
+        return INPUT_POOL_HOLDER.get().borrowObject().init(in);
+        //        return new LZ4BlockInputStream(in, newDefaultLZ4Decompressor(), newDefaultChecksum(), true);
     }
 
     public static LZ4FastDecompressor newDefaultLZ4Decompressor() {

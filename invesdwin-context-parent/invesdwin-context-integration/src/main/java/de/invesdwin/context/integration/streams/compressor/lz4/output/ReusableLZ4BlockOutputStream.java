@@ -2,210 +2,215 @@ package de.invesdwin.context.integration.streams.compressor.lz4.output;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.kafka.common.compress.KafkaLZ4BlockOutputStream;
-import org.apache.kafka.common.compress.KafkaLZ4BlockOutputStream.BD;
-import org.apache.kafka.common.compress.KafkaLZ4BlockOutputStream.FLG;
-import org.apache.kafka.common.utils.ByteUtils;
-
 import net.jpountz.lz4.LZ4Compressor;
-import net.jpountz.lz4.LZ4FrameOutputStream.BLOCKSIZE;
-import net.jpountz.xxhash.XXHash32;
+import net.jpountz.util.SafeUtils;
 
 @NotThreadSafe
 public class ReusableLZ4BlockOutputStream extends OutputStream {
 
-    private final LZ4Compressor compressor;
-    private final XXHash32 checksum;
-    private final FLG flg;
-    private final BD bd;
-    private final int maxBlockSize;
-    private OutputStream out;
-    private byte[] buffer;
-    private byte[] compressedBuffer;
-    private int bufferOffset;
-    private boolean started;
-    private boolean finished;
+    public static final byte[] MAGIC = new byte[] { 'L', 'Z', '4', 'B', 'l', 'o', 'c', 'k' };
+    public static final int MAGIC_LENGTH = MAGIC.length;
 
-    public ReusableLZ4BlockOutputStream(final BLOCKSIZE blockSize, final LZ4Compressor compressor,
-            final XXHash32 checksum) {
+    public static final int HEADER_LENGTH = MAGIC_LENGTH // magic bytes
+            + 1 // token
+            + 4 // compressed length
+            + 4 // decompressed length
+            + 4; // checksum
+
+    public static final int COMPRESSION_LEVEL_BASE = 10;
+    public static final int MIN_BLOCK_SIZE = 64;
+    public static final int MAX_BLOCK_SIZE = 1 << (COMPRESSION_LEVEL_BASE + 0x0F);
+
+    public static final int COMPRESSION_METHOD_RAW = 0x10;
+    public static final int COMPRESSION_METHOD_LZ4 = 0x20;
+
+    public static final int DEFAULT_SEED = 0x9747b28c;
+
+    private final int blockSize;
+    private final int compressionLevel;
+    private final LZ4Compressor compressor;
+    private final Checksum checksum;
+    private final byte[] buffer;
+    private final byte[] compressedBuffer;
+    private boolean finished;
+    private int o;
+    private OutputStream out;
+
+    /**
+     * Creates a new {@link OutputStream} with configurable block size. Large blocks require more memory at compression
+     * and decompression time but should improve the compression ratio.
+     *
+     * @param out
+     *            the {@link OutputStream} to feed
+     * @param blockSize
+     *            the maximum number of bytes to try to compress at once, must be &gt;= 64 and &lt;= 32 M
+     * @param compressor
+     *            the {@link LZ4Compressor} instance to use to compress data
+     * @param checksum
+     *            the {@link Checksum} instance to use to check data for integrity.
+     */
+    public ReusableLZ4BlockOutputStream(final int blockSize, final LZ4Compressor compressor, final Checksum checksum) {
+        this.blockSize = blockSize;
         this.compressor = compressor;
         this.checksum = checksum;
-        this.bd = new BD(blockSize.getIndicator());
-        this.flg = new FLG(true);
-        this.maxBlockSize = bd.getBlockMaximumSize();
+        this.compressionLevel = compressionLevel(blockSize);
+        this.buffer = new byte[blockSize];
+        final int compressedBlockSize = HEADER_LENGTH + compressor.maxCompressedLength(blockSize);
+        this.compressedBuffer = new byte[compressedBlockSize];
+        System.arraycopy(MAGIC, 0, compressedBuffer, 0, MAGIC_LENGTH);
     }
 
     public ReusableLZ4BlockOutputStream init(final OutputStream out) {
-        if (this.out != null) {
-            throw new IllegalStateException("not closed!");
-        }
         this.out = out;
-        bufferOffset = 0;
-        buffer = new byte[maxBlockSize];
-        compressedBuffer = new byte[compressor.maxCompressedLength(maxBlockSize)];
-        started = false;
+        o = 0;
         finished = false;
         return this;
     }
 
-    /**
-     * Writes the magic number and frame descriptor to the underlying {@link OutputStream}.
-     *
-     * @throws IOException
-     */
-    private void writeHeader() throws IOException {
-        ByteUtils.writeUnsignedIntLE(buffer, 0, KafkaLZ4BlockOutputStream.MAGIC);
-        bufferOffset = 4;
-        buffer[bufferOffset++] = flg.toByte();
-        buffer[bufferOffset++] = bd.toByte();
-        // TODO write uncompressed content size, update flg.validate()
-
-        // compute checksum on all descriptor fields
-        final int offset = 4;
-        final int len = bufferOffset - offset;
-        final byte hash = (byte) ((checksum.hash(buffer, offset, len, 0) >> 8) & 0xFF);
-        buffer[bufferOffset++] = hash;
-
-        // write out frame descriptor
-        out.write(buffer, 0, bufferOffset);
-        bufferOffset = 0;
+    private static int compressionLevel(final int blockSize) {
+        if (blockSize < MIN_BLOCK_SIZE) {
+            throw new IllegalArgumentException("blockSize must be >= " + MIN_BLOCK_SIZE + ", got " + blockSize);
+        } else if (blockSize > MAX_BLOCK_SIZE) {
+            throw new IllegalArgumentException("blockSize must be <= " + MAX_BLOCK_SIZE + ", got " + blockSize);
+        }
+        int compressionLevel = 32 - Integer.numberOfLeadingZeros(blockSize - 1); // ceil of log2
+        assert (1 << compressionLevel) >= blockSize;
+        assert blockSize * 2 > (1 << compressionLevel);
+        compressionLevel = Math.max(0, compressionLevel - COMPRESSION_LEVEL_BASE);
+        assert compressionLevel >= 0 && compressionLevel <= 0x0F;
+        return compressionLevel;
     }
 
-    /**
-     * Compresses buffered data, optionally computes an XXHash32 checksum, and writes the result to the underlying
-     * {@link OutputStream}.
-     *
-     * @throws IOException
-     */
-    private void writeBlock() throws IOException {
-        if (bufferOffset == 0) {
-            return;
+    private void ensureNotFinished() {
+        if (finished) {
+            throw new IllegalStateException("This stream is already closed");
         }
-
-        int compressedLength = compressor.compress(buffer, 0, bufferOffset, compressedBuffer, 0);
-        byte[] bufferToWrite = compressedBuffer;
-        int compressMethod = 0;
-
-        // Store block uncompressed if compressed length is greater (incompressible)
-        if (compressedLength >= bufferOffset) {
-            bufferToWrite = buffer;
-            compressedLength = bufferOffset;
-            compressMethod = KafkaLZ4BlockOutputStream.LZ4_FRAME_INCOMPRESSIBLE_MASK;
-        }
-
-        // Write content
-        ByteUtils.writeUnsignedIntLE(out, compressedLength | compressMethod);
-        out.write(bufferToWrite, 0, compressedLength);
-
-        // Calculate and write block checksum
-        if (flg.isBlockChecksumSet()) {
-            final int hash = checksum.hash(bufferToWrite, 0, compressedLength, 0);
-            ByteUtils.writeUnsignedIntLE(out, hash);
-        }
-        bufferOffset = 0;
-    }
-
-    /**
-     * Similar to the {@link #writeBlock()} method. Writes a 0-length block (without block checksum) to signal the end
-     * of the block stream.
-     *
-     * @throws IOException
-     */
-    private void writeEndMark() throws IOException {
-        ByteUtils.writeUnsignedIntLE(out, 0);
-        // TODO implement content checksum, update flg.validate()
     }
 
     @Override
     public void write(final int b) throws IOException {
         ensureNotFinished();
-        maybeStart();
-        if (bufferOffset == maxBlockSize) {
-            writeBlock();
+        if (o == blockSize) {
+            flushBufferedData();
         }
-        buffer[bufferOffset++] = (byte) b;
+        buffer[o++] = (byte) b;
     }
 
     //CHECKSTYLE:OFF
     @Override
     public void write(final byte[] b, int off, int len) throws IOException {
-        net.jpountz.util.SafeUtils.checkRange(b, off, len);
+        SafeUtils.checkRange(b, off, len);
         ensureNotFinished();
-        maybeStart();
 
-        int bufferRemainingLength = maxBlockSize - bufferOffset;
-        // while b will fill the buffer
-        while (len > bufferRemainingLength) {
-            // fill remaining space in buffer
-            System.arraycopy(b, off, buffer, bufferOffset, bufferRemainingLength);
-            bufferOffset = maxBlockSize;
-            writeBlock();
-            // compute new offset and length
-            off += bufferRemainingLength;
-            len -= bufferRemainingLength;
-            bufferRemainingLength = maxBlockSize;
+        while (o + len > blockSize) {
+            final int l = blockSize - o;
+            System.arraycopy(b, off, buffer, o, blockSize - o);
+            o = blockSize;
+            flushBufferedData();
+            off += l;
+            len -= l;
         }
-
-        System.arraycopy(b, off, buffer, bufferOffset, len);
-        bufferOffset += len;
+        System.arraycopy(b, off, buffer, o, len);
+        o += len;
     }
     //CHECKSTYLE:ON
 
     @Override
-    public void flush() throws IOException {
-        if (!finished) {
-            maybeStart();
-            writeBlock();
-        }
-        if (out != null) {
-            out.flush();
-        }
-    }
-
-    private void maybeStart() throws IOException {
-        if (started) {
-            return;
-        }
-        started = true;
-        writeHeader();
-    }
-
-    /**
-     * A simple state check to ensure the stream is still open.
-     */
-    private void ensureNotFinished() {
-        if (finished) {
-            throw new IllegalStateException(KafkaLZ4BlockOutputStream.CLOSED_STREAM);
-        }
+    public void write(final byte[] b) throws IOException {
+        ensureNotFinished();
+        write(b, 0, b.length);
     }
 
     @Override
     public void close() throws IOException {
-        try {
-            if (!finished) {
-                maybeStart();
-                // basically flush the buffer writing the last block
-                writeBlock();
-                // write the end block
-                writeEndMark();
-            }
-        } finally {
-            try {
-                if (out != null) {
-                    try (OutputStream outStream = out) {
-                        outStream.flush();
-                    }
-                }
-            } finally {
-                out = null;
-                buffer = null;
-                compressedBuffer = null;
-                finished = true;
-            }
+        if (!finished) {
+            finish();
         }
+        if (out != null) {
+            out.close();
+            out = null;
+        }
+    }
+
+    private void flushBufferedData() throws IOException {
+        if (o == 0) {
+            return;
+        }
+        checksum.reset();
+        checksum.update(buffer, 0, o);
+        final int check = (int) checksum.getValue();
+        int compressedLength = compressor.compress(buffer, 0, o, compressedBuffer, HEADER_LENGTH);
+        final int compressMethod;
+        if (compressedLength >= o) {
+            compressMethod = COMPRESSION_METHOD_RAW;
+            compressedLength = o;
+            System.arraycopy(buffer, 0, compressedBuffer, HEADER_LENGTH, o);
+        } else {
+            compressMethod = COMPRESSION_METHOD_LZ4;
+        }
+
+        compressedBuffer[MAGIC_LENGTH] = (byte) (compressMethod | compressionLevel);
+        writeIntLE(compressedLength, compressedBuffer, MAGIC_LENGTH + 1);
+        writeIntLE(o, compressedBuffer, MAGIC_LENGTH + 5);
+        writeIntLE(check, compressedBuffer, MAGIC_LENGTH + 9);
+        assert MAGIC_LENGTH + 13 == HEADER_LENGTH;
+        out.write(compressedBuffer, 0, HEADER_LENGTH + compressedLength);
+        o = 0;
+    }
+
+    /**
+     * Flushes this compressed {@link OutputStream}.
+     *
+     * If the stream has been created with <code>syncFlush=true</code>, pending data will be compressed and appended to
+     * the underlying {@link OutputStream} before calling {@link OutputStream#flush()} on the underlying stream.
+     * Otherwise, this method just flushes the underlying stream, so pending data might not be available for reading
+     * until {@link #finish()} or {@link #close()} is called.
+     */
+    @Override
+    public void flush() throws IOException {
+        if (out != null) {
+            flushBufferedData();
+            out.flush();
+        }
+    }
+
+    /**
+     * Same as {@link #close()} except that it doesn't close the underlying stream. This can be useful if you want to
+     * keep on using the underlying stream.
+     *
+     * @throws IOException
+     *             if an I/O error occurs.
+     */
+    public void finish() throws IOException {
+        ensureNotFinished();
+        flushBufferedData();
+        compressedBuffer[MAGIC_LENGTH] = (byte) (COMPRESSION_METHOD_RAW | compressionLevel);
+        writeIntLE(0, compressedBuffer, MAGIC_LENGTH + 1);
+        writeIntLE(0, compressedBuffer, MAGIC_LENGTH + 5);
+        writeIntLE(0, compressedBuffer, MAGIC_LENGTH + 9);
+        assert MAGIC_LENGTH + 13 == HEADER_LENGTH;
+        out.write(compressedBuffer, 0, HEADER_LENGTH);
+        finished = true;
+        out.flush();
+    }
+
+    //CHECKSTYLE:OFF
+    private static void writeIntLE(final int i, final byte[] buf, int off) {
+        buf[off++] = (byte) i;
+        buf[off++] = (byte) (i >>> 8);
+        buf[off++] = (byte) (i >>> 16);
+        buf[off++] = (byte) (i >>> 24);
+    }
+    //CHECKSTYLE:ON
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(out=" + out + ", blockSize=" + blockSize + ", compressor=" + compressor
+                + ", checksum=" + checksum + ")";
     }
 
 }

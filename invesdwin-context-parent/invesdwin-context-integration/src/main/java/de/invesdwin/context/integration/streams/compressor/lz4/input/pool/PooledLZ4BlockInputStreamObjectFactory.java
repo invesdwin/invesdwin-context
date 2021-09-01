@@ -1,20 +1,21 @@
 package de.invesdwin.context.integration.streams.compressor.lz4.input.pool;
 
+import java.util.zip.Checksum;
+
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.concurrent.pool.IPoolableObjectFactory;
-import net.jpountz.lz4.LZ4SafeDecompressor;
-import net.jpountz.xxhash.XXHash32;
+import net.jpountz.lz4.LZ4FastDecompressor;
 
 @Immutable
 public final class PooledLZ4BlockInputStreamObjectFactory implements IPoolableObjectFactory<PooledLZ4BlockInputStream> {
 
-    private final LZ4SafeDecompressor decompressor;
-    private final XXHash32 checksum;
     private final PooledLZ4BlockInputStreamObjectPool pool;
+    private final LZ4FastDecompressor decompressor;
+    private final Checksum checksum;
 
     public PooledLZ4BlockInputStreamObjectFactory(final PooledLZ4BlockInputStreamObjectPool pool,
-            final LZ4SafeDecompressor decompressor, final XXHash32 checksum) {
+            final LZ4FastDecompressor decompressor, final Checksum checksum) {
         this.pool = pool;
         this.decompressor = decompressor;
         this.checksum = checksum;
