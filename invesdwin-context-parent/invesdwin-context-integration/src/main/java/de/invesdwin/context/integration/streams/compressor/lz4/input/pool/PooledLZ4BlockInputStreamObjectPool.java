@@ -24,7 +24,7 @@ public final class PooledLZ4BlockInputStreamObjectPool extends AObjectPool<Poole
     }
 
     @Override
-    protected PooledLZ4BlockInputStream internalBorrowObject() {
+    protected synchronized PooledLZ4BlockInputStream internalBorrowObject() {
         if (pooledLZ4BlockInputStreamRotation.isEmpty()) {
             return factory.makeObject();
         }
@@ -37,12 +37,12 @@ public final class PooledLZ4BlockInputStreamObjectPool extends AObjectPool<Poole
     }
 
     @Override
-    public int getNumIdle() {
+    public synchronized int getNumIdle() {
         return pooledLZ4BlockInputStreamRotation.size();
     }
 
     @Override
-    public Collection<PooledLZ4BlockInputStream> internalClear() {
+    public synchronized Collection<PooledLZ4BlockInputStream> internalClear() {
         final Collection<PooledLZ4BlockInputStream> removed = new ArrayList<PooledLZ4BlockInputStream>();
         while (!pooledLZ4BlockInputStreamRotation.isEmpty()) {
             removed.add(pooledLZ4BlockInputStreamRotation.remove(0));
@@ -51,14 +51,14 @@ public final class PooledLZ4BlockInputStreamObjectPool extends AObjectPool<Poole
     }
 
     @Override
-    protected PooledLZ4BlockInputStream internalAddObject() {
+    protected synchronized PooledLZ4BlockInputStream internalAddObject() {
         final PooledLZ4BlockInputStream pooled = factory.makeObject();
         pooledLZ4BlockInputStreamRotation.add(factory.makeObject());
         return pooled;
     }
 
     @Override
-    protected void internalReturnObject(final PooledLZ4BlockInputStream obj) {
+    protected synchronized void internalReturnObject(final PooledLZ4BlockInputStream obj) {
         if (pooledLZ4BlockInputStreamRotation.size() < maxPoolSize) {
             pooledLZ4BlockInputStreamRotation.add(obj);
         }
@@ -70,7 +70,7 @@ public final class PooledLZ4BlockInputStreamObjectPool extends AObjectPool<Poole
     }
 
     @Override
-    protected void internalRemoveObject(final PooledLZ4BlockInputStream obj) {
+    protected synchronized void internalRemoveObject(final PooledLZ4BlockInputStream obj) {
         pooledLZ4BlockInputStreamRotation.remove(obj);
     }
 
