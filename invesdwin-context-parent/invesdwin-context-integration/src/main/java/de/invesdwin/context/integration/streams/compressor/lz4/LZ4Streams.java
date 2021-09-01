@@ -16,6 +16,7 @@ import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
 import net.jpountz.lz4.LZ4BlockInputStream;
 import net.jpountz.lz4.LZ4BlockOutputStream;
+import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.xxhash.XXHashFactory;
 
@@ -76,9 +77,21 @@ public final class LZ4Streams {
         } else {
             return new LZ4BlockOutputStream(out, blockSize,
                     //fastestInstance picks jni which flushes too slow
-                    LZ4Factory.fastestInstance().highCompressor(compressionLevel),
+                    newHighCompressor(compressionLevel),
                     XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
         }
+    }
+
+    public static LZ4Compressor newHighCompressor() {
+        return newHighCompressor(DEFAULT_COMPRESSION_LEVEL);
+    }
+
+    public static LZ4Compressor newHighCompressor(final int compressionLevel) {
+        return LZ4Factory.fastestInstance().highCompressor(compressionLevel);
+    }
+
+    public static LZ4Compressor newFastCompressor() {
+        return LZ4Factory.fastestInstance().fastCompressor();
     }
 
     public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
@@ -90,7 +103,7 @@ public final class LZ4Streams {
     }
 
     public static LZ4BlockOutputStream newFastLZ4OutputStream(final OutputStream out, final int blockSize) {
-        return new LZ4BlockOutputStream(out, blockSize, LZ4Factory.fastestInstance().fastCompressor(),
+        return new LZ4BlockOutputStream(out, blockSize, newFastCompressor(),
                 XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum(), true);
     }
 
