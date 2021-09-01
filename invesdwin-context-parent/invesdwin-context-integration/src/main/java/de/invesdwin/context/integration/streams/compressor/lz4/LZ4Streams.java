@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -12,14 +11,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import de.invesdwin.context.integration.IntegrationProperties;
-import de.invesdwin.util.math.Integers;
-import de.invesdwin.util.math.decimal.scaled.ByteSize;
-import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
-import net.jpountz.lz4.LZ4BlockInputStream;
-import net.jpountz.lz4.LZ4BlockOutputStream;
+import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
+import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
+import io.netty.util.concurrent.FastThreadLocal;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
-import net.jpountz.lz4.LZ4FastDecompressor;
+import net.jpountz.lz4.LZ4FrameOutputStream.BLOCKSIZE;
+import net.jpountz.lz4.LZ4SafeDecompressor;
+import net.jpountz.xxhash.XXHash32;
 import net.jpountz.xxhash.XXHashFactory;
 
 @Immutable
@@ -30,24 +29,62 @@ public final class LZ4Streams {
      * https://github.com/lz4/lz4-java/issues/142
      */
     public static final int DEFAULT_COMPRESSION_LEVEL = 9;
-    public static final int LARGE_BLOCK_SIZE = Integers
-            .checkedCast(new ByteSize(1D, ByteSizeScale.MEGABYTES).getValue(ByteSizeScale.BYTES));
+    public static final BLOCKSIZE LARGE_BLOCK_SIZE = BLOCKSIZE.SIZE_1MB;
+
     /*
      * 64KB is default in LZ4OutputStream (1 << 16) though 128K is almost the same speed with a bit better compression
      * on fast compressor
      * 
      * http://java-performance.info/performance-general-compression/
      */
-    public static final int DEFAULT_BLOCK_SIZE = Integers
-            .checkedCast(new ByteSize(64D, ByteSizeScale.KILOBYTES).getValue(ByteSizeScale.BYTES));
+    public static final BLOCKSIZE DEFAULT_BLOCK_SIZE = BLOCKSIZE.SIZE_64KB;
     public static final int DEFAULT_SEED = 0x9747b28c;
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;
 
+    //normally compressors/decompressors should not be nested in one thread
+    private static final int MAX_POOL_SIZE = 2;
+
+    private static final FastThreadLocal<PooledLZ4BlockInputStreamObjectPool> INPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockInputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockInputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockInputStreamObjectPool(newDefaultLZ4Decompressor(), newDefaultChecksum(),
+                    MAX_POOL_SIZE);
+        }
+    };
+
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> FAST_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(DEFAULT_BLOCK_SIZE, newFastLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> LARGE_FAST_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(LARGE_BLOCK_SIZE, newFastLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> HIGH_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(DEFAULT_BLOCK_SIZE, newHighLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+    private static final FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool> LARGE_HIGH_OUTPUT_POOL_HOLDER = new FastThreadLocal<PooledLZ4BlockOutputStreamObjectPool>() {
+        @Override
+        protected PooledLZ4BlockOutputStreamObjectPool initialValue() throws Exception {
+            return new PooledLZ4BlockOutputStreamObjectPool(LARGE_BLOCK_SIZE, newHighLZ4Compressor(),
+                    newDefaultChecksum(), MAX_POOL_SIZE);
+        }
+    };
+
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final LZ4BlockOutputStream lz4Out = newDefaultLZ4OutputStream(out);
-        try {
+        try (OutputStream lz4Out = newDefaultLZ4OutputStream(out)) {
             IOUtils.write("", lz4Out, Charset.defaultCharset());
             lz4Out.close();
             out.close();
@@ -60,51 +97,44 @@ public final class LZ4Streams {
     private LZ4Streams() {
     }
 
-    public static LZ4BlockOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
+    public static OutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out);
     }
 
-    public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out) {
-        return newHighLZ4OutputStream(out, DEFAULT_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
-    }
-
-    public static LZ4BlockOutputStream newLargeHighLZ4OutputStream(final OutputStream out) {
-        return newHighLZ4OutputStream(out, LARGE_BLOCK_SIZE, DEFAULT_COMPRESSION_LEVEL);
-    }
-
-    public static LZ4BlockOutputStream newHighLZ4OutputStream(final OutputStream out, final int blockSize,
-            final int compressionLevel) {
+    public static OutputStream newHighLZ4OutputStream(final OutputStream out) {
         if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
-            return newFastLZ4OutputStream(out, blockSize);
+            return newFastLZ4OutputStream(out);
         } else {
-            return new LZ4BlockOutputStream(out, blockSize,
-                    //fastestInstance picks jni which flushes too slow
-                    newHighLZ4Compressor(compressionLevel), newDefaultChecksum(), true);
+            return HIGH_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
         }
     }
 
-    public static LZ4BlockOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
-        return newFastLZ4OutputStream(out, LARGE_BLOCK_SIZE);
+    public static OutputStream newLargeHighLZ4OutputStream(final OutputStream out) {
+        if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
+            return newLargeFastLZ4OutputStream(out);
+        } else {
+            return LARGE_HIGH_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
+        }
     }
 
-    public static LZ4BlockOutputStream newFastLZ4OutputStream(final OutputStream out) {
-        return newFastLZ4OutputStream(out, DEFAULT_BLOCK_SIZE);
+    public static OutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
+        return LARGE_FAST_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
     }
 
-    public static LZ4BlockOutputStream newFastLZ4OutputStream(final OutputStream out, final int blockSize) {
-        return new LZ4BlockOutputStream(out, blockSize, newFastLZ4Compressor(), newDefaultChecksum(), true);
+    public static OutputStream newFastLZ4OutputStream(final OutputStream out) {
+        return FAST_OUTPUT_POOL_HOLDER.get().borrowObject().init(out);
     }
 
-    public static LZ4BlockInputStream newDefaultLZ4InputStream(final InputStream in) {
-        return new LZ4BlockInputStream(in, newDefaultLZ4Decompressor());
+    public static InputStream newDefaultLZ4InputStream(final InputStream in) {
+        return INPUT_POOL_HOLDER.get().borrowObject().init(in);
     }
 
-    public static LZ4FastDecompressor newDefaultLZ4Decompressor() {
-        return LZ4Factory.fastestInstance().fastDecompressor();
+    public static LZ4SafeDecompressor newDefaultLZ4Decompressor() {
+        return LZ4Factory.fastestInstance().safeDecompressor();
     }
 
-    public static Checksum newDefaultChecksum() {
-        return XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum();
+    public static XXHash32 newDefaultChecksum() {
+        return XXHashFactory.fastestInstance().hash32();
     }
 
     public static LZ4Compressor newDefaultLZ4Compressor() {
