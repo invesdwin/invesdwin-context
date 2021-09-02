@@ -6,6 +6,7 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.streams.buffer.ByteBuffers;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.util.SafeUtils;
 
@@ -58,9 +59,9 @@ public class ReusableLZ4BlockOutputStream extends OutputStream {
         this.compressor = compressor;
         this.checksum = checksum;
         this.compressionLevel = compressionLevel(blockSize);
-        this.buffer = new byte[blockSize];
+        this.buffer = ByteBuffers.allocateByteArray(blockSize);
         final int compressedBlockSize = HEADER_LENGTH + compressor.maxCompressedLength(blockSize);
-        this.compressedBuffer = new byte[compressedBlockSize];
+        this.compressedBuffer = ByteBuffers.allocateByteArray(compressedBlockSize);
         System.arraycopy(MAGIC, 0, compressedBuffer, 0, MAGIC_LENGTH);
     }
 

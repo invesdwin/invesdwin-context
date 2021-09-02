@@ -20,6 +20,8 @@ import java.util.zip.Checksum;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.streams.compressor.lz4.output.ReusableLZ4BlockOutputStream;
+import de.invesdwin.util.math.Bytes;
+import de.invesdwin.util.streams.buffer.ByteBuffers;
 import net.jpountz.lz4.LZ4Exception;
 import net.jpountz.lz4.LZ4FastDecompressor;
 import net.jpountz.util.SafeUtils;
@@ -50,8 +52,8 @@ public class ReusableLZ4BlockInputStream extends InputStream {
     public ReusableLZ4BlockInputStream(final LZ4FastDecompressor decompressor, final Checksum checksum) {
         this.decompressor = decompressor;
         this.checksum = checksum;
-        this.buffer = new byte[0];
-        this.compressedBuffer = new byte[ReusableLZ4BlockOutputStream.HEADER_LENGTH];
+        this.buffer = Bytes.EMPTY_ARRAY;
+        this.compressedBuffer = ByteBuffers.allocateByteArray(ReusableLZ4BlockOutputStream.HEADER_LENGTH);
     }
 
     public ReusableLZ4BlockInputStream init(final InputStream in) {
@@ -158,7 +160,7 @@ public class ReusableLZ4BlockInputStream extends InputStream {
             return;
         }
         if (buffer.length < originalLen) {
-            buffer = new byte[Math.max(originalLen, buffer.length * 3 / 2)];
+            buffer = ByteBuffers.allocateByteArray(Math.max(originalLen, buffer.length * 3 / 2));
         }
         switch (compressionMethod) {
         case ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_RAW:
@@ -166,7 +168,8 @@ public class ReusableLZ4BlockInputStream extends InputStream {
             break;
         case ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_LZ4:
             if (compressedBuffer.length < compressedLen) {
-                compressedBuffer = new byte[Math.max(compressedLen, compressedBuffer.length * 3 / 2)];
+                compressedBuffer = ByteBuffers
+                        .allocateByteArray(Math.max(compressedLen, compressedBuffer.length * 3 / 2));
             }
             readFully(compressedBuffer, compressedLen);
             try {
