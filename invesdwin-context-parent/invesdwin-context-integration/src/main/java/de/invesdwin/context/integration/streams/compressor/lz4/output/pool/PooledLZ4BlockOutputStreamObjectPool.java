@@ -7,7 +7,7 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.agrona.concurrent.OneToOneConcurrentArrayQueue;
+import org.agrona.concurrent.ManyToManyConcurrentArrayQueue;
 
 import de.invesdwin.util.concurrent.pool.AObjectPool;
 import net.jpountz.lz4.LZ4Compressor;
@@ -23,7 +23,8 @@ public final class PooledLZ4BlockOutputStreamObjectPool extends AObjectPool<Pool
         super(null);
         setFactory(new PooledLZ4BlockOutputStreamObjectFactory(this, blockSize, compressor, checksum));
         this.maxPoolSize = maxPoolSize;
-        pooledLZ4BlockOutputStreamRotation = new OneToOneConcurrentArrayQueue<PooledLZ4BlockOutputStream>(maxPoolSize);
+        pooledLZ4BlockOutputStreamRotation = new ManyToManyConcurrentArrayQueue<PooledLZ4BlockOutputStream>(
+                maxPoolSize);
     }
 
     @Override
