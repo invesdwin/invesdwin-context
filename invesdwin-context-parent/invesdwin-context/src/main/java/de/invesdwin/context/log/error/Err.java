@@ -1,8 +1,7 @@
 package de.invesdwin.context.log.error;
 
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -10,6 +9,9 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.hook.ErrHookManager;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
+import de.invesdwin.util.collections.iterable.buffer.NodeBufferingIterator;
+import de.invesdwin.util.collections.iterable.buffer.NodeBufferingIterator.INode;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.Instant;
@@ -30,7 +32,7 @@ public final class Err {
     private static final Log LOG = new Log("de.invesdwin.ERROR");
     private static final Log LOG_DETAIL = new Log("de.invesdwin.ERROR_DETAIL");
     @GuardedBy("this.class")
-    private static final List<IntervalException> INTERVAL_EXCEPTIONS = new ArrayList<>();
+    private static final NodeBufferingIterator<IntervalException> INTERVAL_EXCEPTIONS = new NodeBufferingIterator<>();
 
     private static final int MAX_INTERVAL_EXCEPTIONS = 1000;
 
@@ -141,29 +143,34 @@ public final class Err {
      */
     public static synchronized LoggedRuntimeException processInterval(final Exception exception,
             final Duration interval) {
-        for (int i = 0; i < INTERVAL_EXCEPTIONS.size(); i++) {
-            final IntervalException candidate = INTERVAL_EXCEPTIONS.get(i);
-            if (candidate.isTimeout()) {
-                INTERVAL_EXCEPTIONS.remove(i);
-                i--;
-            } else {
-                if (isSameMeaning(candidate.getException(), exception)) {
-                    return candidate.getException();
+        final ICloseableIterator<IntervalException> iterator = INTERVAL_EXCEPTIONS.iterator();
+        try {
+            while (true) {
+                final IntervalException candidate = iterator.next();
+                if (candidate.isTimeout()) {
+                    iterator.remove();
+                } else {
+                    if (isSameMeaning(candidate.getException(), exception)) {
+                        return candidate.getException();
+                    }
                 }
             }
+        } catch (final NoSuchElementException e) {
+            //end reached
         }
         final LoggedRuntimeException logged = process(exception);
         INTERVAL_EXCEPTIONS.add(new IntervalException(logged, interval));
         while (INTERVAL_EXCEPTIONS.size() > MAX_INTERVAL_EXCEPTIONS) {
-            INTERVAL_EXCEPTIONS.remove(0);
+            INTERVAL_EXCEPTIONS.next();
         }
         return logged;
     }
 
-    private static final class IntervalException {
+    private static final class IntervalException implements INode<IntervalException> {
         private final LoggedRuntimeException exception;
         private final Duration interval;
         private final Instant instant;
+        private IntervalException next;
 
         private IntervalException(final LoggedRuntimeException exception, final Duration interval) {
             this.exception = exception;
@@ -177,6 +184,16 @@ public final class Err {
 
         public LoggedRuntimeException getException() {
             return exception;
+        }
+
+        @Override
+        public IntervalException getNext() {
+            return next;
+        }
+
+        @Override
+        public void setNext(final IntervalException next) {
+            this.next = next;
         }
 
     }
