@@ -57,16 +57,16 @@ public final class LZ4Streams {
     public static final int MAX_POOL_SIZE = ByteBuffers.MAX_POOL_SIZE;
 
     private static final IObjectPool<PooledLZ4BlockInputStream> INPUT_POOL = new PooledLZ4BlockInputStreamObjectPool(
-            newDefaultLZ4Decompressor(), newDefaultChecksum(), MAX_POOL_SIZE);
+            newDefaultLZ4Decompressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
 
     private static final IObjectPool<PooledLZ4BlockOutputStream> FAST_OUTPUT_POOL = new PooledLZ4BlockOutputStreamObjectPool(
-            DEFAULT_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(), MAX_POOL_SIZE);
+            DEFAULT_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
     private static final IObjectPool<PooledLZ4BlockOutputStream> LARGE_FAST_OUTPUT_POOL = new PooledLZ4BlockOutputStreamObjectPool(
-            LARGE_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(), MAX_POOL_SIZE);
+            LARGE_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
     private static final IObjectPool<PooledLZ4BlockOutputStream> HIGH_OUTPUT_POOL = new PooledLZ4BlockOutputStreamObjectPool(
-            DEFAULT_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), newDefaultChecksum(), MAX_POOL_SIZE);
+            DEFAULT_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
     private static final IObjectPool<PooledLZ4BlockOutputStream> LARGE_HIGH_OUTPUT_POOL = new PooledLZ4BlockOutputStreamObjectPool(
-            LARGE_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), newDefaultChecksum(), MAX_POOL_SIZE);
+            LARGE_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
 
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
