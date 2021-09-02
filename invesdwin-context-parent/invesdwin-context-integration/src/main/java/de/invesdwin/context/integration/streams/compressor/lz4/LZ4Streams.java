@@ -14,6 +14,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
+import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
@@ -50,7 +51,7 @@ public final class LZ4Streams {
     public static final byte[] COMPRESSED_EMPTY_VALUE;
 
     //normally compressors/decompressors should not be nested in one thread
-    private static final int MAX_POOL_SIZE = 2;
+    private static final int MAX_POOL_SIZE = Executors.getCpuThreadPoolCount();
 
     private static final PooledLZ4BlockInputStreamObjectPool INPUT_POOL = new PooledLZ4BlockInputStreamObjectPool(
             newDefaultLZ4Decompressor(), newDefaultChecksum(), MAX_POOL_SIZE);
