@@ -51,7 +51,7 @@ public final class LZ4Streams {
     public static final byte[] COMPRESSED_EMPTY_VALUE;
 
     //normally compressors/decompressors should not be nested in one thread
-    private static final int MAX_POOL_SIZE = Executors.getCpuThreadPoolCount();
+    private static final int MAX_POOL_SIZE = Integers.max(2, Executors.getCpuThreadPoolCount());
 
     private static final PooledLZ4BlockInputStreamObjectPool INPUT_POOL = new PooledLZ4BlockInputStreamObjectPool(
             newDefaultLZ4Decompressor(), newDefaultChecksum(), MAX_POOL_SIZE);
