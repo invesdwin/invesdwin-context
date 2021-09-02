@@ -9,11 +9,11 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.agrona.concurrent.ManyToManyConcurrentArrayQueue;
 
-import de.invesdwin.util.concurrent.pool.AObjectPool;
+import de.invesdwin.util.concurrent.pool.commons.ACommonsObjectPool;
 import net.jpountz.lz4.LZ4FastDecompressor;
 
 @NotThreadSafe
-public final class PooledLZ4BlockInputStreamObjectPool extends AObjectPool<PooledLZ4BlockInputStream> {
+public final class PooledLZ4BlockInputStreamObjectPool extends ACommonsObjectPool<PooledLZ4BlockInputStream> {
 
     private final int maxPoolSize;
     private final Queue<PooledLZ4BlockInputStream> pooledLZ4BlockInputStreamRotation;

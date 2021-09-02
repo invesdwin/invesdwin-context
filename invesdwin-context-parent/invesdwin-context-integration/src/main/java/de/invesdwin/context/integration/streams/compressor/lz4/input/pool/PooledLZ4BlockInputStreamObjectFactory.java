@@ -4,11 +4,11 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.util.concurrent.pool.IPoolableObjectFactory;
+import de.invesdwin.util.concurrent.pool.commons.ICommonsPoolableObjectFactory;
 import net.jpountz.lz4.LZ4FastDecompressor;
 
 @Immutable
-public final class PooledLZ4BlockInputStreamObjectFactory implements IPoolableObjectFactory<PooledLZ4BlockInputStream> {
+public final class PooledLZ4BlockInputStreamObjectFactory implements ICommonsPoolableObjectFactory<PooledLZ4BlockInputStream> {
 
     private final PooledLZ4BlockInputStreamObjectPool pool;
     private final LZ4FastDecompressor decompressor;
