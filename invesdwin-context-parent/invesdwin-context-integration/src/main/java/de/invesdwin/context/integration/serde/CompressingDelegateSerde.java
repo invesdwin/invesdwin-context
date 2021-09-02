@@ -16,17 +16,9 @@ import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.buffer.ByteBuffers;
 import de.invesdwin.util.streams.buffer.IByteBuffer;
-import io.netty.util.concurrent.FastThreadLocal;
 
 @Immutable
 public class CompressingDelegateSerde<E> implements ISerde<E> {
-
-    private static final FastThreadLocal<IByteBuffer> EXPANDABLE_BUFFER_REF = new FastThreadLocal<IByteBuffer>() {
-        @Override
-        protected IByteBuffer initialValue() throws Exception {
-            return ByteBuffers.allocateExpandable();
-        }
-    };
 
     private final ISerde<E> delegate;
 
@@ -42,9 +34,13 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         try {
             final ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
             try (InputStream in = newDecompressor(bis)) {
-                final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-                final int length = IOUtils.copy(in, buf.asOutputStream());
-                return delegate.fromBuffer(buf.sliceTo(length), length);
+                final IByteBuffer buf = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+                try {
+                    final int length = IOUtils.copy(in, buf.asOutputStream());
+                    return delegate.fromBuffer(buf.sliceTo(length), length);
+                } finally {
+                    ByteBuffers.EXPANDABLE_POOL.returnObject(buf);
+                }
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -59,10 +55,14 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         try {
             final ByteArrayOutputStream bos = new ByteArrayOutputStream();
             try (OutputStream out = newCompressor(bos)) {
-                final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-                final int length = delegate.toBuffer(buf, obj);
-                IOUtils.copy(buf.asInputStreamTo(length), out);
-                return bos.toByteArray();
+                final IByteBuffer buf = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+                try {
+                    final int length = delegate.toBuffer(buf, obj);
+                    IOUtils.copy(buf.asInputStreamTo(length), out);
+                    return bos.toByteArray();
+                } finally {
+                    ByteBuffers.EXPANDABLE_POOL.returnObject(buf);
+                }
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -76,9 +76,13 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         }
         try {
             try (InputStream in = newDecompressor(buffer.asInputStream())) {
-                final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-                final int actualLength = IOUtils.copy(in, buf.asOutputStream());
-                return delegate.fromBuffer(buf.sliceTo(actualLength), actualLength);
+                final IByteBuffer buf = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+                try {
+                    final int actualLength = IOUtils.copy(in, buf.asOutputStream());
+                    return delegate.fromBuffer(buf.sliceTo(actualLength), actualLength);
+                } finally {
+                    ByteBuffers.EXPANDABLE_POOL.returnObject(buf);
+                }
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);
@@ -93,10 +97,14 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
         try {
             final CountingOutputStream cout = new CountingOutputStream(buffer.asOutputStream());
             try (OutputStream out = newCompressor(cout)) {
-                final IByteBuffer buf = EXPANDABLE_BUFFER_REF.get();
-                final int length = delegate.toBuffer(buf, obj);
-                IOUtils.copy(buf.asInputStreamTo(length), out);
-                return cout.getCount();
+                final IByteBuffer buf = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+                try {
+                    final int length = delegate.toBuffer(buf, obj);
+                    IOUtils.copy(buf.asInputStreamTo(length), out);
+                    return cout.getCount();
+                } finally {
+                    ByteBuffers.EXPANDABLE_POOL.returnObject(buf);
+                }
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);
