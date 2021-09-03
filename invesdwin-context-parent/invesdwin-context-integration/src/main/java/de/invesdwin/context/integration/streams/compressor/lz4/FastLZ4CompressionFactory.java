@@ -5,22 +5,22 @@ import java.io.OutputStream;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.streams.compressor.ICompressorFactory;
+import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
 
 @Immutable
-public final class HighLZ4CompressorFactory implements ICompressorFactory {
+public final class FastLZ4CompressionFactory implements ICompressionFactory {
 
-    public static final HighLZ4CompressorFactory INSTANCE = new HighLZ4CompressorFactory();
+    public static final FastLZ4CompressionFactory INSTANCE = new FastLZ4CompressionFactory();
 
-    private HighLZ4CompressorFactory() {
+    private FastLZ4CompressionFactory() {
     }
 
     @Override
     public OutputStream newCompressor(final OutputStream out, final boolean large) {
         if (large) {
-            return LZ4Streams.newLargeHighLZ4OutputStream(out);
+            return LZ4Streams.newLargeFastLZ4OutputStream(out);
         } else {
-            return LZ4Streams.newHighLZ4OutputStream(out);
+            return LZ4Streams.newFastLZ4OutputStream(out);
         }
     }
 

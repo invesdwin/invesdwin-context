@@ -6,11 +6,11 @@ import java.io.OutputStream;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public final class DisabledCompressorFactory implements ICompressorFactory {
+public final class DisabledCompressionFactory implements ICompressionFactory {
 
-    public static final DisabledCompressorFactory INSTANCE = new DisabledCompressorFactory();
+    public static final DisabledCompressionFactory INSTANCE = new DisabledCompressionFactory();
 
-    private DisabledCompressorFactory() {
+    private DisabledCompressionFactory() {
     }
 
     @Override
