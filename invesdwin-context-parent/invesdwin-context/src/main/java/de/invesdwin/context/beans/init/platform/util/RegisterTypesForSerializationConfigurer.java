@@ -1,5 +1,6 @@
 package de.invesdwin.context.beans.init.platform.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -8,8 +9,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.classpath.FastClassPathScanner;
-import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.marshallers.serde.LocalFastSerializingSerde;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
@@ -19,23 +20,17 @@ public class RegisterTypesForSerializationConfigurer {
     public static final Class<ISerializableValueObject> SERIALIZABLE_INTERFACE = ISerializableValueObject.class;
 
     public void registerTypesForSerialization() {
-        if (Objects.SERIALIZATION_CONFIG_TEMPLATE != null) {
-            final List<Class<?>> classesToRegister = scanSerializableClassesToRegister();
-            //sort them so they always get the same index in registration
-            classesToRegister.sort(new Comparator<Class<?>>() {
-                @Override
-                public int compare(final Class<?> o1, final Class<?> o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
-            for (final Class<?> clazz : classesToRegister) {
-                try {
-                    Objects.SERIALIZATION_CONFIG_TEMPLATE.registerClass(clazz);
-                } catch (final Throwable t) {
-                    throw new RuntimeException("At: " + clazz.getName(), t);
-                }
+        final LocalFastSerializingSerde<Serializable> serde = LocalFastSerializingSerde.get();
+        final List<Class<?>> classesToRegister = scanSerializableClassesToRegister();
+        //sort them so they always get the same index in registration
+        classesToRegister.sort(new Comparator<Class<?>>() {
+            @Override
+            public int compare(final Class<?> o1, final Class<?> o2) {
+                return o1.getName().compareTo(o2.getName());
             }
-        }
+        });
+        final Class<?>[] array = classesToRegister.toArray(new Class<?>[classesToRegister.size()]);
+        serde.setClassRegistry(array);
     }
 
     protected List<Class<?>> scanSerializableClassesToRegister() {

@@ -8,9 +8,9 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.invesdwin.context.integration.serde.RemoteFastSerializingSerde;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;
 import de.invesdwin.util.math.decimal.Decimal;
 
 @ThreadSafe

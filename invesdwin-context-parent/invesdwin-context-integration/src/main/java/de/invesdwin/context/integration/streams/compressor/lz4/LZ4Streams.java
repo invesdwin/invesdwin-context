@@ -16,11 +16,11 @@ import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.Pooled
 import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStream;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
+import de.invesdwin.util.concurrent.pool.AgronaObjectPool;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
-import de.invesdwin.util.streams.buffer.ByteBuffers;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
@@ -53,8 +53,7 @@ public final class LZ4Streams {
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;
 
-    //normally compressors/decompressors should not be nested in one thread
-    public static final int MAX_POOL_SIZE = ByteBuffers.MAX_POOL_SIZE;
+    private static final int MAX_POOL_SIZE = AgronaObjectPool.DEFAULT_MAX_POOL_SIZE;
 
     private static final IObjectPool<PooledLZ4BlockInputStream> INPUT_POOL = new PooledLZ4BlockInputStreamObjectPool(
             newDefaultLZ4Decompressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
