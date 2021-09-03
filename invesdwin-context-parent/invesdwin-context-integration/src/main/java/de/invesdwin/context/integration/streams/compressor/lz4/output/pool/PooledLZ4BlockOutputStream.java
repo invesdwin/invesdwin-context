@@ -23,8 +23,10 @@ public class PooledLZ4BlockOutputStream extends ReusableLZ4BlockOutputStream {
 
     @Override
     public void close() throws IOException {
-        super.close();
-        pool.returnObject(this);
+        if (!isClosed()) {
+            super.close();
+            pool.returnObject(this);
+        }
     }
 
 }

@@ -57,6 +57,9 @@ public class ReusableLZ4BlockInputStream extends InputStream {
     }
 
     public ReusableLZ4BlockInputStream init(final InputStream in) {
+        if (!isClosed()) {
+            throw new IllegalStateException("not closed");
+        }
         this.in = in;
         o = 0;
         originalLen = 0;
@@ -246,10 +249,14 @@ public class ReusableLZ4BlockInputStream extends InputStream {
      */
     @Override
     public void close() throws IOException {
-        if (in != null) {
+        if (!isClosed()) {
             in.close();
             in = null;
         }
+    }
+
+    public boolean isClosed() {
+        return in == null;
     }
 
 }

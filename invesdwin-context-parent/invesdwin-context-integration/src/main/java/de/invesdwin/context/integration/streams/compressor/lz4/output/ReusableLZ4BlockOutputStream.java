@@ -66,6 +66,9 @@ public class ReusableLZ4BlockOutputStream extends OutputStream {
     }
 
     public ReusableLZ4BlockOutputStream init(final OutputStream out) {
+        if (this.out != null) {
+            throw new IllegalStateException("not closed");
+        }
         this.out = out;
         o = 0;
         finished = false;
@@ -128,13 +131,17 @@ public class ReusableLZ4BlockOutputStream extends OutputStream {
 
     @Override
     public void close() throws IOException {
-        if (!finished) {
-            finish();
-        }
-        if (out != null) {
+        if (!isClosed()) {
+            if (!finished) {
+                finish();
+            }
             out.close();
             out = null;
         }
+    }
+
+    public boolean isClosed() {
+        return out == null;
     }
 
     private void flushBufferedData() throws IOException {
