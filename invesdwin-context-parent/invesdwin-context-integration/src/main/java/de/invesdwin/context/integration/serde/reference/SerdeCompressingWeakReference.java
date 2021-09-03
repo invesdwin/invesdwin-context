@@ -1,12 +1,8 @@
 package de.invesdwin.context.integration.serde.reference;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.serde.CompressingDelegateSerde;
-import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
+import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
 import de.invesdwin.util.concurrent.reference.persistent.ACompressingWeakReference;
 import de.invesdwin.util.marshallers.serde.ISerde;
 
@@ -23,19 +19,10 @@ public class SerdeCompressingWeakReference<T> extends ACompressingWeakReference<
 
     private final ISerde<T> compressingSerde;
 
-    public SerdeCompressingWeakReference(final T referent, final ISerde<T> serde) {
+    public SerdeCompressingWeakReference(final T referent, final ISerde<T> serde,
+            final ICompressionFactory compressionFactory) {
         super(referent);
-        this.compressingSerde = new CompressingDelegateSerde<T>(serde) {
-            @Override
-            protected OutputStream newCompressor(final OutputStream out) {
-                return SerdeCompressingWeakReference.this.newCompressor(out);
-            }
-
-            @Override
-            protected InputStream newDecompressor(final InputStream in) {
-                return SerdeCompressingWeakReference.this.newDecompressor(in);
-            }
-        };
+        this.compressingSerde = compressionFactory.maybeWrap(serde);
     }
 
     @Override
@@ -46,14 +33,6 @@ public class SerdeCompressingWeakReference<T> extends ACompressingWeakReference<
     @Override
     protected byte[] toCompressed(final T referent) throws Exception {
         return compressingSerde.toBytes(referent);
-    }
-
-    protected OutputStream newCompressor(final OutputStream out) {
-        return LZ4Streams.newDefaultLZ4OutputStream(out);
-    }
-
-    protected InputStream newDecompressor(final InputStream in) {
-        return LZ4Streams.newDefaultLZ4InputStream(in);
     }
 
 }

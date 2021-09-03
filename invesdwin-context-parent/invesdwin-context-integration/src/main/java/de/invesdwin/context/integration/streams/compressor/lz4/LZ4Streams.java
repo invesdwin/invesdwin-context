@@ -12,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
 import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStream;
 import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStream;
@@ -21,6 +22,7 @@ import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
+import de.invesdwin.util.streams.buffer.IByteBuffer;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
@@ -66,6 +68,11 @@ public final class LZ4Streams {
             DEFAULT_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
     private static final IObjectPool<PooledLZ4BlockOutputStream> LARGE_HIGH_OUTPUT_POOL = new PooledLZ4BlockOutputStreamObjectPool(
             LARGE_BLOCK_SIZE_BYTES, newHighLZ4Compressor(), LZ4Streams::newDefaultChecksum, MAX_POOL_SIZE);
+
+    private static final int ORIGSIZE_INDEX = 0;
+    private static final int ORIGSIZE_SIZE = Integer.BYTES;
+
+    private static final int VALUE_INDEX = ORIGSIZE_INDEX + ORIGSIZE_SIZE;
 
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -140,11 +147,40 @@ public final class LZ4Streams {
     }
 
     public static LZ4Compressor newHighLZ4Compressor(final int compressionLevel) {
-        return LZ4Factory.fastestInstance().highCompressor(compressionLevel);
+        if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
+            return newFastLZ4Compressor();
+        } else {
+            return LZ4Factory.fastestInstance().highCompressor(compressionLevel);
+        }
     }
 
     public static LZ4Compressor newFastLZ4Compressor() {
         return LZ4Factory.fastestInstance().fastCompressor();
+    }
+
+    public static int compress(final LZ4Compressor compressor, final IByteBuffer src, final IByteBuffer dest) {
+        //if compression fails we will have at maximum uncompressed size
+        final int origLength = src.capacity();
+        dest.checkLimit(origLength + VALUE_INDEX);
+        final int compressedLength = compressor.compress(src.asByteBuffer(), 0, origLength, dest.asByteBuffer(),
+                VALUE_INDEX, dest.remaining(VALUE_INDEX));
+        dest.putInt(ORIGSIZE_INDEX, origLength);
+        return compressedLength + VALUE_INDEX;
+    }
+
+    public static int decompress(final IByteBuffer src, final IByteBuffer dest) {
+        final int origLength = src.getInt(ORIGSIZE_INDEX);
+        dest.checkLimit(origLength);
+        return LZ4Streams.newDefaultLZ4Decompressor()
+                .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
+    }
+
+    public static ICompressionFactory getDefaultCompressionFactory() {
+        if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
+            return FastLZ4CompressionFactory.INSTANCE;
+        } else {
+            return HighLZ4CompressionFactory.INSTANCE;
+        }
     }
 
 }

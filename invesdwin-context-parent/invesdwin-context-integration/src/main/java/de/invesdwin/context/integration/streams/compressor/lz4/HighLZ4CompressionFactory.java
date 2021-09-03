@@ -5,7 +5,11 @@ import java.io.OutputStream;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.context.integration.streams.compressor.CompressingDelegateSerde;
 import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
+import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.streams.buffer.IByteBuffer;
+import net.jpountz.lz4.LZ4Compressor;
 
 @Immutable
 public final class HighLZ4CompressionFactory implements ICompressionFactory {
@@ -27,6 +31,23 @@ public final class HighLZ4CompressionFactory implements ICompressionFactory {
     @Override
     public InputStream newDecompressor(final InputStream in) {
         return LZ4Streams.newDefaultLZ4InputStream(in);
+    }
+
+    @Override
+    public int compress(final IByteBuffer src, final IByteBuffer dest) {
+        final LZ4Compressor compressor = LZ4Streams.newHighLZ4Compressor();
+        return LZ4Streams.compress(compressor, src, dest);
+    }
+
+    @Override
+    public int decompress(final IByteBuffer src, final IByteBuffer dest) {
+        return LZ4Streams.decompress(src, dest);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public <T> ISerde<T> maybeWrap(final ISerde<T> serde) {
+        return new CompressingDelegateSerde<>(serde, this);
     }
 
 }

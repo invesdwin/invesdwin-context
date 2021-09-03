@@ -8,6 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;
@@ -19,7 +20,8 @@ public class SerdeCompressingSoftReferenceTest extends ATest {
     @Test
     public void testSerialization() {
         final SerdeCompressingSoftReference<Decimal> ref = new SerdeCompressingSoftReference<Decimal>(
-                new Decimal("100"), new RemoteFastSerializingSerde<Decimal>(false, Decimal.class));
+                new Decimal("100"), new RemoteFastSerializingSerde<Decimal>(false, Decimal.class),
+                LZ4Streams.getDefaultCompressionFactory());
         Assertions.assertThat(ref.get()).isNotNull();
         ref.clear();
         Assertions.assertThat(ref.get()).isNotNull();
@@ -35,7 +37,8 @@ public class SerdeCompressingSoftReferenceTest extends ATest {
         while (true) {
             curValue = curValue.add(Decimal.ONE);
             final SerdeCompressingSoftReference<Decimal> ref = new SerdeCompressingSoftReference<Decimal>(curValue,
-                    new RemoteFastSerializingSerde<Decimal>(false, Decimal.class));
+                    new RemoteFastSerializingSerde<Decimal>(false, Decimal.class),
+                    LZ4Streams.getDefaultCompressionFactory());
             refs.add(ref);
             Assertions.assertThat(ref.get()).isNotNull();
         }

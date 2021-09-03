@@ -246,8 +246,10 @@ public class ReusableLZ4BlockInputStream extends InputStream {
      */
     @Override
     public void close() throws IOException {
-        in.close();
-        in = null;
+        if (in != null) {
+            in.close();
+            in = null;
+        }
     }
 
 }
