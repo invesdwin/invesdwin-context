@@ -62,12 +62,12 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
             //we can save a copy here
             return delegate.toBuffer(buffer, obj);
         } else {
-            final IByteBuffer compressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+            final IByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
             try {
-                final int decompressedLength = delegate.toBuffer(buffer, obj);
-                return compressionFactory.compress(buffer.sliceTo(decompressedLength), compressedBuffer);
+                final int decompressedLength = delegate.toBuffer(decompressedBuffer, obj);
+                return compressionFactory.compress(decompressedBuffer.sliceTo(decompressedLength), buffer);
             } finally {
-                ByteBuffers.EXPANDABLE_POOL.returnObject(compressedBuffer);
+                ByteBuffers.EXPANDABLE_POOL.returnObject(decompressedBuffer);
             }
         }
     }

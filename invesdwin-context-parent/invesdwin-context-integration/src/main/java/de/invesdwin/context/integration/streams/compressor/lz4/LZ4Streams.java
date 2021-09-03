@@ -19,6 +19,7 @@ import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.Poole
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
 import de.invesdwin.util.concurrent.pool.AgronaObjectPool;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
+import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
@@ -72,7 +73,10 @@ public final class LZ4Streams {
     private static final int ORIGSIZE_INDEX = 0;
     private static final int ORIGSIZE_SIZE = Integer.BYTES;
 
-    private static final int VALUE_INDEX = ORIGSIZE_INDEX + ORIGSIZE_SIZE;
+    private static final int RAW_INDEX = ORIGSIZE_INDEX + ORIGSIZE_SIZE;
+    private static final int RAW_SIZE = Booleans.BYTES;
+
+    private static final int VALUE_INDEX = RAW_INDEX + RAW_SIZE;
 
     static {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -167,14 +171,27 @@ public final class LZ4Streams {
         final int destLength = destbb.capacity() - VALUE_INDEX;
         final int compressedLength = compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         dest.putInt(ORIGSIZE_INDEX, origLength);
-        return compressedLength + VALUE_INDEX;
+        if (compressedLength < origLength) {
+            dest.putBoolean(RAW_INDEX, false);
+            return compressedLength + VALUE_INDEX;
+        } else {
+            dest.putBoolean(RAW_INDEX, true);
+            dest.putBytesTo(VALUE_INDEX, src, origLength);
+            return origLength + VALUE_INDEX;
+        }
     }
 
     public static int decompress(final IByteBuffer src, final IByteBuffer dest) {
         final int origLength = src.getInt(ORIGSIZE_INDEX);
+        final boolean raw = src.getBoolean(RAW_INDEX);
         dest.ensureCapacity(origLength);
-        return LZ4Streams.newDefaultLZ4Decompressor()
-                .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
+        if (raw) {
+            dest.putBytes(0, src, VALUE_INDEX, origLength);
+            return origLength;
+        } else {
+            return LZ4Streams.newDefaultLZ4Decompressor()
+                    .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
+        }
     }
 
     public static ICompressionFactory getDefaultCompressionFactory() {
