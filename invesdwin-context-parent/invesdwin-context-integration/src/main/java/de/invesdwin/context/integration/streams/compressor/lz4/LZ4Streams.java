@@ -161,16 +161,18 @@ public final class LZ4Streams {
     public static int compress(final LZ4Compressor compressor, final IByteBuffer src, final IByteBuffer dest) {
         //if compression fails we will have at maximum uncompressed size
         final int origLength = src.capacity();
-        dest.checkLimit(origLength + VALUE_INDEX);
-        final int compressedLength = compressor.compress(src.asByteBuffer(), 0, origLength, dest.asByteBuffer(),
-                VALUE_INDEX, dest.remaining(VALUE_INDEX));
+        dest.ensureCapacity(origLength + VALUE_INDEX);
+        final java.nio.ByteBuffer srcbb = src.asByteBuffer();
+        final java.nio.ByteBuffer destbb = dest.asByteBuffer();
+        final int destLength = destbb.capacity() - VALUE_INDEX;
+        final int compressedLength = compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         dest.putInt(ORIGSIZE_INDEX, origLength);
         return compressedLength + VALUE_INDEX;
     }
 
     public static int decompress(final IByteBuffer src, final IByteBuffer dest) {
         final int origLength = src.getInt(ORIGSIZE_INDEX);
-        dest.checkLimit(origLength);
+        dest.ensureCapacity(origLength);
         return LZ4Streams.newDefaultLZ4Decompressor()
                 .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
     }
