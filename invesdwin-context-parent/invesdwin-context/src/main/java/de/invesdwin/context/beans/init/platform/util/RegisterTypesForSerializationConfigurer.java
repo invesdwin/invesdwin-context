@@ -29,8 +29,7 @@ public class RegisterTypesForSerializationConfigurer {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        final Class<?>[] array = classesToRegister.toArray(new Class<?>[classesToRegister.size()]);
-        serde.setClassRegistry(array);
+        serde.setClassRegistry(classesToRegister);
     }
 
     protected List<Class<?>> scanSerializableClassesToRegister() {
