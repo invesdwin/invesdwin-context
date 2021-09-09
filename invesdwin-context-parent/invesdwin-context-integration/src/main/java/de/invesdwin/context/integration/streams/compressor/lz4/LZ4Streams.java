@@ -195,7 +195,8 @@ public final class LZ4Streams {
             return compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         } catch (final LZ4Exception e) {
             if (DEST_LENGTH_WARNING_GIVEN.compareAndSet(false, true)) {
-                Err.process(new RuntimeException("dest length is too small: " + origLength + " -> " + destLength, e));
+                Err.process(new RuntimeException("destLength is too small: orig=" + origLength + " -> dest="
+                        + destLength + " => maybe increase the minimum threshold?", e));
             }
             //destLength is too small
             return Integer.MAX_VALUE;
