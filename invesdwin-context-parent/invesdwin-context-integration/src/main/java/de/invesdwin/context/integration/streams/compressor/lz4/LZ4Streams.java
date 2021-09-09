@@ -184,13 +184,13 @@ public final class LZ4Streams {
 
     private static int tryCompress(final LZ4Compressor compressor, final int origLength,
             final java.nio.ByteBuffer srcbb, final java.nio.ByteBuffer destbb, final int destLength) {
-        if (destLength <= 64) {
+        if (destLength <= 8) {
             return Integer.MAX_VALUE;
         }
         try {
             return compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         } catch (final LZ4Exception e) {
-            //max dest length is too small
+            //destLength is too small
             return Integer.MAX_VALUE;
         }
     }
