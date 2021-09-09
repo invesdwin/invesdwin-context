@@ -124,11 +124,6 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void initUiManager() {
-        delegate.initUiManager();
-    }
-
-    @Override
     public void registerTypesForSerialization() {
         delegate.registerTypesForSerialization();
     }

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.swing.UIManager;
 
 import org.agrona.concurrent.UnsafeBuffer;
 import org.springframework.core.io.FileSystemResource;
@@ -246,12 +245,6 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public Resource initSystemPropertiesResource() {
         return new FileSystemResource(new File(ContextProperties.getHomeDirectory(), "system.properties"));
-    }
-
-    @Override
-    public void initUiManager() {
-        //prevent race condition in JFreeChart when UIManager initialized by multiple threads at the same time
-        UIManager.getColor("Panel.background");
     }
 
     @Override

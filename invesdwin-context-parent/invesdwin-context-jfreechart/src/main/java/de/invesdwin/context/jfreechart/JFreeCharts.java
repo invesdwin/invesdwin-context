@@ -13,7 +13,8 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 @Immutable
 public final class JFreeCharts {
 
-    private JFreeCharts() {}
+    private JFreeCharts() {
+    }
 
     public static TextTitle newSubtitle(final JFreeChart chart, final String subtitle) {
         return new TextTitle(subtitle,

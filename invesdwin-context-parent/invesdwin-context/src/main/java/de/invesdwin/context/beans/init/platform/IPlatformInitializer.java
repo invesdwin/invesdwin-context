@@ -51,8 +51,6 @@ public interface IPlatformInitializer {
 
     Resource initSystemPropertiesResource();
 
-    void initUiManager();
-
     void registerTypesForSerialization();
 
     void initClassPathScanner();

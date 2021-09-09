@@ -53,7 +53,6 @@ public final class PreMergedContext extends ADelegateContext {
                  * this must happen after properties have been loaded so that an overwritten property gets detected
                  */
                 initializer.initFileEncodingChecker();
-                initializer.initUiManager();
             } catch (final Throwable t) {
                 PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             }
