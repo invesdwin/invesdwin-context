@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.Immutable;
@@ -40,6 +41,8 @@ public final class LZ4Streams {
      * https://github.com/lz4/lz4-java/issues/142
      */
     public static final int DEFAULT_COMPRESSION_LEVEL = 9;
+
+    private static final AtomicBoolean DEST_LENGTH_WARNING_GIVEN = new AtomicBoolean();
 
     public static final BLOCKSIZE LARGE_BLOCK_SIZE = BLOCKSIZE.SIZE_1MB;
     public static final int LARGE_BLOCK_SIZE_BYTES = Integers
@@ -191,7 +194,9 @@ public final class LZ4Streams {
         try {
             return compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         } catch (final LZ4Exception e) {
-            Err.process(new RuntimeException("dest length is too small: " + origLength + " -> " + destLength, e));
+            if (DEST_LENGTH_WARNING_GIVEN.compareAndSet(false, true)) {
+                Err.process(new RuntimeException("dest length is too small: " + origLength + " -> " + destLength, e));
+            }
             //destLength is too small
             return Integer.MAX_VALUE;
         }
