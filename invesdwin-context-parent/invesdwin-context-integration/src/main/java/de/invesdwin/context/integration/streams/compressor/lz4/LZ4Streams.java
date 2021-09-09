@@ -190,6 +190,9 @@ public final class LZ4Streams {
         try {
             return compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         } catch (final LZ4Exception e) {
+            //CHECKSTYLE:OFF
+            System.err.println("dest length is too small: " + origLength + " -> " + destLength);
+            //CHECKSTYLE:ON
             //destLength is too small
             return Integer.MAX_VALUE;
         }
