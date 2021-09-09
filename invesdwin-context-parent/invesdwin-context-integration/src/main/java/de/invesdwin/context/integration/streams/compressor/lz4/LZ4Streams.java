@@ -25,6 +25,7 @@ import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
 import de.invesdwin.util.streams.buffer.IByteBuffer;
 import net.jpountz.lz4.LZ4Compressor;
+import net.jpountz.lz4.LZ4Exception;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
 import net.jpountz.lz4.LZ4FrameOutputStream.BLOCKSIZE;
@@ -169,7 +170,7 @@ public final class LZ4Streams {
         final java.nio.ByteBuffer srcbb = src.asByteBuffer();
         final java.nio.ByteBuffer destbb = dest.asByteBuffer();
         final int destLength = destbb.capacity() - VALUE_INDEX;
-        final int compressedLength = compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
+        final int compressedLength = tryCompress(compressor, origLength, srcbb, destbb, destLength);
         dest.putInt(ORIGSIZE_INDEX, origLength);
         if (compressedLength < origLength) {
             dest.putBoolean(RAW_INDEX, false);
@@ -178,6 +179,19 @@ public final class LZ4Streams {
             dest.putBoolean(RAW_INDEX, true);
             dest.putBytesTo(VALUE_INDEX, src, origLength);
             return origLength + VALUE_INDEX;
+        }
+    }
+
+    private static int tryCompress(final LZ4Compressor compressor, final int origLength,
+            final java.nio.ByteBuffer srcbb, final java.nio.ByteBuffer destbb, final int destLength) {
+        if (destLength <= 64) {
+            return Integer.MAX_VALUE;
+        }
+        try {
+            return compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
+        } catch (final LZ4Exception e) {
+            //max dest length is too small
+            return Integer.MAX_VALUE;
         }
     }
 
