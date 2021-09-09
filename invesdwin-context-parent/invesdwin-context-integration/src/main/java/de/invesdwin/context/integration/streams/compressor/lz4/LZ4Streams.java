@@ -17,6 +17,7 @@ import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.Pooled
 import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStream;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
+import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.concurrent.pool.AgronaObjectPool;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.math.Booleans;
@@ -190,9 +191,7 @@ public final class LZ4Streams {
         try {
             return compressor.compress(srcbb, 0, origLength, destbb, VALUE_INDEX, destLength);
         } catch (final LZ4Exception e) {
-            //CHECKSTYLE:OFF
-            System.err.println("dest length is too small: " + origLength + " -> " + destLength);
-            //CHECKSTYLE:ON
+            Err.process(new RuntimeException("dest length is too small: " + origLength + " -> " + destLength, e));
             //destLength is too small
             return Integer.MAX_VALUE;
         }
