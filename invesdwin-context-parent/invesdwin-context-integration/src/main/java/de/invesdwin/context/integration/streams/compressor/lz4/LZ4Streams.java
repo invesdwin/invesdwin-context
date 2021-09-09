@@ -42,8 +42,6 @@ public final class LZ4Streams {
      */
     public static final int DEFAULT_COMPRESSION_LEVEL = 9;
 
-    private static final AtomicBoolean DEST_LENGTH_WARNING_GIVEN = new AtomicBoolean();
-
     public static final BLOCKSIZE LARGE_BLOCK_SIZE = BLOCKSIZE.SIZE_1MB;
     public static final int LARGE_BLOCK_SIZE_BYTES = Integers
             .checkedCast(new ByteSize(1D, ByteSizeScale.MEGABYTES).getValue(ByteSizeScale.BYTES));
@@ -61,6 +59,7 @@ public final class LZ4Streams {
 
     public static final byte[] COMPRESSED_EMPTY_VALUE;
 
+    private static final AtomicBoolean DEST_LENGTH_WARNING_GIVEN = new AtomicBoolean();
     private static final int MAX_POOL_SIZE = AgronaObjectPool.DEFAULT_MAX_POOL_SIZE;
 
     private static final IObjectPool<PooledLZ4BlockInputStream> INPUT_POOL = new PooledLZ4BlockInputStreamObjectPool(
