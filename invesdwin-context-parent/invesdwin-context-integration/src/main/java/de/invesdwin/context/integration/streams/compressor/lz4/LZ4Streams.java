@@ -10,7 +10,6 @@ import java.util.zip.Checksum;
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
@@ -26,6 +25,9 @@ import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
 import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.util.streams.pool.APooledInputStream;
+import de.invesdwin.util.streams.pool.APooledOutputStream;
+import de.invesdwin.util.streams.pool.PooledFastByteArrayOutputStream;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Exception;
 import net.jpountz.lz4.LZ4Factory;
@@ -83,25 +85,25 @@ public final class LZ4Streams {
     private static final int VALUE_INDEX = RAW_INDEX + RAW_SIZE;
 
     static {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (OutputStream lz4Out = newDefaultLZ4OutputStream(out)) {
-            IOUtils.write("", lz4Out, Charset.defaultCharset());
-            lz4Out.close();
-            out.close();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+        try (PooledFastByteArrayOutputStream out = PooledFastByteArrayOutputStream.newInstance()) {
+            try (OutputStream lz4Out = newDefaultLZ4OutputStream(out.asNonClosing())) {
+                IOUtils.write("", lz4Out, Charset.defaultCharset());
+                lz4Out.close();
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
+            COMPRESSED_EMPTY_VALUE = out.toByteArray();
         }
-        COMPRESSED_EMPTY_VALUE = out.toByteArray();
     }
 
     private LZ4Streams() {
     }
 
-    public static OutputStream newDefaultLZ4OutputStream(final OutputStream out) {
+    public static APooledOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out);
     }
 
-    public static OutputStream newHighLZ4OutputStream(final OutputStream out) {
+    public static APooledOutputStream newHighLZ4OutputStream(final OutputStream out) {
         if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
             return newFastLZ4OutputStream(out);
         } else {
@@ -111,7 +113,7 @@ public final class LZ4Streams {
         }
     }
 
-    public static OutputStream newLargeHighLZ4OutputStream(final OutputStream out) {
+    public static APooledOutputStream newLargeHighLZ4OutputStream(final OutputStream out) {
         if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
             return newLargeFastLZ4OutputStream(out);
         } else {
@@ -121,19 +123,19 @@ public final class LZ4Streams {
         }
     }
 
-    public static OutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
+    public static APooledOutputStream newLargeFastLZ4OutputStream(final OutputStream out) {
         return LARGE_FAST_OUTPUT_POOL.borrowObject().init(out);
         //        return new LZ4BlockOutputStream(out, LARGE_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(),
         //                true);
     }
 
-    public static OutputStream newFastLZ4OutputStream(final OutputStream out) {
+    public static APooledOutputStream newFastLZ4OutputStream(final OutputStream out) {
         return FAST_OUTPUT_POOL.borrowObject().init(out);
         //        return new LZ4BlockOutputStream(out, DEFAULT_BLOCK_SIZE_BYTES, newFastLZ4Compressor(), newDefaultChecksum(),
         //                true);
     }
 
-    public static InputStream newDefaultLZ4InputStream(final InputStream in) {
+    public static APooledInputStream newDefaultLZ4InputStream(final InputStream in) {
         return INPUT_POOL.borrowObject().init(in);
         //        return new LZ4BlockInputStream(in, newDefaultLZ4Decompressor(), newDefaultChecksum(), true);
     }

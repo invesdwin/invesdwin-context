@@ -1,6 +1,5 @@
 package de.invesdwin.context.beans.init.platform.util.internal;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -23,6 +22,7 @@ import org.springframework.core.io.Resource;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.lang.Strings;
+import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
 @NotThreadSafe
 public class LogbackConfigurationMerger {
@@ -83,7 +83,7 @@ public class LogbackConfigurationMerger {
 
     public InputStream getInputStream() {
         final String mergedXmlConfig = mergeConfigs();
-        return new ByteArrayInputStream(mergedXmlConfig.getBytes());
+        return new FastByteArrayInputStream(mergedXmlConfig.getBytes());
     }
 
     private String mergeConfigs() {

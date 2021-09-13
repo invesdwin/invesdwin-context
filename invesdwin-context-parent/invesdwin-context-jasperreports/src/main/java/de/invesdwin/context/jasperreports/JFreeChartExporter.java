@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +43,7 @@ import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.streams.ADelegateInputStream;
+import de.invesdwin.util.streams.pool.PooledFastByteArrayOutputStream;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -228,15 +227,14 @@ public enum JFreeChartExporter {
     }
 
     public InputStream exportToStream(final JFreeChart chart, final JFreeChartExporterSettings settings) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final PooledFastByteArrayOutputStream out = PooledFastByteArrayOutputStream.newInstance();
         try {
-            writeChart(out, chart, settings);
+            writeChart(out.asNonClosing(), chart, settings);
+            return out.asInputStream();
         } catch (final IOException e) {
-            throw Err.process(e);
-        } finally {
-            Closeables.closeQuietly(out);
+            out.close();
+            throw new RuntimeException(e);
         }
-        return new ByteArrayInputStream(out.toByteArray());
     }
 
     public InputStream exportToStreamCallable(final Callable<JFreeChart> chart,

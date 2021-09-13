@@ -7,11 +7,12 @@ import java.util.zip.Checksum;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.streams.buffer.ByteBuffers;
+import de.invesdwin.util.streams.pool.APooledOutputStream;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.util.SafeUtils;
 
 @NotThreadSafe
-public class ReusableLZ4BlockOutputStream extends OutputStream {
+public class ReusableLZ4BlockOutputStream extends APooledOutputStream {
 
     public static final byte[] MAGIC = new byte[] { 'L', 'Z', '4', 'B', 'l', 'o', 'c', 'k' };
     public static final int MAGIC_LENGTH = MAGIC.length;

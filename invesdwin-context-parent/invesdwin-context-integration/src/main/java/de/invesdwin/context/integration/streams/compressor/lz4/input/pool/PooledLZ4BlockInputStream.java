@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.streams.compressor.lz4.input.pool;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -18,6 +19,12 @@ public class PooledLZ4BlockInputStream extends ReusableLZ4BlockInputStream {
             final IObjectPool<PooledLZ4BlockInputStream> pool) {
         super(decompressor, checksum);
         this.pool = pool;
+    }
+
+    @Override
+    public PooledLZ4BlockInputStream init(final InputStream in) {
+        super.init(in);
+        return this;
     }
 
     @Override

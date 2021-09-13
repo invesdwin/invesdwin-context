@@ -1,6 +1,5 @@
 package de.invesdwin.context.system.classpath;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.math.Bytes;
+import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
 @Immutable
 public class ClasspathResourceProcessor {
@@ -100,7 +100,7 @@ public class ClasspathResourceProcessor {
     private boolean processDirectory(final File root, final File file, final IClasspathResourceVisitor visitor) {
         final String fullPath = file.getAbsolutePath();
         final String resourcePath = createResourcePath(root, file) + "/";
-        return visitor.visit(fullPath, resourcePath, new ByteArrayInputStream(Bytes.EMPTY_ARRAY));
+        return visitor.visit(fullPath, resourcePath, new FastByteArrayInputStream(Bytes.EMPTY_ARRAY));
     }
 
     private boolean processJar(final File file, final IClasspathResourceVisitor visitor) throws IOException {

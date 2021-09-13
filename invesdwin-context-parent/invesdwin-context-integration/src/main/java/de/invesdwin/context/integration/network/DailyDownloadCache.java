@@ -15,6 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.streams.pool.APooledOutputStream;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -57,8 +58,8 @@ public class DailyDownloadCache {
             if (shouldUpdate(file, now)) {
                 Files.forceMkdirParent(file);
                 final File tmpFile = new File(file.getAbsolutePath() + ".tmp");
-                try (OutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(tmpFile))) {
-                    request.accept(fos);
+                try (APooledOutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(tmpFile))) {
+                    request.accept(fos.asNonClosing());
                 }
                 Files.moveFile(tmpFile, file);
             }

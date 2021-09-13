@@ -22,12 +22,13 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.integration.streams.compressor.lz4.output.ReusableLZ4BlockOutputStream;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.buffer.ByteBuffers;
+import de.invesdwin.util.streams.pool.APooledInputStream;
 import net.jpountz.lz4.LZ4Exception;
 import net.jpountz.lz4.LZ4FastDecompressor;
 import net.jpountz.util.SafeUtils;
 
 @NotThreadSafe
-public class ReusableLZ4BlockInputStream extends InputStream {
+public class ReusableLZ4BlockInputStream extends APooledInputStream {
 
     private final LZ4FastDecompressor decompressor;
     private final Checksum checksum;
