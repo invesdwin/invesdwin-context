@@ -7,6 +7,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.util.streams.pool.buffered.PooledFastBufferedOutputStream;
 
 @Immutable
 public final class DisabledCompressionFactory implements ICompressionFactory {
@@ -18,7 +19,8 @@ public final class DisabledCompressionFactory implements ICompressionFactory {
 
     @Override
     public OutputStream newCompressor(final OutputStream out, final boolean large) {
-        return out;
+        //buffering is better for write throughput to file
+        return PooledFastBufferedOutputStream.newInstance(out);
     }
 
     @Override
