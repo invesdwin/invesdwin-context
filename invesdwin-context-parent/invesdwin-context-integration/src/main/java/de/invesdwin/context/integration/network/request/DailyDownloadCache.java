@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.network;
+package de.invesdwin.context.integration.network.request;
 
 import java.io.File;
 import java.io.FileInputStream;

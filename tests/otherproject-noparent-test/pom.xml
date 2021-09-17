@@ -128,7 +128,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-persistence-timeseries</artifactId>
+			<artifactId>invesdwin-context-persistence-timeseriesdb</artifactId>
 			<version>${project.version.invesdwin-context-persistence}</version>
 		</dependency>
 		<dependency>
