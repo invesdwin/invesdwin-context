@@ -245,7 +245,7 @@ public final class MergedContext extends ADelegateContext {
 
         logContextsBeingLoaded(contexts);
 
-        delegate.load(contexts.toArray(new Resource[contexts.size()]));
+        delegate.load(contexts.toArray(Resources.EMPTY_ARRAY));
         //set the reference
         instance = new MergedContext(delegate);
 

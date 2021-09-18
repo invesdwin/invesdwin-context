@@ -11,6 +11,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.IBasePackageDefinition;
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.util.lang.Strings;
 
 @ThreadSafe
 public final class BasePackagesConfigurer {
@@ -21,7 +22,8 @@ public final class BasePackagesConfigurer {
     private static Set<String> basePackages;
     private static String[] basePackagesArray;
 
-    private BasePackagesConfigurer() {}
+    private BasePackagesConfigurer() {
+    }
 
     public static synchronized Set<String> getBasePackages() {
         if (basePackages == null) {
@@ -56,7 +58,7 @@ public final class BasePackagesConfigurer {
 
     public static String[] getBasePackagesArray() {
         if (basePackagesArray == null) {
-            basePackagesArray = getBasePackages().toArray(new String[0]);
+            basePackagesArray = getBasePackages().toArray(Strings.EMPTY_ARRAY);
         }
         return basePackagesArray;
     }

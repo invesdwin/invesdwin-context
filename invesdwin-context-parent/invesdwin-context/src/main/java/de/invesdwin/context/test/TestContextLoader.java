@@ -33,6 +33,7 @@ import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.reflection.Reflections;
 
 @NotThreadSafe
@@ -144,7 +145,8 @@ public class TestContextLoader implements ContextLoader {
                 final String resourceString = resource.getURI().toString();
                 locationStrings.add(resourceString);
             }
-            final ConfigurableApplicationContext delegate = PARENT.loadContext(locationStrings.toArray(new String[0]));
+            final ConfigurableApplicationContext delegate = PARENT
+                    .loadContext(locationStrings.toArray(Strings.EMPTY_ARRAY));
             final TestContext ctx = new TestContext(delegate);
             if (FIRST_INITIALIZATION.getAndSet(false)) {
                 MergedContext.logBootstrapFinished();
@@ -175,7 +177,7 @@ public class TestContextLoader implements ContextLoader {
                 locationsList.add(rawLocation);
             }
         }
-        return locationsList.toArray(new String[0]);
+        return locationsList.toArray(Strings.EMPTY_ARRAY);
     }
 
     /**
@@ -185,6 +187,6 @@ public class TestContextLoader implements ContextLoader {
     public String[] processLocations(final Class<?> clazz, final String... locations) {
         final List<String> list = new ArrayList<String>(Arrays.asList(locations));
         list.add(0, CTX_DUMMY + UUID.randomUUID().toString());
-        return list.toArray(new String[0]);
+        return list.toArray(Strings.EMPTY_ARRAY);
     }
 }

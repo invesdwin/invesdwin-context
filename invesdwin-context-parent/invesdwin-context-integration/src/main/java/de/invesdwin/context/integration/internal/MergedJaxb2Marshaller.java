@@ -17,6 +17,8 @@ import org.springframework.util.ClassUtils;
 
 import de.invesdwin.context.integration.IMergedJaxbContextPath;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.Resources;
+import de.invesdwin.util.lang.Strings;
 
 /**
  * Collects all generated IMergedContextPaths and adds them to the Jaxb2Marshaller.
@@ -36,7 +38,8 @@ public class MergedJaxb2Marshaller extends Jaxb2Marshaller implements Applicatio
 
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) {
-        final Map<String, IMergedJaxbContextPath> mergedContextPaths = applicationContext.getBeansOfType(IMergedJaxbContextPath.class);
+        final Map<String, IMergedJaxbContextPath> mergedContextPaths = applicationContext
+                .getBeansOfType(IMergedJaxbContextPath.class);
         final List<String> contextPaths = new ArrayList<String>();
         final List<Resource> schemas = new ArrayList<Resource>();
         for (final IMergedJaxbContextPath mergedContextPath : mergedContextPaths.values()) {
@@ -46,8 +49,8 @@ public class MergedJaxb2Marshaller extends Jaxb2Marshaller implements Applicatio
             Assertions.assertThat(cpResource.exists()).as("%s", cpResource).isTrue();
             schemas.add(cpResource);
         }
-        super.setContextPaths(contextPaths.toArray(new String[0]));
-        super.setSchemas(schemas.toArray(new Resource[0]));
+        super.setContextPaths(contextPaths.toArray(Strings.EMPTY_ARRAY));
+        super.setSchemas(schemas.toArray(Resources.EMPTY_ARRAY));
     }
 
 }

@@ -16,6 +16,7 @@ import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.context.system.properties.ResourceBundles;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
@@ -104,9 +105,7 @@ public abstract class AMain {
         }
 
         // make the filteredArgList into an array
-        final String[] filterArgs = new String[filteredArgList.size()];
-        filteredArgList.toArray(filterArgs);
-        return filterArgs;
+        return filteredArgList.toArray(Strings.EMPTY_ARRAY);
     }
 
     protected final void printHelp(final CmdLineParser parser) {

@@ -12,6 +12,7 @@ import de.invesdwin.util.lang.Strings;
 @Immutable
 final class ThrowableConverter {
 
+    private static final StackTraceElement[] ELEMENT_EMTPY_ARRAY = new StackTraceElement[0];
     private static final String STACKTRACE_LINE_MARKED = "\n      * ";
     private static final String STACKTRACE_LINE = "\n        ";
 
@@ -83,7 +84,7 @@ final class ThrowableConverter {
 
     private static StackTraceElement[] getStackTrace(final Throwable e, final boolean detailed) {
         if (!detailed && e instanceof LoggedRuntimeException) {
-            return new StackTraceElement[0];
+            return ELEMENT_EMTPY_ARRAY;
         } else if (detailed) {
             return e.getStackTrace();
         } else {
@@ -97,7 +98,7 @@ final class ThrowableConverter {
                     i--;
                 }
             }
-            return stack.toArray(new StackTraceElement[0]);
+            return stack.toArray(ELEMENT_EMTPY_ARRAY);
         }
     }
 
