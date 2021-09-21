@@ -1,0 +1,12 @@
+package de.invesdwin.context.integration.persistentmap;
+
+import java.util.concurrent.ConcurrentMap;
+
+import javax.annotation.concurrent.Immutable;
+
+@Immutable
+public interface IPersistentMapFactory<K, V> {
+
+    ConcurrentMap<K, V> newPersistentMap(APersistentMapConfig<K, V> config);
+
+}
