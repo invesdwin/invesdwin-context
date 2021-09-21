@@ -164,6 +164,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
                     tableCreationTime = new FDate();
                 }
                 try {
+                    System.out.println("open " + getFile().getAbsolutePath());
                     tableFinalizer.table = getFactory().newPersistentMap(this);
                     tableFinalizer.register(this);
                     PersistentMapCloseManager.register(this);
@@ -185,6 +186,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         tableLock.writeLock().lock();
         try {
             if (tableFinalizer.table != null) {
+                System.out.println("close " + getFile().getAbsolutePath());
                 PersistentMapCloseManager.unregister(this);
                 Closeables.closeQuietly(tableFinalizer.table);
                 tableFinalizer.table = null;
@@ -204,6 +206,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     }
 
     private void innerDeleteTable() {
+        System.out.println("delete " + getFile().getAbsolutePath());
         if (tableFinalizer.table != null) {
             PersistentMapCloseManager.unregister(this);
             Closeables.closeQuietly(tableFinalizer.table);
@@ -295,39 +298,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         final Map<K, V> delegate = getPreLockedDelegate();
         try {
             return delegate.size();
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public final boolean equals(final Object object) {
-        final Map<K, V> delegate = getPreLockedDelegate();
-        try {
-            if (object == this) {
-                return true;
-            }
-            return object == this || delegate.equals(object);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public final int hashCode() {
-        final Map<K, V> delegate = getPreLockedDelegate();
-        try {
-            return delegate.hashCode();
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public final String toString() {
-        final Map<K, V> delegate = getPreLockedDelegate();
-        try {
-            return delegate.toString();
         } finally {
             getReadLock().unlock();
         }
