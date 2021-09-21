@@ -204,8 +204,23 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     }
 
     private void innerDeleteTable() {
-        close();
-        Files.deleteQuietly(getFile());
+        if (tableFinalizer.table != null) {
+            PersistentMapCloseManager.unregister(this);
+            Closeables.closeQuietly(tableFinalizer.table);
+            tableFinalizer.table = null;
+        }
+        if (isDiskPersistence()) {
+            Files.deleteQuietly(timestampFile);
+            final File tableDirectory = new File(getDirectory(), getName());
+            if (tableDirectory.isDirectory()) {
+                final String[] list = tableDirectory.list();
+                if (list == null || list.length == 0) {
+                    Files.deleteNative(tableDirectory);
+                }
+            } else {
+                Files.deleteQuietly(getFile());
+            }
+        }
         tableCreationTime = null;
         onDeleteTableFinished();
     }
