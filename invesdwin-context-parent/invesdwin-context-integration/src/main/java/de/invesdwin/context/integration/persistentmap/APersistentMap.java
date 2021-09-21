@@ -50,21 +50,24 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         this.tableLock = newTableLock();
         this.tableFinalizer = new TableFinalizer<>();
         this.keySet = new APreLockedSet<K>(
-                new TextDescription("%s[%s].keySet.iterator", APersistentMap.class.getSimpleName(), getName())) {
+                new TextDescription("%s[%s].keySet.iterator", APersistentMap.class.getSimpleName(), getName()),
+                tableLock.readLock()) {
             @Override
             protected Set<K> getPreLockedDelegate() {
                 return getTableWithReadLock().keySet();
             }
         };
         this.entrySet = new APreLockedSet<Entry<K, V>>(
-                new TextDescription("%s[%s].keySet.iterator", APersistentMap.class.getSimpleName(), getName())) {
+                new TextDescription("%s[%s].keySet.iterator", APersistentMap.class.getSimpleName(), getName()),
+                tableLock.readLock()) {
             @Override
             protected Set<Entry<K, V>> getPreLockedDelegate() {
                 return getTableWithReadLock().entrySet();
             }
         };
         this.values = new APreLockedCollection<V>(
-                new TextDescription("%s[%s].values.iterator", APersistentMap.class.getSimpleName(), getName())) {
+                new TextDescription("%s[%s].values.iterator", APersistentMap.class.getSimpleName(), getName()),
+                tableLock.readLock()) {
             @Override
             protected Collection<V> getPreLockedDelegate() {
                 return getTableWithReadLock().values();
