@@ -35,41 +35,53 @@ import de.invesdwin.util.time.date.FDate;
 public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         implements ConcurrentMap<K, V>, Closeable {
 
-    private final IReadWriteLock tableLock;
-    private final TableFinalizer<K, V> tableFinalizer;
-    private FDate tableCreationTime;
-    private IPersistentMapFactory<K, V> factory;
-    private final APreLockedSet<K> keySet;
-    private final APreLockedSet<Entry<K, V>> entrySet;
-    private final APreLockedCollection<V> values;
-    private File timestampFile;
+    protected TextDescription iteratorName;
+    protected final IReadWriteLock tableLock;
+    protected final TableFinalizer<K, V> tableFinalizer;
+    protected FDate tableCreationTime;
+    protected IPersistentMapFactory<K, V> factory;
+    protected final Set<K> keySet;
+    protected final Set<Entry<K, V>> entrySet;
+    protected final Collection<V> values;
+    protected File timestampFile;
 
     public APersistentMap(final String name) {
         super(name);
+        this.iteratorName = new TextDescription("%s[%s].iterator", APersistentMap.class.getSimpleName(), getName());
         this.tableLock = newTableLock();
         this.tableFinalizer = new TableFinalizer<>();
-        this.keySet = new APreLockedSet<K>(
-                new TextDescription("%s[%s].keySet.iterator", APersistentMap.class.getSimpleName(), getName()),
-                tableLock.readLock()) {
-            @Override
-            protected Set<K> getPreLockedDelegate() {
-                return getTableWithReadLock().keySet();
-            }
-        };
-        this.entrySet = new APreLockedSet<Entry<K, V>>(
-                new TextDescription("%s[%s].keySet.iterator", APersistentMap.class.getSimpleName(), getName()),
-                tableLock.readLock()) {
-            @Override
-            protected Set<Entry<K, V>> getPreLockedDelegate() {
-                return getTableWithReadLock().entrySet();
-            }
-        };
-        this.values = new APreLockedCollection<V>(
-                new TextDescription("%s[%s].values.iterator", APersistentMap.class.getSimpleName(), getName()),
-                tableLock.readLock()) {
+        this.keySet = newKeySet();
+        this.entrySet = newEntrySet();
+        this.values = newValues();
+    }
+
+    private APersistentMap<K, V> getThis() {
+        return this;
+    }
+
+    protected Collection<V> newValues() {
+        return new APreLockedCollection<V>(iteratorName, tableLock.readLock()) {
             @Override
             protected Collection<V> getPreLockedDelegate() {
-                return getTableWithReadLock().values();
+                return getThis().getPreLockedDelegate().values();
+            }
+        };
+    }
+
+    protected Set<Entry<K, V>> newEntrySet() {
+        return new APreLockedSet<Entry<K, V>>(iteratorName, tableLock.readLock()) {
+            @Override
+            protected Set<Entry<K, V>> getPreLockedDelegate() {
+                return getThis().getPreLockedDelegate().entrySet();
+            }
+        };
+    }
+
+    protected Set<K> newKeySet() {
+        return new APreLockedSet<K>(iteratorName, tableLock.readLock()) {
+            @Override
+            protected Set<K> getPreLockedDelegate() {
+                return getThis().getPreLockedDelegate().keySet();
             }
         };
     }
@@ -110,7 +122,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         return tableCreationTime;
     }
 
-    private ConcurrentMap<K, V> getTableWithReadLock() {
+    protected ConcurrentMap<K, V> getPreLockedDelegate() {
         maybePurgeTable();
         //directly return table with read lock if not null
         final ILock readLock = getReadLock();
@@ -165,181 +177,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
             }
         } finally {
             tableLock.writeLock().unlock();
-        }
-    }
-
-    @Override
-    public int size() {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.size();
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public boolean isEmpty() {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.isEmpty();
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public boolean containsKey(final Object key) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.containsKey(key);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public boolean containsValue(final Object value) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.containsValue(value);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V get(final Object key) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.get(key);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V put(final K key, final V value) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.put(key, value);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.computeIfAbsent(key, mappingFunction);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.compute(key, remappingFunction);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.computeIfPresent(key, remappingFunction);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V remove(final Object key) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.remove(key);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public void putAll(final Map<? extends K, ? extends V> m) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            table.putAll(m);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public void clear() {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            table.clear();
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public Set<K> keySet() {
-        return keySet;
-    }
-
-    @Override
-    public Collection<V> values() {
-        return values;
-    }
-
-    @Override
-    public Set<Entry<K, V>> entrySet() {
-        return entrySet;
-    }
-
-    @Override
-    public V putIfAbsent(final K key, final V value) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.putIfAbsent(key, value);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public boolean remove(final Object key, final Object value) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.remove(key, value);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public boolean replace(final K key, final V oldValue, final V newValue) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.replace(key, oldValue, newValue);
-        } finally {
-            getReadLock().unlock();
-        }
-    }
-
-    @Override
-    public V replace(final K key, final V value) {
-        final ConcurrentMap<K, V> table = getTableWithReadLock();
-        try {
-            return table.replace(key, value);
-        } finally {
-            getReadLock().unlock();
         }
     }
 
@@ -416,4 +253,224 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         }
     }
 
+    //-----------------------------------------------
+
+    @Override
+    public final void clear() {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            delegate.clear();
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final boolean isEmpty() {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.isEmpty();
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final int size() {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.size();
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final boolean equals(final Object object) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            if (object == this) {
+                return true;
+            }
+            return object == this || delegate.equals(object);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final int hashCode() {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.hashCode();
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final String toString() {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.toString();
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final boolean containsKey(final Object key) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.containsKey(key);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final boolean containsValue(final Object value) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.containsValue(value);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V get(final Object key) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.get(key);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V put(final K key, final V value) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.put(key, value);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V remove(final Object key) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.remove(key);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final void putAll(final Map<? extends K, ? extends V> m) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            delegate.putAll(m);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public Set<K> keySet() {
+        return keySet;
+    }
+
+    @Override
+    public final Collection<V> values() {
+        return values;
+    }
+
+    @Override
+    public final Set<Entry<K, V>> entrySet() {
+        return entrySet;
+    }
+
+    @Override
+    public final boolean remove(final Object key, final Object value) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.remove(key, value);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final boolean replace(final K key, final V oldValue, final V newValue) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.replace(key, oldValue, newValue);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V replace(final K key, final V value) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.replace(key, value);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.compute(key, remappingFunction);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.computeIfAbsent(key, mappingFunction);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V computeIfPresent(final K key,
+            final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.computeIfPresent(key, remappingFunction);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V getOrDefault(final Object key, final V defaultValue) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.getOrDefault(key, defaultValue);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
+    @Override
+    public final V putIfAbsent(final K key, final V value) {
+        final Map<K, V> delegate = getPreLockedDelegate();
+        try {
+            return delegate.putIfAbsent(key, value);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
 }
