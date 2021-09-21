@@ -35,7 +35,6 @@ import de.invesdwin.util.time.date.FDate;
 public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         implements ConcurrentMap<K, V>, Closeable {
 
-    private final File timestampFile;
     private final IReadWriteLock tableLock;
     private final TableFinalizer<K, V> tableFinalizer;
     private FDate tableCreationTime;
@@ -43,10 +42,10 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     private final APreLockedSet<K> keySet;
     private final APreLockedSet<Entry<K, V>> entrySet;
     private final APreLockedCollection<V> values;
+    private File timestampFile;
 
     public APersistentMap(final String name) {
         super(name);
-        this.timestampFile = new File(new File(getDirectory(), getName()), "createdTimestamp");
         this.tableLock = newTableLock();
         this.tableFinalizer = new TableFinalizer<>();
         this.keySet = new APreLockedSet<K>(
@@ -92,8 +91,16 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         return tableLock.readLock();
     }
 
+    protected File getTimestampFile() {
+        if (timestampFile == null) {
+            timestampFile = new File(getDirectory(), getName() + "_createdTimestamp");
+        }
+        return timestampFile;
+    }
+
     public FDate getTableCreationTime() {
         if (tableCreationTime == null) {
+            final File timestampFile = getTimestampFile();
             if (!timestampFile.exists()) {
                 return null;
             } else {
@@ -135,6 +142,8 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
                 if (getTableCreationTime() == null) {
                     if (isDiskPersistence()) {
                         try {
+                            final File timestampFile = getTimestampFile();
+                            Files.forceMkdir(timestampFile.getParentFile());
                             Files.touch(timestampFile);
                         } catch (final IOException e) {
                             throw Err.process(e);
