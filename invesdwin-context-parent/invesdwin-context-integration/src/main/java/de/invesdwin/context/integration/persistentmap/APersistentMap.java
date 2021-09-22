@@ -283,6 +283,9 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     @Override
     public final boolean isEmpty() {
         if (tableFinalizer.table == null) {
+            if (!isDiskPersistence()) {
+                return true;
+            }
             final File file = getFile();
             if (!file.exists()) {
                 return true;
