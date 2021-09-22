@@ -48,9 +48,7 @@ public abstract class APersistentMapConfig<K, V> {
         return new File(getDirectory(), name);
     }
 
-    public File getDirectory() {
-        return new File(getBaseDirectory(), APersistentMap.class.getSimpleName());
-    }
+    public abstract File getDirectory();
 
     public File getBaseDirectory() {
         return ContextProperties.getHomeDataDirectory();

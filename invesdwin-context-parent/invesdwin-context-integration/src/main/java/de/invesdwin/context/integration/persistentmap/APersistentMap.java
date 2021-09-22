@@ -55,6 +55,12 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         this.values = newValues();
     }
 
+    @Override
+    public File getDirectory() {
+        return new File(new File(getBaseDirectory(), APersistentMap.class.getSimpleName()),
+                newFactory().getClass().getSimpleName());
+    }
+
     private APersistentMap<K, V> getThis() {
         return this;
     }
