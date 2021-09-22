@@ -38,6 +38,8 @@ import net.jpountz.xxhash.XXHashFactory;
 @Immutable
 public final class LZ4Streams {
 
+    public static final boolean JNI_ALLOWED = false;
+
     /**
      * Compression level 99 is too high in JNI with LZ4HC, making it very slow:
      * https://github.com/lz4/lz4-java/issues/142
@@ -141,11 +143,27 @@ public final class LZ4Streams {
     }
 
     public static LZ4FastDecompressor newDefaultLZ4Decompressor() {
-        return LZ4Factory.fastestInstance().fastDecompressor();
+        return newLZ4Factory().fastDecompressor();
+    }
+
+    public static LZ4Factory newLZ4Factory() {
+        if (JNI_ALLOWED) {
+            return LZ4Factory.fastestInstance();
+        } else {
+            return LZ4Factory.fastestJavaInstance();
+        }
     }
 
     public static Checksum newDefaultChecksum() {
-        return XXHashFactory.fastestInstance().newStreamingHash32(DEFAULT_SEED).asChecksum();
+        return newXXHashFactory().newStreamingHash32(DEFAULT_SEED).asChecksum();
+    }
+
+    public static XXHashFactory newXXHashFactory() {
+        if (JNI_ALLOWED) {
+            return XXHashFactory.fastestInstance();
+        } else {
+            return XXHashFactory.fastestJavaInstance();
+        }
     }
 
     public static LZ4Compressor newDefaultLZ4Compressor() {
@@ -160,12 +178,12 @@ public final class LZ4Streams {
         if (IntegrationProperties.FAST_COMPRESSION_ALWAYS) {
             return newFastLZ4Compressor();
         } else {
-            return LZ4Factory.fastestInstance().highCompressor(compressionLevel);
+            return newLZ4Factory().highCompressor(compressionLevel);
         }
     }
 
     public static LZ4Compressor newFastLZ4Compressor() {
-        return LZ4Factory.fastestInstance().fastCompressor();
+        return newLZ4Factory().highCompressor();
     }
 
     public static int compress(final LZ4Compressor compressor, final IByteBuffer src, final IByteBuffer dest) {
@@ -212,8 +230,9 @@ public final class LZ4Streams {
             dest.putBytes(0, src, VALUE_INDEX, origLength);
             return origLength;
         } else {
-            return LZ4Streams.newDefaultLZ4Decompressor()
-                    .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
+            LZ4Streams.newDefaultLZ4Decompressor()
+                    .decompress(src.asByteBufferFrom(VALUE_INDEX), 0, dest.asByteBuffer(), 0, origLength);
+            return origLength;
         }
     }
 
