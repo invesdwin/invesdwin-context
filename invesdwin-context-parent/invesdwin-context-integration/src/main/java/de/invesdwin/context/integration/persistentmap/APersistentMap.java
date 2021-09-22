@@ -40,19 +40,16 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     protected final TableFinalizer<K, V> tableFinalizer;
     protected FDate tableCreationTime;
     protected IPersistentMapFactory<K, V> factory;
-    protected final Set<K> keySet;
-    protected final Set<Entry<K, V>> entrySet;
-    protected final Collection<V> values;
     protected File timestampFile;
+    private Set<K> keySet;
+    private Set<Entry<K, V>> entrySet;
+    private Collection<V> values;
 
     public APersistentMap(final String name) {
         super(name);
         this.iteratorName = new TextDescription("%s[%s].iterator", APersistentMap.class.getSimpleName(), getName());
         this.tableLock = newTableLock();
         this.tableFinalizer = new TableFinalizer<>();
-        this.keySet = newKeySet();
-        this.entrySet = newEntrySet();
-        this.values = newValues();
     }
 
     @Override
@@ -383,16 +380,25 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
 
     @Override
     public Set<K> keySet() {
+        if (keySet == null) {
+            keySet = newKeySet();
+        }
         return keySet;
     }
 
     @Override
     public final Collection<V> values() {
+        if (values == null) {
+            values = newValues();
+        }
         return values;
     }
 
     @Override
     public final Set<Entry<K, V>> entrySet() {
+        if (entrySet == null) {
+            entrySet = newEntrySet();
+        }
         return entrySet;
     }
 

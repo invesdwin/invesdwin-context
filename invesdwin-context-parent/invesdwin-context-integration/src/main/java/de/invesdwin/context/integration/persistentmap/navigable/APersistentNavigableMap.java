@@ -17,13 +17,11 @@ import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedNaviga
 public abstract class APersistentNavigableMap<K, V> extends APersistentMap<K, V>
         implements ConcurrentNavigableMap<K, V> {
 
-    private final ConcurrentNavigableMap<K, V> descendingMap;
-    private final NavigableSet<K> descendingKeySet;
+    private ConcurrentNavigableMap<K, V> descendingMap;
+    private NavigableSet<K> descendingKeySet;
 
     public APersistentNavigableMap(final String name) {
         super(name);
-        this.descendingMap = newDescendingMap();
-        this.descendingKeySet = newDescendingKeySet();
     }
 
     @Override
@@ -199,6 +197,9 @@ public abstract class APersistentNavigableMap<K, V> extends APersistentMap<K, V>
 
     @Override
     public ConcurrentNavigableMap<K, V> descendingMap() {
+        if (descendingMap == null) {
+            descendingMap = newDescendingMap();
+        }
         return descendingMap;
     }
 
@@ -224,6 +225,9 @@ public abstract class APersistentNavigableMap<K, V> extends APersistentMap<K, V>
 
     @Override
     public final NavigableSet<K> descendingKeySet() {
+        if (descendingKeySet == null) {
+            descendingKeySet = newDescendingKeySet();
+        }
         return descendingKeySet;
     }
 
