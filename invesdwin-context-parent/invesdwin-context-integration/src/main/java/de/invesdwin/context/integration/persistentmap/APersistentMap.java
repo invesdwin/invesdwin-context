@@ -211,11 +211,11 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         }
         if (isDiskPersistence()) {
             Files.deleteQuietly(timestampFile);
-            final File tableDirectory = new File(getDirectory(), getName());
-            if (tableDirectory.isDirectory()) {
-                final String[] list = tableDirectory.list();
+            final File file = getFile();
+            if (file.isDirectory()) {
+                final String[] list = file.list();
                 if (list == null || list.length == 0) {
-                    Files.deleteNative(tableDirectory);
+                    Files.deleteNative(file);
                 }
             } else {
                 Files.deleteQuietly(getFile());
@@ -282,6 +282,18 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
 
     @Override
     public final boolean isEmpty() {
+        if (tableFinalizer.table == null) {
+            final File file = getFile();
+            if (!file.exists()) {
+                return true;
+            }
+            if (file.isDirectory()) {
+                final String[] list = file.list();
+                if (list == null || list.length == 0) {
+                    return true;
+                }
+            }
+        }
         final Map<K, V> delegate = getPreLockedDelegate();
         try {
             return delegate.isEmpty();

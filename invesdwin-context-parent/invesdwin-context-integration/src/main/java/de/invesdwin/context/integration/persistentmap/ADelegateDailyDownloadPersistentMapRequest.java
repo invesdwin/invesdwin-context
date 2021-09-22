@@ -105,8 +105,9 @@ public abstract class ADelegateDailyDownloadPersistentMapRequest<K, V> implement
     protected void beforeUpdate() {
         if (!map.isEmpty()) {
             map.deleteTable();
+        } else {
+            map.close();
         }
-        map.close();
         map = newPersistentMap(false);
     }
 
