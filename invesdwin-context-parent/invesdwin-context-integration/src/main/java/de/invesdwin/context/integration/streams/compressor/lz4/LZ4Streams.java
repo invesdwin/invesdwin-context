@@ -231,7 +231,7 @@ public final class LZ4Streams {
             return origLength;
         } else {
             LZ4Streams.newDefaultLZ4Decompressor()
-                    .decompress(src.asByteBufferFrom(VALUE_INDEX), 0, dest.asByteBuffer(), 0, origLength);
+                    .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
             return origLength;
         }
     }
