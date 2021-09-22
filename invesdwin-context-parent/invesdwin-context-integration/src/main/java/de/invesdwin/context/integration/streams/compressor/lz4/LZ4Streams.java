@@ -232,6 +232,11 @@ public final class LZ4Streams {
         } else {
             LZ4Streams.newDefaultLZ4Decompressor()
                     .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
+            /*
+             * we need to return the original length, since this is what we *actually* wrote into dest. return value
+             * from decompress just tells us how much was read from src, which does not interest and would truncate dest
+             * for us.
+             */
             return origLength;
         }
     }
