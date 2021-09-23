@@ -183,7 +183,7 @@ public final class LZ4Streams {
     }
 
     public static LZ4Compressor newFastLZ4Compressor() {
-        return newLZ4Factory().highCompressor();
+        return newLZ4Factory().fastCompressor();
     }
 
     public static int compress(final LZ4Compressor compressor, final IByteBuffer src, final IByteBuffer dest) {
