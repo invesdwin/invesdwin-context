@@ -85,14 +85,18 @@ public abstract class ADelegateDailyDownloadPersistentMapRequest<K, V> implement
         }
         try {
             if (map == null) {
-                try {
-                    map = newPersistentMap(false);
-                    if (map.isEmpty()) {
-                        return true;
+                if (isReadOnlySupported()) {
+                    try {
+                        map = newPersistentMap(false);
+                        if (map.isEmpty()) {
+                            return true;
+                        }
+                    } finally {
+                        map.close();
+                        map = newPersistentMap(true);
                     }
-                } finally {
-                    map.close();
-                    map = newPersistentMap(true);
+                } else {
+                    map = newPersistentMap(false);
                 }
             }
             return map.isEmpty() || dailyDownloadCache.shouldUpdate(getDownloadFileName(), getNow());
@@ -102,19 +106,29 @@ public abstract class ADelegateDailyDownloadPersistentMapRequest<K, V> implement
         }
     }
 
+    protected boolean isReadOnlySupported() {
+        return false;
+    }
+
     protected void beforeUpdate() {
-        if (!map.isEmpty()) {
-            map.deleteTable();
+        if (isReadOnlySupported()) {
+            if (!map.isEmpty()) {
+                map.deleteTable();
+            } else {
+                map.close();
+            }
+            map = newPersistentMap(false);
         } else {
-            map.close();
+            map.deleteTable();
         }
-        map = newPersistentMap(false);
     }
 
     protected void afterUpdate() {
-        //prevent checksum errors
-        map.close();
-        map = newPersistentMap(true);
+        if (isReadOnlySupported()) {
+            //prevent checksum errors
+            map.close();
+            map = newPersistentMap(true);
+        }
     }
 
     protected abstract K extractKey(V value);
