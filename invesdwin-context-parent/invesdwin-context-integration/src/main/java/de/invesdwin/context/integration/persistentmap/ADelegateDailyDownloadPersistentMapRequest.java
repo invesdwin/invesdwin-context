@@ -56,7 +56,7 @@ public abstract class ADelegateDailyDownloadPersistentMapRequest<K, V> implement
                                 map.put(key, value);
                                 count++;
                                 if (loopCheck.check()) {
-                                    printProgress("Processing indexing [" + getDownloadFileName() + "]", start, count);
+                                    printProgress("Indexing [" + getDownloadFileName() + "]", start, count);
                                 }
                             }
                         } catch (final NoSuchElementException e) {
