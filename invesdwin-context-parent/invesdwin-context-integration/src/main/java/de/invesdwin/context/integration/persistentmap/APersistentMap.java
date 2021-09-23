@@ -90,6 +90,15 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         };
     }
 
+    public void removeAll(final IKeyMatcher<K> matcher) {
+        final ConcurrentMap<K, V> delegate = getPreLockedDelegate();
+        try {
+            getFactory().removeAll(delegate, matcher);
+        } finally {
+            getReadLock().unlock();
+        }
+    }
+
     protected final IPersistentMapFactory<K, V> getFactory() {
         if (factory == null) {
             this.factory = newFactory();
@@ -185,7 +194,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     }
 
     @Override
-    public synchronized void close() {
+    public void close() {
         tableLock.writeLock().lock();
         try {
             if (tableFinalizer.table != null) {
@@ -198,7 +207,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         }
     }
 
-    public synchronized void deleteTable() {
+    public void deleteTable() {
         tableLock.writeLock().lock();
         try {
             innerDeleteTable();

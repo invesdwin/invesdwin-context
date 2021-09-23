@@ -9,4 +9,6 @@ public interface IPersistentMapFactory<K, V> {
 
     ConcurrentMap<K, V> newPersistentMap(APersistentMapConfig<K, V> config);
 
+    void removeAll(ConcurrentMap<K, V> table, IKeyMatcher<K> matcher);
+
 }
