@@ -25,6 +25,7 @@ public final class IntegrationProperties {
     public static final List<URI> INTERNET_CHECK_URIS;
     public static final URI WEBSERVER_BIND_URI;
     public static final String HOSTNAME;
+    public static final boolean JNI_COMPRESSION_ALLOWED;
     public static final boolean FAST_COMPRESSION_ALWAYS;
     private static final FastThreadLocal<Boolean> THREAD_RETRY_DISABLED = new FastThreadLocal<>();
     private static volatile boolean webserverTest;
@@ -37,10 +38,21 @@ public final class IntegrationProperties {
 
         INTERNET_CHECK_URIS = readInternetCheckUris();
         WEBSERVER_BIND_URI = readWebserverBindUri();
+        JNI_COMPRESSION_ALLOWED = readJniCompressionAllowed();
         FAST_COMPRESSION_ALWAYS = readFastCompressionAlways();
     }
 
     private IntegrationProperties() {
+    }
+
+    private static boolean readJniCompressionAllowed() {
+        final String key = "JNI_COMPRESSION_ALLOWED";
+        if (SYSTEM_PROPERTIES.containsValue(key)) {
+            final boolean jniCompressionAllowed = SYSTEM_PROPERTIES.getBoolean(key);
+            return jniCompressionAllowed;
+        } else {
+            return true;
+        }
     }
 
     private static boolean readFastCompressionAlways() {

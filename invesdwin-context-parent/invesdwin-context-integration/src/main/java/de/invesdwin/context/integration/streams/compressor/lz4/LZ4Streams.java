@@ -38,8 +38,6 @@ import net.jpountz.xxhash.XXHashFactory;
 @Immutable
 public final class LZ4Streams {
 
-    public static final boolean JNI_ALLOWED = false;
-
     /**
      * Compression level 99 is too high in JNI with LZ4HC, making it very slow:
      * https://github.com/lz4/lz4-java/issues/142
@@ -147,7 +145,7 @@ public final class LZ4Streams {
     }
 
     public static LZ4Factory newLZ4Factory() {
-        if (JNI_ALLOWED) {
+        if (IntegrationProperties.JNI_COMPRESSION_ALLOWED) {
             return LZ4Factory.fastestInstance();
         } else {
             return LZ4Factory.fastestJavaInstance();
@@ -159,7 +157,7 @@ public final class LZ4Streams {
     }
 
     public static XXHashFactory newXXHashFactory() {
-        if (JNI_ALLOWED) {
+        if (IntegrationProperties.JNI_COMPRESSION_ALLOWED) {
             return XXHashFactory.fastestInstance();
         } else {
             return XXHashFactory.fastestJavaInstance();

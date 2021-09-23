@@ -34,9 +34,13 @@ public abstract class ADelegateDailyDownloadIterableRequest<E> implements IClose
             final ICloseableIterator<E> reader = newReader(content);
             return reader;
         } catch (final Throwable t) {
-            DailyDownloadCache.delete(getDownloadFileName());
+            deleteDownloadedFile();
             throw Throwables.propagate(t);
         }
+    }
+
+    protected void deleteDownloadedFile() {
+        DailyDownloadCache.delete(getDownloadFileName());
     }
 
     protected FDate getNow() {

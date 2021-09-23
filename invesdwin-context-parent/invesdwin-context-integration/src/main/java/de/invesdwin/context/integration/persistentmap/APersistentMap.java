@@ -23,6 +23,7 @@ import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
+import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.shutdown.ShutdownHookManager;
 import de.invesdwin.util.time.date.FDate;
 
@@ -55,7 +56,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     @Override
     public File getDirectory() {
         return new File(new File(getBaseDirectory(), APersistentMap.class.getSimpleName()),
-                newFactory().getClass().getSimpleName());
+                Reflections.getClassSimpleNameNonBlank(newFactory().getClass()));
     }
 
     private APersistentMap<K, V> getThis() {
