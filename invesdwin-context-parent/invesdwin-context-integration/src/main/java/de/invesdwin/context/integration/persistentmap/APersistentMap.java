@@ -106,7 +106,9 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
             //don't hold read lock while loading value
             final V loadedValue = loadable.get();
             //write lock is only for the actual table variable, not the table values, thus read lock is fine here
-            put(key, loadedValue);
+            if (loadedValue != null) {
+                put(key, loadedValue);
+            }
             return loadedValue;
         } else {
             return cachedValue;
