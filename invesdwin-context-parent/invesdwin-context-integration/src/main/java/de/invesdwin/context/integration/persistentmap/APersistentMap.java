@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -96,6 +97,19 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
             getFactory().removeAll(delegate, matcher);
         } finally {
             getReadLock().unlock();
+        }
+    }
+
+    public V getOrLoad(final K key, final Supplier<V> loadable) {
+        final V cachedValue = get(key);
+        if (cachedValue == null) {
+            //don't hold read lock while loading value
+            final V loadedValue = loadable.get();
+            //write lock is only for the actual table variable, not the table values, thus read lock is fine here
+            put(key, loadedValue);
+            return loadedValue;
+        } else {
+            return cachedValue;
         }
     }
 
