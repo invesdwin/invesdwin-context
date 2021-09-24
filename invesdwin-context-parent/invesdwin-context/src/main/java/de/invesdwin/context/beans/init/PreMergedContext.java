@@ -109,7 +109,7 @@ public final class PreMergedContext extends ADelegateContext {
                 }
             }
         }
-        PositionedResource.COMPARATOR.asAscending().sort(contexts);
+        PositionedResource.COMPARATOR.asAscending().asNotNullSafe().sort(contexts);
         return contexts;
     }
 

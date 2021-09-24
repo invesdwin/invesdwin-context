@@ -82,7 +82,7 @@ public class TestContextLoader implements ContextLoader {
         for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
             testHook.setUpContextLocations(currentTest, mergedContexts);
         }
-        PositionedResource.COMPARATOR.asAscending().sort(mergedContexts);
+        PositionedResource.COMPARATOR.asAscending().asNotNullSafe().sort(mergedContexts);
         return mergedContexts;
     }
 
