@@ -12,7 +12,7 @@ import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.beans.init.locations.position.ResourcePosition;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.ADelegateComparator;
+import de.invesdwin.util.lang.comparator.IComparator;
 
 /**
  * Marker interface to make ContextLocations load before or after others. Useful for infrastructure spring configs where
@@ -24,12 +24,7 @@ import de.invesdwin.util.lang.ADelegateComparator;
 @NotThreadSafe
 public final class PositionedResource implements Resource, Comparable<Resource> {
 
-    public static final ADelegateComparator<PositionedResource> COMPARATOR = new ADelegateComparator<PositionedResource>() {
-        @Override
-        protected Comparable<?> getCompareCriteria(final PositionedResource e) {
-            return e;
-        }
-    };
+    public static final IComparator<PositionedResource> COMPARATOR = IComparator.getDefaultInstance();
 
     private final Resource delegate;
     private final ResourcePosition position;
