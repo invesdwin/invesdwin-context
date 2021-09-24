@@ -17,16 +17,22 @@ import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.streams.pool.APooledOutputStream;
 import de.invesdwin.util.time.date.FDate;
-import de.invesdwin.util.time.date.FDates;
-import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe
 public class DailyDownloadCache {
 
-    private static final Duration DAILY_REFRESH_DURATION = new Duration(1, FTimeUnit.DAYS);
     private static final File FOLDER = new File(ContextProperties.getHomeDataDirectory(),
             DailyDownloadCache.class.getSimpleName());
+    private final DailyDownloadInterval updateInterval;
+
+    public DailyDownloadCache() {
+        this.updateInterval = DailyDownloadInterval.DAILY;
+    }
+
+    public DailyDownloadCache(final DailyDownloadInterval updateInterval) {
+        this.updateInterval = updateInterval;
+    }
 
     public String downloadString(final String name, final Callable<String> request) throws Exception {
         return downloadString(name, request, new FDate());
@@ -93,7 +99,7 @@ public class DailyDownloadCache {
         if (lastRequestTime.isAfterOrEqualToNotNullSafe(now)) {
             return false;
         }
-        return new Duration(lastRequestTime, now).isGreaterThan(DAILY_REFRESH_DURATION)
-                || !FDates.isSameJulianDay(lastRequestTime, now);
+        return new Duration(lastRequestTime, now).isGreaterThan(updateInterval.getDuration())
+                || !updateInterval.isSameInterval(lastRequestTime, now);
     }
 }
