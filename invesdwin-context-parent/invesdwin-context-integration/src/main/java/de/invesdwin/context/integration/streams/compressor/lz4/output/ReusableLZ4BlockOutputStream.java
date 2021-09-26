@@ -6,7 +6,7 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.util.streams.buffer.ByteBuffers;
+import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.pool.APooledOutputStream;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.util.SafeUtils;

@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 public interface ICompressionFactory {
 

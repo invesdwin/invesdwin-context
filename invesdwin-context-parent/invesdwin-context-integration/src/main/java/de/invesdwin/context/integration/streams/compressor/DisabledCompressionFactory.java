@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.buffered.PooledFastBufferedOutputStream;
 
 @Immutable

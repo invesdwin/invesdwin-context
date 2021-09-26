@@ -24,7 +24,7 @@ import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.scaled.ByteSize;
 import de.invesdwin.util.math.decimal.scaled.ByteSizeScale;
-import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.APooledInputStream;
 import de.invesdwin.util.streams.pool.APooledOutputStream;
 import de.invesdwin.util.streams.pool.PooledFastByteArrayOutputStream;
@@ -188,8 +188,8 @@ public final class LZ4Streams {
         //if compression fails we will have at maximum uncompressed size
         final int origLength = src.capacity();
         dest.ensureCapacity(origLength + VALUE_INDEX);
-        final java.nio.ByteBuffer srcbb = src.asByteBuffer();
-        final java.nio.ByteBuffer destbb = dest.asByteBuffer();
+        final java.nio.ByteBuffer srcbb = src.asNioByteBuffer();
+        final java.nio.ByteBuffer destbb = dest.asNioByteBuffer();
         final int destLength = destbb.capacity() - VALUE_INDEX;
         final int compressedLength = tryCompress(compressor, origLength, srcbb, destbb, destLength);
         dest.putInt(ORIGSIZE_INDEX, origLength);
@@ -229,7 +229,7 @@ public final class LZ4Streams {
             return origLength;
         } else {
             LZ4Streams.newDefaultLZ4Decompressor()
-                    .decompress(src.asByteBuffer(), VALUE_INDEX, dest.asByteBuffer(), 0, origLength);
+                    .decompress(src.asNioByteBuffer(), VALUE_INDEX, dest.asNioByteBuffer(), 0, origLength);
             /*
              * we need to return the original length, since this is what we *actually* wrote into dest. return value
              * from decompress just tells us how much was read from src, which does not interest and would truncate dest

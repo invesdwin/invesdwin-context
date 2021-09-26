@@ -8,7 +8,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.context.integration.streams.compressor.CompressingDelegateSerde;
 import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.streams.buffer.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.APooledInputStream;
 import de.invesdwin.util.streams.pool.APooledOutputStream;
 import net.jpountz.lz4.LZ4Compressor;
