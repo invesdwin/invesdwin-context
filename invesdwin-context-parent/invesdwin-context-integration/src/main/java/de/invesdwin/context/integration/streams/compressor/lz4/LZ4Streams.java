@@ -55,7 +55,7 @@ public final class LZ4Streams {
      */
     public static final BLOCKSIZE DEFAULT_BLOCK_SIZE = BLOCKSIZE.SIZE_64KB;
     public static final int DEFAULT_BLOCK_SIZE_BYTES = Integers
-            .checkedCast(new ByteSize(64D, ByteSizeScale.KILOBYTES).getValue(ByteSizeScale.BYTES));
+            .checkedCast(ByteSizeScale.BYTES.convert(64D, ByteSizeScale.KILOBYTES));
 
     public static final int DEFAULT_SEED = 0x9747b28c;
 
