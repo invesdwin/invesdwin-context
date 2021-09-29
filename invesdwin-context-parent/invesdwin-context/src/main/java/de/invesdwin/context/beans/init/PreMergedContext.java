@@ -37,6 +37,8 @@ public final class PreMergedContext extends ADelegateContext {
     static {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
+                //jigsaw needs to be disabled before instrumentation is loaded because spring will otherwise throw exceptions
+                PlatformInitializerProperties.getInitializer().initDisableJavaModuleSystemRestrictions();
                 PlatformInitializerProperties.getInitializer().initInstrumentation();
                 Assertions.assertThat(ContextProperties.TEMP_CLASSPATH_DIRECTORY).isNotNull();
                 Assertions.assertThat(StartupHookManager.isAlreadyStarted()).isFalse();

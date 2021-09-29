@@ -148,4 +148,9 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
         delegate.initAgronaBoundsChecks();
     }
 
+    @Override
+    public void initDisableJavaModuleSystemRestrictions() {
+        delegate.initDisableJavaModuleSystemRestrictions();
+    }
+
 }

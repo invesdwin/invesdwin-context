@@ -61,4 +61,6 @@ public interface IPlatformInitializer {
 
     void initAgronaBoundsChecks();
 
+    void initDisableJavaModuleSystemRestrictions();
+
 }

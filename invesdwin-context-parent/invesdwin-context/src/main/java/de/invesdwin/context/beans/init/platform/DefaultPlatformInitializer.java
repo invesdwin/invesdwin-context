@@ -302,4 +302,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         }
     }
 
+    @Override
+    public void initDisableJavaModuleSystemRestrictions() {
+        Reflections.disableJavaModuleSystemRestrictions();
+    }
+
 }
