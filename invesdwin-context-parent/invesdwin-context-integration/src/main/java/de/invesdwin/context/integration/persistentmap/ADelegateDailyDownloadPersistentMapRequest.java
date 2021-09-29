@@ -89,18 +89,22 @@ public abstract class ADelegateDailyDownloadPersistentMapRequest<K, V> implement
         }
         try {
             if (map == null) {
-                if (isReadOnlySupported()) {
-                    try {
-                        map = newPersistentMap(false);
-                        if (map.isEmpty()) {
-                            return true;
+                synchronized (this) {
+                    if (map == null) {
+                        if (isReadOnlySupported()) {
+                            try {
+                                map = newPersistentMap(false);
+                                if (map.isEmpty()) {
+                                    return true;
+                                }
+                            } finally {
+                                map.close();
+                                map = newPersistentMap(true);
+                            }
+                        } else {
+                            map = newPersistentMap(false);
                         }
-                    } finally {
-                        map.close();
-                        map = newPersistentMap(true);
                     }
-                } else {
-                    map = newPersistentMap(false);
                 }
             }
             return map.isEmpty() || dailyDownloadCache.shouldUpdate(getDownloadFileName(), getNow());
