@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.persistentmap;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedCollection;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedSet;
@@ -20,8 +22,10 @@ import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.concurrent.lock.readwrite.IReentrantReadWriteLock;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.lang.reflection.Reflections;
@@ -197,11 +201,31 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
                     tableFinalizer.register(this);
                     PersistentMapCloseManager.register(this);
                 } catch (final Throwable e) {
-                    Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
-                            + "] is inconsistent. Resetting data and trying again.", e));
-                    innerDeleteTable();
-                    tableFinalizer.table = getFactory().newPersistentMap(this);
-                    tableFinalizer.register(this);
+                    if (Throwables.isCausedByType(e, OverlappingFileLockException.class)) {
+                        //Caused by: org.mapdb.DBException$FileLocked: File is already opened and is locked: Y:\InvesdwinData\FinancialdataHistorical\default\APersistentMap\PersistentMapDBFactory\CachingFinancialdataHistoricalServiceTime_getTimeInstrument
+                        //at org.mapdb.volume.Volume.lockFile(Volume.java:495)
+                        //at org.mapdb.volume.MappedFileVol.<init>(MappedFileVol.java:88)
+                        //at org.mapdb.volume.MappedFileVol$MappedFileFactory.factory(MappedFileVol.java:64)
+                        //Caused by: java.nio.channels.OverlappingFileLockException: null
+                        //at java.base/sun.nio.ch.FileLockTable.checkList(FileLockTable.java:229)
+                        //at java.base/sun.nio.ch.FileLockTable.add(FileLockTable.java:123)
+                        //at java.base/sun.nio.ch.FileChannelImpl.tryLock(FileChannelImpl.java:1154)
+                        //at java.base/java.nio.channels.FileChannel.tryLock(FileChannel.java:1165)
+                        //at org.mapdb.volume.Volume.lockFile(Volume.java:490)
+                        throw new RetryLaterRuntimeException(e);
+                    } else if (Strings.containsIgnoreCase(e.getMessage(), "LOCK")) {
+                        //ezdb.DbException: org.fusesource.leveldbjni.internal.NativeDB$DBException: IO error: lock /home/subes/Dokumente/Entwicklung/invesdwin/invesdwin-trading/invesdwin-trading-parent/invesdwin-trading-modules/invesdwin-trading-backtest/.invesdwin/de.invesdwin.context.persistence.leveldb.ADelegateRangeTable/CachingFinancialdataService_getInstrument/LOCK: Die Ressource ist zur Zeit nicht verfügbar
+                        //at ezdb.leveldb.EzLevelDbTable.<init>(EzLevelDbTable.java:50)
+                        //at ezdb.leveldb.EzLevelDb.getTable(EzLevelDb.java:69)
+                        //at de.invesdwin.context.persistence.leveldb.ADelegateRangeTable.getTableWithReadLock(ADelegateRangeTable.java:144)
+                        throw new RetryLaterRuntimeException(e);
+                    } else {
+                        Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
+                                + "] is inconsistent. Resetting data and trying again.", e));
+                        innerDeleteTable();
+                        tableFinalizer.table = getFactory().newPersistentMap(this);
+                        tableFinalizer.register(this);
+                    }
                 }
             }
         } finally {
