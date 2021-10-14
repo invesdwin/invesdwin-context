@@ -77,19 +77,19 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
             return false;
         }
         //After we check for exception we want to decide on
-        final boolean retry = decideRetry(context);
+        final boolean retry = shouldRetry(context);
         if (retry) {
             maybeLogRetry(context);
         }
         return retry;
     }
 
-    private boolean decideRetry(final RetryContext context) {
+    private boolean shouldRetry(final RetryContext context) {
         final Throwable lastThrowable = context.getLastThrowable();
-        return decideRetry(lastThrowable);
+        return shouldRetry(lastThrowable);
     }
 
-    public static boolean decideRetry(final Throwable lastThrowable) {
+    public static boolean shouldRetry(final Throwable lastThrowable) {
         Throwable cause = lastThrowable;
         while (cause != null) {
             if (cause instanceof RetryDisabledException || cause instanceof RetryDisabledRuntimeException) {
