@@ -11,21 +11,34 @@ import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.Throwables;
+import de.invesdwin.util.time.Instant;
+import de.invesdwin.util.time.duration.Duration;
 import io.netty.util.concurrent.FastThreadLocal;
 
 @ThreadSafe
 public class LoggingRetryHook implements IRetryHook {
 
-    private static final FastThreadLocal<Throwable> PREVIOUS_CAUSE = new FastThreadLocal<Throwable>();
+    private static final FastThreadLocal<PreviousCause> PREVIOUS_CAUSE = new FastThreadLocal<PreviousCause>();
     private final Log log = new Log(this);
 
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
-        if (!Err.isSameMeaning(cause, PREVIOUS_CAUSE.get())) {
-            log.catching(Level.ERROR,
-                    new FastRetryLaterRuntimeException(createFailureMessage(originator, retryCount), cause));
-            PREVIOUS_CAUSE.set(cause);
+        final PreviousCause previousCause = PREVIOUS_CAUSE.get();
+        if (previousCause == null) {
+            logRetry(originator, retryCount, cause, LogReason.INITIAL, null);
+            PREVIOUS_CAUSE.set(new PreviousCause(cause));
+        } else {
+            final LogReason reason = previousCause.shouldLog(cause);
+            if (reason != null) {
+                logRetry(originator, retryCount, cause, reason, previousCause.getStart());
+            }
         }
+    }
+
+    private void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
+            final LogReason reason, final Instant waitingSince) {
+        log.catching(Level.ERROR, new FastRetryLaterRuntimeException(
+                createFailureMessage(originator, retryCount, reason, waitingSince), cause));
     }
 
     @Override
@@ -45,14 +58,26 @@ public class LoggingRetryHook implements IRetryHook {
     /**
      * Message should only be logged when this exception gets logged because a retry happened.
      */
-    public static String createFailureMessage(final RetryOriginator originator, final int retryCount) {
+    public static String createFailureMessage(final RetryOriginator originator, final int retryCount,
+            final LogReason reason, final Instant waitingSince) {
         final StringBuilder sb = new StringBuilder();
         if (retryCount > 0) {
-            sb.append("On ");
-            sb.append(retryCount);
-            sb.append(". retry a new error occured. ");
+            sb.append("(x) ");
+            if (reason == LogReason.NEW_CAUSE) {
+                sb.append("On ");
+                sb.append(retryCount);
+                sb.append(". retry a new error occured. ");
+            } else if (reason == LogReason.TIME) {
+                sb.append("On ");
+                sb.append(retryCount);
+                sb.append(". retry we are waiting since ");
+                sb.append(new Duration(waitingSince));
+                sb.append(". ");
+            }
+        } else {
+            sb.append("(+) ");
         }
-        sb.append("(+) Call of ");
+        sb.append("Call of ");
         sb.append(originator);
         sb.append(
                 " will be retried until success or another decision has been made. Maybe a destination is down or another transient exception occured.");
@@ -81,6 +106,47 @@ public class LoggingRetryHook implements IRetryHook {
         sb.append(retryCount);
         sb.append(" retries.");
         return sb.toString();
+    }
+
+    private static final class PreviousCause {
+        private Throwable previousCause;
+        private final Instant start;
+        private long lastLogNanos;
+
+        public PreviousCause(final Throwable previousCause) {
+            this.previousCause = previousCause;
+            this.start = new Instant();
+            lastLogNanos = System.nanoTime();
+        }
+
+        public Instant getStart() {
+            return start;
+        }
+
+        public LogReason shouldLog(final Throwable newCause) {
+            final LogReason logReason;
+            if (!Err.isSameMeaning(newCause, previousCause)) {
+                logReason = LogReason.NEW_CAUSE;
+                previousCause = newCause;
+                lastLogNanos = System.nanoTime();
+            } else {
+                final long curNanos = System.nanoTime();
+                if (Duration.ONE_MINUTE.isGreaterThanNanos(curNanos - lastLogNanos)) {
+                    logReason = LogReason.TIME;
+                    previousCause = newCause;
+                    lastLogNanos = curNanos;
+                } else {
+                    logReason = null;
+                }
+            }
+            return logReason;
+        }
+    }
+
+    private static enum LogReason {
+        INITIAL,
+        NEW_CAUSE,
+        TIME;
     }
 
 }
