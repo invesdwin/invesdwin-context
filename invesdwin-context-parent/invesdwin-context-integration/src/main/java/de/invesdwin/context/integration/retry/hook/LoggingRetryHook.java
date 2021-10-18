@@ -116,7 +116,7 @@ public class LoggingRetryHook implements IRetryHook {
         public PreviousCause(final Throwable previousCause) {
             this.previousCause = previousCause;
             this.start = new Instant();
-            lastLogNanos = System.nanoTime();
+            lastLogNanos = start.nanosValue();
         }
 
         public Instant getStart() {
