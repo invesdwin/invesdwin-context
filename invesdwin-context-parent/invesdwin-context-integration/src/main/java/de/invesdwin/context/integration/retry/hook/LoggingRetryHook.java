@@ -113,7 +113,7 @@ public class LoggingRetryHook implements IRetryHook {
         private final Instant start;
         private long lastLogNanos;
 
-        public PreviousCause(final Throwable previousCause) {
+        PreviousCause(final Throwable previousCause) {
             this.previousCause = previousCause;
             this.start = new Instant();
             lastLogNanos = start.nanosValue();
@@ -143,7 +143,7 @@ public class LoggingRetryHook implements IRetryHook {
         }
     }
 
-    private static enum LogReason {
+    private enum LogReason {
         INITIAL,
         NEW_CAUSE,
         TIME;
