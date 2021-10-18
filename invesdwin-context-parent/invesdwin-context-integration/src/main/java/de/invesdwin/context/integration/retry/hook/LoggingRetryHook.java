@@ -143,7 +143,7 @@ public class LoggingRetryHook implements IRetryHook {
         }
     }
 
-    private enum LogReason {
+    public enum LogReason {
         INITIAL,
         NEW_CAUSE,
         TIME;
