@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.internal;
+package de.invesdwin.context.integration.marshaller.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.util.ClassUtils;
 
-import de.invesdwin.context.integration.IMergedJaxbContextPath;
+import de.invesdwin.context.integration.marshaller.IMergedJaxbContextPath;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Resources;
 import de.invesdwin.util.lang.Strings;

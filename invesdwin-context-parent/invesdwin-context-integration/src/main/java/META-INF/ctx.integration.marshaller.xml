@@ -15,7 +15,7 @@
 
 	<!-- Dieser Context wird nur geladen, wenn auch wirklich JAXB Generate im Classpath gefunden wurden. -->
 
-	<bean id="jaxbMarshaller" class="de.invesdwin.context.integration.internal.MergedJaxb2Marshaller" />
+	<bean id="jaxbMarshaller" class="de.invesdwin.context.integration.marshaller.internal.MergedJaxb2Marshaller" />
 	<bean id="jaxbMarshallingTransformer" class="org.springframework.integration.xml.transformer.MarshallingTransformer">
 		<constructor-arg ref="jaxbMarshaller" />
 		<constructor-arg>

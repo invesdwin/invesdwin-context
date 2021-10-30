@@ -11,6 +11,7 @@ import de.invesdwin.context.integration.csv.CsvVerificationTest;
 import de.invesdwin.context.integration.csv.writer.AsciiTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.CsvTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.HtmlTableWriterTest;
+import de.invesdwin.context.integration.marshaller.MarshallersTest;
 import de.invesdwin.context.integration.network.NetworkUtilTest;
 import de.invesdwin.context.integration.streams.DecompressingInputStreamTest;
 

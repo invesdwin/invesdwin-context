@@ -706,7 +706,7 @@
 						<dependency>
 							<groupId>org.glassfish.jaxb</groupId>
 							<artifactId>jaxb-runtime</artifactId>
-							<version>${version.jaxb}</version>
+							<version>${version.glassfish-jaxb}</version>
 						</dependency>
 						<!-- norva needs commons-lang3 -->
 						<dependency>

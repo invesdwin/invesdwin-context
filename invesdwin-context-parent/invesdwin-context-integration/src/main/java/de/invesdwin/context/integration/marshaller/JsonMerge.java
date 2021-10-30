@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration;
+package de.invesdwin.context.integration.marshaller;
 
 import java.util.Iterator;
 import java.util.Map;

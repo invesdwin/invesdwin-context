@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration;
+package de.invesdwin.context.integration.marshaller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import de.invesdwin.context.integration.marshaller.Marshallers;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.bean.AValueObject;

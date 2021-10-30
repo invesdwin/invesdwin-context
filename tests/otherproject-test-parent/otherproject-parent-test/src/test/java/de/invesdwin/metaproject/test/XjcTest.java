@@ -9,7 +9,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.junit.Test;
 
 import de.invesdwin.context.JavaServicesTest;
-import de.invesdwin.context.integration.Marshallers;
+import de.invesdwin.context.integration.marshaller.MarshallerXmlJaxb;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.metaproject.test.schema.JavaTypesTestContainer;
 import de.invesdwin.metaproject.test.schema.JavaTypesTestPayload;
@@ -25,10 +25,10 @@ public class XjcTest extends ATest {
         new JavaServicesTest().testServices();
 
         final JavaTypesTestContainer o = fillTestObject();
-        final String xml = Marshallers.toXml(o);
+        final String xml = MarshallerXmlJaxb.toXml(o);
         log.info("Before:\n" + xml);
-        final JavaTypesTestContainer oFromXml = Marshallers.fromXml(xml);
-        final String xmlFromOFromXml = Marshallers.toXml(oFromXml);
+        final JavaTypesTestContainer oFromXml = MarshallerXmlJaxb.fromXml(xml);
+        final String xmlFromOFromXml = MarshallerXmlJaxb.toXml(oFromXml);
         log.info("After:\n" + xmlFromOFromXml);
         Assertions.assertThat(xmlFromOFromXml).as("Marshal->Unmarshal->Marshal distortes the result!").isEqualTo(xml);
     }

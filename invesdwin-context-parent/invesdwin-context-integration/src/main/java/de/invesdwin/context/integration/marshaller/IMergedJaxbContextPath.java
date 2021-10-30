@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration;
+package de.invesdwin.context.integration.marshaller;
 
 public interface IMergedJaxbContextPath {
 
