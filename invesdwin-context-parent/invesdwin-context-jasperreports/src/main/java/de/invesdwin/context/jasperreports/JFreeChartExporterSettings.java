@@ -20,7 +20,7 @@ public class JFreeChartExporterSettings extends AValueObject {
         return bounds;
     }
 
-    public JFreeChartExporterSettings withFontMultiplier(final Double fontMultiplier) {
+    public JFreeChartExporterSettings setFontMultiplier(final Double fontMultiplier) {
         this.fontMultiplier = fontMultiplier;
         return this;
     }

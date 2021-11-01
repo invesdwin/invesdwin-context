@@ -23,7 +23,7 @@ public abstract class ABeanTableWriter<E> implements IBeanTableWriter<E> {
 
     protected void writeHeaderLine() throws IOException {
         final List<String> headers = getHeaders();
-        this.csvWriter.withAssertColumnCount(headers.size());
+        this.csvWriter.setAssertColumnCount(headers.size());
         this.csvWriter.line(headers);
     }
 

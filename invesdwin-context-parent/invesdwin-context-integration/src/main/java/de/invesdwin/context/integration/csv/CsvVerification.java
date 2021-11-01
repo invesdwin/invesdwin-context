@@ -77,9 +77,9 @@ public class CsvVerification {
     }
 
     private FlatFileItemReader<FieldSet> newItemReader(final String content) {
-        return new CsvItemReaderBuilder<FieldSet>().withResource(new ByteArrayResource(content.getBytes()))
-                .withDelimiter(separator)
-                .withFieldSetMapper(new FieldSetMapper<FieldSet>() {
+        return new CsvItemReaderBuilder<FieldSet>().setResource(new ByteArrayResource(content.getBytes()))
+                .setDelimiter(separator)
+                .setFieldSetMapper(new FieldSetMapper<FieldSet>() {
                     @Override
                     public FieldSet mapFieldSet(final FieldSet fieldSet) throws BindException {
                         return fieldSet;

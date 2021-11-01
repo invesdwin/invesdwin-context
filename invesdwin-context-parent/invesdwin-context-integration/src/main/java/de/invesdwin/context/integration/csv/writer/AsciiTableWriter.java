@@ -32,7 +32,7 @@ public class AsciiTableWriter implements ITableWriter {
     }
 
     @Override
-    public AsciiTableWriter withAssertColumnCount(final Integer assertColumnCount) {
+    public AsciiTableWriter setAssertColumnCount(final Integer assertColumnCount) {
         this.assertColumnCount = assertColumnCount;
         return this;
     }
@@ -46,7 +46,7 @@ public class AsciiTableWriter implements ITableWriter {
         return theme;
     }
 
-    public AsciiTableWriter withTheme(final AsciiTableTheme theme) {
+    public AsciiTableWriter setTheme(final AsciiTableTheme theme) {
         this.theme = theme;
         return this;
     }

@@ -16,7 +16,7 @@ public interface ITableWriter extends Closeable {
 
     void flush() throws IOException;
 
-    ITableWriter withAssertColumnCount(Integer assertColumnCount);
+    ITableWriter setAssertColumnCount(Integer assertColumnCount);
 
     Integer getAssertColumnCount();
 

@@ -54,18 +54,18 @@ public class CsvTableWriter implements Closeable, ITableWriter {
         this.finalizer = new CsvTableWriterFinalizer();
         this.finalizer.out = out;
         this.finalizer.register(this);
-        withQuote(DEFAULT_QUOTE);
-        withColumnSeparator(DEFAULT_COLUMN_SEPARATOR);
-        withNewLine(DEFAULT_NEWLINE);
+        setQuote(DEFAULT_QUOTE);
+        setColumnSeparator(DEFAULT_COLUMN_SEPARATOR);
+        setNewLine(DEFAULT_NEWLINE);
     }
 
     @Override
-    public CsvTableWriter withAssertColumnCount(final Integer assertColumnCount) {
+    public CsvTableWriter setAssertColumnCount(final Integer assertColumnCount) {
         this.assertColumnCount = assertColumnCount;
         return this;
     }
 
-    public CsvTableWriter withQuote(final String quote) {
+    public CsvTableWriter setQuote(final String quote) {
         if (Strings.isBlank(quote)) {
             quoteBytes = null;
         } else {
@@ -74,13 +74,13 @@ public class CsvTableWriter implements Closeable, ITableWriter {
         return this;
     }
 
-    public CsvTableWriter withColumnSeparator(final String columnSeparator) {
+    public CsvTableWriter setColumnSeparator(final String columnSeparator) {
         Assertions.assertThat(columnSeparator).isNotEmpty();
         columnSeparatorBytes = STR_BYTES.get(columnSeparator);
         return this;
     }
 
-    public CsvTableWriter withNewLine(final String newline) {
+    public CsvTableWriter setNewLine(final String newline) {
         Assertions.assertThat(newline).isNotEmpty();
         newlineBytes = STR_BYTES.get(newline);
         return this;

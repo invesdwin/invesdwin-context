@@ -32,7 +32,7 @@ public class HtmlTableWriter implements ITableWriter {
         this.out = out;
     }
 
-    public HtmlTableWriter withCloseOut(final boolean closeOut) {
+    public HtmlTableWriter setCloseOut(final boolean closeOut) {
         this.closeOut = closeOut;
         return this;
     }
@@ -42,12 +42,12 @@ public class HtmlTableWriter implements ITableWriter {
     }
 
     @Override
-    public HtmlTableWriter withAssertColumnCount(final Integer assertColumnCount) {
+    public HtmlTableWriter setAssertColumnCount(final Integer assertColumnCount) {
         this.assertColumnCount = assertColumnCount;
         return this;
     }
 
-    public HtmlTableWriter withHeaderRowEnabled(final boolean headerRowEnabled) {
+    public HtmlTableWriter setHeaderRowEnabled(final boolean headerRowEnabled) {
         this.headerRowEnabled = headerRowEnabled;
         return this;
     }
@@ -56,7 +56,7 @@ public class HtmlTableWriter implements ITableWriter {
         return theme;
     }
 
-    public HtmlTableWriter withTheme(final HtmlTableTheme theme) {
+    public HtmlTableWriter setTheme(final HtmlTableTheme theme) {
         this.theme = theme;
         return this;
     }

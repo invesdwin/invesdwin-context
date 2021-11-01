@@ -23,7 +23,9 @@ public class AsciiTableTheme {
     public static final AsciiTableTheme SINGLE_LINE = new AsciiTableTheme('┼', '─', '│', '┌', '┬', '┐', '├', '┤', '└',
             '┴', '┘');
 
+    //CHECKSTYLE:OFF
     public static final AsciiTableTheme DEFAULT = AsciiTableTheme.SINGLE_LINE.withoutBodyRowSeparator();
+    //CHECKSTYLE:ON
     private static final char NONE = Character.MIN_VALUE;
 
     private final char intersect;
@@ -265,7 +267,9 @@ public class AsciiTableTheme {
                 intersect, intersect, intersect, intersect);
     }
 
+    //CHECKSTYLE:OFF
     public AsciiTableTheme withoutOuterBorder() {
+        //CHECKSTYLE:ON
         final char intersect = this.intersect;
         final char horizontal = this.horizontal;
         final char vertical = this.vertical;
@@ -282,11 +286,15 @@ public class AsciiTableTheme {
                 bodyRowSeparatorEnabled, false);
     }
 
+    //CHECKSTYLE:OFF
     public AsciiTableTheme withoutBodyRowSeparator() {
+        //CHECKSTYLE:ON
         return new AsciiTableTheme(this, headerRowSeparatorEnabled, false, outerBorderEnabled);
     }
 
+    //CHECKSTYLE:OFF
     public AsciiTableTheme withoutHeaderRowSeparator() {
+        //CHECKSTYLE:ON
         return new AsciiTableTheme(this, false, bodyRowSeparatorEnabled, outerBorderEnabled);
     }
 

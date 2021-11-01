@@ -19,12 +19,12 @@ public class CsvItemReaderBuilderTest extends ATest {
     @Test
     public void testTokenize() throws Exception {
         final FlatFileItemReader<String[]> items = new CsvItemReaderBuilder<String[]>()
-                .withResource(new ByteArrayResource(
+                .setResource(new ByteArrayResource(
                         ("\"O:RU-B12-0-3325.C\",\"O:RU-B\n12-0-3,325.C\",0,0.00,N/A,N/A,\"asd\"ê\n\",\"N/A\"\n"
                                 + "\"O:EC-O12-1-325.CM\",\"O:EC-O12-1-325.CM\",0,0.00,N/A,N/A,\"\"<x\",\"N/A\"\n"
                                 + "\"O:EC-X11-1-405.CM\",\"\"\"O:EC-X11-1-405.CM\",0,0.00,N/A,N/A,\"P#7\",\"N/A\"")
                                         .getBytes()))
-                .withFieldSetMapper(new FieldSetMapper<String[]>() {
+                .setFieldSetMapper(new FieldSetMapper<String[]>() {
                     @Override
                     public String[] mapFieldSet(final FieldSet fieldSet) throws BindException {
                         return fieldSet.getValues();
