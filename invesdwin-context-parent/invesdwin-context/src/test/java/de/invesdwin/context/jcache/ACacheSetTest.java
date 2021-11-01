@@ -18,8 +18,8 @@ public class ACacheSetTest extends ATest {
         final ACacheSet<String> cacheSet = new ACacheSet<String>() {
             @Override
             protected Cache<Integer, String> createDelegate() {
-                return new CacheBuilder<Integer, String>().withName(ACacheSetTest.class.getName())
-                        .withMaximumSize(100)
+                return new CacheBuilder<Integer, String>().setName(ACacheSetTest.class.getName())
+                        .setMaximumSize(100)
                         .create();
             }
         };

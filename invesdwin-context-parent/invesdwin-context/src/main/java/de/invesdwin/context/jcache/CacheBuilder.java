@@ -40,7 +40,8 @@ public class CacheBuilder<K, V> extends AValueObject {
     private Duration refreshAfterWrite;
     private Executor executor;
 
-    public CacheBuilder() {}
+    public CacheBuilder() {
+    }
 
     //---------------------------------- jCacheConfig -----------------------------------//
 
@@ -48,7 +49,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return readThrough;
     }
 
-    public CacheBuilder<K, V> withReadThrough(final Boolean readThrough) {
+    public CacheBuilder<K, V> setReadThrough(final Boolean readThrough) {
         this.readThrough = readThrough;
         return this;
     }
@@ -57,7 +58,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return writeThrough;
     }
 
-    public CacheBuilder<K, V> withWriteThrough(final Boolean writeThrough) {
+    public CacheBuilder<K, V> setWriteThrough(final Boolean writeThrough) {
         this.writeThrough = writeThrough;
         return this;
     }
@@ -66,7 +67,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return storeByValue;
     }
 
-    public CacheBuilder<K, V> withStoreByValue(final Boolean storeByValue) {
+    public CacheBuilder<K, V> setStoreByValue(final Boolean storeByValue) {
         this.storeByValue = storeByValue;
         return this;
     }
@@ -75,7 +76,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return statisticsEnabled;
     }
 
-    public CacheBuilder<K, V> withStatisticsEnabled(final Boolean statisticsEnabled) {
+    public CacheBuilder<K, V> setStatisticsEnabled(final Boolean statisticsEnabled) {
         this.statisticsEnabled = statisticsEnabled;
         return this;
     }
@@ -84,7 +85,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return Collections.unmodifiableSet(expiryPolicies);
     }
 
-    public CacheBuilder<K, V> withExpiryPolicy(final ExpiryPolicy expiryPolicy) {
+    public CacheBuilder<K, V> setExpiryPolicy(final ExpiryPolicy expiryPolicy) {
         this.expiryPolicies.add(expiryPolicy);
         return this;
     }
@@ -93,7 +94,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return cacheLoader;
     }
 
-    public CacheBuilder<K, V> withCacheLoader(final CacheLoader<K, V> cacheLoader) {
+    public CacheBuilder<K, V> setCacheLoader(final CacheLoader<K, V> cacheLoader) {
         this.cacheLoader = cacheLoader;
         return this;
     }
@@ -102,7 +103,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return cacheWriter;
     }
 
-    public CacheBuilder<K, V> withCacheWriter(final CacheWriter<K, V> cacheWriter) {
+    public CacheBuilder<K, V> setCacheWriter(final CacheWriter<K, V> cacheWriter) {
         this.cacheWriter = cacheWriter;
         return this;
     }
@@ -111,7 +112,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return Collections.unmodifiableSet(cacheEntryListeners);
     }
 
-    public CacheBuilder<K, V> withCacheEntryListener(final CacheEntryListenerSupport<K, V> cacheEntryListener) {
+    public CacheBuilder<K, V> setCacheEntryListener(final CacheEntryListenerSupport<K, V> cacheEntryListener) {
         this.cacheEntryListeners.add(cacheEntryListener);
         return this;
     }
@@ -122,22 +123,22 @@ public class CacheBuilder<K, V> extends AValueObject {
         return name;
     }
 
-    public CacheBuilder<K, V> withName(final String name) {
+    public CacheBuilder<K, V> setName(final String name) {
         this.name = name;
         return this;
     }
 
-    public CacheBuilder<K, V> withName(final Object idObj) {
+    public CacheBuilder<K, V> setName(final Object idObj) {
         this.name = idObj.getClass().getSimpleName();
         return this;
     }
 
-    public CacheBuilder<K, V> withUniqueName(final String name) {
+    public CacheBuilder<K, V> setUniqueName(final String name) {
         this.name = UNIQUE_NAME_GENERATOR.get(name);
         return this;
     }
 
-    public CacheBuilder<K, V> withUniqueName(final Object idObj) {
+    public CacheBuilder<K, V> setUniqueName(final Object idObj) {
         this.name = UNIQUE_NAME_GENERATOR.get(idObj.getClass().getSimpleName());
         return this;
     }
@@ -146,7 +147,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return maximumSize;
     }
 
-    public CacheBuilder<K, V> withMaximumSize(final Integer maximumSize) {
+    public CacheBuilder<K, V> setMaximumSize(final Integer maximumSize) {
         this.maximumSize = maximumSize;
         return this;
     }
@@ -155,7 +156,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return expireAfterWrite;
     }
 
-    public CacheBuilder<K, V> withExpireAfterWrite(final Duration expireAfterWrite) {
+    public CacheBuilder<K, V> setExpireAfterWrite(final Duration expireAfterWrite) {
         this.expireAfterWrite = expireAfterWrite;
         return this;
     }
@@ -164,7 +165,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return expireAfterAccess;
     }
 
-    public CacheBuilder<K, V> withExpireAfterAccess(final Duration expireAfterAccess) {
+    public CacheBuilder<K, V> setExpireAfterAccess(final Duration expireAfterAccess) {
         this.expireAfterAccess = expireAfterAccess;
         return this;
     }
@@ -173,7 +174,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return refreshAfterWrite;
     }
 
-    public CacheBuilder<K, V> withRefreshAfterWrite(final Duration refreshAfterWrite) {
+    public CacheBuilder<K, V> setRefreshAfterWrite(final Duration refreshAfterWrite) {
         this.refreshAfterWrite = refreshAfterWrite;
         return this;
     }
@@ -182,7 +183,7 @@ public class CacheBuilder<K, V> extends AValueObject {
         return executor;
     }
 
-    public CacheBuilder<K, V> withExecutor(final Executor executor) {
+    public CacheBuilder<K, V> setExecutor(final Executor executor) {
         this.executor = executor;
         return this;
     }

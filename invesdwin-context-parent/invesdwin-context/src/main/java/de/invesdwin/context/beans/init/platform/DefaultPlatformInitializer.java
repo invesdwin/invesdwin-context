@@ -113,9 +113,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initDefaultCache(final String defaultCacheName) {
-        new CacheBuilder<Object, Object>().withMaximumSize(1000000)
-                .withName(defaultCacheName)
-                .withExpireAfterAccess(new Duration(2, FTimeUnit.MINUTES))
+        new CacheBuilder<Object, Object>().setMaximumSize(1000000)
+                .setName(defaultCacheName)
+                .setExpireAfterAccess(new Duration(2, FTimeUnit.MINUTES))
                 .getOrCreate();
     }
 

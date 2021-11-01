@@ -18,8 +18,8 @@ public class ACacheMapTest extends ATest {
         final ACacheMap<Integer, String> map = new ACacheMap<Integer, String>() {
             @Override
             protected Cache<Integer, String> createDelegate() {
-                return new CacheBuilder<Integer, String>().withName(ACacheMap.class.getName())
-                        .withMaximumSize(1000)
+                return new CacheBuilder<Integer, String>().setName(ACacheMap.class.getName())
+                        .setMaximumSize(1000)
                         .create();
             }
         };
