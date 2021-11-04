@@ -23,6 +23,7 @@ import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfig
 import de.invesdwin.context.beans.init.platform.util.ConscryptConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
 import de.invesdwin.context.beans.init.platform.util.RegisterTypesForSerializationConfigurer;
+import de.invesdwin.context.beans.init.platform.util.TempDirectoryLockConfigurerer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
 import de.invesdwin.context.beans.init.platform.util.internal.InstrumentationHookLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.LogbackConfigurationLoader;
@@ -38,6 +39,7 @@ import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.classpath.ClassPathScanner;
 import de.invesdwin.util.classpath.FastClassPathScanner;
+import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
@@ -113,6 +115,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initDefaultCache(final String defaultCacheName) {
+        //yo dawg, JCache caches "caches" internally
         new CacheBuilder<Object, Object>().setMaximumSize(1000000)
                 .setName(defaultCacheName)
                 .setExpireAfterAccess(new Duration(2, FTimeUnit.MINUTES))
@@ -143,13 +146,24 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public File initTempDirectory() {
-        DynamicInstrumentationProperties.setDeleteTempDirectoryRunner(new Runnable() {
-            @Override
-            public void run() {
-                Files.deleteNative(DynamicInstrumentationProperties.TEMP_DIRECTORY);
-            }
-        });
         return DynamicInstrumentationProperties.TEMP_DIRECTORY;
+    }
+
+    @Override
+    public void initDeleteTempDirectoryRunner(final File tempDirectory, final FileChannelLock tempDirectoryLock) {
+        DynamicInstrumentationProperties.setDeleteTempDirectoryRunner(() -> {
+            tempDirectoryLock.unlock();
+            Files.deleteNative(tempDirectory);
+        });
+        TempDirectoryLockConfigurerer.deleteObsoleteTempDirectories(tempDirectory);
+    }
+
+    @Override
+    public FileChannelLock initTempDirectoryLock(final File tempDirectory) {
+        final FileChannelLock lock = new FileChannelLock(
+                new File(tempDirectory, TempDirectoryLockConfigurerer.TEMP_DIRECTORY_LOCK_FILE_NAME));
+        lock.tryLockThrowing();
+        return lock;
     }
 
     @Override

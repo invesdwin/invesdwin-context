@@ -12,6 +12,7 @@ import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.concurrent.Executors;
+import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;
@@ -30,6 +31,7 @@ public final class ContextProperties {
      * Process specific temp dir that gets cleaned on exit.
      */
     public static final File TEMP_DIRECTORY;
+    public static final FileChannelLock TEMP_DIRECTORY_LOCK;
     public static final File TEMP_CLASSPATH_DIRECTORY;
     public static final Duration DEFAULT_NETWORK_TIMEOUT;
     public static final int DEFAULT_NETWORK_TIMEOUT_MILLIS;
@@ -48,26 +50,39 @@ public final class ContextProperties {
     static {
         final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
         IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
-
-        File tempDirectory = null;
-        File tempClasspathDirectory = null;
-        try {
-            tempDirectory = initializer.initTempDirectory();
-            tempClasspathDirectory = initializer.initTempClasspathDirectory(tempDirectory);
-        } catch (final Throwable t) {
-            //webstart safety for access control
-            tempDirectory = null;
-            tempClasspathDirectory = null;
-            PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
-        }
-        TEMP_DIRECTORY = tempDirectory;
-        TEMP_CLASSPATH_DIRECTORY = tempClasspathDirectory;
-
         if (PlatformInitializerProperties.isAllowed()) {
             try {
                 initializer.initXmlTransformerConfigurer();
                 initializer.initLogbackConfigurationLoader();
                 initializer.initSystemPropertiesLoader();
+            } catch (final Throwable t) {
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
+            }
+        }
+
+        File tempDirectory = null;
+        FileChannelLock tempDirectoryLock = null;
+        File tempClasspathDirectory = null;
+        if (PlatformInitializerProperties.isAllowed()) {
+            try {
+                tempDirectory = initializer.initTempDirectory();
+                tempDirectoryLock = initializer.initTempDirectoryLock(tempDirectory);
+                tempClasspathDirectory = initializer.initTempClasspathDirectory(tempDirectory);
+                initializer.initDeleteTempDirectoryRunner(tempDirectory, tempDirectoryLock);
+            } catch (final Throwable t) {
+                //webstart safety for access control
+                tempDirectory = null;
+                tempDirectoryLock = null;
+                tempClasspathDirectory = null;
+                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
+            }
+        }
+        TEMP_DIRECTORY = tempDirectory;
+        TEMP_DIRECTORY_LOCK = tempDirectoryLock;
+        TEMP_CLASSPATH_DIRECTORY = tempClasspathDirectory;
+
+        if (PlatformInitializerProperties.isAllowed()) {
+            try {
                 initializer.initJavaUtilPrefsBackingStoreDirectory();
                 initializer.initDefaultCache(DEFAULT_CACHE_NAME);
             } catch (final Throwable t) {

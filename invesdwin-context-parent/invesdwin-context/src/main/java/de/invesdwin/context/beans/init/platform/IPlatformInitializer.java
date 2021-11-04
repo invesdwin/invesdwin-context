@@ -5,6 +5,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 
 import org.springframework.core.io.Resource;
 
+import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
 
 public interface IPlatformInitializer {
@@ -34,6 +35,10 @@ public interface IPlatformInitializer {
     boolean initIsTestEnvironment();
 
     File initTempDirectory();
+
+    FileChannelLock initTempDirectoryLock(File tempDirectory);
+
+    void initDeleteTempDirectoryRunner(File tempDirectory, FileChannelLock tempDirectoryLock);
 
     File initTempClasspathDirectory(File tempDirectory);
 

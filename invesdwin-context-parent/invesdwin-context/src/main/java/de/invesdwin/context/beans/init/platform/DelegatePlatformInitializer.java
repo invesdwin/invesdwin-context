@@ -7,6 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.springframework.core.io.Resource;
 
+import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe
@@ -81,6 +82,16 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     @Override
     public File initTempDirectory() {
         return delegate.initTempDirectory();
+    }
+
+    @Override
+    public void initDeleteTempDirectoryRunner(final File tempDirectory, final FileChannelLock tempDirectoryLock) {
+        delegate.initDeleteTempDirectoryRunner(tempDirectory, tempDirectoryLock);
+    }
+
+    @Override
+    public FileChannelLock initTempDirectoryLock(final File tempDirectory) {
+        return delegate.initTempDirectoryLock(tempDirectory);
     }
 
     @Override
