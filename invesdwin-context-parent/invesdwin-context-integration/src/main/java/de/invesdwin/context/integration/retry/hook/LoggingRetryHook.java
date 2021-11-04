@@ -113,6 +113,7 @@ public class LoggingRetryHook implements IRetryHook {
         private final Instant start;
         private long lastLogNanos;
 
+        @SuppressWarnings("deprecation")
         PreviousCause(final Throwable previousCause) {
             this.previousCause = previousCause;
             this.start = new Instant();
@@ -124,22 +125,20 @@ public class LoggingRetryHook implements IRetryHook {
         }
 
         public LogReason shouldLog(final Throwable newCause) {
-            final LogReason logReason;
             if (!Err.isSameMeaning(newCause, previousCause)) {
-                logReason = LogReason.NEW_CAUSE;
                 previousCause = newCause;
                 lastLogNanos = System.nanoTime();
+                return LogReason.NEW_CAUSE;
             } else {
                 final long curNanos = System.nanoTime();
-                if (Duration.ONE_MINUTE.isGreaterThanNanos(curNanos - lastLogNanos)) {
-                    logReason = LogReason.TIME;
+                if (Duration.ONE_MINUTE.isLessThanOrEqualToNanos(curNanos - lastLogNanos)) {
                     previousCause = newCause;
                     lastLogNanos = curNanos;
+                    return LogReason.TIME;
                 } else {
-                    logReason = null;
+                    return null;
                 }
             }
-            return logReason;
         }
     }
 
