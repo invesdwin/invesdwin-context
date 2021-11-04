@@ -20,7 +20,7 @@ public final class TempDirectoryLockConfigurerer {
 
     public static void deleteObsoleteTempDirectories(final File tempDirectory) {
         final File tempDirectoryParent = tempDirectory.getParentFile();
-        if (tempDirectory.getName().equals(DynamicInstrumentationProperties.TEMP_DIRECTORY_PARENT_NAME)) {
+        if (tempDirectoryParent.getName().equals(DynamicInstrumentationProperties.TEMP_DIRECTORY_PARENT_NAME)) {
             final WrappedExecutorService deleteObsoleteTempFilesExecutor = Executors
                     .newFixedThreadPool("deleteObsoleteTempFilesExecutor", 1);
             deleteObsoleteTempFilesExecutor.execute(new Runnable() {
