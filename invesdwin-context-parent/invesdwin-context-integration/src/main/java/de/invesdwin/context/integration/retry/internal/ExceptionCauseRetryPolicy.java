@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.retry;
+package de.invesdwin.context.integration.retry.internal;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -22,9 +22,12 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 
 import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.context.integration.retry.RetryDisabledException;
+import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
+import de.invesdwin.context.integration.retry.RetryLaterException;
+import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
-import de.invesdwin.context.integration.retry.internal.WrappedRetryException;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;

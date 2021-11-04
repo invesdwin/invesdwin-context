@@ -35,6 +35,10 @@ public class LoggingRetryHook implements IRetryHook {
         }
     }
 
+    public static boolean isRetrying() {
+        return PREVIOUS_CAUSE.get() != null;
+    }
+
     private void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
             final LogReason reason, final Instant waitingSince) {
         log.catching(Level.ERROR, new FastRetryLaterRuntimeException(
