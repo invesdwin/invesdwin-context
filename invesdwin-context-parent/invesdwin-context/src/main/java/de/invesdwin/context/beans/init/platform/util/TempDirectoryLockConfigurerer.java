@@ -34,7 +34,7 @@ public final class TempDirectoryLockConfigurerer {
                     for (int i = 0; i < children.length; i++) {
                         final File child = children[i];
                         if (isObsoleteTempDirectory(child)) {
-                            Files.deleteQuietly(child);
+                            Files.deleteNative(child);
                         }
                     }
                 }
