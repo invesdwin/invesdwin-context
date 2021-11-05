@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import de.invesdwin.context.integration.retry.hook.internal.BroadcastingRetryHook;
+import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHook;
 import de.invesdwin.util.assertions.Assertions;
 
 @ThreadSafe

@@ -2,7 +2,7 @@ package de.invesdwin.context.integration.retry;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.retry.hook.LoggingRetryHook;
+import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHook;
 import de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryPolicy;
 
 @Immutable
