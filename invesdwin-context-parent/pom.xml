@@ -88,7 +88,7 @@
 		<version.spring-ws>3.0.9.RELEASE</version.spring-ws>
 
 		<version.h2>1.4.200</version.h2>
-		<version.mysql-connector-java>8.0.21</version.mysql-connector-java>
+		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
 		<version.postgresql>42.2.14</version.postgresql>
 	</properties>
 
