@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.lang.OperatingSystem;
 
@@ -30,13 +31,13 @@ import de.invesdwin.util.lang.OperatingSystem;
  */
 // CHECKSTYLE:OFF relevant stuff copied from the JNA Native.java
 @NotThreadSafe
-public final class NativeLibrary {
+public class NativeLibrary {
 
     private final String libname;
     private final String packagePath;
     private final Class<?> classFromSameJar;
     private boolean unpacked;
-    private String nativeLibraryPath = null;
+    protected String nativeLibraryPath = null;
 
     public NativeLibrary(final String libname, final String packagePath, final Class<?> classFromSameJar) {
         this.libname = libname;
@@ -126,10 +127,7 @@ public final class NativeLibrary {
 
             FileOutputStream fos = null;
             try {
-                // Suffix is required on windows, or library fails to load
-                // Let Java pick the suffix, except on windows, to avoid
-                // problems with Web Start.
-                lib = File.createTempFile("investemp_", OperatingSystem.isWindows() ? ".dll" : null);
+                lib = new File(ContextProperties.TEMP_CLASSPATH_DIRECTORY, libname);
                 lib.deleteOnExit();
                 final ClassLoader cl = NativeLibrary.class.getClassLoader();
                 if (OperatingSystem.isWindows() && (cl == null || cl.equals(ClassLoader.getSystemClassLoader()))) {
@@ -157,8 +155,12 @@ public final class NativeLibrary {
             }
             unpacked = true;
         }
-        System.load(lib.getAbsolutePath());
+        loadNativeLibraryFromJar(lib);
         nativeLibraryPath = lib.getAbsolutePath();
+    }
+
+    protected void loadNativeLibraryFromJar(final File lib) {
+        System.load(lib.getAbsolutePath());
     }
 
     private String getNativeLibraryResourcePath(final OperatingSystem osType, String arch, final String name) {
