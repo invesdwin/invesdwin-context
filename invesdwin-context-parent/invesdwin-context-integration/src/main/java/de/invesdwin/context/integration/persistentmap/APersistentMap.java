@@ -132,7 +132,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         return Locks.newReentrantReadWriteLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_tableLock");
     }
 
-    protected ILock getReadLock() {
+    public ILock getReadLock() {
         return tableLock.readLock();
     }
 
@@ -155,7 +155,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         return tableCreationTime;
     }
 
-    protected ConcurrentMap<K, V> getPreLockedDelegate() {
+    public ConcurrentMap<K, V> getPreLockedDelegate() {
         maybePurgeTable();
         //directly return table with read lock if not null
         final ILock readLock = getReadLock();
