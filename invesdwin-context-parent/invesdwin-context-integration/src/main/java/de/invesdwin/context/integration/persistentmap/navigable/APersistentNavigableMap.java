@@ -28,7 +28,7 @@ public abstract class APersistentNavigableMap<K, V> extends APersistentMap<K, V>
     protected abstract IPersistentNavigableMapFactory<K, V> newFactory();
 
     @Override
-    protected ConcurrentNavigableMap<K, V> getPreLockedDelegate() {
+    public ConcurrentNavigableMap<K, V> getPreLockedDelegate() {
         return (ConcurrentNavigableMap<K, V>) super.getPreLockedDelegate();
     }
 
