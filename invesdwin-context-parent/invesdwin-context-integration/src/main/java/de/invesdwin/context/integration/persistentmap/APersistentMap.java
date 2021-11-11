@@ -239,7 +239,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         try {
             if (tableFinalizer.table != null) {
                 PersistentMapCloseManager.unregister(this);
-                Closeables.closeQuietly(tableFinalizer.table);
+                Closeables.closeOrThrow(tableFinalizer.table);
                 tableFinalizer.table = null;
             }
         } finally {
@@ -259,7 +259,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
     private void innerDeleteTable() {
         if (tableFinalizer.table != null) {
             PersistentMapCloseManager.unregister(this);
-            Closeables.closeQuietly(tableFinalizer.table);
+            Closeables.closeOrThrow(tableFinalizer.table);
             tableFinalizer.table = null;
         }
         if (isDiskPersistence()) {
@@ -306,7 +306,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
 
         @Override
         protected void clean() {
-            Closeables.closeQuietly(table);
+            Closeables.closeOrThrow(table);
             table = null;
         }
 
