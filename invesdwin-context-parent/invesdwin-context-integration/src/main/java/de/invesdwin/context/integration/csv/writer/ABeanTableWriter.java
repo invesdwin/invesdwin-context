@@ -12,11 +12,11 @@ public abstract class ABeanTableWriter<E> implements IBeanTableWriter<E> {
     private final ITableWriter csvWriter;
     private boolean headerWritten = false;
 
-    public ABeanTableWriter(final OutputStream out) throws IOException {
+    public ABeanTableWriter(final OutputStream out) {
         this.csvWriter = newTableWriter(out);
     }
 
-    protected ITableWriter newTableWriter(final OutputStream out) throws IOException {
+    protected ITableWriter newTableWriter(final OutputStream out) {
         final CsvTableWriter csvWriter = new CsvTableWriter(out);
         return csvWriter;
     }
