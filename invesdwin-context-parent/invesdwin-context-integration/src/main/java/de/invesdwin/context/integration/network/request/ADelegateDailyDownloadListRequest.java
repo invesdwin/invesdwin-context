@@ -21,10 +21,10 @@ import de.invesdwin.util.time.date.FDate;
 import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
 @NotThreadSafe
-public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<List<E>> {
+public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<List<? extends E>> {
 
     @Override
-    public final List<E> call() throws Exception {
+    public final List<? extends E> call() throws Exception {
         try {
             final String content = newDailyDownloadCache().downloadString(getDownloadFileName(),
                     new Callable<String>() {
@@ -73,6 +73,6 @@ public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<L
 
     protected abstract String getDownloadName();
 
-    protected abstract List<E> download() throws Exception;
+    protected abstract List<? extends E> download() throws Exception;
 
 }
