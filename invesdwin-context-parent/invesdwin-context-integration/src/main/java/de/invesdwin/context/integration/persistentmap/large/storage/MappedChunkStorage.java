@@ -108,6 +108,10 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             //support parallel writes from this instance (we expect exclusive access to the file)
             addressOffset = position;
             position += buffer.capacity();
+            if (reader != null) {
+                reader.close();
+                reader = null;
+            }
         } finally {
             lock.writeLock().unlock();
         }
@@ -120,7 +124,6 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(memoryFile)) {
                 out.seek(addressOffset);
                 buffer.getBytesTo(0, (DataOutput) out, length);
-                reader = null;
                 return new ChunkSummary("", addressOffset, length);
             }
         } catch (final IOException e) {
