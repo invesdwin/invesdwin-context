@@ -5,6 +5,7 @@ import java.io.File;
 import de.invesdwin.util.marshallers.serde.ISerde;
 
 public interface IPersistentMapConfig<K, V> {
+
     String getName();
 
     boolean isDiskPersistence();

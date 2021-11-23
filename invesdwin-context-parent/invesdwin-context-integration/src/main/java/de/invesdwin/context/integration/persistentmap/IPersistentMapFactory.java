@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public interface IPersistentMapFactory<K, V> {
 
-    ConcurrentMap<K, V> newPersistentMap(APersistentMapConfig<K, V> config);
+    ConcurrentMap<K, V> newPersistentMap(IPersistentMapConfig<K, V> config);
 
     void removeAll(ConcurrentMap<K, V> table, IKeyMatcher<K> matcher);
 
