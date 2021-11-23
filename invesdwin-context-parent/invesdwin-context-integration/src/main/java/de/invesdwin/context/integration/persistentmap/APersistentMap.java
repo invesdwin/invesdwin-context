@@ -1,6 +1,5 @@
 package de.invesdwin.context.integration.persistentmap;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.OverlappingFileLockException;
@@ -16,12 +15,11 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedCollection;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedSet;
 import de.invesdwin.util.concurrent.lock.ILock;
-import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
-import de.invesdwin.util.concurrent.lock.readwrite.IReentrantReadWriteLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Files;
@@ -38,8 +36,7 @@ import de.invesdwin.util.time.date.FDate;
  * elements.
  */
 @ThreadSafe
-public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
-        implements ConcurrentMap<K, V>, Closeable {
+public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> implements IPersistentMap<K, V> {
 
     protected TextDescription iteratorName;
     protected final IReadWriteLock tableLock;
@@ -95,6 +92,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         };
     }
 
+    @Override
     public void removeAll(final IKeyMatcher<K> matcher) {
         final ConcurrentMap<K, V> delegate = getPreLockedDelegate();
         try {
@@ -104,6 +102,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         }
     }
 
+    @Override
     public V getOrLoad(final K key, final Supplier<V> loadable) {
         final V cachedValue = get(key);
         if (cachedValue == null) {
@@ -128,8 +127,13 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
 
     protected abstract IPersistentMapFactory<K, V> newFactory();
 
-    protected IReentrantReadWriteLock newTableLock() {
-        return Locks.newReentrantReadWriteLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_tableLock");
+    protected IReadWriteLock newTableLock() {
+        return ILockCollectionFactory.getInstance(isThreadSafe())
+                .newReadWriteLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_tableLock");
+    }
+
+    protected boolean isThreadSafe() {
+        return true;
     }
 
     public ILock getReadLock() {
@@ -247,6 +251,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V>
         }
     }
 
+    @Override
     public void deleteTable() {
         tableLock.writeLock().lock();
         try {

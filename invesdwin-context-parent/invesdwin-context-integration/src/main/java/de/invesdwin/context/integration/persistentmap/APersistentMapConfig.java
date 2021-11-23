@@ -10,7 +10,7 @@ import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.TypeDelegateSerde;
 
 @NotThreadSafe
-public abstract class APersistentMapConfig<K, V> {
+public abstract class APersistentMapConfig<K, V> implements IPersistentMapConfig<K, V> {
 
     private final String name;
 
@@ -18,38 +18,47 @@ public abstract class APersistentMapConfig<K, V> {
         this.name = name;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public boolean isDiskPersistence() {
         return true;
     }
 
+    @Override
     public ISerde<K> newKeySerde() {
         return new TypeDelegateSerde<K>(getKeyType());
     }
 
+    @Override
     public ISerde<V> newValueSerde() {
         return new TypeDelegateSerde<V>(getValueType());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Class<K> getKeyType() {
         return (Class<K>) Reflections.resolveTypeArguments(getClass(), APersistentMapConfig.class)[0];
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Class<V> getValueType() {
         return (Class<V>) Reflections.resolveTypeArguments(getClass(), APersistentMapConfig.class)[1];
     }
 
+    @Override
     public File getFile() {
         return new File(getDirectory(), name);
     }
 
+    @Override
     public abstract File getDirectory();
 
+    @Override
     public File getBaseDirectory() {
         return ContextProperties.getHomeDataDirectory();
     }
