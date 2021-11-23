@@ -16,4 +16,7 @@ public interface IChunkStorage<V> extends Closeable {
 
     void clear();
 
+    @Override
+    void close();
+
 }

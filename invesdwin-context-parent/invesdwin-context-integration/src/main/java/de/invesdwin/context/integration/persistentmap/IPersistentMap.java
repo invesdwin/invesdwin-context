@@ -12,4 +12,7 @@ public interface IPersistentMap<K, V> extends ConcurrentMap<K, V>, Closeable, IP
 
     V getOrLoad(K key, Supplier<V> loadable);
 
+    @Override
+    void close();
+
 }

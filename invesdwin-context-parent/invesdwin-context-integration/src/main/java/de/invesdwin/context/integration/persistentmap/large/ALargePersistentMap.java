@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.persistentmap.large;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -14,26 +13,25 @@ import de.invesdwin.context.integration.persistentmap.APersistentMapConfig;
 import de.invesdwin.context.integration.persistentmap.IKeyMatcher;
 import de.invesdwin.context.integration.persistentmap.IPersistentMap;
 import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
-import de.invesdwin.context.integration.persistentmap.large.storage.FileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.MappedChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummarySerde;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.ISerde;
 
 @ThreadSafe
 public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, V> implements IPersistentMap<K, V> {
 
-    private final APersistentMap<K, ChunkSummary> indexMap = newIndexMap();
-
-    private final IChunkStorage<V> chunkStorage = newChunkStorage(new File(getFile(), "storage"));
+    private IPersistentMap<K, ChunkSummary> indexMap;
+    private IChunkStorage<V> chunkStorage;
 
     public ALargePersistentMap(final String name) {
         super(name);
     }
 
-    protected APersistentMap<K, ChunkSummary> newIndexMap() {
+    private IPersistentMap<K, ChunkSummary> newIndexMap() {
         return new APersistentMap<K, ChunkSummary>("index") {
             @Override
             protected IPersistentMapFactory<K, ChunkSummary> newFactory() {
@@ -62,16 +60,35 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
         };
     }
 
-    protected IChunkStorage<V> newChunkStorage(final File directory) {
-        if (isHighConcurrency()) {
-            return new FileChunkStorage<>(directory, newValueSerde());
-        } else {
-            return new MappedChunkStorage<>(directory, newValueSerde());
+    protected IPersistentMap<K, ChunkSummary> getIndexMap() {
+        if (indexMap == null) {
+            synchronized (this) {
+                if (indexMap == null) {
+                    indexMap = newIndexMap();
+                }
+            }
         }
+        return indexMap;
     }
 
-    protected boolean isHighConcurrency() {
-        return false;
+    protected IChunkStorage<V> getChunkStorage() {
+        if (chunkStorage == null) {
+            synchronized (this) {
+                if (chunkStorage == null) {
+                    chunkStorage = newChunkStorage();
+                }
+            }
+        }
+        return chunkStorage;
+    }
+
+    private IChunkStorage<V> newChunkStorage() {
+        final File directory = new File(getFile(), "storage");
+        return newChunkStorage(directory);
+    }
+
+    protected IChunkStorage<V> newChunkStorage(final File directory) {
+        return new MappedChunkStorage<>(directory, newValueSerde());
     }
 
     @Override
@@ -84,17 +101,17 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     @Override
     public int size() {
-        return indexMap.size();
+        return getIndexMap().size();
     }
 
     @Override
     public boolean isEmpty() {
-        return indexMap.isEmpty();
+        return getIndexMap().isEmpty();
     }
 
     @Override
     public boolean containsKey(final Object key) {
-        return indexMap.containsKey(key);
+        return getIndexMap().containsKey(key);
     }
 
     @Override
@@ -104,42 +121,42 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     @Override
     public V get(final Object key) {
-        final ChunkSummary summary = indexMap.get(key);
+        final ChunkSummary summary = getIndexMap().get(key);
         if (summary == null) {
             return null;
         }
-        return chunkStorage.get(summary);
+        return getChunkStorage().get(summary);
     }
 
     @Override
     public V put(final K key, final V value) {
-        if (chunkStorage.isRemovable()) {
-            final ChunkSummary existingSummary = indexMap.get(key);
+        if (getChunkStorage().isRemovable()) {
+            final ChunkSummary existingSummary = getIndexMap().get(key);
 
-            final ChunkSummary newSummary = chunkStorage.put(value);
-            indexMap.put(key, newSummary);
+            final ChunkSummary newSummary = getChunkStorage().put(value);
+            getIndexMap().put(key, newSummary);
 
             if (existingSummary != null) {
-                chunkStorage.remove(existingSummary);
+                getChunkStorage().remove(existingSummary);
             }
             return null;
         } else {
-            final ChunkSummary newSummary = chunkStorage.put(value);
-            indexMap.put(key, newSummary);
+            final ChunkSummary newSummary = getChunkStorage().put(value);
+            getIndexMap().put(key, newSummary);
             return null;
         }
     }
 
     @Override
     public V remove(final Object key) {
-        if (chunkStorage.isRemovable()) {
-            final ChunkSummary existing = indexMap.get(key);
+        if (getChunkStorage().isRemovable()) {
+            final ChunkSummary existing = getIndexMap().get(key);
             if (existing != null) {
-                indexMap.remove(key);
-                chunkStorage.remove(existing);
+                getIndexMap().remove(key);
+                getChunkStorage().remove(existing);
             }
         } else {
-            indexMap.remove(key);
+            getIndexMap().remove(key);
         }
         return null;
     }
@@ -153,13 +170,13 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     @Override
     public void clear() {
-        indexMap.clear();
-        chunkStorage.clear();
+        getIndexMap().clear();
+        getChunkStorage().clear();
     }
 
     @Override
     public Set<K> keySet() {
-        return indexMap.keySet();
+        return getIndexMap().keySet();
     }
 
     @Override
@@ -173,9 +190,15 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
     }
 
     @Override
-    public void close() throws IOException {
-        indexMap.close();
-        chunkStorage.close();
+    public synchronized void close() {
+        if (indexMap != null) {
+            indexMap.close();
+            indexMap = null;
+        }
+        if (chunkStorage != null) {
+            getChunkStorage().close();
+            chunkStorage = null;
+        }
     }
 
     @Override
@@ -205,13 +228,14 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
     }
 
     @Override
-    public void deleteTable() {
-        clear();
+    public synchronized void deleteTable() {
+        close();
+        Files.deleteNative(getFile());
     }
 
     @Override
     public void removeAll(final IKeyMatcher<K> matcher) {
-        for (final K key : indexMap.keySet()) {
+        for (final K key : getIndexMap().keySet()) {
             if (matcher.matches(key)) {
                 remove(key);
             }
@@ -220,13 +244,13 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     @Override
     public V getOrLoad(final K key, final Supplier<V> loadable) {
-        final ChunkSummary existingSummary = indexMap.get(key);
+        final ChunkSummary existingSummary = getIndexMap().get(key);
         if (existingSummary == null) {
             final V loaded = loadable.get();
             put(key, loaded);
             return loaded;
         } else {
-            return chunkStorage.get(existingSummary);
+            return getChunkStorage().get(existingSummary);
         }
     }
 
