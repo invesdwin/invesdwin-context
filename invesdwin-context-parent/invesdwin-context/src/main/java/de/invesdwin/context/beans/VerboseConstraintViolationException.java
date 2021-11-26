@@ -25,9 +25,7 @@ public class VerboseConstraintViolationException extends ConstraintViolationExce
         if (constraintViolations == null || constraintViolations.size() == 0) {
             return null;
         }
-        final StringBuilder errors = new StringBuilder("Validation of [");
-        errors.append(Strings.asStringReflective(constraintViolations.iterator().next().getRootBean()));
-        errors.append("] failed:\n");
+        final StringBuilder errors = new StringBuilder("Validation failed:\n");
         for (final ConstraintViolation<?> constraintViolation : constraintViolations) {
             errors.append(constraintViolation.getRootBeanClass().getSimpleName());
             errors.append(".");
@@ -39,6 +37,9 @@ public class VerboseConstraintViolationException extends ConstraintViolationExce
             errors.append(constraintViolation.getMessage());
             errors.append("\n");
         }
+        errors.append("[");
+        errors.append(Strings.asStringReflective(constraintViolations.iterator().next().getRootBean()));
+        errors.append("]\n");
         return Strings.removeEnd(errors.toString(), "\n");
     }
 
