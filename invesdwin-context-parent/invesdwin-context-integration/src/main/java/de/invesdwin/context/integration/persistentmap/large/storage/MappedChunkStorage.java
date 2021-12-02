@@ -48,10 +48,12 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                     if (!memoryFile.exists()) {
                         return null;
                     }
+                    final long positionCopy = position;
                     try {
-                        reader = new MemoryMappedFile(memoryFile.getAbsolutePath(), position, true);
+                        reader = new MemoryMappedFile(memoryFile.getAbsolutePath(), positionCopy, true);
                     } catch (final IOException e) {
-                        throw new RuntimeException("file=" + memoryFile.getAbsolutePath() + " position=" + position, e);
+                        throw new RuntimeException("file=" + memoryFile.getAbsolutePath() + " position=" + positionCopy,
+                                e);
                     }
                 }
             }
