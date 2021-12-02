@@ -43,7 +43,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             if (!memoryFile.exists()) {
                 return null;
             }
-            synchronized (this) {
+            lock.readLock().lock();
+            try {
                 if (reader == null) {
                     if (!memoryFile.exists()) {
                         return null;
@@ -56,6 +57,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                                 e);
                     }
                 }
+            } finally {
+                lock.readLock().unlock();
             }
         }
         return reader;
