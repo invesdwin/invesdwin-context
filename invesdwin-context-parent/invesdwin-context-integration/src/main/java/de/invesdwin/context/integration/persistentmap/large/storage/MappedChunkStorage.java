@@ -46,7 +46,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             try {
                 reader = new MemoryMappedFile(memoryFile.getAbsolutePath(), position, true);
             } catch (final IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("file=" + memoryFile.getAbsolutePath() + " position=" + position, e);
             }
         }
         return reader;
