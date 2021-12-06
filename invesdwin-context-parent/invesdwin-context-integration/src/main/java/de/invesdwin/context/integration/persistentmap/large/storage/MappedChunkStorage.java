@@ -119,7 +119,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
         try {
             //support parallel writes from this instance (we expect exclusive access to the file)
             addressOffset = position;
-            position += buffer.capacity();
+            position += length;
             if (reader != null) {
                 reader.close();
                 reader = null;
