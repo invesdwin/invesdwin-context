@@ -15,7 +15,7 @@
 		<project.version.invesdwin-context-integration>1.0.3-SNAPSHOT</project.version.invesdwin-context-integration>
 		<project.version.invesdwin-context-client>1.0.3-SNAPSHOT</project.version.invesdwin-context-client>
 		<project.version.invesdwin-maven-plugin>1.0.14-SNAPSHOT</project.version.invesdwin-maven-plugin>
-		<version.maven-enforcer-plugin>3.0.0-M1</version.maven-enforcer-plugin>
+		<version.maven-enforcer-plugin>3.0.0</version.maven-enforcer-plugin>
 		<version.junit>4.13.1</version.junit>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
 		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
@@ -118,16 +118,6 @@
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-persistence-jpa-kundera</artifactId>
-			<version>${project.version.invesdwin-context-persistence}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-persistence-jpa-kundera-rdbms</artifactId>
-			<version>${project.version.invesdwin-context-persistence}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-persistence-timeseriesdb</artifactId>
 			<version>${project.version.invesdwin-context-persistence}</version>
 		</dependency>
@@ -213,29 +203,100 @@
 					<fail>true</fail>
 					<failFast>true</failFast>
 					<rules>
-						<requireUpperBoundDeps />
 						<bannedDependencies>
 							<excludes>
 								<exclude>commons-logging:commons-logging</exclude>
 								<exclude>org.aspectj:aspectjrt</exclude>
 								<exclude>javax.servlet:servlet-api</exclude>
+								<exclude>org.eclipse.jetty.orbit:javax.servlet</exclude>
 								<exclude>org.apache.geronimo.specs:geronimo-jaxb_2.1_spec</exclude>
 								<exclude>commons-logging:commons-logging-api</exclude>
 								<exclude>javax.persistence:persistence-api</exclude>
 								<exclude>log4j:log4j</exclude>
+								<exclude>org.apache.logging.log4j:log4j-api</exclude>
 								<exclude>org.slf4j:slf4j-log4j12</exclude>
+								<exclude>com.esotericsoftware:minlog</exclude>
 								<exclude>javax.servlet.jsp:jsp-api</exclude>
-								<exclude>net.sf.ehcache:ehcache-core</exclude>
-								<exclude>javax.transaction:jta</exclude>
 								<exclude>javax.enterprise:cdi-api</exclude>
 								<exclude>net.jcip:jcip-annotations</exclude>
+								<exclude>com.google.code.findbugs:annotations</exclude>
 								<exclude>org.glassfish:javax.servlet</exclude>
 								<exclude>org.hibernate:hibernate-c3p0</exclude>
+								<exclude>org.hibernate:hibernate-hikaricp</exclude>
 								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</exclude>
 								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.1-api</exclude>
 								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.2-api</exclude>
+								<exclude>backport-util-concurrent:backport-util-concurrent</exclude>
+								<exclude>javassist:javassist</exclude>
+								<exclude>org.junit.jupiter:junit-jupiter-engine</exclude>
+								<exclude>org.junit.jupiter:junit-jupiter-api</exclude>
+								<exclude>org.junit.platform:junit-platform-runner</exclude>
+								<exclude>org.apache.geronimo.specs:geronimo-jms_1.1_spec</exclude>
+								<exclude>com.sun.jna:jna</exclude>
+								<exclude>org.osgi:org.osgi.core</exclude>
+								<!-- use jakarta.validation:jakarta.validation-api instead -->
+								<exclude>javax.validation:validation-api</exclude>
+								<!-- use caffeine instead -->
+								<exclude>org.ehcache:ehcache</exclude>
+								<exclude>net.sf.ehcache:ehcache-core</exclude>
+								<!-- use org.lz4 version instead -->
+								<exclude>net.jpountz.lz4:lz4</exclude>
+								<!-- use jboss jta specification instead -->
+								<exclude>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</exclude>
+								<exclude>javax.transaction:jta</exclude>
+								<!-- use bcprov-jdk15on or bcpkix-jdk15on instead -->
+								<exclude>org.bouncycastle:bcprov-jdk16</exclude>
+								<exclude>org.bouncycastle:bcprov-jdk15</exclude>
+								<exclude>org.bouncycastle:bcprov-jdk15+</exclude>
+								<exclude>org.bouncycastle:bcprov-jdk14</exclude>
+								<exclude>org.bouncycastle:bcprov-jdk12</exclude>
+								<!-- use com.narupley:not-going-to-be-commons-ssl instead -->
+								<exclude>ca.juliusdavies:not-yet-commons-ssl</exclude>
+								<!-- use ta-lib:ta-lib from dukascopy instead -->
+								<exclude>org.clojars.edbond:talib</exclude>
+								<exclude>com.tictactec:ta-lib</exclude>
+								<!-- use com.jgoodies:jgoodies-forms instead -->
+								<exclude>com.jgoodies:forms</exclude>
+								<!-- use org.swinglabs.swingx:swingx-all instead -->
+								<exclude>org.swinglabs:swingx</exclude>
+								<!-- use org.jfree:jfreechart instead -->
+								<exclude>jfree:jfreechart</exclude>
+								<!-- use jfreechart 1.5.0 instead -->
+								<exclude>org.jfree:jcommon</exclude>
+								<!-- use jaxb-runtime instead -->
+								<exclude>javax.xml.bind:jaxb-api</exclude>
+								<!-- use org.glassfish:jakarta.el instead -->
+								<exclude>javax.el:javax.el-api</exclude>
+								<exclude>org.glassfish:javax.el-api</exclude>
+								<!-- use org.eclipse.jdt:ecj instead -->
+								<exclude>org.eclipse.jdt.core.compiler:ecj</exclude>
+								<!-- use org.datanucleus:javax.jdo instead -->
+								<exclude>javax.jdo:jdo-api</exclude>
+								<!-- use individual libs instead -->
+								<exclude>javax:javaee-api</exclude>
+								<!-- use com.sun.activation:jakarta.activation instead -->
+								<exclude>jakarta.activation:jakarta.activation-api</exclude>
+								<exclude>com.sun.activation:javax.activation</exclude>
+								<exclude>javax.activation:activation</exclude>
+								<!-- use com.sun.mail:javax.mail instead -->
+								<exclude>javax.mail:mail</exclude>
+								<!-- use org.hibernate.validator:... instead -->
+								<exclude>org.hibernate:hibernate-validator-annotation-processor</exclude>
+								<exclude>org.hibernate:hibernate-validator</exclude>
 							</excludes>
 						</bannedDependencies>
+						<requireUpperBoundDeps>
+							<excludes>
+								<!-- banned -->
+								<exclude>javax.el:javax.el-api</exclude>
+								<exclude>javax.servlet:servlet-api</exclude>
+								<exclude>javax.enterprise:cdi-api</exclude>
+								<exclude>org.osgi:org.osgi.core</exclude>
+								<exclude>log4j:log4j</exclude>
+								<exclude>commons-logging:commons-logging</exclude>
+								<exclude>com.google.code.findbugs:annotations</exclude>
+							</excludes>
+						</requireUpperBoundDeps>
 					</rules>
 				</configuration>
 			</plugin>

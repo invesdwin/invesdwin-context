@@ -69,23 +69,22 @@
 		<version.commons-configuration2>2.7</version.commons-configuration2>
 		<version.commons-compress>1.21</version.commons-compress>
 
-		<version.logback>1.2.6</version.logback>
+		<version.logback>1.2.7</version.logback>
 
 		<!-- reports -->
-		<version.jfreechart>1.5.0</version.jfreechart>
-		<version.dynamicreports>6.11.1</version.dynamicreports>
-		<version.jasperreports>6.14.0</version.jasperreports>
+		<version.jfreechart>1.5.3</version.jfreechart>
+		<version.dynamicreports>6.12.1</version.dynamicreports>
+		<version.jasperreports>6.18.1</version.jasperreports>
 		<version.batik>1.13</version.batik>
-		<version.xml-apis>1.4.01</version.xml-apis>
-		<version.itext>2.1.7.js8</version.itext>
+		<version.itext>2.1.7.js9</version.itext>
 		<version.bcprov>1.68</version.bcprov>
 		<version.poi>5.0.0</version.poi>
 
 		<!-- integration -->
-		<version.spring-batch>4.2.4.RELEASE</version.spring-batch>
-		<version.spring-retry>1.3.0</version.spring-retry>
-		<version.spring-integration>5.3.3.RELEASE</version.spring-integration>
-		<version.spring-ws>3.0.9.RELEASE</version.spring-ws>
+		<version.spring-batch>4.3.4</version.spring-batch>
+		<version.spring-retry>1.3.1</version.spring-retry>
+		<version.spring-integration>5.5.6</version.spring-integration>
+		<version.spring-ws>3.1.1</version.spring-ws>
 
 		<version.h2>1.4.200</version.h2>
 		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
@@ -476,11 +475,6 @@
 						<groupId>org.bouncycastle</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>xml-apis</groupId>
-				<artifactId>xml-apis</artifactId>
-				<version>${version.xml-apis}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
@@ -1085,6 +1079,7 @@
 						<useJodaLocalDates>true</useJodaLocalDates>
 						<useJodaLocalTimes>true</useJodaLocalTimes>
 						<includeJsr303Annotations>true</includeJsr303Annotations>
+						<includeJsr305Annotations>true</includeJsr305Annotations>
 						<outputDirectory>${project.build.directory}/generated-sources/invesdwin</outputDirectory>
 					</configuration>
 					<executions>
