@@ -81,6 +81,7 @@ public abstract class ATest implements ITestLifecycle {
 
     @Inject
     private IStub[] hooks;
+    private AutoCloseable mocks;
 
     public ATest() {
         if (TestContextLoader.getCurrentTest() == null) {
@@ -113,7 +114,7 @@ public abstract class ATest implements ITestLifecycle {
 
     @Before
     public final void before() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
         synchronized (ATest.class) {
             if (lastTestClassInstance == null) {
                 lastTestClassInstance = this;
@@ -148,6 +149,10 @@ public abstract class ATest implements ITestLifecycle {
     @After
     public final void after() throws Exception {
         tearDown();
+        if (mocks != null) {
+            mocks.close();
+            mocks = null;
+        }
     }
 
     @Override
