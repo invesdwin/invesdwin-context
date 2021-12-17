@@ -69,6 +69,7 @@ public abstract class ATest implements ITestLifecycle {
     protected final Log log = new Log(this);
     private TestContext ctx;
     private Instant testMethodTimeMeasurement = new Instant();
+    private AutoCloseable mocks;
 
     //CHECKSTYLE:OFF public
     @Rule
@@ -81,7 +82,6 @@ public abstract class ATest implements ITestLifecycle {
 
     @Inject
     private IStub[] hooks;
-    private AutoCloseable mocks;
 
     public ATest() {
         if (TestContextLoader.getCurrentTest() == null) {
