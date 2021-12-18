@@ -11,7 +11,7 @@ import de.invesdwin.util.assertions.Assertions;
 public class LoadTimeWeavingSpringExtension extends SpringExtension {
 
     static {
-        Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
+        Assertions.checkNotNull(PreMergedContext.getInstance());
     }
 
 }
