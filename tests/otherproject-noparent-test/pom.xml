@@ -22,7 +22,7 @@
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
 		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
 		<version.compiler>1.7</version.compiler>
-		<version.h2>1.4.196</version.h2>
+		<version.h2>2.0.202</version.h2>
 	</properties>
 
 	<dependencyManagement>
