@@ -69,7 +69,7 @@
 		<version.commons-configuration2>2.7</version.commons-configuration2>
 		<version.commons-compress>1.21</version.commons-compress>
 
-		<version.logback>1.2.7</version.logback>
+		<version.logback>1.2.9</version.logback>
 
 		<!-- reports -->
 		<version.jfreechart>1.5.3</version.jfreechart>
