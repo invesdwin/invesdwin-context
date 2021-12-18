@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.ContextProperties;
@@ -54,7 +54,7 @@ public final class HelloWorldReportTest extends ATest {
     }
 
     @Test
-    @Ignore("not integrated into build process, should rather use some runtime cache")
+    @Disabled("not integrated into build process, should rather use some runtime cache")
     public void testPreCompiledView() throws JRException, IOException, InterruptedException {
         final ClassPathResource resource = new ClassPathResource(JASPER);
         final Map<String, Object> params = new HashMap<String, Object>();

@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.test.ATest;

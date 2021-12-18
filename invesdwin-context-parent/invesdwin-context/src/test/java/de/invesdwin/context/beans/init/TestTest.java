@@ -4,8 +4,8 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.inject.Inject;
 
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.InitializingBean;
 
 import de.invesdwin.context.beans.init.duplicate.IBeanWithSameClassName;
@@ -35,7 +35,7 @@ public class TestTest extends ATest implements InitializingBean {
         Assertions.assertThat(true).isTrue(); //just provoke a junit reinit
     }
 
-    @AfterClass
+    @AfterAll
     public static synchronized void testCalls() {
         Assertions.assertThat(TestTest.setUpOnceCalled).isEqualTo(1);
         Assertions.assertThat(TestTest.afterPropertiesSetCalled).isEqualTo(4);

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.assertj.core.api.Fail;
-import org.junit.ComparisonFailure;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import de.invesdwin.aspects.annotation.SkipParallelExecution;
@@ -34,10 +34,10 @@ class ScheduledTestBean {
         try {
             scheduleSynchronized();
             Fail.fail("Exception expected");
-        } catch (final ComparisonFailure e) {
+        } catch (final AssertionFailedError e) {
             Assertions.assertThat(e.getMessage())
-            .contains("@" + Scheduled.class.getSimpleName())
-            .contains("@" + SkipParallelExecution.class.getSimpleName());
+                    .contains("@" + Scheduled.class.getSimpleName())
+                    .contains("@" + SkipParallelExecution.class.getSimpleName());
         }
     }
 

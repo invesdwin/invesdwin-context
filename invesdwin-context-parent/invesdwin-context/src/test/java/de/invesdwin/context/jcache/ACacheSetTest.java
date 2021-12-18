@@ -3,7 +3,7 @@ package de.invesdwin.context.jcache;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.cache.Cache;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;

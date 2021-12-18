@@ -16,13 +16,13 @@
 		<project.version.invesdwin-context-client>1.0.3-SNAPSHOT</project.version.invesdwin-context-client>
 		<project.version.invesdwin-maven-plugin>1.0.14-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.0.0</version.maven-enforcer-plugin>
-		<version.junit>4.13.1</version.junit>
+		<version.junit>5.8.2</version.junit>
 		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
 		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
 		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
 		<version.compiler>1.7</version.compiler>
-		<version.h2>1.4.196</version.h2>
+		<version.h2>2.0.202</version.h2>
 	</properties>
 
 	<dependencyManagement>
@@ -138,8 +138,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
@@ -228,9 +228,6 @@
 								<exclude>org.hibernate.javax.persistence:hibernate-jpa-2.2-api</exclude>
 								<exclude>backport-util-concurrent:backport-util-concurrent</exclude>
 								<exclude>javassist:javassist</exclude>
-								<exclude>org.junit.jupiter:junit-jupiter-engine</exclude>
-								<exclude>org.junit.jupiter:junit-jupiter-api</exclude>
-								<exclude>org.junit.platform:junit-platform-runner</exclude>
 								<exclude>org.apache.geronimo.specs:geronimo-jms_1.1_spec</exclude>
 								<exclude>com.sun.jna:jna</exclude>
 								<exclude>org.osgi:org.osgi.core</exclude>
@@ -283,6 +280,8 @@
 								<!-- use org.hibernate.validator:... instead -->
 								<exclude>org.hibernate:hibernate-validator-annotation-processor</exclude>
 								<exclude>org.hibernate:hibernate-validator</exclude>
+								<!-- use org.junit.jupiter:junit-jupiter-engine instead -->
+								<exclude>junit:junit</exclude>
 							</excludes>
 						</bannedDependencies>
 						<requireUpperBoundDeps>
