@@ -87,7 +87,7 @@
 		<version.spring-ws>3.1.1</version.spring-ws>
 
 		<!-- h2 2.0.202 is not supported by spring-batch: https://github.com/spring-projects/spring-boot/issues/29034 -->
-		<version.h2>1.4.199</version.h2>
+		<version.h2>2.0.202</version.h2>
 		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
 		<version.postgresql>42.2.14</version.postgresql>
 	</properties>
