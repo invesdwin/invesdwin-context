@@ -56,6 +56,10 @@ import de.invesdwin.util.time.Instant;
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 public abstract class ATest implements ITestLifecycle {
 
+    static {
+        Assertions.checkNotNull(PreMergedContext.getInstance());
+    }
+
     @GuardedBy("this.class")
     private static ATest lastTestClassInstance;
     @GuardedBy("this.class")
