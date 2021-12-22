@@ -153,7 +153,7 @@ There are a few more modules available in their respective github projects inclu
 	
 ## Contributing
 
-Tips for handling multiple projects and IDE configuration are [here](https://github.com/subes/invesdwin-maven-plugin/blob/master/README.md#handling-multiple-projectsrepositories). Pull requests are welcome. Direct repo access can be granted upon request.
+Tips for handling multiple projects and IDE configuration are [here](https://github.com/invesdwin/invesdwin-maven-plugin#handling-multiple-projectsrepositories). Pull requests are welcome. Direct repo access can be granted upon request.
 	
 ## Support
 
