@@ -146,6 +146,8 @@ There are a few more modules available in their respective github projects inclu
 	- https://github.com/subes/invesdwin-context-python
 - **Matlab/Octave/Scilab Modules**: Scripting with Matlab, Octave and Scilab
 	- https://github.com/subes/invesdwin-context-matlab
+- **Julia Modules**: Scripting with Julia
+	- https://github.com/subes/invesdwin-context-julia
 - **Webproxy Modules**: Download Manager for Web Scraping that supports Proxy Servers
 	- https://github.com/subes/invesdwin-webproxy
 	
