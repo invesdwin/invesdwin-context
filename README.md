@@ -132,7 +132,7 @@ These modules bundle tools and utilities for creating reports of various types:
 
 There are a few more modules available in their respective github projects including their individual documentation:
 
-- **Integration Modules**: IO, IPC, Messaging, Services, Batch, Hadoop
+- **Integration Modules**: IO, IPC, Messaging, Services, Batch
 	- https://github.com/subes/invesdwin-context-integration 
 - **Persistence Modules**: Databases, SQL, NoSQL
 	- https://github.com/subes/invesdwin-context-persistence
