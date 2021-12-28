@@ -11,6 +11,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
+import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 
 @NotThreadSafe
@@ -62,5 +63,11 @@ public interface IScriptTaskEngine extends Closeable {
      * not shared between instances.
      */
     ILock getSharedLock();
+
+    /**
+     * If this is not null, then the engine should only be accessed from within this executor. Or else jvm crashes are
+     * to be expected.
+     */
+    WrappedExecutorService getSharedExecutor();
 
 }
