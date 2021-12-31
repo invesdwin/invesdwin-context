@@ -16,6 +16,9 @@ public class PersistentMapProperties extends AProperties {
     private final APersistentMap<String, Object> table;
 
     public PersistentMapProperties(final String name, final IPersistentMapFactory<String, Object> factory) {
+        if (factory == null) {
+            throw new NullPointerException("factory should not be null");
+        }
         this.table = newPersistentMap(name, factory);
     }
 
