@@ -23,7 +23,7 @@ public class PersistentMapProperties extends AProperties {
     }
 
     protected APersistentMap<String, Object> newPersistentMap(final String name,
-            final IPersistentMapFactory<String, Object> factory) {
+            final IPersistentMapFactory<String, Object> pFactory) {
         return new APersistentMap<String, Object>(name) {
 
             @Override
@@ -34,7 +34,7 @@ public class PersistentMapProperties extends AProperties {
 
             @Override
             protected IPersistentMapFactory<String, Object> newFactory() {
-                return factory;
+                return pFactory;
             }
         };
     }
