@@ -86,7 +86,7 @@
 		<version.spring-integration>5.5.6</version.spring-integration>
 		<version.spring-ws>3.1.1</version.spring-ws>
 
-		<version.h2>2.0.204</version.h2>
+		<version.hsqldb>2.6.1</version.hsqldb>
 		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
 		<version.postgresql>42.2.14</version.postgresql>
 	</properties>
@@ -284,9 +284,9 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${version.h2}</version>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${version.hsqldb}</version>
 			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>
@@ -592,8 +592,10 @@
 			all submodules per default. The distribution will choose which driver to 
 			actually deploy with a seperate dependency. -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
+			<!-- hsqldb seems to be the fastest in-memory database, also H2 version 
+				2 broke compatibility in lots of places -->
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

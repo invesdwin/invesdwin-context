@@ -21,8 +21,8 @@
 		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
 		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
-		<version.compiler>1.7</version.compiler>
-		<version.h2>1.4.200</version.h2>
+		<version.compiler>1.8</version.compiler>
+		<version.hsqldb>2.6.1</version.hsqldb>
 	</properties>
 
 	<dependencyManagement>
@@ -144,9 +144,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${version.h2}</version>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${version.hsqldb}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
