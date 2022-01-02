@@ -19,6 +19,10 @@
 		<module>invesdwin-context-webserver</module>
 		<module>invesdwin-context-jasperreports</module>
 		<module>invesdwin-context-jfreechart</module>
+		<module>invesdwin-context-clojure</module>
+		<module>invesdwin-context-groovy</module>
+		<module>invesdwin-context-kotlin</module>
+		<module>invesdwin-context-scala</module>
 	</modules>
 
 	<licenses>
@@ -137,6 +141,27 @@
 				<artifactId>invesdwin-context-integration</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-clojure</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-groovy</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-kotlin</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-scala</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+
 
 			<dependency>
 				<groupId>de.invesdwin</groupId>
