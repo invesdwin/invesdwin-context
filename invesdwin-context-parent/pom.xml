@@ -23,6 +23,7 @@
 		<module>invesdwin-context-groovy</module>
 		<module>invesdwin-context-kotlin</module>
 		<module>invesdwin-context-scala</module>
+		<module>invesdwin-context-jruby</module>
 	</modules>
 
 	<licenses>
@@ -159,6 +160,11 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-scala</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-jruby</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 
