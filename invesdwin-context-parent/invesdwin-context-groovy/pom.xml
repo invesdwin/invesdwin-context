@@ -17,49 +17,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.sourceforge.dynamicreports</groupId>
-			<artifactId>dynamicreports-core</artifactId>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy</artifactId>
+			<classifier>indy</classifier>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-jfreechart</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-svggen</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>batik-bridge</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcmail-jdk15on</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
-		</dependency>
-		<dependency>
-			<!-- upperbounddeps -->
-			<groupId>org.eclipse.jdt</groupId>
-			<artifactId>ecj</artifactId>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-jsr223</artifactId>
+			<classifier>indy</classifier>
 		</dependency>
 	</dependencies>
 
