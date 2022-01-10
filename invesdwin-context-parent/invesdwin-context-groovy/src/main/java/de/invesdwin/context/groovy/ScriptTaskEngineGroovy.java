@@ -2,8 +2,8 @@ package de.invesdwin.context.groovy;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.groovy.pool.GroovyScriptEngineObjectPool;
-import de.invesdwin.context.groovy.pool.WrappedGroovyScriptEngine;
+import de.invesdwin.context.groovy.pool.GroovyShellObjectPool;
+import de.invesdwin.context.groovy.pool.WrappedGroovyShell;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
@@ -12,11 +12,11 @@ import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 @NotThreadSafe
 public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
 
-    private WrappedGroovyScriptEngine groovyScriptEngine;
+    private WrappedGroovyShell groovyScriptEngine;
     private final ScriptTaskInputsGroovy inputs;
     private final ScriptTaskResultsGroovy results;
 
-    public ScriptTaskEngineGroovy(final WrappedGroovyScriptEngine groovyScriptEngine) {
+    public ScriptTaskEngineGroovy(final WrappedGroovyShell groovyScriptEngine) {
         this.groovyScriptEngine = groovyScriptEngine;
         this.inputs = new ScriptTaskInputsGroovy(this);
         this.results = new ScriptTaskResultsGroovy(this);
@@ -46,7 +46,7 @@ public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
     }
 
     @Override
-    public WrappedGroovyScriptEngine unwrap() {
+    public WrappedGroovyShell unwrap() {
         return groovyScriptEngine;
     }
 
@@ -64,12 +64,12 @@ public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
     }
 
     public static ScriptTaskEngineGroovy newInstance() {
-        return new ScriptTaskEngineGroovy(GroovyScriptEngineObjectPool.INSTANCE.borrowObject()) {
+        return new ScriptTaskEngineGroovy(GroovyShellObjectPool.INSTANCE.borrowObject()) {
             @Override
             public void close() {
-                final WrappedGroovyScriptEngine unwrap = unwrap();
+                final WrappedGroovyShell unwrap = unwrap();
                 if (unwrap != null) {
-                    GroovyScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
+                    GroovyShellObjectPool.INSTANCE.returnObject(unwrap);
                 }
                 super.close();
             }

@@ -11,38 +11,38 @@ import de.invesdwin.util.time.duration.Duration;
 
 @ThreadSafe
 @Named
-public final class GroovyScriptEngineObjectPool extends ATimeoutObjectPool<WrappedGroovyScriptEngine>
-        implements FactoryBean<GroovyScriptEngineObjectPool> {
+public final class GroovyShellObjectPool extends ATimeoutObjectPool<WrappedGroovyShell>
+        implements FactoryBean<GroovyShellObjectPool> {
 
-    public static final GroovyScriptEngineObjectPool INSTANCE = new GroovyScriptEngineObjectPool();
+    public static final GroovyShellObjectPool INSTANCE = new GroovyShellObjectPool();
 
-    private GroovyScriptEngineObjectPool() {
+    private GroovyShellObjectPool() {
         super(Duration.ONE_MINUTE, new Duration(10, FTimeUnit.SECONDS));
     }
 
     @Override
-    public void destroyObject(final WrappedGroovyScriptEngine obj) {
+    public void destroyObject(final WrappedGroovyShell obj) {
         obj.close();
     }
 
     @Override
-    protected WrappedGroovyScriptEngine newObject() {
-        return new WrappedGroovyScriptEngine();
+    protected WrappedGroovyShell newObject() {
+        return new WrappedGroovyShell();
     }
 
     @Override
-    protected void passivateObject(final WrappedGroovyScriptEngine obj) {
+    protected void passivateObject(final WrappedGroovyShell obj) {
         obj.reset();
     }
 
     @Override
-    public GroovyScriptEngineObjectPool getObject() {
+    public GroovyShellObjectPool getObject() {
         return INSTANCE;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return GroovyScriptEngineObjectPool.class;
+        return GroovyShellObjectPool.class;
     }
 
     @Override
