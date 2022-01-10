@@ -1,49 +1,49 @@
-print("getFloat")
-if 'getFloat' in locals():
-	raise Exception("getFloat already defined!")
+println("getFloat")
+if(binding.hasVariable('getFloat'))
+	throw new Exception("getFloat already defined!")
 getFloat = putFloat
-getFloatType = type(getFloat)
-print(getFloatType)
-print(getFloat)
+getFloatType = getFloat.getClass()
+println(getFloatType)
+println(getFloat)
 if(getFloatType is not float):
-	raise Exception("getFloat not float!")
+	throw new Exception("getFloat not Float!")
 
-print("getFloatVector")
-if 'getFloatVector' in locals():
-	raise Exception("getFloatVector already defined!")
+println("getFloatVector")
+if(binding.hasVariable('getFloatVector'))
+	throw new Exception("getFloatVector already defined!")
 getFloatVector = putFloatVector
-getFloatVectorType = type(getFloatVector[0])
-print(getFloatVectorType)
-print(getFloatVector)
+getFloatVectorType = getFloatVector[0].getClass()
+println(getFloatVectorType)
+println(getFloatVector)
 if(getFloatVectorType is not float):
-	raise Exception("getFloatVector not float!")
+	throw new Exception("getFloatVector not Float!")
 
-print("getFloatVectorAsList")
-if 'getFloatVectorAsList' in locals():
-	raise Exception("getFloatVectorAsList already defined!")
+println("getFloatVectorAsList")
+if(binding.hasVariable('getFloatVectorAsList'))
+	throw new Exception("getFloatVectorAsList already defined!")
 getFloatVectorAsList = putFloatVectorAsList
-getFloatVectorAsListType = type(getFloatVectorAsList[0])
-print(getFloatVectorAsListType)
-print(getFloatVectorAsList)
+getFloatVectorAsListType = getFloatVectorAsList[0].getClass()
+println(getFloatVectorAsListType)
+println(getFloatVectorAsList)
 if(getFloatVectorAsListType is not float):
-	raise Exception("getFloatVectorAsList not float!")
+	throw new Exception("getFloatVectorAsList not Float!")
 
-print("getFloatMatrix")
-if 'getFloatMatrix' in locals():
-	raise Exception("getFloatMatrix already defined!")
+println("getFloatMatrix")
+if(binding.hasVariable('getFloatMatrix'))
+	throw new Exception("getFloatMatrix already defined!")
 getFloatMatrix = putFloatMatrix
-getFloatMatrixType = type(getFloatMatrix[0][0])
-print(getFloatMatrixType)
-print(getFloatMatrix)
+getFloatMatrixType = getFloatMatrix[0][0].getClass()
+println(getFloatMatrixType)
+println(getFloatMatrix)
 if(getFloatMatrixType is not float):
-	raise Exception("getFloatMatrix not float!")
+	throw new Exception("getFloatMatrix not Float!")
 
-print("getFloatMatrixAsList")
-if 'getFloatMatrixAsList' in locals():
-	raise Exception("getFloatMatrixAsList already defined!")
+println("getFloatMatrixAsList")
+if(binding.hasVariable('getFloatMatrixAsList'))
+	throw new Exception("getFloatMatrixAsList already defined!")
 getFloatMatrixAsList = putFloatMatrixAsList
-getFloatMatrixAsListType = type(getFloatMatrixAsList[0][0])
-print(getFloatMatrixAsListType)
-print(getFloatMatrixAsList)
+getFloatMatrixAsListType = getFloatMatrixAsList[0][0].getClass()
+println(getFloatMatrixAsListType)
+println(getFloatMatrixAsList)
 if(getFloatMatrixAsListType is not float):
-	raise Exception("getFloatMatrixAsList not float!")
+	throw new Exception("getFloatMatrixAsList not Float!")

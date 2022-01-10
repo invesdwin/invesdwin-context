@@ -1,49 +1,49 @@
-print("getInteger")
-if 'getInteger' in locals():
-	raise Exception("getInteger already defined!")
+println("getInteger")
+if(binding.hasVariable('getInteger'))
+	throw new Exception("getInteger already defined!")
 getInteger = putInteger
-getIntegerType = type(getInteger)
-print(getIntegerType)
-print(getInteger)
+getIntegerType = getInteger.getClass()
+println(getIntegerType)
+println(getInteger)
 if(getIntegerType is not int):
-	raise Exception("getInteger not int!")
+	throw new Exception("getInteger not Integer!")
 
-print("getIntegerVector")
-if 'getIntegerVector' in locals():
-	raise Exception("getIntegerVector already defined!")
+println("getIntegerVector")
+if(binding.hasVariable('getIntegerVector'))
+	throw new Exception("getIntegerVector already defined!")
 getIntegerVector = putIntegerVector
-getIntegerVectorType = type(getIntegerVector[0])
-print(getIntegerVectorType)
-print(getIntegerVector)
+getIntegerVectorType = getIntegerVector[0].getClass()
+println(getIntegerVectorType)
+println(getIntegerVector)
 if(getIntegerVectorType is not int):
-	raise Exception("getIntegerVector not int!")
+	throw new Exception("getIntegerVector not Integer!")
 
-print("getIntegerVectorAsList")
-if 'getIntegerVectorAsList' in locals():
-	raise Exception("getIntegerVectorAsList already defined!")
+println("getIntegerVectorAsList")
+if(binding.hasVariable('getIntegerVectorAsList'))
+	throw new Exception("getIntegerVectorAsList already defined!")
 getIntegerVectorAsList = putIntegerVectorAsList
-getIntegerVectorAsListType = type(getIntegerVectorAsList[0])
-print(getIntegerVectorAsListType)
-print(getIntegerVectorAsList)
+getIntegerVectorAsListType = getIntegerVectorAsList[0].getClass()
+println(getIntegerVectorAsListType)
+println(getIntegerVectorAsList)
 if(getIntegerVectorAsListType is not int):
-	raise Exception("getIntegerVectorAsList not int!")
+	throw new Exception("getIntegerVectorAsList not Integer!")
 
-print("getIntegerMatrix")
-if 'getIntegerMatrix' in locals():
-	raise Exception("getIntegerMatrix already defined!")
+println("getIntegerMatrix")
+if(binding.hasVariable('getIntegerMatrix'))
+	throw new Exception("getIntegerMatrix already defined!")
 getIntegerMatrix = putIntegerMatrix
-getIntegerMatrixType = type(getIntegerMatrix[0][0])
-print(getIntegerMatrixType)
-print(getIntegerMatrix)
+getIntegerMatrixType = getIntegerMatrix[0][0].getClass()
+println(getIntegerMatrixType)
+println(getIntegerMatrix)
 if(getIntegerMatrixType is not int):
-	raise Exception("getIntegerMatrix not int!")
+	throw new Exception("getIntegerMatrix not Integer!")
 
-print("getIntegerMatrixAsList")
-if 'getIntegerMatrixAsList' in locals():
-	raise Exception("getIntegerMatrixAsList already defined!")
+println("getIntegerMatrixAsList")
+if(binding.hasVariable('getIntegerMatrixAsList'))
+	throw new Exception("getIntegerMatrixAsList already defined!")
 getIntegerMatrixAsList = putIntegerMatrixAsList
-getIntegerMatrixAsListType = type(getIntegerMatrixAsList[0][0])
-print(getIntegerMatrixAsListType)
-print(getIntegerMatrixAsList)
+getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].getClass()
+println(getIntegerMatrixAsListType)
+println(getIntegerMatrixAsList)
 if(getIntegerMatrixAsListType is not int):
-	raise Exception("getIntegerMatrixAsList not int!")
+	throw new Exception("getIntegerMatrixAsList not Integer!")

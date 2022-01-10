@@ -1,49 +1,49 @@
-print("getCharacter")
-if 'getCharacter' in locals():
-	raise Exception("getCharacter already defined!")
+println("getCharacter")
+if(binding.hasVariable('getCharacter'))
+	throw new Exception("getCharacter already defined!")
 getCharacter = putCharacter
-getCharacterType = type(getCharacter)
-print(getCharacterType)
-print(getCharacter)
+getCharacterType = getCharacter.getClass()
+println(getCharacterType)
+println(getCharacter)
 if(not isinstance(getCharacter, (unicode, str))):
-	raise Exception("getCharacter not unicode or str!")
+	throw new Exception("getCharacter not String!")
 
-print("getCharacterVector")
-if 'getCharacterVector' in locals():
-	raise Exception("getCharacterVector already defined!")
+println("getCharacterVector")
+if(binding.hasVariable('getCharacterVector'))
+	throw new Exception("getCharacterVector already defined!")
 getCharacterVector = putCharacterVector
-getCharacterVectorType = type(getCharacterVector[0])
-print(getCharacterVectorType)
-print(getCharacterVector)
+getCharacterVectorType = getCharacterVector[0].getClass()
+println(getCharacterVectorType)
+println(getCharacterVector)
 if(not isinstance(getCharacterVector[0], (unicode, str))):
-	raise Exception("getCharacterVector not unicode or str!")
+	throw new Exception("getCharacterVector not String!")
 
-print("getCharacterVectorAsList")
-if 'getCharacterVectorAsList' in locals():
-	raise Exception("getCharacterVectorAsList already defined!")
+println("getCharacterVectorAsList")
+if(binding.hasVariable('getCharacterVectorAsList'))
+	throw new Exception("getCharacterVectorAsList already defined!")
 getCharacterVectorAsList = putCharacterVectorAsList
-getCharacterVectorAsListType = type(getCharacterVectorAsList[0])
-print(getCharacterVectorAsListType)
-print(getCharacterVectorAsList)
+getCharacterVectorAsListType = getCharacterVectorAsList[0].getClass()
+println(getCharacterVectorAsListType)
+println(getCharacterVectorAsList)
 if(not isinstance(getCharacterVectorAsList[0], (unicode, str))):
-	raise Exception("getCharacterVectorAsList not unicode or str!")
+	throw new Exception("getCharacterVectorAsList not String!")
 
-print("getCharacterMatrix")
-if 'getCharacterMatrix' in locals():
-	raise Exception("getCharacterMatrix already defined!")
+println("getCharacterMatrix")
+if(binding.hasVariable('getCharacterMatrix'))
+	throw new Exception("getCharacterMatrix already defined!")
 getCharacterMatrix = putCharacterMatrix
-getCharacterMatrixType = type(getCharacterMatrix[0][0])
-print(getCharacterMatrixType)
-print(getCharacterMatrix)
+getCharacterMatrixType = getCharacterMatrix[0][0].getClass()
+println(getCharacterMatrixType)
+println(getCharacterMatrix)
 if(not isinstance(getCharacterMatrix[0][0], (unicode, str))):
-	raise Exception("getCharacterMatrix not unicode or str!")
+	throw new Exception("getCharacterMatrix not String!")
 
-print("getCharacterMatrixAsList")
-if 'getCharacterMatrixAsList' in locals():
-	raise Exception("getCharacterMatrixAsList already defined!")
+println("getCharacterMatrixAsList")
+if(binding.hasVariable('getCharacterMatrixAsList'))
+	throw new Exception("getCharacterMatrixAsList already defined!")
 getCharacterMatrixAsList = putCharacterMatrixAsList
-getCharacterMatrixAsListType = type(getCharacterMatrixAsList[0][0])
-print(getCharacterMatrixAsListType)
-print(getCharacterMatrixAsList)
+getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0].getClass()
+println(getCharacterMatrixAsListType)
+println(getCharacterMatrixAsList)
 if(not isinstance(getCharacterMatrixAsList[0][0], (unicode, str))):
-	raise Exception("getCharacterMatrixAsList not unicode or str!")
+	throw new Exception("getCharacterMatrixAsList not String!")

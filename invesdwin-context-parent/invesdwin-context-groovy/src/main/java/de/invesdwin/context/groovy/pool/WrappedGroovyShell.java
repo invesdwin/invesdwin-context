@@ -7,17 +7,13 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
-import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
-import de.invesdwin.context.groovy.GroovyProperties;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-import groovy.transform.CompileStatic;
-import groovy.transform.TypeChecked;
 
 @NotThreadSafe
 public class WrappedGroovyShell implements Closeable {
@@ -29,12 +25,9 @@ public class WrappedGroovyShell implements Closeable {
 
     public WrappedGroovyShell() {
         final CompilerConfiguration config = new CompilerConfiguration();
-        if (GroovyProperties.COMPILE_STATIC) {
-            config.addCompilationCustomizers(new ASTTransformationCustomizer(CompileStatic.class));
-        }
-        if (GroovyProperties.TYPE_CHECKED) {
-            config.addCompilationCustomizers(new ASTTransformationCustomizer(TypeChecked.class));
-        }
+        //we actually want the dynamic language features here
+        //        config.addCompilationCustomizers(new ASTTransformationCustomizer(CompileStatic.class));
+        //        config.addCompilationCustomizers(new ASTTransformationCustomizer(TypeChecked.class));
         this.binding = new Binding(new LinkedHashMap<>());
         this.engine = new GroovyShell(binding, config);
         scriptCache = Caffeine.newBuilder()

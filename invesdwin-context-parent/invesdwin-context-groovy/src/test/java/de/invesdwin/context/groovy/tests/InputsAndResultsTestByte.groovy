@@ -1,49 +1,49 @@
-print("getByte")
-if 'getByte' in locals():
-	raise Exception("getByte already defined!")
+println("getByte")
+if(binding.hasVariable('getByte'))
+	throw new Exception("getByte already defined!")
 getByte = putByte
-getByteType = type(getByte)
-print(getByteType)
-print(getByte)
+getByteType = getByte.getClass()
+println(getByteType)
+println(getByte)
 if(getByteType is not int):
-	raise Exception("getByte not int!")
+	throw new Exception("getByte not Byte!")
 
-print("getByteVector")
-if 'getByteVector' in locals():
-	raise Exception("getByteVector already defined!")
+println("getByteVector")
+if(binding.hasVariable('getByteVector'))
+	throw new Exception("getByteVector already defined!")
 getByteVector = putByteVector
-getByteVectorType = type(getByteVector[0])
-print(getByteVectorType)
-print(getByteVector)
+getByteVectorType = getByteVector[0].getClass()
+println(getByteVectorType)
+println(getByteVector)
 if(getByteVectorType is not int):
-	raise Exception("getByteVector not int!")
+	throw new Exception("getByteVector not Byte!")
 
-print("getByteVectorAsList")
-if 'getByteVectorAsList' in locals():
-	raise Exception("getByteVectorAsList already defined!")
+println("getByteVectorAsList")
+if(binding.hasVariable('getByteVectorAsList'))
+	throw new Exception("getByteVectorAsList already defined!")
 getByteVectorAsList = putByteVectorAsList
-getByteVectorAsListType = type(getByteVectorAsList[0])
-print(getByteVectorAsListType)
-print(getByteVectorAsList)
+getByteVectorAsListType = getByteVectorAsList[0].getClass()
+println(getByteVectorAsListType)
+println(getByteVectorAsList)
 if(getByteVectorAsListType is not int):
-	raise Exception("getByteVectorAsList not int!")
+	throw new Exception("getByteVectorAsList not Byte!")
 
-print("getByteMatrix")
-if 'getByteMatrix' in locals():
-	raise Exception("getByteMatrix already defined!")
+println("getByteMatrix")
+if(binding.hasVariable('getByteMatrix'))
+	throw new Exception("getByteMatrix already defined!")
 getByteMatrix = putByteMatrix
-getByteMatrixType = type(getByteMatrix[0][0])
-print(getByteMatrixType)
-print(getByteMatrix)
+getByteMatrixType = getByteMatrix[0][0].getClass()
+println(getByteMatrixType)
+println(getByteMatrix)
 if(getByteMatrixType is not int):
-	raise Exception("getByteMatrix not int!")
+	throw new Exception("getByteMatrix not Byte!")
 
-print("getByteMatrixAsList")
-if 'getByteMatrixAsList' in locals():
-	raise Exception("getByteMatrixAsList already defined!")
+println("getByteMatrixAsList")
+if(binding.hasVariable('getByteMatrixAsList'))
+	throw new Exception("getByteMatrixAsList already defined!")
 getByteMatrixAsList = putByteMatrixAsList
-getByteMatrixAsListType = type(getByteMatrixAsList[0][0])
-print(getByteMatrixAsListType)
-print(getByteMatrixAsList)
+getByteMatrixAsListType = getByteMatrixAsList[0][0].getClass()
+println(getByteMatrixAsListType)
+println(getByteMatrixAsList)
 if(getByteMatrixAsListType is not int):
-	raise Exception("getByteMatrixAsList not int!")
+	throw new Exception("getByteMatrixAsList not Byte!")

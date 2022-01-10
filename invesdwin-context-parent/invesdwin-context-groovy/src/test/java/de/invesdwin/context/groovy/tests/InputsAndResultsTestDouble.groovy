@@ -1,49 +1,49 @@
-print("getDouble")
-if 'getDouble' in locals():
-	raise Exception("getDouble already defined!")
+println("getDouble")
+if(binding.hasVariable('getDouble'))
+	throw new Exception("getDouble already defined!")
 getDouble = putDouble
-getDoubleType = type(getDouble)
-print(getDoubleType)
-print(getDouble)
+getDoubleType = getDouble.getClass()
+println(getDoubleType)
+println(getDouble)
 if(getDoubleType is not float):
-	raise Exception("getDouble not float!")
+	throw new Exception("getDouble not Double!")
 
-print("getDoubleVector")
-if 'getDoubleVector' in locals():
-	raise Exception("getDoubleVector already defined!")
+println("getDoubleVector")
+if(binding.hasVariable('getDoubleVector'))
+	throw new Exception("getDoubleVector already defined!")
 getDoubleVector = putDoubleVector
-getDoubleVectorType = type(getDoubleVector[0])
-print(getDoubleVectorType)
-print(getDoubleVector)
+getDoubleVectorType = getDoubleVector[0].getClass()
+println(getDoubleVectorType)
+println(getDoubleVector)
 if(getDoubleVectorType is not float):
-	raise Exception("getDoubleVector not float!")
+	throw new Exception("getDoubleVector not Double!")
 
-print("getDoubleVectorAsList")
-if 'getDoubleVectorAsList' in locals():
-	raise Exception("getDoubleVectorAsList already defined!")
+println("getDoubleVectorAsList")
+if(binding.hasVariable('getDoubleVectorAsList'))
+	throw new Exception("getDoubleVectorAsList already defined!")
 getDoubleVectorAsList = putDoubleVectorAsList
-getDoubleVectorAsListType = type(getDoubleVectorAsList[0])
-print(getDoubleVectorAsListType)
-print(getDoubleVectorAsList)
+getDoubleVectorAsListType = getDoubleVectorAsList[0].getClass()
+println(getDoubleVectorAsListType)
+println(getDoubleVectorAsList)
 if(getDoubleVectorAsListType is not float):
-	raise Exception("getDoubleVectorAsList not float!")
+	throw new Exception("getDoubleVectorAsList not Double!")
 
-print("getDoubleMatrix")
-if 'getDoubleMatrix' in locals():
-	raise Exception("getDoubleMatrix already defined!")
+println("getDoubleMatrix")
+if(binding.hasVariable('getDoubleMatrix'))
+	throw new Exception("getDoubleMatrix already defined!")
 getDoubleMatrix = putDoubleMatrix
-getDoubleMatrixType = type(getDoubleMatrix[0][0])
-print(getDoubleMatrixType)
-print(getDoubleMatrix)
+getDoubleMatrixType = getDoubleMatrix[0][0].getClass()
+println(getDoubleMatrixType)
+println(getDoubleMatrix)
 if(getDoubleMatrixType is not float):
-	raise Exception("getDoubleMatrix not float!")
+	throw new Exception("getDoubleMatrix not Double!")
 
-print("getDoubleMatrixAsList")
-if 'getDoubleMatrixAsList' in locals():
-	raise Exception("getDoubleMatrixAsList already defined!")
+println("getDoubleMatrixAsList")
+if(binding.hasVariable('getDoubleMatrixAsList'))
+	throw new Exception("getDoubleMatrixAsList already defined!")
 getDoubleMatrixAsList = putDoubleMatrixAsList
-getDoubleMatrixAsListType = type(getDoubleMatrixAsList[0][0])
-print(getDoubleMatrixAsListType)
-print(getDoubleMatrixAsList)
+getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].getClass()
+println(getDoubleMatrixAsListType)
+println(getDoubleMatrixAsList)
 if(getDoubleMatrixAsListType is not float):
-	raise Exception("getDoubleMatrixAsList not float!")
+	throw new Exception("getDoubleMatrixAsList not Double!")

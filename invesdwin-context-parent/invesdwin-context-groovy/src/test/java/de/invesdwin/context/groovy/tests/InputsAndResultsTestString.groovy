@@ -1,115 +1,115 @@
-print("getString")
-if 'getString' in locals():
-	raise Exception("getString already defined!")
+println("getString")
+if(binding.hasVariable('getString'))
+	throw new Exception("getString already defined!")
 getString = putString
-getStringType = type(getString)
-print(getStringType)
-print(getString)
+getStringType = getString.getClass()
+println(getStringType)
+println(getString)
 if(getStringType is not unicode):
-	raise Exception("getString not unicode!")
+	throw new Exception("getString not String!")
 
-print("getStringWithNull")
-if 'getStringWithNull' in locals():
-	raise Exception("getStringWithNull already defined!")
+println("getStringWithNull")
+if(binding.hasVariable('getStringWithNull'))
+	throw new Exception("getStringWithNull already defined!")
 getStringWithNull = putStringWithNull
-getStringWithNullType = type(getStringWithNull)
-print(getStringWithNullType)
-print(getStringWithNull)
+getStringWithNullType = getStringWithNull.getClass()
+println(getStringWithNullType)
+println(getStringWithNull)
 if(getStringWithNull is not None):
-	raise Exception("getStringWithNull not None!")
+	throw new Exception("getStringWithNull not None!")
 
-print("getStringVector")
-if 'getStringVector' in locals():
-	raise Exception("getStringVector already defined!")
+println("getStringVector")
+if(binding.hasVariable('getStringVector'))
+	throw new Exception("getStringVector already defined!")
 getStringVector = putStringVector
-getStringVectorType = type(getStringVector[0])
-print(getStringVectorType)
-print(getStringVector)
+getStringVectorType = getStringVector[0].getClass()
+println(getStringVectorType)
+println(getStringVector)
 if(getStringVectorType is not unicode):
-	raise Exception("getStringVector not unicode!")
+	throw new Exception("getStringVector not String!")
 
-print("getStringVectorWithNull")
-if 'getStringVectorWithNull' in locals():
-	raise Exception("getStringVectorWithNull already defined!")
+println("getStringVectorWithNull")
+if(binding.hasVariable('getStringVectorWithNull'))
+	throw new Exception("getStringVectorWithNull already defined!")
 getStringVectorWithNull = putStringVectorWithNull
-getStringVectorWithNullType = type(getStringVectorWithNull[0])
-print(getStringVectorWithNullType)
-print(getStringVectorWithNull)
+getStringVectorWithNullType = getStringVectorWithNull[0].getClass()
+println(getStringVectorWithNullType)
+println(getStringVectorWithNull)
 if(getStringVectorWithNullType is not unicode):
-	raise Exception("getStringVectorWithNull not unicode!")
+	throw new Exception("getStringVectorWithNull not String!")
 if(getStringVectorWithNull[1] is not None):
-	raise Exception("getStringVectorWithNull[2] not None!")
+	throw new Exception("getStringVectorWithNull[2] not None!")
 
-print("getStringVectorAsList")
-if 'getStringVectorAsList' in locals():
-	raise Exception("getStringVectorAsList already defined!")
+println("getStringVectorAsList")
+if(binding.hasVariable('getStringVectorAsList'))
+	throw new Exception("getStringVectorAsList already defined!")
 getStringVectorAsList = putStringVectorAsList
-getStringVectorAsListType = type(getStringVectorAsList[0])
-print(getStringVectorAsListType)
-print(getStringVectorAsList)
+getStringVectorAsListType = getStringVectorAsList[0].getClass()
+println(getStringVectorAsListType)
+println(getStringVectorAsList)
 if(getStringVectorAsListType is not unicode):
-	raise Exception("getStringVectorAsList not unicode!")
+	throw new Exception("getStringVectorAsList not String!")
 
-print("getStringVectorAsListWithNull")
-if 'getStringVectorAsListWithNull' in locals():
-	raise Exception("getStringVectorAsListWithNull already defined!")
+println("getStringVectorAsListWithNull")
+if(binding.hasVariable('getStringVectorAsListWithNull'))
+	throw new Exception("getStringVectorAsListWithNull already defined!")
 getStringVectorAsListWithNull = putStringVectorAsListWithNull
-getStringVectorAsListWithNullType = type(getStringVectorAsListWithNull[0])
-print(getStringVectorAsListWithNullType)
-print(getStringVectorAsListWithNull)
+getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0].getClass()
+println(getStringVectorAsListWithNullType)
+println(getStringVectorAsListWithNull)
 if(getStringVectorAsListWithNullType is not unicode):
-	raise Exception("getStringVectorAsListWithNull not unicode!")
+	throw new Exception("getStringVectorAsListWithNull not String!")
 if(getStringVectorAsListWithNull[1] is not None):
-	raise Exception("getStringVectorAsListWithNull[1] not None!")
+	throw new Exception("getStringVectorAsListWithNull[1] not None!")
 
-print("getStringMatrix")
-if 'getStringMatrix' in locals():
-	raise Exception("getStringMatrix already defined!")
+println("getStringMatrix")
+if(binding.hasVariable('getStringMatrix'))
+	throw new Exception("getStringMatrix already defined!")
 getStringMatrix = putStringMatrix
-getStringMatrixType = type(getStringMatrix[0][0])
-print(getStringMatrixType)
-print(getStringMatrix)
+getStringMatrixType = getStringMatrix[0][0].getClass()
+println(getStringMatrixType)
+println(getStringMatrix)
 if(getStringMatrixType is not unicode):
-	raise Exception("getStringMatrix not unicode!")
+	throw new Exception("getStringMatrix not String!")
 
-print("getStringMatrixWithNull")
-if 'getStringMatrixWithNull' in locals():
-	raise Exception("getStringMatrixWithNull already defined!")
+println("getStringMatrixWithNull")
+if(binding.hasVariable('getStringMatrixWithNull'))
+	throw new Exception("getStringMatrixWithNull already defined!")
 getStringMatrixWithNull = putStringMatrixWithNull
-getStringMatrixWithNullType = type(getStringMatrixWithNull[0][1])
-print(getStringMatrixWithNullType)
-print(getStringMatrixWithNull)
+getStringMatrixWithNullType = getStringMatrixWithNull[0][1].getClass()
+println(getStringMatrixWithNullType)
+println(getStringMatrixWithNull)
 if(getStringMatrixWithNullType is not unicode):
-	raise Exception("getStringMatrixWithNull not unicode!")
+	throw new Exception("getStringMatrixWithNull not String!")
 if(getStringMatrixWithNull[0][0] is not None):
-	raise Exception("getStringMatrixWithNull[0][0] not None!")
+	throw new Exception("getStringMatrixWithNull[0][0] not None!")
 if(getStringMatrixWithNull[1][1] is not None):
-	raise Exception("getStringMatrixWithNull[1][1] not None!")
+	throw new Exception("getStringMatrixWithNull[1][1] not None!")
 if(getStringMatrixWithNull[2][2] is not None):
-	raise Exception("getStringMatrixWithNull[2][2] not None!")
+	throw new Exception("getStringMatrixWithNull[2][2] not None!")
 
-print("getStringMatrixAsList")
-if 'getStringMatrixAsList' in locals():
-	raise Exception("getStringMatrixAsList already defined!")
+println("getStringMatrixAsList")
+if(binding.hasVariable('getStringMatrixAsList'))
+	throw new Exception("getStringMatrixAsList already defined!")
 getStringMatrixAsList = putStringMatrixAsList
-getStringMatrixAsListType = type(getStringMatrixAsList[0][0])
-print(getStringMatrixAsListType)
-print(getStringMatrixAsList)
+getStringMatrixAsListType = getStringMatrixAsList[0][0].getClass()
+println(getStringMatrixAsListType)
+println(getStringMatrixAsList)
 if(getStringMatrixAsListType is not unicode):
-	raise Exception("getStringMatrixAsList not unicode!")
+	throw new Exception("getStringMatrixAsList not String!")
 
-print("getStringMatrixAsListWithNull")
-if 'getStringMatrixAsListWithNull' in locals():
-	raise Exception("getStringMatrixAsListWithNull already defined!")
+println("getStringMatrixAsListWithNull")
+if(binding.hasVariable('getStringMatrixAsListWithNull'))
+	throw new Exception("getStringMatrixAsListWithNull already defined!")
 getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
-getStringMatrixAsListWithNullType = type(getStringMatrixAsListWithNull[0][1])
-print(getStringMatrixAsListWithNullType)
-print(getStringMatrixAsListWithNull)
+getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].getClass()
+println(getStringMatrixAsListWithNullType)
+println(getStringMatrixAsListWithNull)
 if(getStringMatrixAsListWithNullType is not unicode):
-	raise Exception("getStringMatrixAsListWithNull not unicode!")
+	throw new Exception("getStringMatrixAsListWithNull not String!")
 if(getStringMatrixAsListWithNull[0][0] is not None):
-	raise Exception("getStringMatrixAsListWithNull[0][0] not None!")
+	throw new Exception("getStringMatrixAsListWithNull[0][0] not None!")
 if(getStringMatrixAsListWithNull[1][1] is not None):
-	raise Exception("getStringMatrixAsListWithNull[2][2] not None!")
+	throw new Exception("getStringMatrixAsListWithNull[2][2] not None!")
 if(getStringMatrixAsListWithNull[2][2] is not None):
-	raise Exception("getStringMatrixAsListWithNull[3][3] not naNone!")
+	throw new Exception("getStringMatrixAsListWithNull[3][3] not naNone!")

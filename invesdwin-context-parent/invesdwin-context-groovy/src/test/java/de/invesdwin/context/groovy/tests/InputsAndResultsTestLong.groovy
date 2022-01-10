@@ -1,49 +1,49 @@
-print("getLong")
-if 'getLong' in locals():
-	raise Exception("getLong already defined!")
+println("getLong")
+if(binding.hasVariable('getLong'))
+	throw new Exception("getLong already defined!")
 getLong = putLong
-getLongType = type(getLong)
-print(getLongType)
-print(getLong)
+getLongType = getLong.getClass()
+println(getLongType)
+println(getLong)
 if(getLongType is not long):
-	raise Exception("getLong not long!")
+	throw new Exception("getLong not Long!")
 
-print("getLongVector")
-if 'getLongVector' in locals():
-	raise Exception("getLongVector already defined!")
+println("getLongVector")
+if(binding.hasVariable('getLongVector'))
+	throw new Exception("getLongVector already defined!")
 getLongVector = putLongVector
-getLongVectorType = type(getLongVector[0])
-print(getLongVectorType)
-print(getLongVector)
+getLongVectorType = getLongVector[0].getClass()
+println(getLongVectorType)
+println(getLongVector)
 if(getLongVectorType is not long):
-	raise Exception("getLongVector not long!")
+	throw new Exception("getLongVector not Long!")
 
-print("getLongVectorAsList")
-if 'getLongVectorAsList' in locals():
-	raise Exception("getLongVectorAsList already defined!")
+println("getLongVectorAsList")
+if(binding.hasVariable('getLongVectorAsList'))
+	throw new Exception("getLongVectorAsList already defined!")
 getLongVectorAsList = putLongVectorAsList
-getLongVectorAsListType = type(getLongVectorAsList[0])
-print(getLongVectorAsListType)
-print(getLongVectorAsList)
+getLongVectorAsListType = getLongVectorAsList[0].getClass()
+println(getLongVectorAsListType)
+println(getLongVectorAsList)
 if(getLongVectorAsListType is not long):
-	raise Exception("getLongVectorAsList not long!")
+	throw new Exception("getLongVectorAsList not Long!")
 
-print("getLongMatrix")
-if 'getLongMatrix' in locals():
-	raise Exception("getLongMatrix already defined!")
+println("getLongMatrix")
+if(binding.hasVariable('getLongMatrix'))
+	throw new Exception("getLongMatrix already defined!")
 getLongMatrix = putLongMatrix
-getLongMatrixType = type(getLongMatrix[0][0])
-print(getLongMatrixType)
-print(getLongMatrix)
+getLongMatrixType = getLongMatrix[0][0].getClass()
+println(getLongMatrixType)
+println(getLongMatrix)
 if(getLongMatrixType is not long):
-	raise Exception("getLongMatrix not long!")
+	throw new Exception("getLongMatrix not Long!")
 
-print("getLongMatrixAsList")
-if 'getLongMatrixAsList' in locals():
-	raise Exception("getLongMatrixAsList already defined!")
+println("getLongMatrixAsList")
+if(binding.hasVariable('getLongMatrixAsList'))
+	throw new Exception("getLongMatrixAsList already defined!")
 getLongMatrixAsList = putLongMatrixAsList
-getLongMatrixAsListType = type(getLongMatrixAsList[0][0])
-print(getLongMatrixAsListType)
-print(getLongMatrixAsList)
+getLongMatrixAsListType = getLongMatrixAsList[0][0].getClass()
+println(getLongMatrixAsListType)
+println(getLongMatrixAsList)
 if(getLongMatrixAsListType is not long):
-	raise Exception("getLongMatrixAsList not long!")
+	throw new Exception("getLongMatrixAsList not Long!")

@@ -1,49 +1,49 @@
-print("getShort")
-if 'getShort' in locals():
-	raise Exception("getShort already defined!")
+println("getShort")
+if(binding.hasVariable('getShort'))
+	throw new Exception("getShort already defined!")
 getShort = putShort
-getShortType = type(getShort)
-print(getShortType)
-print(getShort)
+getShortType = getShort.getClass()
+println(getShortType)
+println(getShort)
 if(getShortType is not int):
-	raise Exception("getShort not int!")
+	throw new Exception("getShort not Short!")
 
-print("getShortVector")
-if 'getShortVector' in locals():
-	raise Exception("getShortVector already defined!")
+println("getShortVector")
+if(binding.hasVariable('getShortVector'))
+	throw new Exception("getShortVector already defined!")
 getShortVector = putShortVector
-getShortVectorType = type(getShortVector[0])
-print(getShortVectorType)
-print(getShortVector)
+getShortVectorType = getShortVector[0].getClass()
+println(getShortVectorType)
+println(getShortVector)
 if(getShortVectorType is not int):
-	raise Exception("getShortVector not int!")
+	throw new Exception("getShortVector not Short!")
 
-print("getShortVectorAsList")
-if 'getShortVectorAsList' in locals():
-	raise Exception("getShortVectorAsList already defined!")
+println("getShortVectorAsList")
+if(binding.hasVariable('getShortVectorAsList'))
+	throw new Exception("getShortVectorAsList already defined!")
 getShortVectorAsList = putShortVectorAsList
-getShortVectorAsListType = type(getShortVectorAsList[0])
-print(getShortVectorAsListType)
-print(getShortVectorAsList)
+getShortVectorAsListType = getShortVectorAsList[0].getClass()
+println(getShortVectorAsListType)
+println(getShortVectorAsList)
 if(getShortVectorAsListType is not int):
-	raise Exception("getShortVectorAsList not int!")
+	throw new Exception("getShortVectorAsList not Short!")
 
-print("getShortMatrix")
-if 'getShortMatrix' in locals():
-	raise Exception("getShortMatrix already defined!")
+println("getShortMatrix")
+if(binding.hasVariable('getShortMatrix'))
+	throw new Exception("getShortMatrix already defined!")
 getShortMatrix = putShortMatrix
-getShortMatrixType = type(getShortMatrix[0][0])
-print(getShortMatrixType)
-print(getShortMatrix)
+getShortMatrixType = getShortMatrix[0][0].getClass()
+println(getShortMatrixType)
+println(getShortMatrix)
 if(getShortMatrixType is not int):
-	raise Exception("getShortMatrix not int!")
+	throw new Exception("getShortMatrix not Short!")
 
-print("getShortMatrixAsList")
-if 'getShortMatrixAsList' in locals():
-	raise Exception("getShortMatrixAsList already defined!")
+println("getShortMatrixAsList")
+if(binding.hasVariable('getShortMatrixAsList'))
+	throw new Exception("getShortMatrixAsList already defined!")
 getShortMatrixAsList = putShortMatrixAsList
-getShortMatrixAsListType = type(getShortMatrixAsList[0][0])
-print(getShortMatrixAsListType)
-print(getShortMatrixAsList)
+getShortMatrixAsListType = getShortMatrixAsList[0][0].getClass()
+println(getShortMatrixAsListType)
+println(getShortMatrixAsList)
 if(getShortMatrixAsListType is not int):
-	raise Exception("getShortMatrixAsList not int!")
+	throw new Exception("getShortMatrixAsList not Short!")
