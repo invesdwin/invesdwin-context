@@ -5,7 +5,7 @@ getByte = putByte
 getByteType = getByte.getClass()
 println(getByteType)
 println(getByte)
-if(getByteType is not int):
+if(getByteType != Byte.class)
 	throw new Exception("getByte not Byte!")
 
 println("getByteVector")
@@ -15,7 +15,7 @@ getByteVector = putByteVector
 getByteVectorType = getByteVector[0].getClass()
 println(getByteVectorType)
 println(getByteVector)
-if(getByteVectorType is not int):
+if(getByteVectorType != Byte.class)
 	throw new Exception("getByteVector not Byte!")
 
 println("getByteVectorAsList")
@@ -25,7 +25,7 @@ getByteVectorAsList = putByteVectorAsList
 getByteVectorAsListType = getByteVectorAsList[0].getClass()
 println(getByteVectorAsListType)
 println(getByteVectorAsList)
-if(getByteVectorAsListType is not int):
+if(getByteVectorAsListType != Byte.class)
 	throw new Exception("getByteVectorAsList not Byte!")
 
 println("getByteMatrix")
@@ -35,7 +35,7 @@ getByteMatrix = putByteMatrix
 getByteMatrixType = getByteMatrix[0][0].getClass()
 println(getByteMatrixType)
 println(getByteMatrix)
-if(getByteMatrixType is not int):
+if(getByteMatrixType != Byte.class)
 	throw new Exception("getByteMatrix not Byte!")
 
 println("getByteMatrixAsList")
@@ -45,5 +45,5 @@ getByteMatrixAsList = putByteMatrixAsList
 getByteMatrixAsListType = getByteMatrixAsList[0][0].getClass()
 println(getByteMatrixAsListType)
 println(getByteMatrixAsList)
-if(getByteMatrixAsListType is not int):
+if(getByteMatrixAsListType != Byte.class)
 	throw new Exception("getByteMatrixAsList not Byte!")

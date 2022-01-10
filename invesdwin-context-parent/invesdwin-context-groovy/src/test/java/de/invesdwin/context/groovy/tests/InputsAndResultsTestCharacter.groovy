@@ -5,7 +5,7 @@ getCharacter = putCharacter
 getCharacterType = getCharacter.getClass()
 println(getCharacterType)
 println(getCharacter)
-if(not isinstance(getCharacter, (unicode, str))):
+if(getCharacterType != Character.class)
 	throw new Exception("getCharacter not String!")
 
 println("getCharacterVector")
@@ -15,7 +15,7 @@ getCharacterVector = putCharacterVector
 getCharacterVectorType = getCharacterVector[0].getClass()
 println(getCharacterVectorType)
 println(getCharacterVector)
-if(not isinstance(getCharacterVector[0], (unicode, str))):
+if(getCharacterVectorType != Character.class)
 	throw new Exception("getCharacterVector not String!")
 
 println("getCharacterVectorAsList")
@@ -25,7 +25,7 @@ getCharacterVectorAsList = putCharacterVectorAsList
 getCharacterVectorAsListType = getCharacterVectorAsList[0].getClass()
 println(getCharacterVectorAsListType)
 println(getCharacterVectorAsList)
-if(not isinstance(getCharacterVectorAsList[0], (unicode, str))):
+if(getCharacterVectorAsListType != Character.class)
 	throw new Exception("getCharacterVectorAsList not String!")
 
 println("getCharacterMatrix")
@@ -35,7 +35,7 @@ getCharacterMatrix = putCharacterMatrix
 getCharacterMatrixType = getCharacterMatrix[0][0].getClass()
 println(getCharacterMatrixType)
 println(getCharacterMatrix)
-if(not isinstance(getCharacterMatrix[0][0], (unicode, str))):
+if(getCharacterMatrixType != Character.class)
 	throw new Exception("getCharacterMatrix not String!")
 
 println("getCharacterMatrixAsList")
@@ -45,5 +45,5 @@ getCharacterMatrixAsList = putCharacterMatrixAsList
 getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0].getClass()
 println(getCharacterMatrixAsListType)
 println(getCharacterMatrixAsList)
-if(not isinstance(getCharacterMatrixAsList[0][0], (unicode, str))):
+if(getCharacterMatrixAsListType != Character.class)
 	throw new Exception("getCharacterMatrixAsList not String!")

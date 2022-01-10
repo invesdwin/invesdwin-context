@@ -5,7 +5,7 @@ getFloat = putFloat
 getFloatType = getFloat.getClass()
 println(getFloatType)
 println(getFloat)
-if(getFloatType is not float):
+if(getFloatType != Float.class)
 	throw new Exception("getFloat not Float!")
 
 println("getFloatVector")
@@ -15,7 +15,7 @@ getFloatVector = putFloatVector
 getFloatVectorType = getFloatVector[0].getClass()
 println(getFloatVectorType)
 println(getFloatVector)
-if(getFloatVectorType is not float):
+if(getFloatVectorType != Float.class)
 	throw new Exception("getFloatVector not Float!")
 
 println("getFloatVectorAsList")
@@ -25,7 +25,7 @@ getFloatVectorAsList = putFloatVectorAsList
 getFloatVectorAsListType = getFloatVectorAsList[0].getClass()
 println(getFloatVectorAsListType)
 println(getFloatVectorAsList)
-if(getFloatVectorAsListType is not float):
+if(getFloatVectorAsListType != Float.class)
 	throw new Exception("getFloatVectorAsList not Float!")
 
 println("getFloatMatrix")
@@ -35,7 +35,7 @@ getFloatMatrix = putFloatMatrix
 getFloatMatrixType = getFloatMatrix[0][0].getClass()
 println(getFloatMatrixType)
 println(getFloatMatrix)
-if(getFloatMatrixType is not float):
+if(getFloatMatrixType != Float.class)
 	throw new Exception("getFloatMatrix not Float!")
 
 println("getFloatMatrixAsList")
@@ -45,5 +45,5 @@ getFloatMatrixAsList = putFloatMatrixAsList
 getFloatMatrixAsListType = getFloatMatrixAsList[0][0].getClass()
 println(getFloatMatrixAsListType)
 println(getFloatMatrixAsList)
-if(getFloatMatrixAsListType is not float):
+if(getFloatMatrixAsListType != Float.class)
 	throw new Exception("getFloatMatrixAsList not Float!")

@@ -5,7 +5,7 @@ getString = putString
 getStringType = getString.getClass()
 println(getStringType)
 println(getString)
-if(getStringType is not unicode):
+if(getStringType != String.class)
 	throw new Exception("getString not String!")
 
 println("getStringWithNull")
@@ -15,8 +15,8 @@ getStringWithNull = putStringWithNull
 getStringWithNullType = getStringWithNull.getClass()
 println(getStringWithNullType)
 println(getStringWithNull)
-if(getStringWithNull is not None):
-	throw new Exception("getStringWithNull not None!")
+if(getStringWithNull != null)
+	throw new Exception("getStringWithNull not null!")
 
 println("getStringVector")
 if(binding.hasVariable('getStringVector'))
@@ -25,7 +25,7 @@ getStringVector = putStringVector
 getStringVectorType = getStringVector[0].getClass()
 println(getStringVectorType)
 println(getStringVector)
-if(getStringVectorType is not unicode):
+if(getStringVectorType != String.class)
 	throw new Exception("getStringVector not String!")
 
 println("getStringVectorWithNull")
@@ -35,10 +35,10 @@ getStringVectorWithNull = putStringVectorWithNull
 getStringVectorWithNullType = getStringVectorWithNull[0].getClass()
 println(getStringVectorWithNullType)
 println(getStringVectorWithNull)
-if(getStringVectorWithNullType is not unicode):
+if(getStringVectorWithNullType != String.class)
 	throw new Exception("getStringVectorWithNull not String!")
-if(getStringVectorWithNull[1] is not None):
-	throw new Exception("getStringVectorWithNull[2] not None!")
+if(getStringVectorWithNull[1] != null)
+	throw new Exception("getStringVectorWithNull[2] not null!")
 
 println("getStringVectorAsList")
 if(binding.hasVariable('getStringVectorAsList'))
@@ -47,7 +47,7 @@ getStringVectorAsList = putStringVectorAsList
 getStringVectorAsListType = getStringVectorAsList[0].getClass()
 println(getStringVectorAsListType)
 println(getStringVectorAsList)
-if(getStringVectorAsListType is not unicode):
+if(getStringVectorAsListType != String.class)
 	throw new Exception("getStringVectorAsList not String!")
 
 println("getStringVectorAsListWithNull")
@@ -57,10 +57,10 @@ getStringVectorAsListWithNull = putStringVectorAsListWithNull
 getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0].getClass()
 println(getStringVectorAsListWithNullType)
 println(getStringVectorAsListWithNull)
-if(getStringVectorAsListWithNullType is not unicode):
+if(getStringVectorAsListWithNullType != String.class)
 	throw new Exception("getStringVectorAsListWithNull not String!")
-if(getStringVectorAsListWithNull[1] is not None):
-	throw new Exception("getStringVectorAsListWithNull[1] not None!")
+if(getStringVectorAsListWithNull[1] != null)
+	throw new Exception("getStringVectorAsListWithNull[1] not null!")
 
 println("getStringMatrix")
 if(binding.hasVariable('getStringMatrix'))
@@ -69,7 +69,7 @@ getStringMatrix = putStringMatrix
 getStringMatrixType = getStringMatrix[0][0].getClass()
 println(getStringMatrixType)
 println(getStringMatrix)
-if(getStringMatrixType is not unicode):
+if(getStringMatrixType != String.class)
 	throw new Exception("getStringMatrix not String!")
 
 println("getStringMatrixWithNull")
@@ -79,14 +79,14 @@ getStringMatrixWithNull = putStringMatrixWithNull
 getStringMatrixWithNullType = getStringMatrixWithNull[0][1].getClass()
 println(getStringMatrixWithNullType)
 println(getStringMatrixWithNull)
-if(getStringMatrixWithNullType is not unicode):
+if(getStringMatrixWithNullType != String.class)
 	throw new Exception("getStringMatrixWithNull not String!")
-if(getStringMatrixWithNull[0][0] is not None):
-	throw new Exception("getStringMatrixWithNull[0][0] not None!")
-if(getStringMatrixWithNull[1][1] is not None):
-	throw new Exception("getStringMatrixWithNull[1][1] not None!")
-if(getStringMatrixWithNull[2][2] is not None):
-	throw new Exception("getStringMatrixWithNull[2][2] not None!")
+if(getStringMatrixWithNull[0][0] != null)
+	throw new Exception("getStringMatrixWithNull[0][0] not null!")
+if(getStringMatrixWithNull[1][1] != null)
+	throw new Exception("getStringMatrixWithNull[1][1] not null!")
+if(getStringMatrixWithNull[2][2] != null)
+	throw new Exception("getStringMatrixWithNull[2][2] not null!")
 
 println("getStringMatrixAsList")
 if(binding.hasVariable('getStringMatrixAsList'))
@@ -95,7 +95,7 @@ getStringMatrixAsList = putStringMatrixAsList
 getStringMatrixAsListType = getStringMatrixAsList[0][0].getClass()
 println(getStringMatrixAsListType)
 println(getStringMatrixAsList)
-if(getStringMatrixAsListType is not unicode):
+if(getStringMatrixAsListType != String.class)
 	throw new Exception("getStringMatrixAsList not String!")
 
 println("getStringMatrixAsListWithNull")
@@ -105,11 +105,11 @@ getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
 getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].getClass()
 println(getStringMatrixAsListWithNullType)
 println(getStringMatrixAsListWithNull)
-if(getStringMatrixAsListWithNullType is not unicode):
+if(getStringMatrixAsListWithNullType != String.class)
 	throw new Exception("getStringMatrixAsListWithNull not String!")
-if(getStringMatrixAsListWithNull[0][0] is not None):
-	throw new Exception("getStringMatrixAsListWithNull[0][0] not None!")
-if(getStringMatrixAsListWithNull[1][1] is not None):
-	throw new Exception("getStringMatrixAsListWithNull[2][2] not None!")
-if(getStringMatrixAsListWithNull[2][2] is not None):
-	throw new Exception("getStringMatrixAsListWithNull[3][3] not naNone!")
+if(getStringMatrixAsListWithNull[0][0] != null)
+	throw new Exception("getStringMatrixAsListWithNull[0][0] not null!")
+if(getStringMatrixAsListWithNull[1][1] != null)
+	throw new Exception("getStringMatrixAsListWithNull[1][1] not null!")
+if(getStringMatrixAsListWithNull[2][2] != null)
+	throw new Exception("getStringMatrixAsListWithNull[2][2] not null!")

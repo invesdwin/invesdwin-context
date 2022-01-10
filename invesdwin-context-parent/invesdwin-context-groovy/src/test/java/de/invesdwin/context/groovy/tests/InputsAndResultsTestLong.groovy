@@ -5,7 +5,7 @@ getLong = putLong
 getLongType = getLong.getClass()
 println(getLongType)
 println(getLong)
-if(getLongType is not long):
+if(getLongType != Long.class)
 	throw new Exception("getLong not Long!")
 
 println("getLongVector")
@@ -15,7 +15,7 @@ getLongVector = putLongVector
 getLongVectorType = getLongVector[0].getClass()
 println(getLongVectorType)
 println(getLongVector)
-if(getLongVectorType is not long):
+if(getLongVectorType != Long.class)
 	throw new Exception("getLongVector not Long!")
 
 println("getLongVectorAsList")
@@ -25,7 +25,7 @@ getLongVectorAsList = putLongVectorAsList
 getLongVectorAsListType = getLongVectorAsList[0].getClass()
 println(getLongVectorAsListType)
 println(getLongVectorAsList)
-if(getLongVectorAsListType is not long):
+if(getLongVectorAsListType != Long.class)
 	throw new Exception("getLongVectorAsList not Long!")
 
 println("getLongMatrix")
@@ -35,7 +35,7 @@ getLongMatrix = putLongMatrix
 getLongMatrixType = getLongMatrix[0][0].getClass()
 println(getLongMatrixType)
 println(getLongMatrix)
-if(getLongMatrixType is not long):
+if(getLongMatrixType != Long.class)
 	throw new Exception("getLongMatrix not Long!")
 
 println("getLongMatrixAsList")
@@ -45,5 +45,5 @@ getLongMatrixAsList = putLongMatrixAsList
 getLongMatrixAsListType = getLongMatrixAsList[0][0].getClass()
 println(getLongMatrixAsListType)
 println(getLongMatrixAsList)
-if(getLongMatrixAsListType is not long):
+if(getLongMatrixAsListType != Long.class)
 	throw new Exception("getLongMatrixAsList not Long!")

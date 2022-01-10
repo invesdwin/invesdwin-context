@@ -5,7 +5,7 @@ getInteger = putInteger
 getIntegerType = getInteger.getClass()
 println(getIntegerType)
 println(getInteger)
-if(getIntegerType is not int):
+if(getIntegerType != Integer.class)
 	throw new Exception("getInteger not Integer!")
 
 println("getIntegerVector")
@@ -15,7 +15,7 @@ getIntegerVector = putIntegerVector
 getIntegerVectorType = getIntegerVector[0].getClass()
 println(getIntegerVectorType)
 println(getIntegerVector)
-if(getIntegerVectorType is not int):
+if(getIntegerVectorType != Integer.class)
 	throw new Exception("getIntegerVector not Integer!")
 
 println("getIntegerVectorAsList")
@@ -25,7 +25,7 @@ getIntegerVectorAsList = putIntegerVectorAsList
 getIntegerVectorAsListType = getIntegerVectorAsList[0].getClass()
 println(getIntegerVectorAsListType)
 println(getIntegerVectorAsList)
-if(getIntegerVectorAsListType is not int):
+if(getIntegerVectorAsListType != Integer.class)
 	throw new Exception("getIntegerVectorAsList not Integer!")
 
 println("getIntegerMatrix")
@@ -35,7 +35,7 @@ getIntegerMatrix = putIntegerMatrix
 getIntegerMatrixType = getIntegerMatrix[0][0].getClass()
 println(getIntegerMatrixType)
 println(getIntegerMatrix)
-if(getIntegerMatrixType is not int):
+if(getIntegerMatrixType != Integer.class)
 	throw new Exception("getIntegerMatrix not Integer!")
 
 println("getIntegerMatrixAsList")
@@ -45,5 +45,5 @@ getIntegerMatrixAsList = putIntegerMatrixAsList
 getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].getClass()
 println(getIntegerMatrixAsListType)
 println(getIntegerMatrixAsList)
-if(getIntegerMatrixAsListType is not int):
+if(getIntegerMatrixAsListType != Integer.class)
 	throw new Exception("getIntegerMatrixAsList not Integer!")

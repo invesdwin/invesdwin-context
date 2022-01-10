@@ -1,142 +1,142 @@
 getBooleanVector = putBooleanVector
-if getBooleanVector is not None:
-	throw new Exception("getBooleanVector not None!")
+if(getBooleanVector != null)
+	throw new Exception("getBooleanVector not null!")
 getBooleanVectorAsList = putBooleanVectorAsList
-if getBooleanVectorAsList is not None:
-	throw new Exception("getBooleanVectorAsList not None!")
+if(getBooleanVectorAsList != null)
+	throw new Exception("getBooleanVectorAsList not null!")
 getBooleanMatrix = putBooleanMatrix
-if getBooleanMatrix is not None:
-	throw new Exception("getBooleanMatrix not None!")
+if(getBooleanMatrix != null)
+	throw new Exception("getBooleanMatrix not null!")
 getBooleanMatrixAsList = putBooleanMatrixAsList
-if getBooleanMatrixAsList is not None:
-	throw new Exception("getBooleanMatrixAsList not None!")
+if(getBooleanMatrixAsList != null)
+	throw new Exception("getBooleanMatrixAsList not null!")
 
 getByteVector = putByteVector
-if getByteVector is not None:
-	throw new Exception("getByteVector not None!")
+if(getByteVector != null)
+	throw new Exception("getByteVector not null!")
 getByteVectorAsList = putByteVectorAsList
-if getByteVectorAsList is not None:
-	throw new Exception("getByteVectorAsList not None!")
+if(getByteVectorAsList != null)
+	throw new Exception("getByteVectorAsList not null!")
 getByteMatrix = putByteMatrix
-if getByteMatrix is not None:
-	throw new Exception("getByteMatrix not None!")
+if(getByteMatrix != null)
+	throw new Exception("getByteMatrix not null!")
 getByteMatrixAsList = putByteMatrixAsList
-if getByteMatrixAsList is not None:
-	throw new Exception("getByteMatrixAsList not None!")
+if(getByteMatrixAsList != null)
+	throw new Exception("getByteMatrixAsList not null!")
 
 getCharacterVector = putCharacterVector
-if getCharacterVector is not None:
-	throw new Exception("getCharacterVector not None!")
+if(getCharacterVector != null)
+	throw new Exception("getCharacterVector not null!")
 getCharacterVectorAsList = putCharacterVectorAsList
-if getCharacterVectorAsList is not None:
-	throw new Exception("getCharacterVectorAsList not None!")
+if(getCharacterVectorAsList != null)
+	throw new Exception("getCharacterVectorAsList not null!")
 getCharacterMatrix = putCharacterMatrix
-if getCharacterMatrix is not None:
-	throw new Exception("getCharacterMatrix not None!")
+if(getCharacterMatrix != null)
+	throw new Exception("getCharacterMatrix not null!")
 getCharacterMatrixAsList = putCharacterMatrixAsList
-if getCharacterMatrixAsList is not None:
-	throw new Exception("getCharacterMatrixAsList not None!")
+if(getCharacterMatrixAsList != null)
+	throw new Exception("getCharacterMatrixAsList not null!")
 
 getDecimalVector = putDecimalVector
-if getDecimalVector is not None:
-	throw new Exception("getDecimalVector not None!")
+if(getDecimalVector != null)
+	throw new Exception("getDecimalVector not null!")
 getDecimalVectorAsList = putDecimalVectorAsList
-if getDecimalVectorAsList is not None:
-	throw new Exception("getDecimalVectorAsList not None!")
+if(getDecimalVectorAsList != null)
+	throw new Exception("getDecimalVectorAsList not null!")
 getDecimalMatrix = putDecimalMatrix
-if getDecimalMatrix is not None:
-	throw new Exception("getDecimalMatrix not None!")
+if(getDecimalMatrix != null)
+	throw new Exception("getDecimalMatrix not null!")
 getDecimalMatrixAsList = putDecimalMatrixAsList
-if getDecimalMatrixAsList is not None:
-	throw new Exception("getDecimalMatrixAsList not None!")
+if(getDecimalMatrixAsList != null)
+	throw new Exception("getDecimalMatrixAsList not null!")
 
 getDoubleVector = putDoubleVector
-if getDoubleVector is not None:
-	throw new Exception("getDoubleVector not None!")
+if(getDoubleVector != null)
+	throw new Exception("getDoubleVector not null!")
 getDoubleVectorAsList = putDoubleVectorAsList
-if getDoubleVectorAsList is not None:
-	throw new Exception("getDoubleVectorAsList not None!")
+if(getDoubleVectorAsList != null)
+	throw new Exception("getDoubleVectorAsList not null!")
 getDoubleMatrix = putDoubleMatrix
-if getDoubleMatrix is not None:
-	throw new Exception("getDoubleMatrix not None!")
+if(getDoubleMatrix != null)
+	throw new Exception("getDoubleMatrix not null!")
 getDoubleMatrixAsList = putDoubleMatrixAsList
-if getDoubleMatrixAsList is not None:
-	throw new Exception("getDoubleMatrixAsList not None!")
+if(getDoubleMatrixAsList != null)
+	throw new Exception("getDoubleMatrixAsList not null!")
 
 getFloatVector = putFloatVector
-if getFloatVector is not None:
-	throw new Exception("getFloatVector not None!")
+if(getFloatVector != null)
+	throw new Exception("getFloatVector not null!")
 getFloatVectorAsList = putFloatVectorAsList
-if getFloatVectorAsList is not None:
-	throw new Exception("getFloatVectorAsList not None!")
+if(getFloatVectorAsList != null)
+	throw new Exception("getFloatVectorAsList not null!")
 getFloatMatrix = putFloatMatrix
-if getFloatMatrix is not None:
-	throw new Exception("getFloatMatrix not None!")
+if(getFloatMatrix != null)
+	throw new Exception("getFloatMatrix not null!")
 getFloatMatrixAsList = putFloatMatrixAsList
-if getFloatMatrixAsList is not None:
-	throw new Exception("getFloatMatrixAsList not None!")
+if(getFloatMatrixAsList != null)
+	throw new Exception("getFloatMatrixAsList not null!")
 
 getIntegerVector = putIntegerVector
-if getIntegerVector is not None:
-	throw new Exception("getIntegerVector not None!")
+if(getIntegerVector != null)
+	throw new Exception("getIntegerVector not null!")
 getIntegerVectorAsList = putIntegerVectorAsList
-if getIntegerVectorAsList is not None:
-	throw new Exception("getIntegerVectorAsList not None!")
+if(getIntegerVectorAsList != null)
+	throw new Exception("getIntegerVectorAsList not null!")
 getIntegerMatrix = putIntegerMatrix
-if getIntegerMatrix is not None:
-	throw new Exception("getIntegerMatrix not None!")
+if(getIntegerMatrix != null)
+	throw new Exception("getIntegerMatrix not null!")
 getIntegerMatrixAsList = putIntegerMatrixAsList
-if getIntegerMatrixAsList is not None:
-	throw new Exception("getIntegerMatrixAsList not None!")
+if(getIntegerMatrixAsList != null)
+	throw new Exception("getIntegerMatrixAsList not null!")
 
 getLongVector = putLongVector
-if getLongVector is not None:
-	throw new Exception("getLongVector not None!")
+if(getLongVector != null)
+	throw new Exception("getLongVector not null!")
 getLongVectorAsList = putLongVectorAsList
-if getLongVectorAsList is not None:
-	throw new Exception("getLongVectorAsList not None!")
+if(getLongVectorAsList != null)
+	throw new Exception("getLongVectorAsList not null!")
 getLongMatrix = putLongMatrix
-if getLongMatrix is not None:
-	throw new Exception("getLongMatrix not None!")
+if(getLongMatrix != null)
+	throw new Exception("getLongMatrix not null!")
 getLongMatrixAsList = putLongMatrixAsList
-if getLongMatrixAsList is not None:
-	throw new Exception("getLongMatrixAsList not None!")
+if(getLongMatrixAsList != null)
+	throw new Exception("getLongMatrixAsList not null!")
 
 getPercentVector = putPercentVector
-if getPercentVector is not None:
-	throw new Exception("getPercentVector not None!")
+if(getPercentVector != null)
+	throw new Exception("getPercentVector not null!")
 getPercentVectorAsList = putPercentVectorAsList
-if getPercentVectorAsList is not None:
-	throw new Exception("getPercentVectorAsList not None!")
+if(getPercentVectorAsList != null)
+	throw new Exception("getPercentVectorAsList not null!")
 getPercentMatrix = putPercentMatrix
-if getPercentMatrix is not None:
-	throw new Exception("getPercentMatrix not None!")
+if(getPercentMatrix != null)
+	throw new Exception("getPercentMatrix not null!")
 getPercentMatrixAsList = putPercentMatrixAsList
-if getPercentMatrixAsList is not None:
-	throw new Exception("getPercentMatrixAsList not None!")
+if(getPercentMatrixAsList != null)
+	throw new Exception("getPercentMatrixAsList not null!")
 
 getShortVector = putShortVector
-if getShortVector is not None:
-	throw new Exception("getShortVector not None!")
+if(getShortVector != null)
+	throw new Exception("getShortVector not null!")
 getShortVectorAsList = putShortVectorAsList
-if getShortVectorAsList is not None:
-	throw new Exception("getShortVectorAsList not None!")
+if(getShortVectorAsList != null)
+	throw new Exception("getShortVectorAsList not null!")
 getShortMatrix = putShortMatrix
-if getShortMatrix is not None:
-	throw new Exception("getShortMatrix not None!")
+if(getShortMatrix != null)
+	throw new Exception("getShortMatrix not null!")
 getShortMatrixAsList = putShortMatrixAsList
-if getShortMatrixAsList is not None:
-	throw new Exception("getShortMatrixAsList not None!")
+if(getShortMatrixAsList != null)
+	throw new Exception("getShortMatrixAsList not null!")
 
 getStringVector = putStringVector
-if getStringVector is not None:
-	throw new Exception("getStringVector not None!")
+if(getStringVector != null)
+	throw new Exception("getStringVector not null!")
 getStringVectorAsList = putStringVectorAsList
-if getStringVectorAsList is not None:
-	throw new Exception("getStringVectorAsList not None!")
+if(getStringVectorAsList != null)
+	throw new Exception("getStringVectorAsList not null!")
 getStringMatrix = putStringMatrix
-if getStringMatrix is not None:
-	throw new Exception("getStringMatrix not None!")
+if(getStringMatrix != null)
+	throw new Exception("getStringMatrix not null!")
 getStringMatrixAsList = putStringMatrixAsList
-if getStringMatrixAsList is not None:
-	throw new Exception("getStringMatrixAsList not None!")
+if(getStringMatrixAsList != null)
+	throw new Exception("getStringMatrixAsList not null!")

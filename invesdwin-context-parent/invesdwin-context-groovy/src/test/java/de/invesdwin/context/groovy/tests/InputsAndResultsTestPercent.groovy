@@ -5,8 +5,8 @@ getPercent = putPercent
 getPercentType = getPercent.getClass()
 println(getPercentType)
 println(getPercent)
-if(getPercentType is not float):
-	throw new Exception("getPercent not float!")
+if(getPercentType != Double.class)
+	throw new Exception("getPercent not Double!")
 
 println("getPercentVector")
 if(binding.hasVariable('getPercentVector'))
@@ -15,8 +15,8 @@ getPercentVector = putPercentVector
 getPercentVectorType = getPercentVector[0].getClass()
 println(getPercentVectorType)
 println(getPercentVector)
-if(getPercentVectorType is not float):
-	throw new Exception("getPercentVector not float!")
+if(getPercentVectorType != Double.class)
+	throw new Exception("getPercentVector not Double!")
 
 println("getPercentVectorAsList")
 if(binding.hasVariable('getPercentVectorAsList'))
@@ -25,8 +25,8 @@ getPercentVectorAsList = putPercentVectorAsList
 getPercentVectorAsListType = getPercentVectorAsList[0].getClass()
 println(getPercentVectorAsListType)
 println(getPercentVectorAsList)
-if(getPercentVectorAsListType is not float):
-	throw new Exception("getPercentVectorAsList not float!")
+if(getPercentVectorAsListType != Double.class)
+	throw new Exception("getPercentVectorAsList not Double!")
 
 println("getPercentMatrix")
 if(binding.hasVariable('getPercentMatrix'))
@@ -35,8 +35,8 @@ getPercentMatrix = putPercentMatrix
 getPercentMatrixType = getPercentMatrix[0][0].getClass()
 println(getPercentMatrixType)
 println(getPercentMatrix)
-if(getPercentMatrixType is not float):
-	throw new Exception("getPercentMatrix not float!")
+if(getPercentMatrixType != Double.class)
+	throw new Exception("getPercentMatrix not Double!")
 
 println("getPercentMatrixAsList")
 if(binding.hasVariable('getPercentMatrixAsList'))
@@ -45,5 +45,5 @@ getPercentMatrixAsList = putPercentMatrixAsList
 getPercentMatrixAsListType = getPercentMatrixAsList[0][0].getClass()
 println(getPercentMatrixAsListType)
 println(getPercentMatrixAsList)
-if(getPercentMatrixAsListType is not float):
-	throw new Exception("getPercentMatrixAsList not float!")
+if(getPercentMatrixAsListType != Double.class)
+	throw new Exception("getPercentMatrixAsList not Double!")

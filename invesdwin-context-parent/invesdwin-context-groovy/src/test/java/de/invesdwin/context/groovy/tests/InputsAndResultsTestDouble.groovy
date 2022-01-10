@@ -5,7 +5,7 @@ getDouble = putDouble
 getDoubleType = getDouble.getClass()
 println(getDoubleType)
 println(getDouble)
-if(getDoubleType is not float):
+if(getDoubleType != Double.class)
 	throw new Exception("getDouble not Double!")
 
 println("getDoubleVector")
@@ -15,7 +15,7 @@ getDoubleVector = putDoubleVector
 getDoubleVectorType = getDoubleVector[0].getClass()
 println(getDoubleVectorType)
 println(getDoubleVector)
-if(getDoubleVectorType is not float):
+if(getDoubleVectorType != Double.class)
 	throw new Exception("getDoubleVector not Double!")
 
 println("getDoubleVectorAsList")
@@ -25,7 +25,7 @@ getDoubleVectorAsList = putDoubleVectorAsList
 getDoubleVectorAsListType = getDoubleVectorAsList[0].getClass()
 println(getDoubleVectorAsListType)
 println(getDoubleVectorAsList)
-if(getDoubleVectorAsListType is not float):
+if(getDoubleVectorAsListType != Double.class)
 	throw new Exception("getDoubleVectorAsList not Double!")
 
 println("getDoubleMatrix")
@@ -35,7 +35,7 @@ getDoubleMatrix = putDoubleMatrix
 getDoubleMatrixType = getDoubleMatrix[0][0].getClass()
 println(getDoubleMatrixType)
 println(getDoubleMatrix)
-if(getDoubleMatrixType is not float):
+if(getDoubleMatrixType != Double.class)
 	throw new Exception("getDoubleMatrix not Double!")
 
 println("getDoubleMatrixAsList")
@@ -45,5 +45,5 @@ getDoubleMatrixAsList = putDoubleMatrixAsList
 getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].getClass()
 println(getDoubleMatrixAsListType)
 println(getDoubleMatrixAsList)
-if(getDoubleMatrixAsListType is not float):
+if(getDoubleMatrixAsListType != Double.class)
 	throw new Exception("getDoubleMatrixAsList not Double!")

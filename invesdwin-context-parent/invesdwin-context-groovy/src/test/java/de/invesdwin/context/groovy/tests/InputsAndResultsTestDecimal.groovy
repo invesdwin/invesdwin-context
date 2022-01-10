@@ -5,7 +5,7 @@ getDecimal = putDecimal
 getDecimalType = getDecimal.getClass()
 println(getDecimalType)
 println(getDecimal)
-if(getDecimalType is not float):
+if(getDecimalType != Double.class)
 	throw new Exception("getDecimal not Double!")
 
 println("getDecimalVector")
@@ -15,7 +15,7 @@ getDecimalVector = putDecimalVector
 getDecimalVectorType = getDecimalVector[0].getClass()
 println(getDecimalVectorType)
 println(getDecimalVector)
-if(getDecimalVectorType is not float):
+if(getDecimalVectorType != Double.class)
 	throw new Exception("getDecimalVector not Double!")
 
 println("getDecimalVectorAsList")
@@ -25,7 +25,7 @@ getDecimalVectorAsList = putDecimalVectorAsList
 getDecimalVectorAsListType = getDecimalVectorAsList[0].getClass()
 println(getDecimalVectorAsListType)
 println(getDecimalVectorAsList)
-if(getDecimalVectorAsListType is not float):
+if(getDecimalVectorAsListType != Double.class)
 	throw new Exception("getDecimalVectorAsList not Double!")
 
 println("getDecimalMatrix")
@@ -35,7 +35,7 @@ getDecimalMatrix = putDecimalMatrix
 getDecimalMatrixType = getDecimalMatrix[0][0].getClass()
 println(getDecimalMatrixType)
 println(getDecimalMatrix)
-if(getDecimalMatrixType is not float):
+if(getDecimalMatrixType != Double.class)
 	throw new Exception("getDecimalMatrix not Double!")
 
 println("getDecimalMatrixAsList")
@@ -45,5 +45,5 @@ getDecimalMatrixAsList = putDecimalMatrixAsList
 getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0].getClass()
 println(getDecimalMatrixAsListType)
 println(getDecimalMatrixAsList)
-if(getDecimalMatrixAsListType is not float):
+if(getDecimalMatrixAsListType != Double.class)
 	throw new Exception("getDecimalMatrixAsList not Double!")
