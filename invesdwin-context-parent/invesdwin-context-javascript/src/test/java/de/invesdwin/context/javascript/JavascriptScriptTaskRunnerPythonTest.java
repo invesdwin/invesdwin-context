@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
-import de.invesdwin.context.javascript.ScriptTaskRunnerJavascript;
 import de.invesdwin.context.javascript.tests.InputsAndResultsTests;
 import de.invesdwin.context.test.ATest;
 
