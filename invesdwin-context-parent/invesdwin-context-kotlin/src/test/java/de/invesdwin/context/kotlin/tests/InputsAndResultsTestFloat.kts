@@ -1,49 +1,49 @@
 println("getFloat")
-if(binding.hasVariable('getFloat'))
-	throw new Exception("getFloat already defined!")
-getFloat = putFloat
-getFloatType = getFloat.getClass()
+if(bindings.containsKey("getFloat"))
+	throw Exception("getFloat already defined!")
+val getFloat = putFloat
+val getFloatType = getFloat::class
 println(getFloatType)
 println(getFloat)
-if(getFloatType != Float.class)
-	throw new Exception("getFloat not Float!")
+if(getFloatType != Float::class)
+	throw Exception("getFloat not Float!")
 
 println("getFloatVector")
-if(binding.hasVariable('getFloatVector'))
-	throw new Exception("getFloatVector already defined!")
-getFloatVector = putFloatVector
-getFloatVectorType = getFloatVector[0].getClass()
+if(bindings.containsKey("getFloatVector"))
+	throw Exception("getFloatVector already defined!")
+val getFloatVector = putFloatVector
+val getFloatVectorType = getFloatVector[0]::class
 println(getFloatVectorType)
 println(getFloatVector)
-if(getFloatVectorType != Float.class)
-	throw new Exception("getFloatVector not Float!")
+if(getFloatVectorType != Float::class)
+	throw Exception("getFloatVector not Float!")
 
 println("getFloatVectorAsList")
-if(binding.hasVariable('getFloatVectorAsList'))
-	throw new Exception("getFloatVectorAsList already defined!")
-getFloatVectorAsList = putFloatVectorAsList
-getFloatVectorAsListType = getFloatVectorAsList[0].getClass()
+if(bindings.containsKey("getFloatVectorAsList"))
+	throw Exception("getFloatVectorAsList already defined!")
+val getFloatVectorAsList = putFloatVectorAsList
+val getFloatVectorAsListType = getFloatVectorAsList[0]::class
 println(getFloatVectorAsListType)
 println(getFloatVectorAsList)
-if(getFloatVectorAsListType != Float.class)
-	throw new Exception("getFloatVectorAsList not Float!")
+if(getFloatVectorAsListType != Float::class)
+	throw Exception("getFloatVectorAsList not Float!")
 
 println("getFloatMatrix")
-if(binding.hasVariable('getFloatMatrix'))
-	throw new Exception("getFloatMatrix already defined!")
-getFloatMatrix = putFloatMatrix
-getFloatMatrixType = getFloatMatrix[0][0].getClass()
+if(bindings.containsKey("getFloatMatrix"))
+	throw Exception("getFloatMatrix already defined!")
+val getFloatMatrix = putFloatMatrix
+val getFloatMatrixType = getFloatMatrix[0][0]::class
 println(getFloatMatrixType)
 println(getFloatMatrix)
-if(getFloatMatrixType != Float.class)
-	throw new Exception("getFloatMatrix not Float!")
+if(getFloatMatrixType != Float::class)
+	throw Exception("getFloatMatrix not Float!")
 
 println("getFloatMatrixAsList")
-if(binding.hasVariable('getFloatMatrixAsList'))
-	throw new Exception("getFloatMatrixAsList already defined!")
-getFloatMatrixAsList = putFloatMatrixAsList
-getFloatMatrixAsListType = getFloatMatrixAsList[0][0].getClass()
+if(bindings.containsKey("getFloatMatrixAsList"))
+	throw Exception("getFloatMatrixAsList already defined!")
+val getFloatMatrixAsList = putFloatMatrixAsList
+val getFloatMatrixAsListType = getFloatMatrixAsList[0][0]::class
 println(getFloatMatrixAsListType)
 println(getFloatMatrixAsList)
-if(getFloatMatrixAsListType != Float.class)
-	throw new Exception("getFloatMatrixAsList not Float!")
+if(getFloatMatrixAsListType != Float::class)
+	throw Exception("getFloatMatrixAsList not Float!")

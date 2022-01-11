@@ -1,49 +1,49 @@
 println("getShort")
-if(binding.hasVariable('getShort'))
-	throw new Exception("getShort already defined!")
-getShort = putShort
-getShortType = getShort.getClass()
+if(bindings.containsKey("getShort"))
+	throw Exception("getShort already defined!")
+val getShort = putShort
+val getShortType = getShort::class
 println(getShortType)
 println(getShort)
-if(getShortType != Short.class)
-	throw new Exception("getShort not Short!")
+if(getShortType != Short::class)
+	throw Exception("getShort not Short!")
 
 println("getShortVector")
-if(binding.hasVariable('getShortVector'))
-	throw new Exception("getShortVector already defined!")
-getShortVector = putShortVector
-getShortVectorType = getShortVector[0].getClass()
+if(bindings.containsKey("getShortVector"))
+	throw Exception("getShortVector already defined!")
+val getShortVector = putShortVector
+val getShortVectorType = getShortVector[0]::class
 println(getShortVectorType)
 println(getShortVector)
-if(getShortVectorType != Short.class)
-	throw new Exception("getShortVector not Short!")
+if(getShortVectorType != Short::class)
+	throw Exception("getShortVector not Short!")
 
 println("getShortVectorAsList")
-if(binding.hasVariable('getShortVectorAsList'))
-	throw new Exception("getShortVectorAsList already defined!")
-getShortVectorAsList = putShortVectorAsList
-getShortVectorAsListType = getShortVectorAsList[0].getClass()
+if(bindings.containsKey("getShortVectorAsList"))
+	throw Exception("getShortVectorAsList already defined!")
+val getShortVectorAsList = putShortVectorAsList
+val getShortVectorAsListType = getShortVectorAsList[0]::class
 println(getShortVectorAsListType)
 println(getShortVectorAsList)
-if(getShortVectorAsListType != Short.class)
-	throw new Exception("getShortVectorAsList not Short!")
+if(getShortVectorAsListType != Short::class)
+	throw Exception("getShortVectorAsList not Short!")
 
 println("getShortMatrix")
-if(binding.hasVariable('getShortMatrix'))
-	throw new Exception("getShortMatrix already defined!")
-getShortMatrix = putShortMatrix
-getShortMatrixType = getShortMatrix[0][0].getClass()
+if(bindings.containsKey("getShortMatrix"))
+	throw Exception("getShortMatrix already defined!")
+val getShortMatrix = putShortMatrix
+val getShortMatrixType = getShortMatrix[0][0]::class
 println(getShortMatrixType)
 println(getShortMatrix)
-if(getShortMatrixType != Short.class)
-	throw new Exception("getShortMatrix not Short!")
+if(getShortMatrixType != Short::class)
+	throw Exception("getShortMatrix not Short!")
 
 println("getShortMatrixAsList")
-if(binding.hasVariable('getShortMatrixAsList'))
-	throw new Exception("getShortMatrixAsList already defined!")
-getShortMatrixAsList = putShortMatrixAsList
-getShortMatrixAsListType = getShortMatrixAsList[0][0].getClass()
+if(bindings.containsKey("getShortMatrixAsList"))
+	throw Exception("getShortMatrixAsList already defined!")
+val getShortMatrixAsList = putShortMatrixAsList
+val getShortMatrixAsListType = getShortMatrixAsList[0][0]::class
 println(getShortMatrixAsListType)
 println(getShortMatrixAsList)
-if(getShortMatrixAsListType != Short.class)
-	throw new Exception("getShortMatrixAsList not Short!")
+if(getShortMatrixAsListType != Short::class)
+	throw Exception("getShortMatrixAsList not Short!")

@@ -30,7 +30,7 @@ public class WrappedKotlinScriptEngine implements Closeable {
 
     public WrappedKotlinScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
-        this.engine = manager.getEngineByExtension("kts");
+        this.engine = manager.getEngineByName("kotlin");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
