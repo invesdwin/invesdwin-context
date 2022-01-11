@@ -1,57 +1,97 @@
 package de.invesdwin.context.javascript.pool;
 
 import java.io.Closeable;
-import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import javax.annotation.concurrent.NotThreadSafe;
-
-import org.codehaus.groovy.control.CompilerConfiguration;
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.Invocable;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
-
 @NotThreadSafe
 public class WrappedJavascriptScriptEngine implements Closeable {
 
-    private final LoadingCache<String, Script> scriptCache;
+    private final LoadingCache<String, CompiledScript> scriptCache;
 
-    private final GroovyShell engine;
-    private final Binding binding;
+    private final ScriptEngine engine;
+    private final Compilable compilable;
+    private final Invocable invocable;
+    private final Bindings binding;
+    private final Function<String, Object> evalF;
 
     public WrappedJavascriptScriptEngine() {
-        final CompilerConfiguration config = new CompilerConfiguration();
-        //we actually want the dynamic language features here
-        //        config.addCompilationCustomizers(new ASTTransformationCustomizer(CompileStatic.class));
-        //        config.addCompilationCustomizers(new ASTTransformationCustomizer(TypeChecked.class));
-        this.binding = new Binding(new LinkedHashMap<>());
-        this.engine = new GroovyShell(binding, config);
-        scriptCache = Caffeine.newBuilder()
-                .maximumSize(100)
-                .expireAfterAccess(1, TimeUnit.MINUTES)
-                .softValues()
-                .<String, Script> build((key) -> engine.parse(key));
+        final ScriptEngineManager manager = new ScriptEngineManager();
+        this.engine = manager.getEngineByName("javascript");
+        this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        if (engine instanceof Compilable) {
+            compilable = (Compilable) engine;
+            scriptCache = Caffeine.newBuilder()
+                    .maximumSize(100)
+                    .expireAfterAccess(1, TimeUnit.MINUTES)
+                    .softValues()
+                    .<String, CompiledScript> build((key) -> compilable.compile(key));
+            evalF = (expression) -> evalCompiling(expression);
+        } else {
+            compilable = null;
+            scriptCache = null;
+            evalF = (expression) -> evalParsing(expression);
+        }
+        if (engine instanceof Invocable) {
+            invocable = (Invocable) engine;
+        } else {
+            invocable = null;
+        }
+
     }
 
-    public GroovyShell getEngine() {
+    public ScriptEngine getEngine() {
         return engine;
     }
 
-    public Binding getBinding() {
+    public Bindings getBinding() {
         return binding;
     }
 
-    public void eval(final String expression) {
-        final Script parsed = scriptCache.get(expression);
-        parsed.run();
+    public Compilable getCompilable() {
+        return compilable;
+    }
+
+    public Invocable getInvocable() {
+        return invocable;
+    }
+
+    public Object eval(final String expression) {
+        return evalF.apply(expression);
+    }
+
+    private Object evalCompiling(final String expression) {
+        final CompiledScript parsed = scriptCache.get(expression);
+        try {
+            return parsed.eval();
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object evalParsing(final String expression) {
+        try {
+            return engine.eval(expression);
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void reset() {
-        binding.getVariables().clear();
+        binding.clear();
     }
 
     @Override
@@ -60,19 +100,19 @@ public class WrappedJavascriptScriptEngine implements Closeable {
     }
 
     public void put(final String variable, final Object value) {
-        binding.setVariable(variable, value);
+        binding.put(variable, value);
     }
 
     public Object get(final String variable) {
-        return binding.getVariable(variable);
+        return binding.get(variable);
     }
 
     public void remove(final String variable) {
-        binding.removeVariable(variable);
+        binding.remove(variable);
     }
 
     public boolean contains(final String variable) {
-        return binding.hasVariable(variable);
+        return binding.containsKey(variable);
     }
 
 }

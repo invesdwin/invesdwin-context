@@ -45,9 +45,9 @@ public class WrappedGroovyShell implements Closeable {
         return binding;
     }
 
-    public void eval(final String expression) {
+    public Object eval(final String expression) {
         final Script parsed = scriptCache.get(expression);
-        parsed.run();
+        return parsed.run();
     }
 
     public void reset() {

@@ -17,14 +17,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy</artifactId>
-			<classifier>indy</classifier>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-jsr223</artifactId>
-			<classifier>indy</classifier>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
 		</dependency>
 	</dependencies>
 
