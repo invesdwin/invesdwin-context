@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.groovy.tests.InputsAndResultsTests;
+import de.invesdwin.context.groovy.tests.hello.FileStrictHelloWorldScript;
 import de.invesdwin.context.groovy.tests.hello.StrictHelloWorldScript;
 import de.invesdwin.context.test.ATest;
 
@@ -26,6 +27,17 @@ public class ScriptTaskRunnerGroovyTest extends ATest {
         GroovyProperties.setStrictOverride(true);
         try {
             new StrictHelloWorldScript(runner).testHelloWorld();
+        } finally {
+            GroovyProperties.setStrictOverride(strictOverrideBefore);
+        }
+    }
+
+    @Test
+    public void testFileStrict() {
+        final Boolean strictOverrideBefore = GroovyProperties.getStrictOverride();
+        GroovyProperties.setStrictOverride(false);
+        try {
+            new FileStrictHelloWorldScript(runner).testHelloWorld();
         } finally {
             GroovyProperties.setStrictOverride(strictOverrideBefore);
         }
