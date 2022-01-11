@@ -32,7 +32,8 @@ println("getFloatMatrix")
 if(bindings.containsKey("getFloatMatrix"))
 	throw Exception("getFloatMatrix already defined!")
 val getFloatMatrix = putFloatMatrix
-val getFloatMatrixType = getFloatMatrix[0][0]::class
+val getFloatMatrixRow = getFloatMatrix[0] as FloatArray
+val getFloatMatrixType = getFloatMatrixRow[0]::class
 println(getFloatMatrixType)
 println(getFloatMatrix)
 if(getFloatMatrixType != Float::class)
@@ -42,7 +43,8 @@ println("getFloatMatrixAsList")
 if(bindings.containsKey("getFloatMatrixAsList"))
 	throw Exception("getFloatMatrixAsList already defined!")
 val getFloatMatrixAsList = putFloatMatrixAsList
-val getFloatMatrixAsListType = getFloatMatrixAsList[0][0]::class
+val getFloatMatrixAsListRow = getFloatMatrixAsList[0] as FloatArray
+val getFloatMatrixAsListType = getFloatMatrixAsListRow[0]::class
 println(getFloatMatrixAsListType)
 println(getFloatMatrixAsList)
 if(getFloatMatrixAsListType != Float::class)

@@ -32,7 +32,8 @@ println("getPercentMatrix")
 if(bindings.containsKey("getPercentMatrix"))
 	throw Exception("getPercentMatrix already defined!")
 val getPercentMatrix = putPercentMatrix
-val getPercentMatrixType = getPercentMatrix[0][0]::class
+val getPercentMatrixRow = getPercentMatrix[0] as DoubleArray
+val getPercentMatrixType = getPercentMatrixRow[0]::class
 println(getPercentMatrixType)
 println(getPercentMatrix)
 if(getPercentMatrixType != Double::class)
@@ -42,7 +43,8 @@ println("getPercentMatrixAsList")
 if(bindings.containsKey("getPercentMatrixAsList"))
 	throw Exception("getPercentMatrixAsList already defined!")
 val getPercentMatrixAsList = putPercentMatrixAsList
-val getPercentMatrixAsListType = getPercentMatrixAsList[0][0]::class
+val getPercentMatrixAsListRow = getPercentMatrixAsList[0] as DoubleArray
+val getPercentMatrixAsListType = getPercentMatrixAsListRow[0]::class
 println(getPercentMatrixAsListType)
 println(getPercentMatrixAsList)
 if(getPercentMatrixAsListType != Double::class)

@@ -32,7 +32,8 @@ println("getShortMatrix")
 if(bindings.containsKey("getShortMatrix"))
 	throw Exception("getShortMatrix already defined!")
 val getShortMatrix = putShortMatrix
-val getShortMatrixType = getShortMatrix[0][0]::class
+val getShortMatrixRow = getShortMatrix[0] as ShortArray
+val getShortMatrixType = getShortMatrixRow[0]::class
 println(getShortMatrixType)
 println(getShortMatrix)
 if(getShortMatrixType != Short::class)
@@ -42,7 +43,8 @@ println("getShortMatrixAsList")
 if(bindings.containsKey("getShortMatrixAsList"))
 	throw Exception("getShortMatrixAsList already defined!")
 val getShortMatrixAsList = putShortMatrixAsList
-val getShortMatrixAsListType = getShortMatrixAsList[0][0]::class
+val getShortMatrixAsListRow = getShortMatrixAsList[0] as ShortArray
+val getShortMatrixAsListType = getShortMatrixAsListRow[0]::class
 println(getShortMatrixAsListType)
 println(getShortMatrixAsList)
 if(getShortMatrixAsListType != Short::class)

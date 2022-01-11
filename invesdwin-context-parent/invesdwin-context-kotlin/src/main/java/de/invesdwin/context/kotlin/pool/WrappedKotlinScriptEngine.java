@@ -32,7 +32,7 @@ public class WrappedKotlinScriptEngine implements Closeable {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("kotlin");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        if (engine instanceof Compilable) {
+        if (engine instanceof Compilable && false) {
             compilable = (Compilable) engine;
             scriptCache = Caffeine.newBuilder()
                     .maximumSize(100)

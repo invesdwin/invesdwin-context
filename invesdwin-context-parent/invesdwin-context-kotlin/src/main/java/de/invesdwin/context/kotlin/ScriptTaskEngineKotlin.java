@@ -12,12 +12,12 @@ import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 @NotThreadSafe
 public class ScriptTaskEngineKotlin implements IScriptTaskEngine {
 
-    private WrappedKotlinScriptEngine javascriptScriptEngine;
+    private WrappedKotlinScriptEngine kotlinScriptEngine;
     private final ScriptTaskInputsKotlin inputs;
     private final ScriptTaskResultsKotlin results;
 
-    public ScriptTaskEngineKotlin(final WrappedKotlinScriptEngine javascriptScriptEngine) {
-        this.javascriptScriptEngine = javascriptScriptEngine;
+    public ScriptTaskEngineKotlin(final WrappedKotlinScriptEngine kotlinScriptEngine) {
+        this.kotlinScriptEngine = kotlinScriptEngine;
         this.inputs = new ScriptTaskInputsKotlin(this);
         this.results = new ScriptTaskResultsKotlin(this);
     }
@@ -27,7 +27,7 @@ public class ScriptTaskEngineKotlin implements IScriptTaskEngine {
      */
     @Override
     public void eval(final String expression) {
-        javascriptScriptEngine.eval(expression);
+        kotlinScriptEngine.eval(expression);
     }
 
     @Override
@@ -42,12 +42,12 @@ public class ScriptTaskEngineKotlin implements IScriptTaskEngine {
 
     @Override
     public void close() {
-        javascriptScriptEngine = null;
+        kotlinScriptEngine = null;
     }
 
     @Override
     public WrappedKotlinScriptEngine unwrap() {
-        return javascriptScriptEngine;
+        return kotlinScriptEngine;
     }
 
     /**

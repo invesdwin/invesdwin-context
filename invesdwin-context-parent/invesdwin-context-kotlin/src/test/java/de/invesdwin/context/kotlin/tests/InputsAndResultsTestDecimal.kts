@@ -32,7 +32,8 @@ println("getDecimalMatrix")
 if(bindings.containsKey("getDecimalMatrix"))
 	throw Exception("getDecimalMatrix already defined!")
 val getDecimalMatrix = putDecimalMatrix
-val getDecimalMatrixType = getDecimalMatrix[0][0]::class
+val getDecimalMatrixRow = getDecimalMatrix[0] as DoubleArray
+val getDecimalMatrixType = getDecimalMatrixRow[0]::class
 println(getDecimalMatrixType)
 println(getDecimalMatrix)
 if(getDecimalMatrixType != Double::class)
@@ -42,7 +43,8 @@ println("getDecimalMatrixAsList")
 if(bindings.containsKey("getDecimalMatrixAsList"))
 	throw Exception("getDecimalMatrixAsList already defined!")
 val getDecimalMatrixAsList = putDecimalMatrixAsList
-val getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0]::class
+val getDecimalMatrixAsListRow = getDecimalMatrixAsList[0] as DoubleArray
+val getDecimalMatrixAsListType = getDecimalMatrixAsListRow[0]::class
 println(getDecimalMatrixAsListType)
 println(getDecimalMatrixAsList)
 if(getDecimalMatrixAsListType != Double::class)
