@@ -1,142 +1,142 @@
 getBooleanVector = putBooleanVector
-if(getBooleanVector != null)
+if(getBooleanVector !== null)
 	throw "getBooleanVector not null!"
 getBooleanVectorAsList = putBooleanVectorAsList
-if(getBooleanVectorAsList != null)
+if(getBooleanVectorAsList !== null)
 	throw "getBooleanVectorAsList not null!"
 getBooleanMatrix = putBooleanMatrix
-if(getBooleanMatrix != null)
+if(getBooleanMatrix !== null)
 	throw "getBooleanMatrix not null!"
 getBooleanMatrixAsList = putBooleanMatrixAsList
-if(getBooleanMatrixAsList != null)
+if(getBooleanMatrixAsList !== null)
 	throw "getBooleanMatrixAsList not null!"
 
 getByteVector = putByteVector
-if(getByteVector != null)
+if(getByteVector !== null)
 	throw "getByteVector not null!"
 getByteVectorAsList = putByteVectorAsList
-if(getByteVectorAsList != null)
+if(getByteVectorAsList !== null)
 	throw "getByteVectorAsList not null!"
 getByteMatrix = putByteMatrix
-if(getByteMatrix != null)
+if(getByteMatrix !== null)
 	throw "getByteMatrix not null!"
 getByteMatrixAsList = putByteMatrixAsList
-if(getByteMatrixAsList != null)
+if(getByteMatrixAsList !== null)
 	throw "getByteMatrixAsList not null!"
 
 getCharacterVector = putCharacterVector
-if(getCharacterVector != null)
+if(getCharacterVector !== null)
 	throw "getCharacterVector not null!"
 getCharacterVectorAsList = putCharacterVectorAsList
-if(getCharacterVectorAsList != null)
+if(getCharacterVectorAsList !== null)
 	throw "getCharacterVectorAsList not null!"
 getCharacterMatrix = putCharacterMatrix
-if(getCharacterMatrix != null)
+if(getCharacterMatrix !== null)
 	throw "getCharacterMatrix not null!"
 getCharacterMatrixAsList = putCharacterMatrixAsList
-if(getCharacterMatrixAsList != null)
+if(getCharacterMatrixAsList !== null)
 	throw "getCharacterMatrixAsList not null!"
 
 getDecimalVector = putDecimalVector
-if(getDecimalVector != null)
+if(getDecimalVector !== null)
 	throw "getDecimalVector not null!"
 getDecimalVectorAsList = putDecimalVectorAsList
-if(getDecimalVectorAsList != null)
+if(getDecimalVectorAsList !== null)
 	throw "getDecimalVectorAsList not null!"
 getDecimalMatrix = putDecimalMatrix
-if(getDecimalMatrix != null)
+if(getDecimalMatrix !== null)
 	throw "getDecimalMatrix not null!"
 getDecimalMatrixAsList = putDecimalMatrixAsList
-if(getDecimalMatrixAsList != null)
+if(getDecimalMatrixAsList !== null)
 	throw "getDecimalMatrixAsList not null!"
 
 getDoubleVector = putDoubleVector
-if(getDoubleVector != null)
+if(getDoubleVector !== null)
 	throw "getDoubleVector not null!"
 getDoubleVectorAsList = putDoubleVectorAsList
-if(getDoubleVectorAsList != null)
+if(getDoubleVectorAsList !== null)
 	throw "getDoubleVectorAsList not null!"
 getDoubleMatrix = putDoubleMatrix
-if(getDoubleMatrix != null)
+if(getDoubleMatrix !== null)
 	throw "getDoubleMatrix not null!"
 getDoubleMatrixAsList = putDoubleMatrixAsList
-if(getDoubleMatrixAsList != null)
+if(getDoubleMatrixAsList !== null)
 	throw "getDoubleMatrixAsList not null!"
 
 getFloatVector = putFloatVector
-if(getFloatVector != null)
+if(getFloatVector !== null)
 	throw "getFloatVector not null!"
 getFloatVectorAsList = putFloatVectorAsList
-if(getFloatVectorAsList != null)
+if(getFloatVectorAsList !== null)
 	throw "getFloatVectorAsList not null!"
 getFloatMatrix = putFloatMatrix
-if(getFloatMatrix != null)
+if(getFloatMatrix !== null)
 	throw "getFloatMatrix not null!"
 getFloatMatrixAsList = putFloatMatrixAsList
-if(getFloatMatrixAsList != null)
+if(getFloatMatrixAsList !== null)
 	throw "getFloatMatrixAsList not null!"
 
 getIntegerVector = putIntegerVector
-if(getIntegerVector != null)
+if(getIntegerVector !== null)
 	throw "getIntegerVector not null!"
 getIntegerVectorAsList = putIntegerVectorAsList
-if(getIntegerVectorAsList != null)
+if(getIntegerVectorAsList !== null)
 	throw "getIntegerVectorAsList not null!"
 getIntegerMatrix = putIntegerMatrix
-if(getIntegerMatrix != null)
+if(getIntegerMatrix !== null)
 	throw "getIntegerMatrix not null!"
 getIntegerMatrixAsList = putIntegerMatrixAsList
-if(getIntegerMatrixAsList != null)
+if(getIntegerMatrixAsList !== null)
 	throw "getIntegerMatrixAsList not null!"
 
 getLongVector = putLongVector
-if(getLongVector != null)
+if(getLongVector !== null)
 	throw "getLongVector not null!"
 getLongVectorAsList = putLongVectorAsList
-if(getLongVectorAsList != null)
+if(getLongVectorAsList !== null)
 	throw "getLongVectorAsList not null!"
 getLongMatrix = putLongMatrix
-if(getLongMatrix != null)
+if(getLongMatrix !== null)
 	throw "getLongMatrix not null!"
 getLongMatrixAsList = putLongMatrixAsList
-if(getLongMatrixAsList != null)
+if(getLongMatrixAsList !== null)
 	throw "getLongMatrixAsList not null!"
 
 getPercentVector = putPercentVector
-if(getPercentVector != null)
+if(getPercentVector !== null)
 	throw "getPercentVector not null!"
 getPercentVectorAsList = putPercentVectorAsList
-if(getPercentVectorAsList != null)
+if(getPercentVectorAsList !== null)
 	throw "getPercentVectorAsList not null!"
 getPercentMatrix = putPercentMatrix
-if(getPercentMatrix != null)
+if(getPercentMatrix !== null)
 	throw "getPercentMatrix not null!"
 getPercentMatrixAsList = putPercentMatrixAsList
-if(getPercentMatrixAsList != null)
+if(getPercentMatrixAsList !== null)
 	throw "getPercentMatrixAsList not null!"
 
 getShortVector = putShortVector
-if(getShortVector != null)
+if(getShortVector !== null)
 	throw "getShortVector not null!"
 getShortVectorAsList = putShortVectorAsList
-if(getShortVectorAsList != null)
+if(getShortVectorAsList !== null)
 	throw "getShortVectorAsList not null!"
 getShortMatrix = putShortMatrix
-if(getShortMatrix != null)
+if(getShortMatrix !== null)
 	throw "getShortMatrix not null!"
 getShortMatrixAsList = putShortMatrixAsList
-if(getShortMatrixAsList != null)
+if(getShortMatrixAsList !== null)
 	throw "getShortMatrixAsList not null!"
 
 getStringVector = putStringVector
-if(getStringVector != null)
+if(getStringVector !== null)
 	throw "getStringVector not null!"
 getStringVectorAsList = putStringVectorAsList
-if(getStringVectorAsList != null)
+if(getStringVectorAsList !== null)
 	throw "getStringVectorAsList not null!"
 getStringMatrix = putStringMatrix
-if(getStringMatrix != null)
+if(getStringMatrix !== null)
 	throw "getStringMatrix not null!"
 getStringMatrixAsList = putStringMatrixAsList
-if(getStringMatrixAsList != null)
+if(getStringMatrixAsList !== null)
 	throw "getStringMatrixAsList not null!"

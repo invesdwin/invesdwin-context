@@ -15,7 +15,7 @@ getStringWithNull = putStringWithNull
 getStringWithNullType = typeof getStringWithNull
 print(getStringWithNullType)
 print(getStringWithNull)
-if(getStringWithNull != null)
+if(getStringWithNull !== null)
 	throw "getStringWithNull not null!"
 
 print("getStringVector")
@@ -37,7 +37,7 @@ print(getStringVectorWithNullType)
 print(getStringVectorWithNull)
 if(getStringVectorWithNullType !== 'string')
 	throw "getStringVectorWithNull not string!"
-if(getStringVectorWithNull[1] != null)
+if(getStringVectorWithNull[1] !== null)
 	throw "getStringVectorWithNull[2] not null!"
 
 print("getStringVectorAsList")
@@ -59,7 +59,7 @@ print(getStringVectorAsListWithNullType)
 print(getStringVectorAsListWithNull)
 if(getStringVectorAsListWithNullType !== 'string')
 	throw "getStringVectorAsListWithNull not string!"
-if(getStringVectorAsListWithNull[1] != null)
+if(getStringVectorAsListWithNull[1] !== null)
 	throw "getStringVectorAsListWithNull[1] not null!"
 
 print("getStringMatrix")
@@ -81,11 +81,11 @@ print(getStringMatrixWithNullType)
 print(getStringMatrixWithNull)
 if(getStringMatrixWithNullType !== 'string')
 	throw "getStringMatrixWithNull not string!"
-if(getStringMatrixWithNull[0][0] != null)
+if(getStringMatrixWithNull[0][0] !== null)
 	throw "getStringMatrixWithNull[0][0] not null!"
-if(getStringMatrixWithNull[1][1] != null)
+if(getStringMatrixWithNull[1][1] !== null)
 	throw "getStringMatrixWithNull[1][1] not null!"
-if(getStringMatrixWithNull[2][2] != null)
+if(getStringMatrixWithNull[2][2] !== null)
 	throw "getStringMatrixWithNull[2][2] not null!"
 
 print("getStringMatrixAsList")
@@ -107,9 +107,9 @@ print(getStringMatrixAsListWithNullType)
 print(getStringMatrixAsListWithNull)
 if(getStringMatrixAsListWithNullType !== 'string')
 	throw "getStringMatrixAsListWithNull not string!"
-if(getStringMatrixAsListWithNull[0][0] != null)
+if(getStringMatrixAsListWithNull[0][0] !== null)
 	throw "getStringMatrixAsListWithNull[0][0] not null!"
-if(getStringMatrixAsListWithNull[1][1] != null)
+if(getStringMatrixAsListWithNull[1][1] !== null)
 	throw "getStringMatrixAsListWithNull[1][1] not null!"
-if(getStringMatrixAsListWithNull[2][2] != null)
+if(getStringMatrixAsListWithNull[2][2] !== null)
 	throw "getStringMatrixAsListWithNull[2][2] not null!"
