@@ -9,7 +9,7 @@ import de.invesdwin.context.groovy.tests.InputsAndResultsTests;
 import de.invesdwin.context.test.ATest;
 
 @NotThreadSafe
-public class GroovyScriptTaskRunnerPythonTest extends ATest {
+public class ScriptTaskRunnerGroovyTest extends ATest {
 
     @Inject
     private ScriptTaskRunnerGroovy runner;

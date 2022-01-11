@@ -9,7 +9,7 @@ import de.invesdwin.context.javascript.tests.InputsAndResultsTests;
 import de.invesdwin.context.test.ATest;
 
 @NotThreadSafe
-public class JavascriptScriptTaskRunnerPythonTest extends ATest {
+public class ScriptTaskRunnerJavascriptTest extends ATest {
 
     @Inject
     private ScriptTaskRunnerJavascript runner;
