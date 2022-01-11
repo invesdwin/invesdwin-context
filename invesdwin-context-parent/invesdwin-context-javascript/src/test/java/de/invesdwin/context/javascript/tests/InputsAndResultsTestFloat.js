@@ -1,49 +1,49 @@
-println("getFloat")
-if(binding.hasVariable('getFloat'))
-	throw new Exception("getFloat already defined!")
+print("getFloat")
+if(typeof getFloat !== 'undefined')
+	throw "getFloat already defined!"
 getFloat = putFloat
-getFloatType = getFloat.getClass()
-println(getFloatType)
-println(getFloat)
-if(getFloatType != Float.class)
-	throw new Exception("getFloat not Float!")
+getFloatType = typeof getFloat
+print(getFloatType)
+print(getFloat)
+if(getFloatType !== 'number')
+	throw "getFloat not number!"
 
-println("getFloatVector")
-if(binding.hasVariable('getFloatVector'))
-	throw new Exception("getFloatVector already defined!")
+print("getFloatVector")
+if(typeof getFloatVector !== 'undefined')
+	throw "getFloatVector already defined!"
 getFloatVector = putFloatVector
-getFloatVectorType = getFloatVector[0].getClass()
-println(getFloatVectorType)
-println(getFloatVector)
-if(getFloatVectorType != Float.class)
-	throw new Exception("getFloatVector not Float!")
+getFloatVectorType = typeof getFloatVector[0]
+print(getFloatVectorType)
+print(getFloatVector)
+if(getFloatVectorType !== 'number')
+	throw "getFloatVector not number!"
 
-println("getFloatVectorAsList")
-if(binding.hasVariable('getFloatVectorAsList'))
-	throw new Exception("getFloatVectorAsList already defined!")
+print("getFloatVectorAsList")
+if(typeof getFloatVectorAsList !== 'undefined')
+	throw "getFloatVectorAsList already defined!"
 getFloatVectorAsList = putFloatVectorAsList
-getFloatVectorAsListType = getFloatVectorAsList[0].getClass()
-println(getFloatVectorAsListType)
-println(getFloatVectorAsList)
-if(getFloatVectorAsListType != Float.class)
-	throw new Exception("getFloatVectorAsList not Float!")
+getFloatVectorAsListType = typeof getFloatVectorAsList[0]
+print(getFloatVectorAsListType)
+print(getFloatVectorAsList)
+if(getFloatVectorAsListType !== 'number')
+	throw "getFloatVectorAsList not number!"
 
-println("getFloatMatrix")
-if(binding.hasVariable('getFloatMatrix'))
-	throw new Exception("getFloatMatrix already defined!")
+print("getFloatMatrix")
+if(typeof getFloatMatrix !== 'undefined')
+	throw "getFloatMatrix already defined!"
 getFloatMatrix = putFloatMatrix
-getFloatMatrixType = getFloatMatrix[0][0].getClass()
-println(getFloatMatrixType)
-println(getFloatMatrix)
-if(getFloatMatrixType != Float.class)
-	throw new Exception("getFloatMatrix not Float!")
+getFloatMatrixType = typeof getFloatMatrix[0][0]
+print(getFloatMatrixType)
+print(getFloatMatrix)
+if(getFloatMatrixType !== 'number')
+	throw "getFloatMatrix not number!"
 
-println("getFloatMatrixAsList")
-if(binding.hasVariable('getFloatMatrixAsList'))
-	throw new Exception("getFloatMatrixAsList already defined!")
+print("getFloatMatrixAsList")
+if(typeof getFloatMatrixAsList !== 'undefined')
+	throw "getFloatMatrixAsList already defined!"
 getFloatMatrixAsList = putFloatMatrixAsList
-getFloatMatrixAsListType = getFloatMatrixAsList[0][0].getClass()
-println(getFloatMatrixAsListType)
-println(getFloatMatrixAsList)
-if(getFloatMatrixAsListType != Float.class)
-	throw new Exception("getFloatMatrixAsList not Float!")
+getFloatMatrixAsListType = typeof getFloatMatrixAsList[0][0]
+print(getFloatMatrixAsListType)
+print(getFloatMatrixAsList)
+if(getFloatMatrixAsListType !== 'number')
+	throw "getFloatMatrixAsList not number!"

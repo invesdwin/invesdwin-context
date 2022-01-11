@@ -1,49 +1,49 @@
-println("getDecimal")
-if(binding.hasVariable('getDecimal'))
-	throw new Exception("getDecimal already defined!")
+print("getDecimal")
+if(typeof getDecimal !== 'undefined')
+	throw "getDecimal already defined!"
 getDecimal = putDecimal
-getDecimalType = getDecimal.getClass()
-println(getDecimalType)
-println(getDecimal)
-if(getDecimalType != Double.class)
-	throw new Exception("getDecimal not Double!")
+getDecimalType = typeof getDecimal
+print(getDecimalType)
+print(getDecimal)
+if(getDecimalType !== 'number')
+	throw "getDecimal not number!"
 
-println("getDecimalVector")
-if(binding.hasVariable('getDecimalVector'))
-	throw new Exception("getDecimalVector already defined!")
+print("getDecimalVector")
+if(typeof getDecimalVector !== 'undefined')
+	throw "getDecimalVector already defined!"
 getDecimalVector = putDecimalVector
-getDecimalVectorType = getDecimalVector[0].getClass()
-println(getDecimalVectorType)
-println(getDecimalVector)
-if(getDecimalVectorType != Double.class)
-	throw new Exception("getDecimalVector not Double!")
+getDecimalVectorType = typeof getDecimalVector[0]
+print(getDecimalVectorType)
+print(getDecimalVector)
+if(getDecimalVectorType !== 'number')
+	throw "getDecimalVector not number!"
 
-println("getDecimalVectorAsList")
-if(binding.hasVariable('getDecimalVectorAsList'))
-	throw new Exception("getDecimalVectorAsList already defined!")
+print("getDecimalVectorAsList")
+if(typeof getDecimalVectorAsList !== 'undefined')
+	throw "getDecimalVectorAsList already defined!"
 getDecimalVectorAsList = putDecimalVectorAsList
-getDecimalVectorAsListType = getDecimalVectorAsList[0].getClass()
-println(getDecimalVectorAsListType)
-println(getDecimalVectorAsList)
-if(getDecimalVectorAsListType != Double.class)
-	throw new Exception("getDecimalVectorAsList not Double!")
+getDecimalVectorAsListType = typeof getDecimalVectorAsList[0]
+print(getDecimalVectorAsListType)
+print(getDecimalVectorAsList)
+if(getDecimalVectorAsListType !== 'number')
+	throw "getDecimalVectorAsList not number!"
 
-println("getDecimalMatrix")
-if(binding.hasVariable('getDecimalMatrix'))
-	throw new Exception("getDecimalMatrix already defined!")
+print("getDecimalMatrix")
+if(typeof getDecimalMatrix !== 'undefined')
+	throw "getDecimalMatrix already defined!"
 getDecimalMatrix = putDecimalMatrix
-getDecimalMatrixType = getDecimalMatrix[0][0].getClass()
-println(getDecimalMatrixType)
-println(getDecimalMatrix)
-if(getDecimalMatrixType != Double.class)
-	throw new Exception("getDecimalMatrix not Double!")
+getDecimalMatrixType = typeof getDecimalMatrix[0][0]
+print(getDecimalMatrixType)
+print(getDecimalMatrix)
+if(getDecimalMatrixType !== 'number')
+	throw "getDecimalMatrix not number!"
 
-println("getDecimalMatrixAsList")
-if(binding.hasVariable('getDecimalMatrixAsList'))
-	throw new Exception("getDecimalMatrixAsList already defined!")
+print("getDecimalMatrixAsList")
+if(typeof getDecimalMatrixAsList !== 'undefined')
+	throw "getDecimalMatrixAsList already defined!"
 getDecimalMatrixAsList = putDecimalMatrixAsList
-getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0].getClass()
-println(getDecimalMatrixAsListType)
-println(getDecimalMatrixAsList)
-if(getDecimalMatrixAsListType != Double.class)
-	throw new Exception("getDecimalMatrixAsList not Double!")
+getDecimalMatrixAsListType = typeof getDecimalMatrixAsList[0][0]
+print(getDecimalMatrixAsListType)
+print(getDecimalMatrixAsList)
+if(getDecimalMatrixAsListType !== 'number')
+	throw "getDecimalMatrixAsList not number!"

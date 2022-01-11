@@ -1,49 +1,49 @@
-println("getInteger")
-if(binding.hasVariable('getInteger'))
-	throw new Exception("getInteger already defined!")
+print("getInteger")
+if(typeof getInteger !== 'undefined')
+	throw "getInteger already defined!"
 getInteger = putInteger
-getIntegerType = getInteger.getClass()
-println(getIntegerType)
-println(getInteger)
-if(getIntegerType != Integer.class)
-	throw new Exception("getInteger not Integer!")
+getIntegerType = typeof getInteger
+print(getIntegerType)
+print(getInteger)
+if(getIntegerType !== 'number')
+	throw "getInteger not number!"
 
-println("getIntegerVector")
-if(binding.hasVariable('getIntegerVector'))
-	throw new Exception("getIntegerVector already defined!")
+print("getIntegerVector")
+if(typeof getIntegerVector !== 'undefined')
+	throw "getIntegerVector already defined!"
 getIntegerVector = putIntegerVector
-getIntegerVectorType = getIntegerVector[0].getClass()
-println(getIntegerVectorType)
-println(getIntegerVector)
-if(getIntegerVectorType != Integer.class)
-	throw new Exception("getIntegerVector not Integer!")
+getIntegerVectorType = typeof getIntegerVector[0]
+print(getIntegerVectorType)
+print(getIntegerVector)
+if(getIntegerVectorType !== 'number')
+	throw "getIntegerVector not number!"
 
-println("getIntegerVectorAsList")
-if(binding.hasVariable('getIntegerVectorAsList'))
-	throw new Exception("getIntegerVectorAsList already defined!")
+print("getIntegerVectorAsList")
+if(typeof getIntegerVectorAsList !== 'undefined')
+	throw "getIntegerVectorAsList already defined!"
 getIntegerVectorAsList = putIntegerVectorAsList
-getIntegerVectorAsListType = getIntegerVectorAsList[0].getClass()
-println(getIntegerVectorAsListType)
-println(getIntegerVectorAsList)
-if(getIntegerVectorAsListType != Integer.class)
-	throw new Exception("getIntegerVectorAsList not Integer!")
+getIntegerVectorAsListType = typeof getIntegerVectorAsList[0]
+print(getIntegerVectorAsListType)
+print(getIntegerVectorAsList)
+if(getIntegerVectorAsListType !== 'number')
+	throw "getIntegerVectorAsList not number!"
 
-println("getIntegerMatrix")
-if(binding.hasVariable('getIntegerMatrix'))
-	throw new Exception("getIntegerMatrix already defined!")
+print("getIntegerMatrix")
+if(typeof getIntegerMatrix !== 'undefined')
+	throw "getIntegerMatrix already defined!"
 getIntegerMatrix = putIntegerMatrix
-getIntegerMatrixType = getIntegerMatrix[0][0].getClass()
-println(getIntegerMatrixType)
-println(getIntegerMatrix)
-if(getIntegerMatrixType != Integer.class)
-	throw new Exception("getIntegerMatrix not Integer!")
+getIntegerMatrixType = typeof getIntegerMatrix[0][0]
+print(getIntegerMatrixType)
+print(getIntegerMatrix)
+if(getIntegerMatrixType !== 'number')
+	throw "getIntegerMatrix not number!"
 
-println("getIntegerMatrixAsList")
-if(binding.hasVariable('getIntegerMatrixAsList'))
-	throw new Exception("getIntegerMatrixAsList already defined!")
+print("getIntegerMatrixAsList")
+if(typeof getIntegerMatrixAsList !== 'undefined')
+	throw "getIntegerMatrixAsList already defined!"
 getIntegerMatrixAsList = putIntegerMatrixAsList
-getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].getClass()
-println(getIntegerMatrixAsListType)
-println(getIntegerMatrixAsList)
-if(getIntegerMatrixAsListType != Integer.class)
-	throw new Exception("getIntegerMatrixAsList not Integer!")
+getIntegerMatrixAsListType = typeof getIntegerMatrixAsList[0][0]
+print(getIntegerMatrixAsListType)
+print(getIntegerMatrixAsList)
+if(getIntegerMatrixAsListType !== 'number')
+	throw "getIntegerMatrixAsList not number!"

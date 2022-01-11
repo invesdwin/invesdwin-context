@@ -1,49 +1,49 @@
-println("getDouble")
-if(binding.hasVariable('getDouble'))
-	throw new Exception("getDouble already defined!")
+print("getDouble")
+if(typeof getDouble !== 'undefined')
+	throw "getDouble already defined!"
 getDouble = putDouble
-getDoubleType = getDouble.getClass()
-println(getDoubleType)
-println(getDouble)
-if(getDoubleType != Double.class)
-	throw new Exception("getDouble not Double!")
+getDoubleType = typeof getDouble
+print(getDoubleType)
+print(getDouble)
+if(getDoubleType !== 'number')
+	throw "getDouble not number!"
 
-println("getDoubleVector")
-if(binding.hasVariable('getDoubleVector'))
-	throw new Exception("getDoubleVector already defined!")
+print("getDoubleVector")
+if(typeof getDoubleVector !== 'undefined')
+	throw "getDoubleVector already defined!"
 getDoubleVector = putDoubleVector
-getDoubleVectorType = getDoubleVector[0].getClass()
-println(getDoubleVectorType)
-println(getDoubleVector)
-if(getDoubleVectorType != Double.class)
-	throw new Exception("getDoubleVector not Double!")
+getDoubleVectorType = typeof getDoubleVector[0]
+print(getDoubleVectorType)
+print(getDoubleVector)
+if(getDoubleVectorType !== 'number')
+	throw "getDoubleVector not number!"
 
-println("getDoubleVectorAsList")
-if(binding.hasVariable('getDoubleVectorAsList'))
-	throw new Exception("getDoubleVectorAsList already defined!")
+print("getDoubleVectorAsList")
+if(typeof getDoubleVectorAsList !== 'undefined')
+	throw "getDoubleVectorAsList already defined!"
 getDoubleVectorAsList = putDoubleVectorAsList
-getDoubleVectorAsListType = getDoubleVectorAsList[0].getClass()
-println(getDoubleVectorAsListType)
-println(getDoubleVectorAsList)
-if(getDoubleVectorAsListType != Double.class)
-	throw new Exception("getDoubleVectorAsList not Double!")
+getDoubleVectorAsListType = typeof getDoubleVectorAsList[0]
+print(getDoubleVectorAsListType)
+print(getDoubleVectorAsList)
+if(getDoubleVectorAsListType !== 'number')
+	throw "getDoubleVectorAsList not number!"
 
-println("getDoubleMatrix")
-if(binding.hasVariable('getDoubleMatrix'))
-	throw new Exception("getDoubleMatrix already defined!")
+print("getDoubleMatrix")
+if(typeof getDoubleMatrix !== 'undefined')
+	throw "getDoubleMatrix already defined!"
 getDoubleMatrix = putDoubleMatrix
-getDoubleMatrixType = getDoubleMatrix[0][0].getClass()
-println(getDoubleMatrixType)
-println(getDoubleMatrix)
-if(getDoubleMatrixType != Double.class)
-	throw new Exception("getDoubleMatrix not Double!")
+getDoubleMatrixType = typeof getDoubleMatrix[0][0]
+print(getDoubleMatrixType)
+print(getDoubleMatrix)
+if(getDoubleMatrixType !== 'number')
+	throw "getDoubleMatrix not number!"
 
-println("getDoubleMatrixAsList")
-if(binding.hasVariable('getDoubleMatrixAsList'))
-	throw new Exception("getDoubleMatrixAsList already defined!")
+print("getDoubleMatrixAsList")
+if(typeof getDoubleMatrixAsList !== 'undefined')
+	throw "getDoubleMatrixAsList already defined!"
 getDoubleMatrixAsList = putDoubleMatrixAsList
-getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].getClass()
-println(getDoubleMatrixAsListType)
-println(getDoubleMatrixAsList)
-if(getDoubleMatrixAsListType != Double.class)
-	throw new Exception("getDoubleMatrixAsList not Double!")
+getDoubleMatrixAsListType = typeof getDoubleMatrixAsList[0][0]
+print(getDoubleMatrixAsListType)
+print(getDoubleMatrixAsList)
+if(getDoubleMatrixAsListType !== 'number')
+	throw "getDoubleMatrixAsList not number!"

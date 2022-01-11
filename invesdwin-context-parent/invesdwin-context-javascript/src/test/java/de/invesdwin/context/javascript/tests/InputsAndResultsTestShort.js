@@ -1,49 +1,49 @@
-println("getShort")
-if(binding.hasVariable('getShort'))
-	throw new Exception("getShort already defined!")
+print("getShort")
+if(typeof getShort !== 'undefined')
+	throw "getShort already defined!"
 getShort = putShort
-getShortType = getShort.getClass()
-println(getShortType)
-println(getShort)
-if(getShortType != Short.class)
-	throw new Exception("getShort not Short!")
+getShortType = typeof getShort
+print(getShortType)
+print(getShort)
+if(getShortType !== 'number')
+	throw "getShort not number!"
 
-println("getShortVector")
-if(binding.hasVariable('getShortVector'))
-	throw new Exception("getShortVector already defined!")
+print("getShortVector")
+if(typeof getShortVector !== 'undefined')
+	throw "getShortVector already defined!"
 getShortVector = putShortVector
-getShortVectorType = getShortVector[0].getClass()
-println(getShortVectorType)
-println(getShortVector)
-if(getShortVectorType != Short.class)
-	throw new Exception("getShortVector not Short!")
+getShortVectorType = typeof getShortVector[0]
+print(getShortVectorType)
+print(getShortVector)
+if(getShortVectorType !== 'number')
+	throw "getShortVector not number!"
 
-println("getShortVectorAsList")
-if(binding.hasVariable('getShortVectorAsList'))
-	throw new Exception("getShortVectorAsList already defined!")
+print("getShortVectorAsList")
+if(typeof getShortVectorAsList !== 'undefined')
+	throw "getShortVectorAsList already defined!"
 getShortVectorAsList = putShortVectorAsList
-getShortVectorAsListType = getShortVectorAsList[0].getClass()
-println(getShortVectorAsListType)
-println(getShortVectorAsList)
-if(getShortVectorAsListType != Short.class)
-	throw new Exception("getShortVectorAsList not Short!")
+getShortVectorAsListType = typeof getShortVectorAsList[0]
+print(getShortVectorAsListType)
+print(getShortVectorAsList)
+if(getShortVectorAsListType !== 'number')
+	throw "getShortVectorAsList not number!"
 
-println("getShortMatrix")
-if(binding.hasVariable('getShortMatrix'))
-	throw new Exception("getShortMatrix already defined!")
+print("getShortMatrix")
+if(typeof getShortMatrix !== 'undefined')
+	throw "getShortMatrix already defined!"
 getShortMatrix = putShortMatrix
-getShortMatrixType = getShortMatrix[0][0].getClass()
-println(getShortMatrixType)
-println(getShortMatrix)
-if(getShortMatrixType != Short.class)
-	throw new Exception("getShortMatrix not Short!")
+getShortMatrixType = typeof getShortMatrix[0][0]
+print(getShortMatrixType)
+print(getShortMatrix)
+if(getShortMatrixType !== 'number')
+	throw "getShortMatrix not number!"
 
-println("getShortMatrixAsList")
-if(binding.hasVariable('getShortMatrixAsList'))
-	throw new Exception("getShortMatrixAsList already defined!")
+print("getShortMatrixAsList")
+if(typeof getShortMatrixAsList !== 'undefined')
+	throw "getShortMatrixAsList already defined!"
 getShortMatrixAsList = putShortMatrixAsList
-getShortMatrixAsListType = getShortMatrixAsList[0][0].getClass()
-println(getShortMatrixAsListType)
-println(getShortMatrixAsList)
-if(getShortMatrixAsListType != Short.class)
-	throw new Exception("getShortMatrixAsList not Short!")
+getShortMatrixAsListType = typeof getShortMatrixAsList[0][0]
+print(getShortMatrixAsListType)
+print(getShortMatrixAsList)
+if(getShortMatrixAsListType !== 'number')
+	throw "getShortMatrixAsList not number!"

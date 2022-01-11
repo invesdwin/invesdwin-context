@@ -1,53 +1,49 @@
-println("getBoolean")
-if(binding.hasVariable('getBoolean'))
-	throw new Exception("getBoolean already defined!")
+print("getBoolean")
+if(typeof getBoolean !== 'undefined')
+	throw "getBoolean already defined!"
 getBoolean = putBoolean
-println(getBoolean.getClass())
-println(getBoolean)
-getBooleanType = getBoolean.getClass()
-if(getBooleanType != Boolean.class)
-	throw new Exception("getBoolean not Boolean!")
+getBooleanType = typeof getBoolean
+print(getBooleanType)
+print(getBoolean)
+if(getBooleanType !== 'boolean')
+	throw "getBoolean not boolean!"
 
-println("getBooleanVector")
-if(binding.hasVariable('getBooleanVector'))
-	throw new Exception("getBooleanVector already defined!")
+print("getBooleanVector")
+if(typeof getBooleanVector !== 'undefined')
+	throw "getBooleanVector already defined!"
 getBooleanVector = putBooleanVector
-getBooleanVectorType = getBooleanVector[0].getClass()
-println(getBooleanVectorType)
-println(getBooleanVector)
-getBooleanVectorType = getBooleanVectorType
-if(getBooleanVectorType != Boolean.class)
-	throw new Exception("getBooleanVector not Boolean!")
+getBooleanVectorType = typeof getBooleanVector[0]
+print(getBooleanVectorType)
+print(getBooleanVector)
+if(getBooleanVectorType !== 'boolean')
+	throw "getBooleanVector not boolean!"
 
-println("getBooleanVectorAsList")
-if(binding.hasVariable('getBooleanVectorAsList'))
-	throw new Exception("getBooleanVectorAsList already defined!")
+print("getBooleanVectorAsList")
+if(typeof getBooleanVectorAsList !== 'undefined')
+	throw "getBooleanVectorAsList already defined!"
 getBooleanVectorAsList = putBooleanVectorAsList
-getBooleanVectorAsListType = getBooleanVectorAsList[0].getClass()
-println(getBooleanVectorAsListType)
-println(getBooleanVectorAsList)
-getBooleanVectorAsListType = getBooleanVectorAsListType
-if(getBooleanVectorAsListType != Boolean.class)
-	throw new Exception("getBooleanVectorAsList not Boolean!")
+getBooleanVectorAsListType = typeof getBooleanVectorAsList[0]
+print(getBooleanVectorAsListType)
+print(getBooleanVectorAsList)
+if(getBooleanVectorAsListType !== 'boolean')
+	throw "getBooleanVectorAsList not boolean!"
 
-println("getBooleanMatrix")
-if(binding.hasVariable('getBooleanMatrix'))
-	throw new Exception("getBooleanMatrix already defined!")
+print("getBooleanMatrix")
+if(typeof getBooleanMatrix !== 'undefined')
+	throw "getBooleanMatrix already defined!"
 getBooleanMatrix = putBooleanMatrix
-getBooleanMatrixType = getBooleanMatrix[0][0].getClass()
-println(getBooleanMatrixType)
-println(getBooleanMatrix)
-getBooleanMatrixType = getBooleanMatrixType
-if(getBooleanMatrixType != Boolean.class)
-	throw new Exception("getBooleanMatrix not Boolean!")
+getBooleanMatrixType = typeof getBooleanMatrix[0][0]
+print(getBooleanMatrixType)
+print(getBooleanMatrix)
+if(getBooleanMatrixType !== 'boolean')
+	throw "getBooleanMatrix not boolean!"
 
-println("getBooleanMatrixAsList")
-if(binding.hasVariable('getBooleanMatrixAsList'))
-	throw new Exception("getBooleanMatrixAsList already defined!")
+print("getBooleanMatrixAsList")
+if(typeof getBooleanMatrixAsList !== 'undefined')
+	throw "getBooleanMatrixAsList already defined!"
 getBooleanMatrixAsList = putBooleanMatrixAsList
-getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0].getClass()
-println(getBooleanMatrixAsListType)
-println(getBooleanMatrixAsList)
-getBooleanMatrixAsListType = getBooleanMatrixAsListType
-if(getBooleanMatrixAsListType != Boolean.class)
-	throw new Exception("getBooleanMatrixAsList not Boolean!")
+getBooleanMatrixAsListType = typeof getBooleanMatrixAsList[0][0]
+print(getBooleanMatrixAsListType)
+print(getBooleanMatrixAsList)
+if(getBooleanMatrixAsListType !== 'boolean')
+	throw "getBooleanMatrixAsList not boolean!"

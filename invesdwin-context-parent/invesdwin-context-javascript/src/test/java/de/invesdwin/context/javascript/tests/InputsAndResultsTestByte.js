@@ -1,49 +1,49 @@
-println("getByte")
-if(binding.hasVariable('getByte'))
-	throw new Exception("getByte already defined!")
+print("getByte")
+if(typeof getByte !== 'undefined')
+	throw "getByte already defined"
 getByte = putByte
-getByteType = getByte.getClass()
-println(getByteType)
-println(getByte)
-if(getByteType != Byte.class)
-	throw new Exception("getByte not Byte!")
+getByteType = typeof getByte
+print(getByteType)
+print(getByte)
+if(getByteType !== 'number')
+	throw "getByte not number!"
 
-println("getByteVector")
-if(binding.hasVariable('getByteVector'))
-	throw new Exception("getByteVector already defined!")
+print("getByteVector")
+if(typeof getByteVector !== 'undefined')
+	throw "getByteVector already defined"
 getByteVector = putByteVector
-getByteVectorType = getByteVector[0].getClass()
-println(getByteVectorType)
-println(getByteVector)
-if(getByteVectorType != Byte.class)
-	throw new Exception("getByteVector not Byte!")
+getByteVectorType = typeof getByteVector[0]
+print(getByteVectorType)
+print(getByteVector)
+if(getByteVectorType !== 'number')
+	throw "getByteVector not number!"
 
-println("getByteVectorAsList")
-if(binding.hasVariable('getByteVectorAsList'))
-	throw new Exception("getByteVectorAsList already defined!")
+print("getByteVectorAsList")
+if(typeof getByteVectorAsList !== 'undefined')
+	throw "getByteVectorAsList already defined"
 getByteVectorAsList = putByteVectorAsList
-getByteVectorAsListType = getByteVectorAsList[0].getClass()
-println(getByteVectorAsListType)
-println(getByteVectorAsList)
-if(getByteVectorAsListType != Byte.class)
-	throw new Exception("getByteVectorAsList not Byte!")
+getByteVectorAsListType = typeof getByteVectorAsList[0]
+print(getByteVectorAsListType)
+print(getByteVectorAsList)
+if(getByteVectorAsListType !== 'number')
+	throw "getByteVectorAsList not number!"
 
-println("getByteMatrix")
-if(binding.hasVariable('getByteMatrix'))
-	throw new Exception("getByteMatrix already defined!")
+print("getByteMatrix")
+if(typeof getByteMatrix !== 'undefined')
+	throw "getByteMatrix already defined"
 getByteMatrix = putByteMatrix
-getByteMatrixType = getByteMatrix[0][0].getClass()
-println(getByteMatrixType)
-println(getByteMatrix)
-if(getByteMatrixType != Byte.class)
-	throw new Exception("getByteMatrix not Byte!")
+getByteMatrixType = typeof getByteMatrix[0][0]
+print(getByteMatrixType)
+print(getByteMatrix)
+if(getByteMatrixType !== 'number')
+	throw "getByteMatrix not number!"
 
-println("getByteMatrixAsList")
-if(binding.hasVariable('getByteMatrixAsList'))
-	throw new Exception("getByteMatrixAsList already defined!")
+print("getByteMatrixAsList")
+if(typeof getByteMatrixAsList !== 'undefined')
+	throw "getByteMatrixAsList already defined"
 getByteMatrixAsList = putByteMatrixAsList
-getByteMatrixAsListType = getByteMatrixAsList[0][0].getClass()
-println(getByteMatrixAsListType)
-println(getByteMatrixAsList)
-if(getByteMatrixAsListType != Byte.class)
-	throw new Exception("getByteMatrixAsList not Byte!")
+getByteMatrixAsListType = typeof getByteMatrixAsList[0][0]
+print(getByteMatrixAsListType)
+print(getByteMatrixAsList)
+if(getByteMatrixAsListType !== 'number')
+	throw "getByteMatrixAsList not number!"

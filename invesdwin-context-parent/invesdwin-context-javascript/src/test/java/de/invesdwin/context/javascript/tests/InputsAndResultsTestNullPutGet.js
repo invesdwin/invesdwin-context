@@ -1,142 +1,142 @@
 getBooleanVector = putBooleanVector
 if(getBooleanVector != null)
-	throw new Exception("getBooleanVector not null!")
+	throw "getBooleanVector not null!"
 getBooleanVectorAsList = putBooleanVectorAsList
 if(getBooleanVectorAsList != null)
-	throw new Exception("getBooleanVectorAsList not null!")
+	throw "getBooleanVectorAsList not null!"
 getBooleanMatrix = putBooleanMatrix
 if(getBooleanMatrix != null)
-	throw new Exception("getBooleanMatrix not null!")
+	throw "getBooleanMatrix not null!"
 getBooleanMatrixAsList = putBooleanMatrixAsList
 if(getBooleanMatrixAsList != null)
-	throw new Exception("getBooleanMatrixAsList not null!")
+	throw "getBooleanMatrixAsList not null!"
 
 getByteVector = putByteVector
 if(getByteVector != null)
-	throw new Exception("getByteVector not null!")
+	throw "getByteVector not null!"
 getByteVectorAsList = putByteVectorAsList
 if(getByteVectorAsList != null)
-	throw new Exception("getByteVectorAsList not null!")
+	throw "getByteVectorAsList not null!"
 getByteMatrix = putByteMatrix
 if(getByteMatrix != null)
-	throw new Exception("getByteMatrix not null!")
+	throw "getByteMatrix not null!"
 getByteMatrixAsList = putByteMatrixAsList
 if(getByteMatrixAsList != null)
-	throw new Exception("getByteMatrixAsList not null!")
+	throw "getByteMatrixAsList not null!"
 
 getCharacterVector = putCharacterVector
 if(getCharacterVector != null)
-	throw new Exception("getCharacterVector not null!")
+	throw "getCharacterVector not null!"
 getCharacterVectorAsList = putCharacterVectorAsList
 if(getCharacterVectorAsList != null)
-	throw new Exception("getCharacterVectorAsList not null!")
+	throw "getCharacterVectorAsList not null!"
 getCharacterMatrix = putCharacterMatrix
 if(getCharacterMatrix != null)
-	throw new Exception("getCharacterMatrix not null!")
+	throw "getCharacterMatrix not null!"
 getCharacterMatrixAsList = putCharacterMatrixAsList
 if(getCharacterMatrixAsList != null)
-	throw new Exception("getCharacterMatrixAsList not null!")
+	throw "getCharacterMatrixAsList not null!"
 
 getDecimalVector = putDecimalVector
 if(getDecimalVector != null)
-	throw new Exception("getDecimalVector not null!")
+	throw "getDecimalVector not null!"
 getDecimalVectorAsList = putDecimalVectorAsList
 if(getDecimalVectorAsList != null)
-	throw new Exception("getDecimalVectorAsList not null!")
+	throw "getDecimalVectorAsList not null!"
 getDecimalMatrix = putDecimalMatrix
 if(getDecimalMatrix != null)
-	throw new Exception("getDecimalMatrix not null!")
+	throw "getDecimalMatrix not null!"
 getDecimalMatrixAsList = putDecimalMatrixAsList
 if(getDecimalMatrixAsList != null)
-	throw new Exception("getDecimalMatrixAsList not null!")
+	throw "getDecimalMatrixAsList not null!"
 
 getDoubleVector = putDoubleVector
 if(getDoubleVector != null)
-	throw new Exception("getDoubleVector not null!")
+	throw "getDoubleVector not null!"
 getDoubleVectorAsList = putDoubleVectorAsList
 if(getDoubleVectorAsList != null)
-	throw new Exception("getDoubleVectorAsList not null!")
+	throw "getDoubleVectorAsList not null!"
 getDoubleMatrix = putDoubleMatrix
 if(getDoubleMatrix != null)
-	throw new Exception("getDoubleMatrix not null!")
+	throw "getDoubleMatrix not null!"
 getDoubleMatrixAsList = putDoubleMatrixAsList
 if(getDoubleMatrixAsList != null)
-	throw new Exception("getDoubleMatrixAsList not null!")
+	throw "getDoubleMatrixAsList not null!"
 
 getFloatVector = putFloatVector
 if(getFloatVector != null)
-	throw new Exception("getFloatVector not null!")
+	throw "getFloatVector not null!"
 getFloatVectorAsList = putFloatVectorAsList
 if(getFloatVectorAsList != null)
-	throw new Exception("getFloatVectorAsList not null!")
+	throw "getFloatVectorAsList not null!"
 getFloatMatrix = putFloatMatrix
 if(getFloatMatrix != null)
-	throw new Exception("getFloatMatrix not null!")
+	throw "getFloatMatrix not null!"
 getFloatMatrixAsList = putFloatMatrixAsList
 if(getFloatMatrixAsList != null)
-	throw new Exception("getFloatMatrixAsList not null!")
+	throw "getFloatMatrixAsList not null!"
 
 getIntegerVector = putIntegerVector
 if(getIntegerVector != null)
-	throw new Exception("getIntegerVector not null!")
+	throw "getIntegerVector not null!"
 getIntegerVectorAsList = putIntegerVectorAsList
 if(getIntegerVectorAsList != null)
-	throw new Exception("getIntegerVectorAsList not null!")
+	throw "getIntegerVectorAsList not null!"
 getIntegerMatrix = putIntegerMatrix
 if(getIntegerMatrix != null)
-	throw new Exception("getIntegerMatrix not null!")
+	throw "getIntegerMatrix not null!"
 getIntegerMatrixAsList = putIntegerMatrixAsList
 if(getIntegerMatrixAsList != null)
-	throw new Exception("getIntegerMatrixAsList not null!")
+	throw "getIntegerMatrixAsList not null!"
 
 getLongVector = putLongVector
 if(getLongVector != null)
-	throw new Exception("getLongVector not null!")
+	throw "getLongVector not null!"
 getLongVectorAsList = putLongVectorAsList
 if(getLongVectorAsList != null)
-	throw new Exception("getLongVectorAsList not null!")
+	throw "getLongVectorAsList not null!"
 getLongMatrix = putLongMatrix
 if(getLongMatrix != null)
-	throw new Exception("getLongMatrix not null!")
+	throw "getLongMatrix not null!"
 getLongMatrixAsList = putLongMatrixAsList
 if(getLongMatrixAsList != null)
-	throw new Exception("getLongMatrixAsList not null!")
+	throw "getLongMatrixAsList not null!"
 
 getPercentVector = putPercentVector
 if(getPercentVector != null)
-	throw new Exception("getPercentVector not null!")
+	throw "getPercentVector not null!"
 getPercentVectorAsList = putPercentVectorAsList
 if(getPercentVectorAsList != null)
-	throw new Exception("getPercentVectorAsList not null!")
+	throw "getPercentVectorAsList not null!"
 getPercentMatrix = putPercentMatrix
 if(getPercentMatrix != null)
-	throw new Exception("getPercentMatrix not null!")
+	throw "getPercentMatrix not null!"
 getPercentMatrixAsList = putPercentMatrixAsList
 if(getPercentMatrixAsList != null)
-	throw new Exception("getPercentMatrixAsList not null!")
+	throw "getPercentMatrixAsList not null!"
 
 getShortVector = putShortVector
 if(getShortVector != null)
-	throw new Exception("getShortVector not null!")
+	throw "getShortVector not null!"
 getShortVectorAsList = putShortVectorAsList
 if(getShortVectorAsList != null)
-	throw new Exception("getShortVectorAsList not null!")
+	throw "getShortVectorAsList not null!"
 getShortMatrix = putShortMatrix
 if(getShortMatrix != null)
-	throw new Exception("getShortMatrix not null!")
+	throw "getShortMatrix not null!"
 getShortMatrixAsList = putShortMatrixAsList
 if(getShortMatrixAsList != null)
-	throw new Exception("getShortMatrixAsList not null!")
+	throw "getShortMatrixAsList not null!"
 
 getStringVector = putStringVector
 if(getStringVector != null)
-	throw new Exception("getStringVector not null!")
+	throw "getStringVector not null!"
 getStringVectorAsList = putStringVectorAsList
 if(getStringVectorAsList != null)
-	throw new Exception("getStringVectorAsList not null!")
+	throw "getStringVectorAsList not null!"
 getStringMatrix = putStringMatrix
 if(getStringMatrix != null)
-	throw new Exception("getStringMatrix not null!")
+	throw "getStringMatrix not null!"
 getStringMatrixAsList = putStringMatrixAsList
 if(getStringMatrixAsList != null)
-	throw new Exception("getStringMatrixAsList not null!")
+	throw "getStringMatrixAsList not null!"

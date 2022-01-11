@@ -1,115 +1,115 @@
-println("getString")
-if(binding.hasVariable('getString'))
-	throw new Exception("getString already defined!")
+print("getString")
+if(typeof getString !== 'undefined')
+	throw "getString already defined!"
 getString = putString
-getStringType = getString.getClass()
-println(getStringType)
-println(getString)
-if(getStringType != String.class)
-	throw new Exception("getString not String!")
+getStringType = typeof getString
+print(getStringType)
+print(getString)
+if(getStringType !== 'string')
+	throw "getString not string!"
 
-println("getStringWithNull")
-if(binding.hasVariable('getStringWithNull'))
-	throw new Exception("getStringWithNull already defined!")
+print("getStringWithNull")
+if(typeof getStringWithNull !== 'undefined')
+	throw "getStringWithNull already defined!"
 getStringWithNull = putStringWithNull
-getStringWithNullType = getStringWithNull.getClass()
-println(getStringWithNullType)
-println(getStringWithNull)
+getStringWithNullType = typeof getStringWithNull
+print(getStringWithNullType)
+print(getStringWithNull)
 if(getStringWithNull != null)
-	throw new Exception("getStringWithNull not null!")
+	throw "getStringWithNull not null!"
 
-println("getStringVector")
-if(binding.hasVariable('getStringVector'))
-	throw new Exception("getStringVector already defined!")
+print("getStringVector")
+if(typeof getStringVector !== 'undefined')
+	throw "getStringVector already defined!"
 getStringVector = putStringVector
-getStringVectorType = getStringVector[0].getClass()
-println(getStringVectorType)
-println(getStringVector)
-if(getStringVectorType != String.class)
-	throw new Exception("getStringVector not String!")
+getStringVectorType = typeof getStringVector[0]
+print(getStringVectorType)
+print(getStringVector)
+if(getStringVectorType !== 'string')
+	throw "getStringVector not string!"
 
-println("getStringVectorWithNull")
-if(binding.hasVariable('getStringVectorWithNull'))
-	throw new Exception("getStringVectorWithNull already defined!")
+print("getStringVectorWithNull")
+if(typeof getStringVectorWithNull !== 'undefined')
+	throw "getStringVectorWithNull already defined!"
 getStringVectorWithNull = putStringVectorWithNull
-getStringVectorWithNullType = getStringVectorWithNull[0].getClass()
-println(getStringVectorWithNullType)
-println(getStringVectorWithNull)
-if(getStringVectorWithNullType != String.class)
-	throw new Exception("getStringVectorWithNull not String!")
+getStringVectorWithNullType = typeof getStringVectorWithNull[0]
+print(getStringVectorWithNullType)
+print(getStringVectorWithNull)
+if(getStringVectorWithNullType !== 'string')
+	throw "getStringVectorWithNull not string!"
 if(getStringVectorWithNull[1] != null)
-	throw new Exception("getStringVectorWithNull[2] not null!")
+	throw "getStringVectorWithNull[2] not null!"
 
-println("getStringVectorAsList")
-if(binding.hasVariable('getStringVectorAsList'))
-	throw new Exception("getStringVectorAsList already defined!")
+print("getStringVectorAsList")
+if(typeof getStringVectorAsList !== 'undefined')
+	throw "getStringVectorAsList already defined!"
 getStringVectorAsList = putStringVectorAsList
-getStringVectorAsListType = getStringVectorAsList[0].getClass()
-println(getStringVectorAsListType)
-println(getStringVectorAsList)
-if(getStringVectorAsListType != String.class)
-	throw new Exception("getStringVectorAsList not String!")
+getStringVectorAsListType = typeof getStringVectorAsList[0]
+print(getStringVectorAsListType)
+print(getStringVectorAsList)
+if(getStringVectorAsListType !== 'string')
+	throw "getStringVectorAsList not string!"
 
-println("getStringVectorAsListWithNull")
-if(binding.hasVariable('getStringVectorAsListWithNull'))
-	throw new Exception("getStringVectorAsListWithNull already defined!")
+print("getStringVectorAsListWithNull")
+if(typeof getStringVectorAsListWithNull !== 'undefined')
+	throw "getStringVectorAsListWithNull already defined!"
 getStringVectorAsListWithNull = putStringVectorAsListWithNull
-getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0].getClass()
-println(getStringVectorAsListWithNullType)
-println(getStringVectorAsListWithNull)
-if(getStringVectorAsListWithNullType != String.class)
-	throw new Exception("getStringVectorAsListWithNull not String!")
+getStringVectorAsListWithNullType = typeof getStringVectorAsListWithNull[0]
+print(getStringVectorAsListWithNullType)
+print(getStringVectorAsListWithNull)
+if(getStringVectorAsListWithNullType !== 'string')
+	throw "getStringVectorAsListWithNull not string!"
 if(getStringVectorAsListWithNull[1] != null)
-	throw new Exception("getStringVectorAsListWithNull[1] not null!")
+	throw "getStringVectorAsListWithNull[1] not null!"
 
-println("getStringMatrix")
-if(binding.hasVariable('getStringMatrix'))
-	throw new Exception("getStringMatrix already defined!")
+print("getStringMatrix")
+if(typeof getStringMatrix !== 'undefined')
+	throw "getStringMatrix already defined!"
 getStringMatrix = putStringMatrix
-getStringMatrixType = getStringMatrix[0][0].getClass()
-println(getStringMatrixType)
-println(getStringMatrix)
-if(getStringMatrixType != String.class)
-	throw new Exception("getStringMatrix not String!")
+getStringMatrixType = typeof getStringMatrix[0][0]
+print(getStringMatrixType)
+print(getStringMatrix)
+if(getStringMatrixType !== 'string')
+	throw "getStringMatrix not string!"
 
-println("getStringMatrixWithNull")
-if(binding.hasVariable('getStringMatrixWithNull'))
-	throw new Exception("getStringMatrixWithNull already defined!")
+print("getStringMatrixWithNull")
+if(typeof getStringMatrixWithNull !== 'undefined')
+	throw "getStringMatrixWithNull already defined!"
 getStringMatrixWithNull = putStringMatrixWithNull
-getStringMatrixWithNullType = getStringMatrixWithNull[0][1].getClass()
-println(getStringMatrixWithNullType)
-println(getStringMatrixWithNull)
-if(getStringMatrixWithNullType != String.class)
-	throw new Exception("getStringMatrixWithNull not String!")
+getStringMatrixWithNullType = typeof getStringMatrixWithNull[0][1]
+print(getStringMatrixWithNullType)
+print(getStringMatrixWithNull)
+if(getStringMatrixWithNullType !== 'string')
+	throw "getStringMatrixWithNull not string!"
 if(getStringMatrixWithNull[0][0] != null)
-	throw new Exception("getStringMatrixWithNull[0][0] not null!")
+	throw "getStringMatrixWithNull[0][0] not null!"
 if(getStringMatrixWithNull[1][1] != null)
-	throw new Exception("getStringMatrixWithNull[1][1] not null!")
+	throw "getStringMatrixWithNull[1][1] not null!"
 if(getStringMatrixWithNull[2][2] != null)
-	throw new Exception("getStringMatrixWithNull[2][2] not null!")
+	throw "getStringMatrixWithNull[2][2] not null!"
 
-println("getStringMatrixAsList")
-if(binding.hasVariable('getStringMatrixAsList'))
-	throw new Exception("getStringMatrixAsList already defined!")
+print("getStringMatrixAsList")
+if(typeof getStringMatrixAsList !== 'undefined')
+	throw "getStringMatrixAsList already defined!"
 getStringMatrixAsList = putStringMatrixAsList
-getStringMatrixAsListType = getStringMatrixAsList[0][0].getClass()
-println(getStringMatrixAsListType)
-println(getStringMatrixAsList)
-if(getStringMatrixAsListType != String.class)
-	throw new Exception("getStringMatrixAsList not String!")
+getStringMatrixAsListType = typeof getStringMatrixAsList[0][0]
+print(getStringMatrixAsListType)
+print(getStringMatrixAsList)
+if(getStringMatrixAsListType !== 'string')
+	throw "getStringMatrixAsList not string!"
 
-println("getStringMatrixAsListWithNull")
-if(binding.hasVariable('getStringMatrixAsListWithNull'))
-	throw new Exception("getStringMatrixAsListWithNull already defined!")
+print("getStringMatrixAsListWithNull")
+if(typeof getStringMatrixAsListWithNull !== 'undefined')
+	throw "getStringMatrixAsListWithNull already defined!"
 getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
-getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].getClass()
-println(getStringMatrixAsListWithNullType)
-println(getStringMatrixAsListWithNull)
-if(getStringMatrixAsListWithNullType != String.class)
-	throw new Exception("getStringMatrixAsListWithNull not String!")
+getStringMatrixAsListWithNullType = typeof getStringMatrixAsListWithNull[0][1]
+print(getStringMatrixAsListWithNullType)
+print(getStringMatrixAsListWithNull)
+if(getStringMatrixAsListWithNullType !== 'string')
+	throw "getStringMatrixAsListWithNull not string!"
 if(getStringMatrixAsListWithNull[0][0] != null)
-	throw new Exception("getStringMatrixAsListWithNull[0][0] not null!")
+	throw "getStringMatrixAsListWithNull[0][0] not null!"
 if(getStringMatrixAsListWithNull[1][1] != null)
-	throw new Exception("getStringMatrixAsListWithNull[1][1] not null!")
+	throw "getStringMatrixAsListWithNull[1][1] not null!"
 if(getStringMatrixAsListWithNull[2][2] != null)
-	throw new Exception("getStringMatrixAsListWithNull[2][2] not null!")
+	throw "getStringMatrixAsListWithNull[2][2] not null!"

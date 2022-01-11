@@ -2,9 +2,9 @@ println("getBoolean")
 if(binding.hasVariable('getBoolean'))
 	throw new Exception("getBoolean already defined!")
 getBoolean = putBoolean
-println(getBoolean.getClass())
-println(getBoolean)
 getBooleanType = getBoolean.getClass()
+println(getBooleanType)
+println(getBoolean)
 if(getBooleanType != Boolean.class)
 	throw new Exception("getBoolean not Boolean!")
 
@@ -15,7 +15,6 @@ getBooleanVector = putBooleanVector
 getBooleanVectorType = getBooleanVector[0].getClass()
 println(getBooleanVectorType)
 println(getBooleanVector)
-getBooleanVectorType = getBooleanVectorType
 if(getBooleanVectorType != Boolean.class)
 	throw new Exception("getBooleanVector not Boolean!")
 
@@ -26,7 +25,6 @@ getBooleanVectorAsList = putBooleanVectorAsList
 getBooleanVectorAsListType = getBooleanVectorAsList[0].getClass()
 println(getBooleanVectorAsListType)
 println(getBooleanVectorAsList)
-getBooleanVectorAsListType = getBooleanVectorAsListType
 if(getBooleanVectorAsListType != Boolean.class)
 	throw new Exception("getBooleanVectorAsList not Boolean!")
 
@@ -37,7 +35,6 @@ getBooleanMatrix = putBooleanMatrix
 getBooleanMatrixType = getBooleanMatrix[0][0].getClass()
 println(getBooleanMatrixType)
 println(getBooleanMatrix)
-getBooleanMatrixType = getBooleanMatrixType
 if(getBooleanMatrixType != Boolean.class)
 	throw new Exception("getBooleanMatrix not Boolean!")
 
@@ -48,6 +45,5 @@ getBooleanMatrixAsList = putBooleanMatrixAsList
 getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0].getClass()
 println(getBooleanMatrixAsListType)
 println(getBooleanMatrixAsList)
-getBooleanMatrixAsListType = getBooleanMatrixAsListType
 if(getBooleanMatrixAsListType != Boolean.class)
 	throw new Exception("getBooleanMatrixAsList not Boolean!")

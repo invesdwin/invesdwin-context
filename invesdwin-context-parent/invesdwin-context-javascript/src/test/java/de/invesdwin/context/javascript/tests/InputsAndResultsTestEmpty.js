@@ -1,185 +1,185 @@
 getBooleanVector = putBooleanVector
-if(getBooleanVector.size() != 0)
-	throw new Exception("getBooleanVector not empty!")
+if(getBooleanVector.length != 0)
+	throw "getBooleanVector not empty!"
 
 getBooleanVectorAsList = putBooleanVectorAsList
-if(getBooleanVectorAsList.size() != 0)
-	throw new Exception("getBooleanVectorAsList not empty!")
+if(getBooleanVectorAsList.length != 0)
+	throw "getBooleanVectorAsList not empty!"
 
 getBooleanMatrix = putBooleanMatrix
-if(getBooleanMatrix.size() != 0)
-	throw new Exception("getBooleanMatrix not empty!")
+if(getBooleanMatrix.length != 0)
+	throw "getBooleanMatrix not empty!"
 
 getBooleanMatrixAsList = putBooleanMatrixAsList
-if(getBooleanMatrixAsList.size() != 0)
-	throw new Exception("getBooleanMatrixAsList not empty!")
+if(getBooleanMatrixAsList.length != 0)
+	throw "getBooleanMatrixAsList not empty!"
 
 
 getByteVector = putByteVector
-if(getByteVector.size() != 0)
-	throw new Exception("getByteVector not empty!")
+if(getByteVector.length != 0)
+	throw "getByteVector not empty!"
 
 getByteVectorAsList = putByteVectorAsList
-if(getByteVectorAsList.size() != 0)
-	throw new Exception("getByteVectorAsList not empty!")
+if(getByteVectorAsList.length != 0)
+	throw "getByteVectorAsList not empty!"
 
 getByteMatrix = putByteMatrix
-if(getByteMatrix.size() != 0)
-	throw new Exception("getByteMatrix not empty!")
+if(getByteMatrix.length != 0)
+	throw "getByteMatrix not empty!"
 
 getByteMatrixAsList = putByteMatrixAsList
-if(getByteMatrixAsList.size() != 0)
-	throw new Exception("getByteMatrixAsList not empty!")
+if(getByteMatrixAsList.length != 0)
+	throw "getByteMatrixAsList not empty!"
 
 
 getCharacterVector = putCharacterVector
-if(getCharacterVector.size() != 0)
-	throw new Exception("getCharacterVector not empty!")
+if(getCharacterVector.length != 0)
+	throw "getCharacterVector not empty!"
 
 getCharacterVectorAsList = putCharacterVectorAsList
-if(getCharacterVectorAsList.size() != 0)
-	throw new Exception("getCharacterVectorAsList not empty!")
+if(getCharacterVectorAsList.length != 0)
+	throw "getCharacterVectorAsList not empty!"
 
 getCharacterMatrix = putCharacterMatrix
-if(getCharacterMatrix.size() != 0)
-	throw new Exception("getCharacterMatrix not empty!")
+if(getCharacterMatrix.length != 0)
+	throw "getCharacterMatrix not empty!"
 
 getCharacterMatrixAsList = putCharacterMatrixAsList
-if(getCharacterMatrixAsList.size() != 0)
-	throw new Exception("getCharacterMatrixAsList not empty!")
+if(getCharacterMatrixAsList.length != 0)
+	throw "getCharacterMatrixAsList not empty!"
 
 
 getDecimalVector = putDecimalVector
-if(getDecimalVector.size() != 0)
-	throw new Exception("getDecimalVector not empty!")
+if(getDecimalVector.length != 0)
+	throw "getDecimalVector not empty!"
 
 getDecimalVectorAsList = putDecimalVectorAsList
-if(getDecimalVectorAsList.size() != 0)
-	throw new Exception("getDecimalVectorAsList not empty!")
+if(getDecimalVectorAsList.length != 0)
+	throw "getDecimalVectorAsList not empty!"
 
 getDecimalMatrix = putDecimalMatrix
-if(getDecimalMatrix.size() != 0)
-	throw new Exception("getDecimalMatrix not empty!")
+if(getDecimalMatrix.length != 0)
+	throw "getDecimalMatrix not empty!"
 
 getDecimalMatrixAsList = putDecimalMatrixAsList
-if(getDecimalMatrixAsList.size() != 0)
-	throw new Exception("getDecimalMatrixAsList not empty!")
+if(getDecimalMatrixAsList.length != 0)
+	throw "getDecimalMatrixAsList not empty!"
 
 
 getDoubleVector = putDoubleVector
-if(getDoubleVector.size() != 0)
-	throw new Exception("getDoubleVector not empty!")
+if(getDoubleVector.length != 0)
+	throw "getDoubleVector not empty!"
 
 getDoubleVectorAsList = putDoubleVectorAsList
-if(getDoubleVectorAsList.size() != 0)
-	throw new Exception("getDoubleVectorAsList not empty!")
+if(getDoubleVectorAsList.length != 0)
+	throw "getDoubleVectorAsList not empty!"
 
 getDoubleMatrix = putDoubleMatrix
-if(getDoubleMatrix.size() != 0)
-	throw new Exception("getDoubleMatrix not empty!")
+if(getDoubleMatrix.length != 0)
+	throw "getDoubleMatrix not empty!"
 
 getDoubleMatrixAsList = putDoubleMatrixAsList
-if(getDoubleMatrixAsList.size() != 0)
-	throw new Exception("getDoubleMatrixAsList not empty!")
+if(getDoubleMatrixAsList.length != 0)
+	throw "getDoubleMatrixAsList not empty!"
 
 
 getFloatVector = putFloatVector
-if(getFloatVector.size() != 0)
-	throw new Exception("getFloatVector not empty!")
+if(getFloatVector.length != 0)
+	throw "getFloatVector not empty!"
 
 getFloatVectorAsList = putFloatVectorAsList
-if(getFloatVectorAsList.size() != 0)
-	throw new Exception("getFloatVectorAsList not empty!")
+if(getFloatVectorAsList.length != 0)
+	throw "getFloatVectorAsList not empty!"
 
 getFloatMatrix = putFloatMatrix
-if(getFloatMatrix.size() != 0)
-	throw new Exception("getFloatMatrix not empty!")
+if(getFloatMatrix.length != 0)
+	throw "getFloatMatrix not empty!"
 
 getFloatMatrixAsList = putFloatMatrixAsList
-if(getFloatMatrixAsList.size() != 0)
-	throw new Exception("getFloatMatrixAsList not empty!")
+if(getFloatMatrixAsList.length != 0)
+	throw "getFloatMatrixAsList not empty!"
 
 
 getIntegerVector = putIntegerVector
-if(getIntegerVector.size() != 0)
-	throw new Exception("getIntegerVector not empty!")
+if(getIntegerVector.length != 0)
+	throw "getIntegerVector not empty!"
 
 getIntegerVectorAsList = putIntegerVectorAsList
-if(getIntegerVectorAsList.size() != 0)
-	throw new Exception("getIntegerVectorAsList not empty!")
+if(getIntegerVectorAsList.length != 0)
+	throw "getIntegerVectorAsList not empty!"
 
 getIntegerMatrix = putIntegerMatrix
-if(getIntegerMatrix.size() != 0)
-	throw new Exception("getIntegerMatrix not empty!")
+if(getIntegerMatrix.length != 0)
+	throw "getIntegerMatrix not empty!"
 
 getIntegerMatrixAsList = putIntegerMatrixAsList
-if(getIntegerMatrixAsList.size() != 0)
-	throw new Exception("getIntegerMatrixAsList not empty!")
+if(getIntegerMatrixAsList.length != 0)
+	throw "getIntegerMatrixAsList not empty!"
 
 
 getLongVector = putLongVector
-if(getLongVector.size() != 0)
-	throw new Exception("getLongVector not empty!")
+if(getLongVector.length != 0)
+	throw "getLongVector not empty!"
 
 getLongVectorAsList = putLongVectorAsList
-if(getLongVectorAsList.size() != 0)
-	throw new Exception("getLongVectorAsList not empty!")
+if(getLongVectorAsList.length != 0)
+	throw "getLongVectorAsList not empty!"
 
 getLongMatrix = putLongMatrix
-if(getLongMatrix.size() != 0)
-	throw new Exception("getLongMatrix not empty!")
+if(getLongMatrix.length != 0)
+	throw "getLongMatrix not empty!"
 
 getLongMatrixAsList = putLongMatrixAsList
-if(getLongMatrixAsList.size() != 0)
-	throw new Exception("getLongMatrixAsList not empty!")
+if(getLongMatrixAsList.length != 0)
+	throw "getLongMatrixAsList not empty!"
 
 
 getPercentVector = putPercentVector
-if(getPercentVector.size() != 0)
-	throw new Exception("getPercentVector not empty!")
+if(getPercentVector.length != 0)
+	throw "getPercentVector not empty!"
 
 getPercentVectorAsList = putPercentVectorAsList
-if(getPercentVectorAsList.size() != 0)
-	throw new Exception("getPercentVectorAsList not empty!")
+if(getPercentVectorAsList.length != 0)
+	throw "getPercentVectorAsList not empty!"
 
 getPercentMatrix = putPercentMatrix
-if(getPercentMatrix.size() != 0)
-	throw new Exception("getPercentMatrix not empty!")
+if(getPercentMatrix.length != 0)
+	throw "getPercentMatrix not empty!"
 
 getPercentMatrixAsList = putPercentMatrixAsList
-if(getPercentMatrixAsList.size() != 0)
-	throw new Exception("getPercentMatrixAsList not empty!")
+if(getPercentMatrixAsList.length != 0)
+	throw "getPercentMatrixAsList not empty!"
 
 
 getShortVector = putShortVector
-if(getShortVector.size() != 0)
-	throw new Exception("getShortVector not empty!")
+if(getShortVector.length != 0)
+	throw "getShortVector not empty!"
 
 getShortVectorAsList = putShortVectorAsList
-if(getShortVectorAsList.size() != 0)
-	throw new Exception("getShortVectorAsList not empty!")
+if(getShortVectorAsList.length != 0)
+	throw "getShortVectorAsList not empty!"
 
 getShortMatrix = putShortMatrix
-if(getShortMatrix.size() != 0)
-	throw new Exception("getShortMatrix not empty!")
+if(getShortMatrix.length != 0)
+	throw "getShortMatrix not empty!"
 
 getShortMatrixAsList = putShortMatrixAsList
-if(getShortMatrixAsList.size() != 0)
-	throw new Exception("getShortMatrixAsList not empty!")
+if(getShortMatrixAsList.length != 0)
+	throw "getShortMatrixAsList not empty!"
 
 
 getStringVector = putStringVector
-if(getStringVector.size() != 0)
-	throw new Exception("getStringVector not empty!")
+if(getStringVector.length != 0)
+	throw "getStringVector not empty!"
 
 getStringVectorAsList = putStringVectorAsList
-if(getStringVectorAsList.size() != 0)
-	throw new Exception("getStringVectorAsList not empty!")
+if(getStringVectorAsList.length != 0)
+	throw "getStringVectorAsList not empty!"
 
 getStringMatrix = putStringMatrix
-if(getStringMatrix.size() != 0)
-	throw new Exception("getStringMatrix not empty!")
+if(getStringMatrix.length != 0)
+	throw "getStringMatrix not empty!"
 
 getStringMatrixAsList = putStringMatrixAsList
-if(getStringMatrixAsList.size() != 0)
-	throw new Exception("getStringMatrixAsList not empty!")
+if(getStringMatrixAsList.length != 0)
+	throw "getStringMatrixAsList not empty!"
