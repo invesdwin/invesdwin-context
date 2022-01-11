@@ -38,7 +38,7 @@ print(getStringVectorWithNull)
 if(getStringVectorWithNullType !== 'string')
 	throw "getStringVectorWithNull not string!"
 if(getStringVectorWithNull[1] !== null)
-	throw "getStringVectorWithNull[2] not null!"
+	throw "getStringVectorWithNull[1] not null!"
 
 print("getStringVectorAsList")
 if(typeof getStringVectorAsList !== 'undefined')

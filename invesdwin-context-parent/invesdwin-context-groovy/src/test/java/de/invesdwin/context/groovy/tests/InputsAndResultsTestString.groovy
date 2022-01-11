@@ -38,7 +38,7 @@ println(getStringVectorWithNull)
 if(getStringVectorWithNullType != String.class)
 	throw new Exception("getStringVectorWithNull not String!")
 if(getStringVectorWithNull[1] != null)
-	throw new Exception("getStringVectorWithNull[2] not null!")
+	throw new Exception("getStringVectorWithNull[1] not null!")
 
 println("getStringVectorAsList")
 if(binding.hasVariable('getStringVectorAsList'))

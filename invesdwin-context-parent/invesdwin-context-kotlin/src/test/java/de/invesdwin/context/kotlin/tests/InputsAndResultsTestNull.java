@@ -40,9 +40,9 @@ public class InputsAndResultsTestNull {
                 Assertions.checkFalse(engine.getResults().isNull("testVariable"));
                 Assertions.checkTrue(engine.getResults().isNotNull("testVariable"));
                 engine.getInputs().remove("testVariable");
-                Assertions.checkTrue(engine.getResults().isNotDefined("testVariable"));
-                Assertions.checkFalse(engine.getResults().isDefined("testVariable"));
-
+                //kotlin has no real remove, we just null the value and remove it from the binding instead
+                Assertions.checkFalse(engine.getResults().isNotDefined("testVariable"));
+                Assertions.checkTrue(engine.getResults().isDefined("testVariable"));
             }
 
             @Override

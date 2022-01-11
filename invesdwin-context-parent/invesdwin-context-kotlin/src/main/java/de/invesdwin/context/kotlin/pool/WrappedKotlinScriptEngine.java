@@ -100,7 +100,11 @@ public class WrappedKotlinScriptEngine implements Closeable {
     }
 
     public void put(final String variable, final Object value) {
-        binding.put(variable, value);
+        if (value == null) {
+            eval("val " + variable + " = null");
+        } else {
+            binding.put(variable, value);
+        }
     }
 
     public Object get(final String variable) {
@@ -109,10 +113,22 @@ public class WrappedKotlinScriptEngine implements Closeable {
 
     public void remove(final String variable) {
         binding.remove(variable);
+        eval("val " + variable + " = null");
     }
 
     public boolean contains(final String variable) {
-        return binding.containsKey(variable);
+        if (binding.containsKey(variable)) {
+            return true;
+        } else {
+            //we can only be sure by also checking eval for exceptions
+            try {
+                eval(variable);
+                return true;
+            } catch (final Throwable t) {
+                //ScriptException: Unresolved Reference
+                return false;
+            }
+        }
     }
 
 }
