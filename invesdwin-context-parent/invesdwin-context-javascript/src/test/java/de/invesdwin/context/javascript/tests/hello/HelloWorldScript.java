@@ -9,11 +9,10 @@ import de.invesdwin.context.integration.script.IScriptTaskInputs;
 import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.javascript.AScriptTaskJavascript;
 import de.invesdwin.context.javascript.IScriptTaskRunnerJavascript;
-import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 
 @NotThreadSafe
-public class HelloWorldScript extends ATest {
+public class HelloWorldScript {
 
     private final IScriptTaskRunnerJavascript runner;
 

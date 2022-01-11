@@ -3,21 +3,23 @@ package de.invesdwin.context.groovy;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.groovy.pool.GroovyShellObjectPool;
+import de.invesdwin.context.groovy.pool.StrictGroovyShellObjectPool;
 import de.invesdwin.context.groovy.pool.WrappedGroovyShell;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
+import de.invesdwin.util.concurrent.pool.IObjectPool;
 
 @NotThreadSafe
 public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
 
-    private WrappedGroovyShell groovyScriptEngine;
+    private WrappedGroovyShell groovyEngine;
     private final ScriptTaskInputsGroovy inputs;
     private final ScriptTaskResultsGroovy results;
 
-    public ScriptTaskEngineGroovy(final WrappedGroovyShell groovyScriptEngine) {
-        this.groovyScriptEngine = groovyScriptEngine;
+    public ScriptTaskEngineGroovy(final WrappedGroovyShell groovyEngine) {
+        this.groovyEngine = groovyEngine;
         this.inputs = new ScriptTaskInputsGroovy(this);
         this.results = new ScriptTaskResultsGroovy(this);
     }
@@ -27,7 +29,7 @@ public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
      */
     @Override
     public void eval(final String expression) {
-        groovyScriptEngine.eval(expression);
+        groovyEngine.eval(expression);
     }
 
     @Override
@@ -42,12 +44,12 @@ public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
 
     @Override
     public void close() {
-        groovyScriptEngine = null;
+        groovyEngine = null;
     }
 
     @Override
     public WrappedGroovyShell unwrap() {
-        return groovyScriptEngine;
+        return groovyEngine;
     }
 
     /**
@@ -64,16 +66,33 @@ public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
     }
 
     public static ScriptTaskEngineGroovy newInstance() {
-        return new ScriptTaskEngineGroovy(GroovyShellObjectPool.INSTANCE.borrowObject()) {
+        return newInstance(GroovyProperties.isStrict());
+    }
+
+    public static ScriptTaskEngineGroovy newInstance(final boolean optimized) {
+        final IObjectPool<WrappedGroovyShell> pool = getEnginePool(optimized);
+        return new ScriptTaskEngineGroovy(pool.borrowObject()) {
             @Override
             public void close() {
                 final WrappedGroovyShell unwrap = unwrap();
                 if (unwrap != null) {
-                    GroovyShellObjectPool.INSTANCE.returnObject(unwrap);
+                    pool.returnObject(unwrap);
                 }
                 super.close();
             }
         };
+    }
+
+    public static IObjectPool<WrappedGroovyShell> getEnginePool() {
+        return getEnginePool(GroovyProperties.isStrict());
+    }
+
+    public static IObjectPool<WrappedGroovyShell> getEnginePool(final boolean strict) {
+        if (strict) {
+            return StrictGroovyShellObjectPool.INSTANCE;
+        } else {
+            return GroovyShellObjectPool.INSTANCE;
+        }
     }
 
 }

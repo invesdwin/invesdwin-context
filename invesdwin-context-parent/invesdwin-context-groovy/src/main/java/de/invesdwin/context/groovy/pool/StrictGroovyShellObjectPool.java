@@ -11,12 +11,12 @@ import de.invesdwin.util.time.duration.Duration;
 
 @ThreadSafe
 @Named
-public final class GroovyShellObjectPool extends ATimeoutObjectPool<WrappedGroovyShell>
-        implements FactoryBean<GroovyShellObjectPool> {
+public final class StrictGroovyShellObjectPool extends ATimeoutObjectPool<WrappedGroovyShell>
+        implements FactoryBean<StrictGroovyShellObjectPool> {
 
-    public static final GroovyShellObjectPool INSTANCE = new GroovyShellObjectPool();
+    public static final StrictGroovyShellObjectPool INSTANCE = new StrictGroovyShellObjectPool();
 
-    private GroovyShellObjectPool() {
+    private StrictGroovyShellObjectPool() {
         super(Duration.ONE_MINUTE, new Duration(10, FTimeUnit.SECONDS));
     }
 
@@ -27,7 +27,7 @@ public final class GroovyShellObjectPool extends ATimeoutObjectPool<WrappedGroov
 
     @Override
     protected WrappedGroovyShell newObject() {
-        return new WrappedGroovyShell(false);
+        return new WrappedGroovyShell(true);
     }
 
     @Override
@@ -36,13 +36,13 @@ public final class GroovyShellObjectPool extends ATimeoutObjectPool<WrappedGroov
     }
 
     @Override
-    public GroovyShellObjectPool getObject() {
+    public StrictGroovyShellObjectPool getObject() {
         return INSTANCE;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return GroovyShellObjectPool.class;
+        return StrictGroovyShellObjectPool.class;
     }
 
     @Override

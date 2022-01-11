@@ -104,7 +104,7 @@ public class WrappedJavascriptScriptEngine implements Closeable {
     }
 
     public Object get(final String variable) {
-        return binding.get(variable);
+        return eval(variable);
     }
 
     public void remove(final String variable) {

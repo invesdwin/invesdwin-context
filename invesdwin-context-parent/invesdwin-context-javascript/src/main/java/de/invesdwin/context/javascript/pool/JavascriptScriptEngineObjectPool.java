@@ -21,7 +21,7 @@ public final class JavascriptScriptEngineObjectPool extends ATimeoutObjectPool<W
     }
 
     @Override
-    public void destroyObject(final WrappedJavascriptScriptEngine obj) {
+    public void invalidateObject(final WrappedJavascriptScriptEngine obj) {
         obj.close();
     }
 

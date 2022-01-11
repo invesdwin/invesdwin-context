@@ -41,7 +41,7 @@ public final class ScriptTaskRunnerJavascript implements IScriptTaskRunnerJavasc
             JavascriptScriptEngineObjectPool.INSTANCE.returnObject(pyScriptEngine);
             return result;
         } catch (final Throwable t) {
-            JavascriptScriptEngineObjectPool.INSTANCE.destroyObject(pyScriptEngine);
+            JavascriptScriptEngineObjectPool.INSTANCE.invalidateObject(pyScriptEngine);
             throw Throwables.propagate(t);
         }
     }

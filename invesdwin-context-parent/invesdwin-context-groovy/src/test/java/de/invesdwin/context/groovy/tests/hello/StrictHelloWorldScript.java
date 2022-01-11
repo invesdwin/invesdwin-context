@@ -12,11 +12,11 @@ import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.util.assertions.Assertions;
 
 @NotThreadSafe
-public class HelloWorldScript {
+public class StrictHelloWorldScript {
 
     private final IScriptTaskRunnerGroovy runner;
 
-    public HelloWorldScript(final IScriptTaskRunnerGroovy runner) {
+    public StrictHelloWorldScript(final IScriptTaskRunnerGroovy runner) {
         this.runner = runner;
     }
 
@@ -30,10 +30,8 @@ public class HelloWorldScript {
 
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
-                //execute this script inline:
-                //                engine.eval("world = \"Hello \" + hello + \"!\"");
-                //or run it from a file:
-                engine.eval(new ClassPathResource(HelloWorldScript.class.getSimpleName() + ".groovy", getClass()));
+                engine.eval(
+                        new ClassPathResource(StrictHelloWorldScript.class.getSimpleName() + ".groovy", getClass()));
             }
 
             @Override

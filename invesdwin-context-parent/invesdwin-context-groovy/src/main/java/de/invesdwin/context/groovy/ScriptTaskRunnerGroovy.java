@@ -5,8 +5,8 @@ import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import de.invesdwin.context.groovy.pool.GroovyShellObjectPool;
 import de.invesdwin.context.groovy.pool.WrappedGroovyShell;
+import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.error.Throwables;
 
 @Immutable
@@ -24,10 +24,11 @@ public final class ScriptTaskRunnerGroovy implements IScriptTaskRunnerGroovy, Fa
     @Override
     public <T> T run(final AScriptTaskGroovy<T> scriptTask) {
         //get session
-        final WrappedGroovyShell pyScriptEngine = GroovyShellObjectPool.INSTANCE.borrowObject();
+        final IObjectPool<WrappedGroovyShell> enginePool = ScriptTaskEngineGroovy.getEnginePool();
+        final WrappedGroovyShell groovyEngine = enginePool.borrowObject();
         try {
             //inputs
-            final ScriptTaskEngineGroovy engine = new ScriptTaskEngineGroovy(pyScriptEngine);
+            final ScriptTaskEngineGroovy engine = new ScriptTaskEngineGroovy(groovyEngine);
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -38,10 +39,10 @@ public final class ScriptTaskRunnerGroovy implements IScriptTaskRunnerGroovy, Fa
             engine.close();
 
             //return
-            GroovyShellObjectPool.INSTANCE.returnObject(pyScriptEngine);
+            enginePool.returnObject(groovyEngine);
             return result;
         } catch (final Throwable t) {
-            GroovyShellObjectPool.INSTANCE.destroyObject(pyScriptEngine);
+            enginePool.invalidateObject(groovyEngine);
             throw Throwables.propagate(t);
         }
     }
