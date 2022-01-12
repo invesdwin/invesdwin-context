@@ -1,49 +1,49 @@
 println("getPercent")
-if(binding.hasVariable("getPercent"))
+if(getPercent != null)
 	throw new Exception("getPercent already defined!")
 val getPercent = putPercent
 val getPercentType = getPercent.getClass()
 println(getPercentType)
 println(getPercent)
-if(getPercentType != Double.class)
+if(getPercentType != classOf[java.lang.Double])
 	throw new Exception("getPercent not Double!")
 
 println("getPercentVector")
-if(binding.hasVariable("getPercentVector"))
+if(getPercentVector != null)
 	throw new Exception("getPercentVector already defined!")
-val getPercentVector = putPercentVector
-val getPercentVectorType = getPercentVector[0].getClass()
+val getPercentVector = putPercentVector.asInstanceOf[Array[Double]]
+val getPercentVectorType = getPercentVector(0).getClass()
 println(getPercentVectorType)
 println(getPercentVector)
-if(getPercentVectorType != Double.class)
+if(getPercentVectorType != classOf[Double])
 	throw new Exception("getPercentVector not Double!")
 
 println("getPercentVectorAsList")
-if(binding.hasVariable("getPercentVectorAsList"))
+if(getPercentVectorAsList != null)
 	throw new Exception("getPercentVectorAsList already defined!")
-val getPercentVectorAsList = putPercentVectorAsList
-val getPercentVectorAsListType = getPercentVectorAsList[0].getClass()
+val getPercentVectorAsList = putPercentVectorAsList.asInstanceOf[Array[Double]]
+val getPercentVectorAsListType = getPercentVectorAsList(0).getClass()
 println(getPercentVectorAsListType)
 println(getPercentVectorAsList)
-if(getPercentVectorAsListType != Double.class)
+if(getPercentVectorAsListType != classOf[Double])
 	throw new Exception("getPercentVectorAsList not Double!")
 
 println("getPercentMatrix")
-if(binding.hasVariable("getPercentMatrix"))
+if(getPercentMatrix != null)
 	throw new Exception("getPercentMatrix already defined!")
-val getPercentMatrix = putPercentMatrix
-val getPercentMatrixType = getPercentMatrix[0][0].getClass()
+val getPercentMatrix = putPercentMatrix.asInstanceOf[Array[Array[Double]]]
+val getPercentMatrixType = getPercentMatrix(0)(0).getClass()
 println(getPercentMatrixType)
 println(getPercentMatrix)
-if(getPercentMatrixType != Double.class)
+if(getPercentMatrixType != classOf[Double])
 	throw new Exception("getPercentMatrix not Double!")
 
 println("getPercentMatrixAsList")
-if(binding.hasVariable("getPercentMatrixAsList"))
+if(getPercentMatrixAsList != null)
 	throw new Exception("getPercentMatrixAsList already defined!")
-val getPercentMatrixAsList = putPercentMatrixAsList
-val getPercentMatrixAsListType = getPercentMatrixAsList[0][0].getClass()
+val getPercentMatrixAsList = putPercentMatrixAsList.asInstanceOf[Array[Array[Double]]]
+val getPercentMatrixAsListType = getPercentMatrixAsList(0)(0).getClass()
 println(getPercentMatrixAsListType)
 println(getPercentMatrixAsList)
-if(getPercentMatrixAsListType != Double.class)
+if(getPercentMatrixAsListType != classOf[Double])
 	throw new Exception("getPercentMatrixAsList not Double!")

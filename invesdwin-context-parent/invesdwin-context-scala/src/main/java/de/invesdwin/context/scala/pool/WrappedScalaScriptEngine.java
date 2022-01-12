@@ -94,6 +94,13 @@ public class WrappedScalaScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
+        if (scriptCache != null) {
+            /*
+             * we also need to clear the script cache, otherwise we risk immutable "val"'s to collide between
+             * invocations
+             */
+            scriptCache.asMap().clear();
+        }
     }
 
     @Override

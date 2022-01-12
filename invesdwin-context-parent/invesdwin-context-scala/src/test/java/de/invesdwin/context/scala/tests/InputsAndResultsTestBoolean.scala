@@ -1,49 +1,49 @@
 println("getBoolean")
-if(binding.hasVariable("getBoolean"))
+if(getBoolean != null)
 	throw new Exception("getBoolean already defined!")
 val getBoolean = putBoolean
 val getBooleanType = getBoolean.getClass()
 println(getBooleanType)
 println(getBoolean)
-if(getBooleanType != Boolean.class)
+if(getBooleanType != classOf[java.lang.Boolean])
 	throw new Exception("getBoolean not Boolean!")
 
 println("getBooleanVector")
-if(binding.hasVariable("getBooleanVector"))
+if(getBooleanVector != null)
 	throw new Exception("getBooleanVector already defined!")
-val getBooleanVector = putBooleanVector
-val getBooleanVectorType = getBooleanVector[0].getClass()
+val getBooleanVector = putBooleanVector.asInstanceOf[Array[Boolean]]
+val getBooleanVectorType = getBooleanVector(0).getClass()
 println(getBooleanVectorType)
 println(getBooleanVector)
-if(getBooleanVectorType != Boolean.class)
+if(getBooleanVectorType != classOf[Boolean])
 	throw new Exception("getBooleanVector not Boolean!")
 
 println("getBooleanVectorAsList")
-if(binding.hasVariable("getBooleanVectorAsList"))
+if(getBooleanVectorAsList != null)
 	throw new Exception("getBooleanVectorAsList already defined!")
-val getBooleanVectorAsList = putBooleanVectorAsList
-val getBooleanVectorAsListType = getBooleanVectorAsList[0].getClass()
+val getBooleanVectorAsList = putBooleanVectorAsList.asInstanceOf[Array[Boolean]]
+val getBooleanVectorAsListType = getBooleanVectorAsList(0).getClass()
 println(getBooleanVectorAsListType)
 println(getBooleanVectorAsList)
-if(getBooleanVectorAsListType != Boolean.class)
+if(getBooleanVectorAsListType != classOf[Boolean])
 	throw new Exception("getBooleanVectorAsList not Boolean!")
 
 println("getBooleanMatrix")
-if(binding.hasVariable("getBooleanMatrix"))
+if(getBooleanMatrix != null)
 	throw new Exception("getBooleanMatrix already defined!")
-val getBooleanMatrix = putBooleanMatrix
-val getBooleanMatrixType = getBooleanMatrix[0][0].getClass()
+val getBooleanMatrix = putBooleanMatrix.asInstanceOf[Array[Array[Boolean]]]
+val getBooleanMatrixType = getBooleanMatrix(0)(0).getClass()
 println(getBooleanMatrixType)
 println(getBooleanMatrix)
-if(getBooleanMatrixType != Boolean.class)
+if(getBooleanMatrixType != classOf[Boolean])
 	throw new Exception("getBooleanMatrix not Boolean!")
 
 println("getBooleanMatrixAsList")
-if(binding.hasVariable("getBooleanMatrixAsList"))
+if(getBooleanMatrixAsList != null)
 	throw new Exception("getBooleanMatrixAsList already defined!")
-val getBooleanMatrixAsList = putBooleanMatrixAsList
-val getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0].getClass()
+val getBooleanMatrixAsList = putBooleanMatrixAsList.asInstanceOf[Array[Array[Boolean]]]
+val getBooleanMatrixAsListType = getBooleanMatrixAsList(0)(0).getClass()
 println(getBooleanMatrixAsListType)
 println(getBooleanMatrixAsList)
-if(getBooleanMatrixAsListType != Boolean.class)
+if(getBooleanMatrixAsListType != classOf[Boolean])
 	throw new Exception("getBooleanMatrixAsList not Boolean!")

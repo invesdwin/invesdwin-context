@@ -1,49 +1,49 @@
 println("getDouble")
-if(binding.hasVariable("getDouble"))
+if(getDouble != null)
 	throw new Exception("getDouble already defined!")
-getDouble = putDouble
-getDoubleType = getDouble.getClass()
+val getDouble = putDouble
+val getDoubleType = getDouble.getClass()
 println(getDoubleType)
 println(getDouble)
-if(getDoubleType != Double.class)
+if(getDoubleType != classOf[java.lang.Double])
 	throw new Exception("getDouble not Double!")
 
 println("getDoubleVector")
-if(binding.hasVariable("getDoubleVector"))
+if(getDoubleVector != null)
 	throw new Exception("getDoubleVector already defined!")
-getDoubleVector = putDoubleVector
-getDoubleVectorType = getDoubleVector[0].getClass()
+val getDoubleVector = putDoubleVector.asInstanceOf[Array[Double]]
+val getDoubleVectorType = getDoubleVector(0).getClass()
 println(getDoubleVectorType)
 println(getDoubleVector)
-if(getDoubleVectorType != Double.class)
+if(getDoubleVectorType != classOf[Double])
 	throw new Exception("getDoubleVector not Double!")
 
 println("getDoubleVectorAsList")
-if(binding.hasVariable("getDoubleVectorAsList"))
+if(getDoubleVectorAsList != null)
 	throw new Exception("getDoubleVectorAsList already defined!")
-getDoubleVectorAsList = putDoubleVectorAsList
-getDoubleVectorAsListType = getDoubleVectorAsList[0].getClass()
+val getDoubleVectorAsList = putDoubleVectorAsList.asInstanceOf[Array[Double]]
+val getDoubleVectorAsListType = getDoubleVectorAsList(0).getClass()
 println(getDoubleVectorAsListType)
 println(getDoubleVectorAsList)
-if(getDoubleVectorAsListType != Double.class)
+if(getDoubleVectorAsListType != classOf[Double])
 	throw new Exception("getDoubleVectorAsList not Double!")
 
 println("getDoubleMatrix")
-if(binding.hasVariable("getDoubleMatrix"))
+if(getDoubleMatrix != null)
 	throw new Exception("getDoubleMatrix already defined!")
-getDoubleMatrix = putDoubleMatrix
-getDoubleMatrixType = getDoubleMatrix[0][0].getClass()
+val getDoubleMatrix = putDoubleMatrix.asInstanceOf[Array[Array[Double]]]
+val getDoubleMatrixType = getDoubleMatrix(0)(0).getClass()
 println(getDoubleMatrixType)
 println(getDoubleMatrix)
-if(getDoubleMatrixType != Double.class)
+if(getDoubleMatrixType != classOf[Double])
 	throw new Exception("getDoubleMatrix not Double!")
 
 println("getDoubleMatrixAsList")
-if(binding.hasVariable("getDoubleMatrixAsList"))
+if(getDoubleMatrixAsList != null)
 	throw new Exception("getDoubleMatrixAsList already defined!")
-getDoubleMatrixAsList = putDoubleMatrixAsList
-getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].getClass()
+val getDoubleMatrixAsList = putDoubleMatrixAsList.asInstanceOf[Array[Array[Double]]]
+val getDoubleMatrixAsListType = getDoubleMatrixAsList(0)(0).getClass()
 println(getDoubleMatrixAsListType)
 println(getDoubleMatrixAsList)
-if(getDoubleMatrixAsListType != Double.class)
+if(getDoubleMatrixAsListType != classOf[Double])
 	throw new Exception("getDoubleMatrixAsList not Double!")

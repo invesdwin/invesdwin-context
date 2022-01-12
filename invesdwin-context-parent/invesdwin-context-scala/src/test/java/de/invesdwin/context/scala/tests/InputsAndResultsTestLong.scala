@@ -1,49 +1,49 @@
 println("getLong")
-if(binding.hasVariable("getLong"))
+if(getLong != null)
 	throw new Exception("getLong already defined!")
 val getLong = putLong
 val getLongType = getLong.getClass()
 println(getLongType)
 println(getLong)
-if(getLongType != Long.class)
+if(getLongType != classOf[java.lang.Long])
 	throw new Exception("getLong not Long!")
 
 println("getLongVector")
-if(binding.hasVariable("getLongVector"))
+if(getLongVector != null)
 	throw new Exception("getLongVector already defined!")
-val getLongVector = putLongVector
-val getLongVectorType = getLongVector[0].getClass()
+val getLongVector = putLongVector.asInstanceOf[Array[Long]]
+val getLongVectorType = getLongVector(0).getClass()
 println(getLongVectorType)
 println(getLongVector)
-if(getLongVectorType != Long.class)
+if(getLongVectorType != classOf[Long])
 	throw new Exception("getLongVector not Long!")
 
 println("getLongVectorAsList")
-if(binding.hasVariable("getLongVectorAsList"))
+if(getLongVectorAsList != null)
 	throw new Exception("getLongVectorAsList already defined!")
-val getLongVectorAsList = putLongVectorAsList
-val getLongVectorAsListType = getLongVectorAsList[0].getClass()
+val getLongVectorAsList = putLongVectorAsList.asInstanceOf[Array[Long]]
+val getLongVectorAsListType = getLongVectorAsList(0).getClass()
 println(getLongVectorAsListType)
 println(getLongVectorAsList)
-if(getLongVectorAsListType != Long.class)
+if(getLongVectorAsListType != classOf[Long])
 	throw new Exception("getLongVectorAsList not Long!")
 
 println("getLongMatrix")
-if(binding.hasVariable("getLongMatrix"))
+if(getLongMatrix != null)
 	throw new Exception("getLongMatrix already defined!")
-val getLongMatrix = putLongMatrix
-val getLongMatrixType = getLongMatrix[0][0].getClass()
+val getLongMatrix = putLongMatrix.asInstanceOf[Array[Array[Long]]]
+val getLongMatrixType = getLongMatrix(0)(0).getClass()
 println(getLongMatrixType)
 println(getLongMatrix)
-if(getLongMatrixType != Long.class)
+if(getLongMatrixType != classOf[Long])
 	throw new Exception("getLongMatrix not Long!")
 
 println("getLongMatrixAsList")
-if(binding.hasVariable("getLongMatrixAsList"))
+if(getLongMatrixAsList != null)
 	throw new Exception("getLongMatrixAsList already defined!")
-val getLongMatrixAsList = putLongMatrixAsList
-val getLongMatrixAsListType = getLongMatrixAsList[0][0].getClass()
+val getLongMatrixAsList = putLongMatrixAsList.asInstanceOf[Array[Array[Long]]]
+val getLongMatrixAsListType = getLongMatrixAsList(0)(0).getClass()
 println(getLongMatrixAsListType)
 println(getLongMatrixAsList)
-if(getLongMatrixAsListType != Long.class)
+if(getLongMatrixAsListType != classOf[Long])
 	throw new Exception("getLongMatrixAsList not Long!")

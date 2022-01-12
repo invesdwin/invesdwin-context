@@ -1,49 +1,50 @@
 println("getByte")
-if(binding.hasVariable("getByte"))
+if(getByte != null){
 	throw new Exception("getByte already defined!")
+}
 val getByte = putByte
 val getByteType = getByte.getClass()
 println(getByteType)
 println(getByte)
-if(getByteType != Byte.class)
+if(getByteType != classOf[java.lang.Byte])
 	throw new Exception("getByte not Byte!")
 
 println("getByteVector")
-if(binding.hasVariable("getByteVector"))
+if(getByteVector != null)
 	throw new Exception("getByteVector already defined!")
-val getByteVector = putByteVector
-val getByteVectorType = getByteVector[0].getClass()
+val getByteVector = putByteVector.asInstanceOf[Array[Byte]]
+val getByteVectorType = getByteVector(0).getClass()
 println(getByteVectorType)
 println(getByteVector)
-if(getByteVectorType != Byte.class)
+if(getByteVectorType != classOf[Byte])
 	throw new Exception("getByteVector not Byte!")
 
 println("getByteVectorAsList")
-if(binding.hasVariable("getByteVectorAsList"))
+if(getByteVectorAsList != null)
 	throw new Exception("getByteVectorAsList already defined!")
-val getByteVectorAsList = putByteVectorAsList
-val getByteVectorAsListType = getByteVectorAsList[0].getClass()
+val getByteVectorAsList = putByteVectorAsList.asInstanceOf[Array[Byte]]
+val getByteVectorAsListType = getByteVectorAsList(0).getClass()
 println(getByteVectorAsListType)
 println(getByteVectorAsList)
-if(getByteVectorAsListType != Byte.class)
+if(getByteVectorAsListType != classOf[Byte])
 	throw new Exception("getByteVectorAsList not Byte!")
 
 println("getByteMatrix")
-if(binding.hasVariable("getByteMatrix"))
+if(getByteMatrix != null)
 	throw new Exception("getByteMatrix already defined!")
-val getByteMatrix = putByteMatrix
-val getByteMatrixType = getByteMatrix[0][0].getClass()
+val getByteMatrix = putByteMatrix.asInstanceOf[Array[Array[Byte]]]
+val getByteMatrixType = getByteMatrix(0)(0).getClass()
 println(getByteMatrixType)
 println(getByteMatrix)
-if(getByteMatrixType != Byte.class)
+if(getByteMatrixType != classOf[Byte])
 	throw new Exception("getByteMatrix not Byte!")
 
 println("getByteMatrixAsList")
-if(binding.hasVariable("getByteMatrixAsList"))
+if(getByteMatrixAsList != null)
 	throw new Exception("getByteMatrixAsList already defined!")
-val getByteMatrixAsList = putByteMatrixAsList
-val getByteMatrixAsListType = getByteMatrixAsList[0][0].getClass()
+val getByteMatrixAsList = putByteMatrixAsList.asInstanceOf[Array[Array[Byte]]]
+val getByteMatrixAsListType = getByteMatrixAsList(0)(0).getClass()
 println(getByteMatrixAsListType)
 println(getByteMatrixAsList)
-if(getByteMatrixAsListType != Byte.class)
+if(getByteMatrixAsListType != classOf[Byte])
 	throw new Exception("getByteMatrixAsList not Byte!")

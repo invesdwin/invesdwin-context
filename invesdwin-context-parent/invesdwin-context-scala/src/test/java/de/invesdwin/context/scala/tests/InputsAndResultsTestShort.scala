@@ -1,49 +1,49 @@
 println("getShort")
-if(binding.hasVariable("getShort"))
+if(getShort != null)
 	throw new Exception("getShort already defined!")
 val getShort = putShort
 val getShortType = getShort.getClass()
 println(getShortType)
 println(getShort)
-if(getShortType != Short.class)
+if(getShortType != classOf[java.lang.Short])
 	throw new Exception("getShort not Short!")
 
 println("getShortVector")
-if(binding.hasVariable("getShortVector"))
+if(getShortVector != null)
 	throw new Exception("getShortVector already defined!")
-val getShortVector = putShortVector
-val getShortVectorType = getShortVector[0].getClass()
+val getShortVector = putShortVector.asInstanceOf[Array[Short]]
+val getShortVectorType = getShortVector(0).getClass()
 println(getShortVectorType)
 println(getShortVector)
-if(getShortVectorType != Short.class)
+if(getShortVectorType != classOf[Short])
 	throw new Exception("getShortVector not Short!")
 
 println("getShortVectorAsList")
-if(binding.hasVariable("getShortVectorAsList"))
+if(getShortVectorAsList != null)
 	throw new Exception("getShortVectorAsList already defined!")
-val getShortVectorAsList = putShortVectorAsList
-val getShortVectorAsListType = getShortVectorAsList[0].getClass()
+val getShortVectorAsList = putShortVectorAsList.asInstanceOf[Array[Short]]
+val getShortVectorAsListType = getShortVectorAsList(0).getClass()
 println(getShortVectorAsListType)
 println(getShortVectorAsList)
-if(getShortVectorAsListType != Short.class)
+if(getShortVectorAsListType != classOf[Short])
 	throw new Exception("getShortVectorAsList not Short!")
 
 println("getShortMatrix")
-if(binding.hasVariable("getShortMatrix"))
+if(getShortMatrix != null)
 	throw new Exception("getShortMatrix already defined!")
-val getShortMatrix = putShortMatrix
-val getShortMatrixType = getShortMatrix[0][0].getClass()
+val getShortMatrix = putShortMatrix.asInstanceOf[Array[Array[Short]]]
+val getShortMatrixType = getShortMatrix(0)(0).getClass()
 println(getShortMatrixType)
 println(getShortMatrix)
-if(getShortMatrixType != Short.class)
+if(getShortMatrixType != classOf[Short])
 	throw new Exception("getShortMatrix not Short!")
 
 println("getShortMatrixAsList")
-if(binding.hasVariable("getShortMatrixAsList"))
+if(getShortMatrixAsList != null)
 	throw new Exception("getShortMatrixAsList already defined!")
-val getShortMatrixAsList = putShortMatrixAsList
-val getShortMatrixAsListType = getShortMatrixAsList[0][0].getClass()
+val getShortMatrixAsList = putShortMatrixAsList.asInstanceOf[Array[Array[Short]]]
+val getShortMatrixAsListType = getShortMatrixAsList(0)(0).getClass()
 println(getShortMatrixAsListType)
 println(getShortMatrixAsList)
-if(getShortMatrixAsListType != Short.class)
+if(getShortMatrixAsListType != classOf[Short])
 	throw new Exception("getShortMatrixAsList not Short!")

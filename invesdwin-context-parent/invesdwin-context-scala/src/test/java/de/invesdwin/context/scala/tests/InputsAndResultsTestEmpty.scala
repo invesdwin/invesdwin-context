@@ -1,185 +1,185 @@
-val getBooleanVector = putBooleanVector
-if(getBooleanVector.size() != 0)
+val getBooleanVector = putBooleanVector.asInstanceOf[Array[Boolean]]
+if(getBooleanVector.length != 0)
 	throw new Exception("getBooleanVector not empty!")
 
-val getBooleanVectorAsList = putBooleanVectorAsList
-if(getBooleanVectorAsList.size() != 0)
+val getBooleanVectorAsList = putBooleanVectorAsList.asInstanceOf[Array[Boolean]]
+if(getBooleanVectorAsList.length != 0)
 	throw new Exception("getBooleanVectorAsList not empty!")
 
-val getBooleanMatrix = putBooleanMatrix
-if(getBooleanMatrix.size() != 0)
+val getBooleanMatrix = putBooleanMatrix.asInstanceOf[Array[Array[Boolean]]]
+if(getBooleanMatrix.length != 0)
 	throw new Exception("getBooleanMatrix not empty!")
 
-val getBooleanMatrixAsList = putBooleanMatrixAsList
-if(getBooleanMatrixAsList.size() != 0)
+val getBooleanMatrixAsList = putBooleanMatrixAsList.asInstanceOf[Array[Array[Boolean]]]
+if(getBooleanMatrixAsList.length != 0)
 	throw new Exception("getBooleanMatrixAsList not empty!")
 
 
-val getByteVector = putByteVector
-if(getByteVector.size() != 0)
+val getByteVector = putByteVector.asInstanceOf[Array[Byte]]
+if(getByteVector.length != 0)
 	throw new Exception("getByteVector not empty!")
 
-val getByteVectorAsList = putByteVectorAsList
-if(getByteVectorAsList.size() != 0)
+val getByteVectorAsList = putByteVectorAsList.asInstanceOf[Array[Byte]]
+if(getByteVectorAsList.length != 0)
 	throw new Exception("getByteVectorAsList not empty!")
 
-val getByteMatrix = putByteMatrix
-if(getByteMatrix.size() != 0)
+val getByteMatrix = putByteMatrix.asInstanceOf[Array[Array[Byte]]]
+if(getByteMatrix.length != 0)
 	throw new Exception("getByteMatrix not empty!")
 
-val getByteMatrixAsList = putByteMatrixAsList
-if(getByteMatrixAsList.size() != 0)
+val getByteMatrixAsList = putByteMatrixAsList.asInstanceOf[Array[Array[Byte]]]
+if(getByteMatrixAsList.length != 0)
 	throw new Exception("getByteMatrixAsList not empty!")
 
 
-val getCharacterVector = putCharacterVector
-if(getCharacterVector.size() != 0)
+val getCharacterVector = putCharacterVector.asInstanceOf[Array[Char]]
+if(getCharacterVector.length != 0)
 	throw new Exception("getCharacterVector not empty!")
 
-val getCharacterVectorAsList = putCharacterVectorAsList
-if(getCharacterVectorAsList.size() != 0)
+val getCharacterVectorAsList = putCharacterVectorAsList.asInstanceOf[Array[Char]]
+if(getCharacterVectorAsList.length != 0)
 	throw new Exception("getCharacterVectorAsList not empty!")
 
-val getCharacterMatrix = putCharacterMatrix
-if(getCharacterMatrix.size() != 0)
+val getCharacterMatrix = putCharacterMatrix.asInstanceOf[Array[Array[Char]]]
+if(getCharacterMatrix.length != 0)
 	throw new Exception("getCharacterMatrix not empty!")
 
-val getCharacterMatrixAsList = putCharacterMatrixAsList
-if(getCharacterMatrixAsList.size() != 0)
+val getCharacterMatrixAsList = putCharacterMatrixAsList.asInstanceOf[Array[Array[Char]]]
+if(getCharacterMatrixAsList.length != 0)
 	throw new Exception("getCharacterMatrixAsList not empty!")
 
 
-val getDecimalVector = putDecimalVector
-if(getDecimalVector.size() != 0)
+val getDecimalVector = putDecimalVector.asInstanceOf[Array[Double]]
+if(getDecimalVector.length != 0)
 	throw new Exception("getDecimalVector not empty!")
 
-val getDecimalVectorAsList = putDecimalVectorAsList
-if(getDecimalVectorAsList.size() != 0)
+val getDecimalVectorAsList = putDecimalVectorAsList.asInstanceOf[Array[Double]]
+if(getDecimalVectorAsList.length != 0)
 	throw new Exception("getDecimalVectorAsList not empty!")
 
-val getDecimalMatrix = putDecimalMatrix
-if(getDecimalMatrix.size() != 0)
+val getDecimalMatrix = putDecimalMatrix.asInstanceOf[Array[Array[Double]]]
+if(getDecimalMatrix.length != 0)
 	throw new Exception("getDecimalMatrix not empty!")
 
-val getDecimalMatrixAsList = putDecimalMatrixAsList
-if(getDecimalMatrixAsList.size() != 0)
+val getDecimalMatrixAsList = putDecimalMatrixAsList.asInstanceOf[Array[Array[Double]]]
+if(getDecimalMatrixAsList.length != 0)
 	throw new Exception("getDecimalMatrixAsList not empty!")
 
 
-val getDoubleVector = putDoubleVector
-if(getDoubleVector.size() != 0)
+val getDoubleVector = putDoubleVector.asInstanceOf[Array[Double]]
+if(getDoubleVector.length != 0)
 	throw new Exception("getDoubleVector not empty!")
 
-val getDoubleVectorAsList = putDoubleVectorAsList
-if(getDoubleVectorAsList.size() != 0)
+val getDoubleVectorAsList = putDoubleVectorAsList.asInstanceOf[Array[Double]]
+if(getDoubleVectorAsList.length != 0)
 	throw new Exception("getDoubleVectorAsList not empty!")
 
-val getDoubleMatrix = putDoubleMatrix
-if(getDoubleMatrix.size() != 0)
+val getDoubleMatrix = putDoubleMatrix.asInstanceOf[Array[Array[Double]]]
+if(getDoubleMatrix.length != 0)
 	throw new Exception("getDoubleMatrix not empty!")
 
-val getDoubleMatrixAsList = putDoubleMatrixAsList
-if(getDoubleMatrixAsList.size() != 0)
+val getDoubleMatrixAsList = putDoubleMatrixAsList.asInstanceOf[Array[Array[Double]]]
+if(getDoubleMatrixAsList.length != 0)
 	throw new Exception("getDoubleMatrixAsList not empty!")
 
 
-val getFloatVector = putFloatVector
-if(getFloatVector.size() != 0)
+val getFloatVector = putFloatVector.asInstanceOf[Array[Float]]
+if(getFloatVector.length != 0)
 	throw new Exception("getFloatVector not empty!")
 
-val getFloatVectorAsList = putFloatVectorAsList
-if(getFloatVectorAsList.size() != 0)
+val getFloatVectorAsList = putFloatVectorAsList.asInstanceOf[Array[Float]]
+if(getFloatVectorAsList.length != 0)
 	throw new Exception("getFloatVectorAsList not empty!")
 
-val getFloatMatrix = putFloatMatrix
-if(getFloatMatrix.size() != 0)
+val getFloatMatrix = putFloatMatrix.asInstanceOf[Array[Array[Float]]]
+if(getFloatMatrix.length != 0)
 	throw new Exception("getFloatMatrix not empty!")
 
-val getFloatMatrixAsList = putFloatMatrixAsList
-if(getFloatMatrixAsList.size() != 0)
+val getFloatMatrixAsList = putFloatMatrixAsList.asInstanceOf[Array[Array[Float]]]
+if(getFloatMatrixAsList.length != 0)
 	throw new Exception("getFloatMatrixAsList not empty!")
 
 
-val getIntegerVector = putIntegerVector
-if(getIntegerVector.size() != 0)
+val getIntegerVector = putIntegerVector.asInstanceOf[Array[Int]]
+if(getIntegerVector.length != 0)
 	throw new Exception("getIntegerVector not empty!")
 
-val getIntegerVectorAsList = putIntegerVectorAsList
-if(getIntegerVectorAsList.size() != 0)
+val getIntegerVectorAsList = putIntegerVectorAsList.asInstanceOf[Array[Int]]
+if(getIntegerVectorAsList.length != 0)
 	throw new Exception("getIntegerVectorAsList not empty!")
 
-val getIntegerMatrix = putIntegerMatrix
-if(getIntegerMatrix.size() != 0)
+val getIntegerMatrix = putIntegerMatrix.asInstanceOf[Array[Array[Int]]]
+if(getIntegerMatrix.length != 0)
 	throw new Exception("getIntegerMatrix not empty!")
 
-val getIntegerMatrixAsList = putIntegerMatrixAsList
-if(getIntegerMatrixAsList.size() != 0)
+val getIntegerMatrixAsList = putIntegerMatrixAsList.asInstanceOf[Array[Array[Int]]]
+if(getIntegerMatrixAsList.length != 0)
 	throw new Exception("getIntegerMatrixAsList not empty!")
 
 
-val getLongVector = putLongVector
-if(getLongVector.size() != 0)
+val getLongVector = putLongVector.asInstanceOf[Array[Long]]
+if(getLongVector.length != 0)
 	throw new Exception("getLongVector not empty!")
 
-val getLongVectorAsList = putLongVectorAsList
-if(getLongVectorAsList.size() != 0)
+val getLongVectorAsList = putLongVectorAsList.asInstanceOf[Array[Long]]
+if(getLongVectorAsList.length != 0)
 	throw new Exception("getLongVectorAsList not empty!")
 
-val getLongMatrix = putLongMatrix
-if(getLongMatrix.size() != 0)
+val getLongMatrix = putLongMatrix.asInstanceOf[Array[Array[Long]]]
+if(getLongMatrix.length != 0)
 	throw new Exception("getLongMatrix not empty!")
 
-val getLongMatrixAsList = putLongMatrixAsList
-if(getLongMatrixAsList.size() != 0)
+val getLongMatrixAsList = putLongMatrixAsList.asInstanceOf[Array[Array[Long]]]
+if(getLongMatrixAsList.length != 0)
 	throw new Exception("getLongMatrixAsList not empty!")
 
 
-val getPercentVector = putPercentVector
-if(getPercentVector.size() != 0)
+val getPercentVector = putPercentVector.asInstanceOf[Array[Double]]
+if(getPercentVector.length != 0)
 	throw new Exception("getPercentVector not empty!")
 
-val getPercentVectorAsList = putPercentVectorAsList
-if(getPercentVectorAsList.size() != 0)
+val getPercentVectorAsList = putPercentVectorAsList.asInstanceOf[Array[Double]]
+if(getPercentVectorAsList.length != 0)
 	throw new Exception("getPercentVectorAsList not empty!")
 
-val getPercentMatrix = putPercentMatrix
-if(getPercentMatrix.size() != 0)
+val getPercentMatrix = putPercentMatrix.asInstanceOf[Array[Array[Double]]]
+if(getPercentMatrix.length != 0)
 	throw new Exception("getPercentMatrix not empty!")
 
-val getPercentMatrixAsList = putPercentMatrixAsList
-if(getPercentMatrixAsList.size() != 0)
+val getPercentMatrixAsList = putPercentMatrixAsList.asInstanceOf[Array[Array[Double]]]
+if(getPercentMatrixAsList.length != 0)
 	throw new Exception("getPercentMatrixAsList not empty!")
 
 
-val getShortVector = putShortVector
-if(getShortVector.size() != 0)
+val getShortVector = putShortVector.asInstanceOf[Array[Short]]
+if(getShortVector.length != 0)
 	throw new Exception("getShortVector not empty!")
 
-val getShortVectorAsList = putShortVectorAsList
-if(getShortVectorAsList.size() != 0)
+val getShortVectorAsList = putShortVectorAsList.asInstanceOf[Array[Short]]
+if(getShortVectorAsList.length != 0)
 	throw new Exception("getShortVectorAsList not empty!")
 
-val getShortMatrix = putShortMatrix
-if(getShortMatrix.size() != 0)
+val getShortMatrix = putShortMatrix.asInstanceOf[Array[Array[Short]]]
+if(getShortMatrix.length != 0)
 	throw new Exception("getShortMatrix not empty!")
 
-val getShortMatrixAsList = putShortMatrixAsList
-if(getShortMatrixAsList.size() != 0)
+val getShortMatrixAsList = putShortMatrixAsList.asInstanceOf[Array[Array[Short]]]
+if(getShortMatrixAsList.length != 0)
 	throw new Exception("getShortMatrixAsList not empty!")
 
 
-val getStringVector = putStringVector
-if(getStringVector.size() != 0)
+val getStringVector = putStringVector.asInstanceOf[Array[String]]
+if(getStringVector.length != 0)
 	throw new Exception("getStringVector not empty!")
 
-val getStringVectorAsList = putStringVectorAsList
-if(getStringVectorAsList.size() != 0)
+val getStringVectorAsList = putStringVectorAsList.asInstanceOf[Array[String]]
+if(getStringVectorAsList.length != 0)
 	throw new Exception("getStringVectorAsList not empty!")
 
-val getStringMatrix = putStringMatrix
-if(getStringMatrix.size() != 0)
+val getStringMatrix = putStringMatrix.asInstanceOf[Array[Array[String]]]
+if(getStringMatrix.length != 0)
 	throw new Exception("getStringMatrix not empty!")
 
-val getStringMatrixAsList = putStringMatrixAsList
-if(getStringMatrixAsList.size() != 0)
+val getStringMatrixAsList = putStringMatrixAsList.asInstanceOf[Array[Array[String]]]
+if(getStringMatrixAsList.length != 0)
 	throw new Exception("getStringMatrixAsList not empty!")
