@@ -27,7 +27,7 @@ public final class ProvidedScriptTaskRunnerGroovy
 
     public static final ProvidedScriptTaskRunnerGroovy INSTANCE = new ProvidedScriptTaskRunnerGroovy();
 
-    @GuardedBy("ProvidedScriptTaskRunnerGroovy.class")
+    @GuardedBy("this.class")
     private static IScriptTaskRunnerGroovy providedInstance;
 
     private ProvidedScriptTaskRunnerGroovy() {

@@ -11,7 +11,8 @@ import de.invesdwin.util.error.Throwables;
 
 @Immutable
 @Named
-public final class ScriptTaskRunnerJavascript implements IScriptTaskRunnerJavascript, FactoryBean<ScriptTaskRunnerJavascript> {
+public final class ScriptTaskRunnerJavascript
+        implements IScriptTaskRunnerJavascript, FactoryBean<ScriptTaskRunnerJavascript> {
 
     public static final ScriptTaskRunnerJavascript INSTANCE = new ScriptTaskRunnerJavascript();
 
@@ -24,10 +25,10 @@ public final class ScriptTaskRunnerJavascript implements IScriptTaskRunnerJavasc
     @Override
     public <T> T run(final AScriptTaskJavascript<T> scriptTask) {
         //get session
-        final WrappedJavascriptScriptEngine pyScriptEngine = JavascriptScriptEngineObjectPool.INSTANCE.borrowObject();
+        final WrappedJavascriptScriptEngine scriptEngine = JavascriptScriptEngineObjectPool.INSTANCE.borrowObject();
         try {
             //inputs
-            final ScriptTaskEngineJavascript engine = new ScriptTaskEngineJavascript(pyScriptEngine);
+            final ScriptTaskEngineJavascript engine = new ScriptTaskEngineJavascript(scriptEngine);
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -38,10 +39,10 @@ public final class ScriptTaskRunnerJavascript implements IScriptTaskRunnerJavasc
             engine.close();
 
             //return
-            JavascriptScriptEngineObjectPool.INSTANCE.returnObject(pyScriptEngine);
+            JavascriptScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
             return result;
         } catch (final Throwable t) {
-            JavascriptScriptEngineObjectPool.INSTANCE.invalidateObject(pyScriptEngine);
+            JavascriptScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
         }
     }

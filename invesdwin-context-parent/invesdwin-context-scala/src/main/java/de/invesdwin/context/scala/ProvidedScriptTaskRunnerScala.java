@@ -1,4 +1,4 @@
-package de.invesdwin.context.kotlin;
+package de.invesdwin.context.scala;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,33 +20,33 @@ import de.invesdwin.util.lang.reflection.Reflections;
  */
 @Immutable
 @Named
-public final class ProvidedScriptTaskRunnerKotlin
-        implements IScriptTaskRunnerKotlin, FactoryBean<ProvidedScriptTaskRunnerKotlin> {
+public final class ProvidedScriptTaskRunnerScala
+        implements IScriptTaskRunnerScala, FactoryBean<ProvidedScriptTaskRunnerScala> {
 
-    public static final String PROVIDED_INSTANCE_KEY = IScriptTaskRunnerKotlin.class.getName();
+    public static final String PROVIDED_INSTANCE_KEY = IScriptTaskRunnerScala.class.getName();
 
-    public static final ProvidedScriptTaskRunnerKotlin INSTANCE = new ProvidedScriptTaskRunnerKotlin();
+    public static final ProvidedScriptTaskRunnerScala INSTANCE = new ProvidedScriptTaskRunnerScala();
 
     @GuardedBy("this.class")
-    private static IScriptTaskRunnerKotlin providedInstance;
+    private static IScriptTaskRunnerScala providedInstance;
 
-    private ProvidedScriptTaskRunnerKotlin() {
+    private ProvidedScriptTaskRunnerScala() {
     }
 
-    public static synchronized IScriptTaskRunnerKotlin getProvidedInstance() {
+    public static synchronized IScriptTaskRunnerScala getProvidedInstance() {
         if (providedInstance == null) {
             final SystemProperties systemProperties = new SystemProperties();
             if (systemProperties.containsValue(PROVIDED_INSTANCE_KEY)) {
                 try {
                     final String runner = systemProperties.getString(PROVIDED_INSTANCE_KEY);
-                    return (IScriptTaskRunnerKotlin) Reflections.classForName(runner).newInstance();
+                    return (IScriptTaskRunnerScala) Reflections.classForName(runner).newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                final Map<String, IScriptTaskRunnerKotlin> runners = new LinkedHashMap<String, IScriptTaskRunnerKotlin>();
-                for (final IScriptTaskRunnerKotlin runner : ServiceLoader.load(IScriptTaskRunnerKotlin.class)) {
-                    final IScriptTaskRunnerKotlin existing = runners.put(runner.getClass().getName(), runner);
+                final Map<String, IScriptTaskRunnerScala> runners = new LinkedHashMap<String, IScriptTaskRunnerScala>();
+                for (final IScriptTaskRunnerScala runner : ServiceLoader.load(IScriptTaskRunnerScala.class)) {
+                    final IScriptTaskRunnerScala existing = runners.put(runner.getClass().getName(), runner);
                     if (existing != null) {
                         throw new IllegalStateException("Duplicate service provider found for [" + PROVIDED_INSTANCE_KEY
                                 + "=" + existing.getClass().getName()
@@ -77,8 +77,8 @@ public final class ProvidedScriptTaskRunnerKotlin
         return providedInstance;
     }
 
-    public static synchronized void setProvidedInstance(final IScriptTaskRunnerKotlin providedInstance) {
-        ProvidedScriptTaskRunnerKotlin.providedInstance = providedInstance;
+    public static synchronized void setProvidedInstance(final IScriptTaskRunnerScala providedInstance) {
+        ProvidedScriptTaskRunnerScala.providedInstance = providedInstance;
         final SystemProperties systemProperties = new SystemProperties();
         if (providedInstance == null) {
             systemProperties.setString(PROVIDED_INSTANCE_KEY, null);
@@ -88,13 +88,13 @@ public final class ProvidedScriptTaskRunnerKotlin
     }
 
     @Override
-    public <T> T run(final AScriptTaskKotlin<T> scriptTask) {
+    public <T> T run(final AScriptTaskScala<T> scriptTask) {
         return getProvidedInstance().run(scriptTask);
     }
 
     @Override
     public Class<?> getObjectType() {
-        return ProvidedScriptTaskRunnerKotlin.class;
+        return ProvidedScriptTaskRunnerScala.class;
     }
 
     @Override
@@ -103,7 +103,7 @@ public final class ProvidedScriptTaskRunnerKotlin
     }
 
     @Override
-    public ProvidedScriptTaskRunnerKotlin getObject() throws Exception {
+    public ProvidedScriptTaskRunnerScala getObject() throws Exception {
         return INSTANCE;
     }
 

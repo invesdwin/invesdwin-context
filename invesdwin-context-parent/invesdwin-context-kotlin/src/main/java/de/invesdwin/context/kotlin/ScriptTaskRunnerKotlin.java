@@ -24,10 +24,10 @@ public final class ScriptTaskRunnerKotlin implements IScriptTaskRunnerKotlin, Fa
     @Override
     public <T> T run(final AScriptTaskKotlin<T> scriptTask) {
         //get session
-        final WrappedKotlinScriptEngine pyScriptEngine = KotlinScriptEngineObjectPool.INSTANCE.borrowObject();
+        final WrappedKotlinScriptEngine scriptEngine = KotlinScriptEngineObjectPool.INSTANCE.borrowObject();
         try {
             //inputs
-            final ScriptTaskEngineKotlin engine = new ScriptTaskEngineKotlin(pyScriptEngine);
+            final ScriptTaskEngineKotlin engine = new ScriptTaskEngineKotlin(scriptEngine);
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -38,10 +38,10 @@ public final class ScriptTaskRunnerKotlin implements IScriptTaskRunnerKotlin, Fa
             engine.close();
 
             //return
-            KotlinScriptEngineObjectPool.INSTANCE.returnObject(pyScriptEngine);
+            KotlinScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
             return result;
         } catch (final Throwable t) {
-            KotlinScriptEngineObjectPool.INSTANCE.invalidateObject(pyScriptEngine);
+            KotlinScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
         }
     }

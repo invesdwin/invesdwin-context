@@ -22,9 +22,6 @@ public class ScriptTaskEngineJavascript implements IScriptTaskEngine {
         this.results = new ScriptTaskResultsJavascript(this);
     }
 
-    /**
-     * https://github.com/mrj0/GroovyScriptEngine/issues/55
-     */
     @Override
     public void eval(final String expression) {
         javascriptScriptEngine.eval(expression);

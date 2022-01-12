@@ -27,7 +27,7 @@ public final class ProvidedScriptTaskRunnerJavascript
 
     public static final ProvidedScriptTaskRunnerJavascript INSTANCE = new ProvidedScriptTaskRunnerJavascript();
 
-    @GuardedBy("ProvidedScriptTaskRunnerJavascript.class")
+    @GuardedBy("this.class")
     private static IScriptTaskRunnerJavascript providedInstance;
 
     private ProvidedScriptTaskRunnerJavascript() {
