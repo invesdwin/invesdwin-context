@@ -18,11 +18,11 @@
 
 		<dependency>
 			<groupId>org.scala-lang</groupId>
-			<artifactId>scala3-library_3</artifactId>
+			<artifactId>scala-library</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
-			<artifactId>scala3-compiler_3</artifactId>
+			<artifactId>scala-compiler</artifactId>
 		</dependency>
 	</dependencies>
 
