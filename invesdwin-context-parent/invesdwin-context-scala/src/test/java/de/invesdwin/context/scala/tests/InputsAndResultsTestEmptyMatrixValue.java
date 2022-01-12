@@ -142,7 +142,7 @@ public class InputsAndResultsTestEmptyMatrixValue {
 
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
-                engine.eval(new ClassPathResource(InputsAndResultsTestEmptyMatrixValue.class.getSimpleName() + ".js",
+                engine.eval(new ClassPathResource(InputsAndResultsTestEmptyMatrixValue.class.getSimpleName() + ".scala",
                         InputsAndResultsTestNull.class));
             }
 
