@@ -1,142 +1,142 @@
-getBooleanVector = putBooleanVector
+val getBooleanVector = putBooleanVector
 if(getBooleanVector != null)
 	throw new Exception("getBooleanVector not null!")
-getBooleanVectorAsList = putBooleanVectorAsList
+val getBooleanVectorAsList = putBooleanVectorAsList
 if(getBooleanVectorAsList != null)
 	throw new Exception("getBooleanVectorAsList not null!")
-getBooleanMatrix = putBooleanMatrix
+val getBooleanMatrix = putBooleanMatrix
 if(getBooleanMatrix != null)
 	throw new Exception("getBooleanMatrix not null!")
-getBooleanMatrixAsList = putBooleanMatrixAsList
+val getBooleanMatrixAsList = putBooleanMatrixAsList
 if(getBooleanMatrixAsList != null)
 	throw new Exception("getBooleanMatrixAsList not null!")
 
-getByteVector = putByteVector
+val getByteVector = putByteVector
 if(getByteVector != null)
 	throw new Exception("getByteVector not null!")
-getByteVectorAsList = putByteVectorAsList
+val getByteVectorAsList = putByteVectorAsList
 if(getByteVectorAsList != null)
 	throw new Exception("getByteVectorAsList not null!")
-getByteMatrix = putByteMatrix
+val getByteMatrix = putByteMatrix
 if(getByteMatrix != null)
 	throw new Exception("getByteMatrix not null!")
-getByteMatrixAsList = putByteMatrixAsList
+val getByteMatrixAsList = putByteMatrixAsList
 if(getByteMatrixAsList != null)
 	throw new Exception("getByteMatrixAsList not null!")
 
-getCharacterVector = putCharacterVector
+val getCharacterVector = putCharacterVector
 if(getCharacterVector != null)
 	throw new Exception("getCharacterVector not null!")
-getCharacterVectorAsList = putCharacterVectorAsList
+val getCharacterVectorAsList = putCharacterVectorAsList
 if(getCharacterVectorAsList != null)
 	throw new Exception("getCharacterVectorAsList not null!")
-getCharacterMatrix = putCharacterMatrix
+val getCharacterMatrix = putCharacterMatrix
 if(getCharacterMatrix != null)
 	throw new Exception("getCharacterMatrix not null!")
-getCharacterMatrixAsList = putCharacterMatrixAsList
+val getCharacterMatrixAsList = putCharacterMatrixAsList
 if(getCharacterMatrixAsList != null)
 	throw new Exception("getCharacterMatrixAsList not null!")
 
-getDecimalVector = putDecimalVector
+val getDecimalVector = putDecimalVector
 if(getDecimalVector != null)
 	throw new Exception("getDecimalVector not null!")
-getDecimalVectorAsList = putDecimalVectorAsList
+val getDecimalVectorAsList = putDecimalVectorAsList
 if(getDecimalVectorAsList != null)
 	throw new Exception("getDecimalVectorAsList not null!")
-getDecimalMatrix = putDecimalMatrix
+val getDecimalMatrix = putDecimalMatrix
 if(getDecimalMatrix != null)
 	throw new Exception("getDecimalMatrix not null!")
-getDecimalMatrixAsList = putDecimalMatrixAsList
+val getDecimalMatrixAsList = putDecimalMatrixAsList
 if(getDecimalMatrixAsList != null)
 	throw new Exception("getDecimalMatrixAsList not null!")
 
-getDoubleVector = putDoubleVector
+val getDoubleVector = putDoubleVector
 if(getDoubleVector != null)
 	throw new Exception("getDoubleVector not null!")
-getDoubleVectorAsList = putDoubleVectorAsList
+val getDoubleVectorAsList = putDoubleVectorAsList
 if(getDoubleVectorAsList != null)
 	throw new Exception("getDoubleVectorAsList not null!")
-getDoubleMatrix = putDoubleMatrix
+val getDoubleMatrix = putDoubleMatrix
 if(getDoubleMatrix != null)
 	throw new Exception("getDoubleMatrix not null!")
-getDoubleMatrixAsList = putDoubleMatrixAsList
+val getDoubleMatrixAsList = putDoubleMatrixAsList
 if(getDoubleMatrixAsList != null)
 	throw new Exception("getDoubleMatrixAsList not null!")
 
-getFloatVector = putFloatVector
+val getFloatVector = putFloatVector
 if(getFloatVector != null)
 	throw new Exception("getFloatVector not null!")
-getFloatVectorAsList = putFloatVectorAsList
+val getFloatVectorAsList = putFloatVectorAsList
 if(getFloatVectorAsList != null)
 	throw new Exception("getFloatVectorAsList not null!")
-getFloatMatrix = putFloatMatrix
+val getFloatMatrix = putFloatMatrix
 if(getFloatMatrix != null)
 	throw new Exception("getFloatMatrix not null!")
-getFloatMatrixAsList = putFloatMatrixAsList
+val getFloatMatrixAsList = putFloatMatrixAsList
 if(getFloatMatrixAsList != null)
 	throw new Exception("getFloatMatrixAsList not null!")
 
-getIntegerVector = putIntegerVector
+val getIntegerVector = putIntegerVector
 if(getIntegerVector != null)
 	throw new Exception("getIntegerVector not null!")
-getIntegerVectorAsList = putIntegerVectorAsList
+val getIntegerVectorAsList = putIntegerVectorAsList
 if(getIntegerVectorAsList != null)
 	throw new Exception("getIntegerVectorAsList not null!")
-getIntegerMatrix = putIntegerMatrix
+val getIntegerMatrix = putIntegerMatrix
 if(getIntegerMatrix != null)
 	throw new Exception("getIntegerMatrix not null!")
-getIntegerMatrixAsList = putIntegerMatrixAsList
+val getIntegerMatrixAsList = putIntegerMatrixAsList
 if(getIntegerMatrixAsList != null)
 	throw new Exception("getIntegerMatrixAsList not null!")
 
-getLongVector = putLongVector
+val getLongVector = putLongVector
 if(getLongVector != null)
 	throw new Exception("getLongVector not null!")
-getLongVectorAsList = putLongVectorAsList
+val getLongVectorAsList = putLongVectorAsList
 if(getLongVectorAsList != null)
 	throw new Exception("getLongVectorAsList not null!")
-getLongMatrix = putLongMatrix
+val getLongMatrix = putLongMatrix
 if(getLongMatrix != null)
 	throw new Exception("getLongMatrix not null!")
-getLongMatrixAsList = putLongMatrixAsList
+val getLongMatrixAsList = putLongMatrixAsList
 if(getLongMatrixAsList != null)
 	throw new Exception("getLongMatrixAsList not null!")
 
-getPercentVector = putPercentVector
+val getPercentVector = putPercentVector
 if(getPercentVector != null)
 	throw new Exception("getPercentVector not null!")
-getPercentVectorAsList = putPercentVectorAsList
+val getPercentVectorAsList = putPercentVectorAsList
 if(getPercentVectorAsList != null)
 	throw new Exception("getPercentVectorAsList not null!")
-getPercentMatrix = putPercentMatrix
+val getPercentMatrix = putPercentMatrix
 if(getPercentMatrix != null)
 	throw new Exception("getPercentMatrix not null!")
-getPercentMatrixAsList = putPercentMatrixAsList
+val getPercentMatrixAsList = putPercentMatrixAsList
 if(getPercentMatrixAsList != null)
 	throw new Exception("getPercentMatrixAsList not null!")
 
-getShortVector = putShortVector
+val getShortVector = putShortVector
 if(getShortVector != null)
 	throw new Exception("getShortVector not null!")
-getShortVectorAsList = putShortVectorAsList
+val getShortVectorAsList = putShortVectorAsList
 if(getShortVectorAsList != null)
 	throw new Exception("getShortVectorAsList not null!")
-getShortMatrix = putShortMatrix
+val getShortMatrix = putShortMatrix
 if(getShortMatrix != null)
 	throw new Exception("getShortMatrix not null!")
-getShortMatrixAsList = putShortMatrixAsList
+val getShortMatrixAsList = putShortMatrixAsList
 if(getShortMatrixAsList != null)
 	throw new Exception("getShortMatrixAsList not null!")
 
-getStringVector = putStringVector
+val getStringVector = putStringVector
 if(getStringVector != null)
 	throw new Exception("getStringVector not null!")
-getStringVectorAsList = putStringVectorAsList
+val getStringVectorAsList = putStringVectorAsList
 if(getStringVectorAsList != null)
 	throw new Exception("getStringVectorAsList not null!")
-getStringMatrix = putStringMatrix
+val getStringMatrix = putStringMatrix
 if(getStringMatrix != null)
 	throw new Exception("getStringMatrix not null!")
-getStringMatrixAsList = putStringMatrixAsList
+val getStringMatrixAsList = putStringMatrixAsList
 if(getStringMatrixAsList != null)
 	throw new Exception("getStringMatrixAsList not null!")
