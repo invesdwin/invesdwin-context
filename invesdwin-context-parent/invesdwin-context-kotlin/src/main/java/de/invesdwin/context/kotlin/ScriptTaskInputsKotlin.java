@@ -156,7 +156,7 @@ public class ScriptTaskInputsKotlin implements IScriptTaskInputs {
 
     @Override
     public void putExpression(final String variable, final String expression) {
-        if (Strings.isBlankOrNullText(expression)) {
+        if (expression == null) {
             putNull(variable);
         } else {
             engine.unwrap().eval("val " + variable + " = " + expression);
