@@ -63,9 +63,8 @@ if(getStringVectorAsListWithNull[1] != null)
 println("getStringMatrix")
 if(bindings.containsKey("getStringMatrix"))
 	throw Exception("getStringMatrix already defined!")
-val getStringMatrix = putStringMatrix
-val getStringMatrixRow = getStringMatrix[0] as Array<*>
-val getStringMatrixType = getStringMatrixRow[0]!!::class
+val getStringMatrix = putStringMatrix as Array<Array<*>>
+val getStringMatrixType = getStringMatrix[0][0]!!::class
 println(getStringMatrixType)
 println(getStringMatrix)
 if(getStringMatrixType != String::class)
@@ -74,28 +73,24 @@ if(getStringMatrixType != String::class)
 println("getStringMatrixWithNull")
 if(bindings.containsKey("getStringMatrixWithNull"))
 	throw Exception("getStringMatrixWithNull already defined!")
-val getStringMatrixWithNull = putStringMatrixWithNull
-val getStringMatrixWithNullRow0 = getStringMatrixWithNull[0] as Array<*>
-val getStringMatrixWithNullRow1 = getStringMatrixWithNull[1] as Array<*>
-val getStringMatrixWithNullRow2 = getStringMatrixWithNull[2] as Array<*>
-val getStringMatrixWithNullType = getStringMatrixWithNullRow0[1]!!::class
+val getStringMatrixWithNull = putStringMatrixWithNull as Array<Array<*>>
+val getStringMatrixWithNullType = getStringMatrixWithNull[0][1]!!::class
 println(getStringMatrixWithNullType)
 println(getStringMatrixWithNull)
 if(getStringMatrixWithNullType != String::class)
 	throw Exception("getStringMatrixWithNull not String!")
-if(getStringMatrixWithNullRow0[0] != null)
+if(getStringMatrixWithNull[0][0] != null)
 	throw Exception("getStringMatrixWithNull[0][0] not null!")
-if(getStringMatrixWithNullRow1[1] != null)
+if(getStringMatrixWithNull[1][1] != null)
 	throw Exception("getStringMatrixWithNull[1][1] not null!")
-if(getStringMatrixWithNullRow2[2] != null)
+if(getStringMatrixWithNull[2][2] != null)
 	throw Exception("getStringMatrixWithNull[2][2] not null!")
 
 println("getStringMatrixAsList")
 if(bindings.containsKey("getStringMatrixAsList"))
 	throw Exception("getStringMatrixAsList already defined!")
-val getStringMatrixAsList = putStringMatrixAsList
-val getStringMatrixAsListRow = getStringMatrixAsList[0] as Array<*>
-val getStringMatrixAsListType = getStringMatrixAsListRow[0]!!::class
+val getStringMatrixAsList = putStringMatrixAsList as Array<Array<*>>
+val getStringMatrixAsListType = getStringMatrixAsList[0][0]!!::class
 println(getStringMatrixAsListType)
 println(getStringMatrixAsList)
 if(getStringMatrixAsListType != String::class)
@@ -104,18 +99,15 @@ if(getStringMatrixAsListType != String::class)
 println("getStringMatrixAsListWithNull")
 if(bindings.containsKey("getStringMatrixAsListWithNull"))
 	throw Exception("getStringMatrixAsListWithNull already defined!")
-val getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
-val getStringMatrixAsListWithNullRow0 = getStringMatrixAsListWithNull[0] as Array<*>
-val getStringMatrixAsListWithNullRow1 = getStringMatrixAsListWithNull[1] as Array<*>
-val getStringMatrixAsListWithNullRow2 = getStringMatrixAsListWithNull[2] as Array<*>
-val getStringMatrixAsListWithNullType = getStringMatrixAsListWithNullRow0[1]!!::class
+val getStringMatrixAsListWithNull = putStringMatrixAsListWithNull as Array<Array<*>>
+val getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1]!!::class
 println(getStringMatrixAsListWithNullType)
 println(getStringMatrixAsListWithNull)
 if(getStringMatrixAsListWithNullType != String::class)
 	throw Exception("getStringMatrixAsListWithNull not String!")
-if(getStringMatrixAsListWithNullRow0[0] != null)
+if(getStringMatrixAsListWithNull[0][0] != null)
 	throw Exception("getStringMatrixAsListWithNull[0][0] not null!")
-if(getStringMatrixAsListWithNullRow1[1] != null)
+if(getStringMatrixAsListWithNull[1][1] != null)
 	throw Exception("getStringMatrixAsListWithNull[1][1] not null!")
-if(getStringMatrixAsListWithNullRow2[2] != null)
+if(getStringMatrixAsListWithNull[2][2] != null)
 	throw Exception("getStringMatrixAsListWithNull[2][2] not null!")

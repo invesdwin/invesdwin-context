@@ -31,9 +31,8 @@ if(getByteVectorAsListType != Byte::class)
 println("getByteMatrix")
 if(bindings.containsKey("getByteMatrix"))
 	throw Exception("getByteMatrix already defined!")
-val getByteMatrix = putByteMatrix
-val getByteMatrixRow = getByteMatrix[0] as ByteArray
-val getByteMatrixType = getByteMatrixRow[0]::class
+val getByteMatrix = putByteMatrix as Array<ByteArray>
+val getByteMatrixType = getByteMatrix[0][0]::class
 println(getByteMatrixType)
 println(getByteMatrix)
 if(getByteMatrixType != Byte::class)
@@ -42,9 +41,8 @@ if(getByteMatrixType != Byte::class)
 println("getByteMatrixAsList")
 if(bindings.containsKey("getByteMatrixAsList"))
 	throw Exception("getByteMatrixAsList already defined!")
-val getByteMatrixAsList = putByteMatrixAsList
-val getByteMatrixAsListRow = getByteMatrixAsList[0] as ByteArray
-val getByteMatrixAsListType = getByteMatrixAsListRow[0]::class
+val getByteMatrixAsList = putByteMatrixAsList as Array<ByteArray>
+val getByteMatrixAsListType = getByteMatrixAsList[0][0]::class
 println(getByteMatrixAsListType)
 println(getByteMatrixAsList)
 if(getByteMatrixAsListType != Byte::class)

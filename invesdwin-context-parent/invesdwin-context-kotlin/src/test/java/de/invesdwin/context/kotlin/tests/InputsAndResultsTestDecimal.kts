@@ -31,9 +31,8 @@ if(getDecimalVectorAsListType != Double::class)
 println("getDecimalMatrix")
 if(bindings.containsKey("getDecimalMatrix"))
 	throw Exception("getDecimalMatrix already defined!")
-val getDecimalMatrix = putDecimalMatrix
-val getDecimalMatrixRow = getDecimalMatrix[0] as DoubleArray
-val getDecimalMatrixType = getDecimalMatrixRow[0]::class
+val getDecimalMatrix = putDecimalMatrix as Array<DoubleArray>
+val getDecimalMatrixType = getDecimalMatrix[0][0]::class
 println(getDecimalMatrixType)
 println(getDecimalMatrix)
 if(getDecimalMatrixType != Double::class)
@@ -42,9 +41,8 @@ if(getDecimalMatrixType != Double::class)
 println("getDecimalMatrixAsList")
 if(bindings.containsKey("getDecimalMatrixAsList"))
 	throw Exception("getDecimalMatrixAsList already defined!")
-val getDecimalMatrixAsList = putDecimalMatrixAsList
-val getDecimalMatrixAsListRow = getDecimalMatrixAsList[0] as DoubleArray
-val getDecimalMatrixAsListType = getDecimalMatrixAsListRow[0]::class
+val getDecimalMatrixAsList = putDecimalMatrixAsList as Array<DoubleArray>
+val getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0]::class
 println(getDecimalMatrixAsListType)
 println(getDecimalMatrixAsList)
 if(getDecimalMatrixAsListType != Double::class)

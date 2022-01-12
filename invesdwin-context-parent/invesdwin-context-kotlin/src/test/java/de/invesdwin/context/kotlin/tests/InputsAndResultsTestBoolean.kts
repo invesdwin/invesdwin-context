@@ -31,9 +31,8 @@ if(getBooleanVectorAsListType != Boolean::class)
 println("getBooleanMatrix")
 if(bindings.containsKey("getBooleanMatrix"))
 	throw Exception("getBooleanMatrix already defined!")
-val getBooleanMatrix = putBooleanMatrix
-val getBooleanMatrixRow = getBooleanMatrix[0] as BooleanArray
-val getBooleanMatrixType = getBooleanMatrixRow[0]::class
+val getBooleanMatrix = putBooleanMatrix as Array<BooleanArray>
+val getBooleanMatrixType = getBooleanMatrix[0][0]::class
 println(getBooleanMatrixType)
 println(getBooleanMatrix)
 if(getBooleanMatrixType != Boolean::class)
@@ -42,9 +41,8 @@ if(getBooleanMatrixType != Boolean::class)
 println("getBooleanMatrixAsList")
 if(bindings.containsKey("getBooleanMatrixAsList"))
 	throw Exception("getBooleanMatrixAsList already defined!")
-val getBooleanMatrixAsList = putBooleanMatrixAsList
-val getBooleanMatrixAsListRow = getBooleanMatrixAsList[0] as BooleanArray
-val getBooleanMatrixAsListType = getBooleanMatrixAsListRow[0]::class
+val getBooleanMatrixAsList = putBooleanMatrixAsList as Array<BooleanArray>
+val getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0]::class
 println(getBooleanMatrixAsListType)
 println(getBooleanMatrixAsList)
 if(getBooleanMatrixAsListType != Boolean::class)

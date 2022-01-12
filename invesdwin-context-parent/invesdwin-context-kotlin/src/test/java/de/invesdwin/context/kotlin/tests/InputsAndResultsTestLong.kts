@@ -31,9 +31,8 @@ if(getLongVectorAsListType != Long::class)
 println("getLongMatrix")
 if(bindings.containsKey("getLongMatrix"))
 	throw Exception("getLongMatrix already defined!")
-val getLongMatrix = putLongMatrix
-val getLongMatrixRow = getLongMatrix[0] as LongArray
-val getLongMatrixType = getLongMatrixRow[0]::class
+val getLongMatrix = putLongMatrix as Array<LongArray>
+val getLongMatrixType = getLongMatrix[0][0]::class
 println(getLongMatrixType)
 println(getLongMatrix)
 if(getLongMatrixType != Long::class)
@@ -42,9 +41,8 @@ if(getLongMatrixType != Long::class)
 println("getLongMatrixAsList")
 if(bindings.containsKey("getLongMatrixAsList"))
 	throw Exception("getLongMatrixAsList already defined!")
-val getLongMatrixAsList = putLongMatrixAsList
-val getLongMatrixAsListRow = getLongMatrixAsList[0] as LongArray
-val getLongMatrixAsListType = getLongMatrixAsListRow[0]::class
+val getLongMatrixAsList = putLongMatrixAsList as Array<LongArray>
+val getLongMatrixAsListType = getLongMatrixAsList[0][0]::class
 println(getLongMatrixAsListType)
 println(getLongMatrixAsList)
 if(getLongMatrixAsListType != Long::class)

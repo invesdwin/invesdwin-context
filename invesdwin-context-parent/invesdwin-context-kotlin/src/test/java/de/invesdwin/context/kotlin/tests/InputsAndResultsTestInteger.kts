@@ -31,9 +31,8 @@ if(getIntegerVectorAsListType != Integer::class)
 println("getIntegerMatrix")
 if(bindings.containsKey("getIntegerMatrix"))
 	throw Exception("getIntegerMatrix already defined!")
-val getIntegerMatrix = putIntegerMatrix
-val getIntegerMatrixRow = getIntegerMatrix[0] as IntArray
-val getIntegerMatrixType = getIntegerMatrixRow[0]::class
+val getIntegerMatrix = putIntegerMatrix as Array<IntArray>
+val getIntegerMatrixType = getIntegerMatrix[0][0]::class
 println(getIntegerMatrixType)
 println(getIntegerMatrix)
 if(getIntegerMatrixType != Integer::class)
@@ -42,9 +41,8 @@ if(getIntegerMatrixType != Integer::class)
 println("getIntegerMatrixAsList")
 if(bindings.containsKey("getIntegerMatrixAsList"))
 	throw Exception("getIntegerMatrixAsList already defined!")
-val getIntegerMatrixAsList = putIntegerMatrixAsList
-val getIntegerMatrixAsListRow = getIntegerMatrixAsList[0] as IntArray
-val getIntegerMatrixAsListType = getIntegerMatrixAsListRow[0]::class
+val getIntegerMatrixAsList = putIntegerMatrixAsList as Array<IntArray>
+val getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0]::class
 println(getIntegerMatrixAsListType)
 println(getIntegerMatrixAsList)
 if(getIntegerMatrixAsListType != Integer::class)
