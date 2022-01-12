@@ -3,7 +3,6 @@ package de.invesdwin.context.kotlin;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.script.IScriptTaskInputs;
-import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
 public class ScriptTaskInputsKotlin implements IScriptTaskInputs {
