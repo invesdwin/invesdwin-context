@@ -3,6 +3,7 @@ package de.invesdwin.context.kotlin;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.script.IScriptTaskInputs;
+import de.invesdwin.util.lang.Strings;
 
 @NotThreadSafe
 public class ScriptTaskInputsKotlin implements IScriptTaskInputs {
@@ -155,7 +156,11 @@ public class ScriptTaskInputsKotlin implements IScriptTaskInputs {
 
     @Override
     public void putExpression(final String variable, final String expression) {
-        engine.unwrap().eval("val " + variable + " = " + expression);
+        if (Strings.isBlankOrNullText(expression)) {
+            putNull(variable);
+        } else {
+            engine.unwrap().eval("val " + variable + " = " + expression);
+        }
     }
 
     @Override

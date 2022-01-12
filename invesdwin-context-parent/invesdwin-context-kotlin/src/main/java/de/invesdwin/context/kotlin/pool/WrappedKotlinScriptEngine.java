@@ -1,49 +1,32 @@
 package de.invesdwin.context.kotlin.pool;
 
 import java.io.Closeable;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.Bindings;
 import javax.script.Compilable;
-import javax.script.CompiledScript;
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-
 @NotThreadSafe
 public class WrappedKotlinScriptEngine implements Closeable {
-
-    private final LoadingCache<String, CompiledScript> scriptCache;
 
     private final ScriptEngine engine;
     private final Compilable compilable;
     private final Invocable invocable;
     private final Bindings binding;
-    private final Function<String, Object> evalF;
 
     public WrappedKotlinScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("kotlin");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        if (engine instanceof Compilable && false) {
+        if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
-            scriptCache = Caffeine.newBuilder()
-                    .maximumSize(100)
-                    .expireAfterAccess(1, TimeUnit.MINUTES)
-                    .softValues()
-                    .<String, CompiledScript> build((key) -> compilable.compile(key));
-            evalF = (expression) -> evalCompiling(expression);
         } else {
             compilable = null;
-            scriptCache = null;
-            evalF = (expression) -> evalParsing(expression);
         }
         if (engine instanceof Invocable) {
             invocable = (Invocable) engine;
@@ -70,19 +53,19 @@ public class WrappedKotlinScriptEngine implements Closeable {
     }
 
     public Object eval(final String expression) {
-        return evalF.apply(expression);
-    }
-
-    private Object evalCompiling(final String expression) {
-        final CompiledScript parsed = scriptCache.get(expression);
-        try {
-            return parsed.eval();
-        } catch (final ScriptException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Object evalParsing(final String expression) {
+        //we can not use a script cache here since kotlin gets confused with type declarations (nullable/not nullable)
+        //        Caused by: javax.script.ScriptException: ERROR Front-end Internal error: Failed to analyze declaration ScriptingHost5cdcdeb8_Line_0
+        //        File being compiled: (1,1) in ScriptingHost5cdcdeb8_Line_0.kts
+        //        The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at: org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18): org.jetbrains.kotlin.util.KotlinFrontEndException: Front-end Internal error: Failed to analyze declaration ScriptingHost5cdcdeb8_Line_0
+        //        File being compiled: (1,1) in ScriptingHost5cdcdeb8_Line_0.kts
+        //        The root cause org.jetbrains.kotlin.resolve.lazy.NoDescriptorForDeclarationException was thrown at: org.jetbrains.kotlin.resolve.lazy.BasicAbsentDescriptorHandler.diagnoseDescriptorNotFound(AbsentDescriptorHandler.kt:18)
+        //            at org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase.asJsr223EvalResult(KotlinJsr223JvmScriptEngineBase.kt:104)
+        //            at org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase.compileAndEval(KotlinJsr223JvmScriptEngineBase.kt:63)
+        //            at kotlin.script.experimental.jvmhost.jsr223.KotlinJsr223ScriptEngineImpl.compileAndEval(KotlinJsr223ScriptEngineImpl.kt:95)
+        //            at org.jetbrains.kotlin.cli.common.repl.KotlinJsr223JvmScriptEngineBase.eval(KotlinJsr223JvmScriptEngineBase.kt:31)
+        //            at java.scripting/javax.script.AbstractScriptEngine.eval(AbstractScriptEngine.java:264)
+        //            at de.invesdwin.context.kotlin.pool.WrappedKotlinScriptEngine.evalParsing(WrappedKotlinScriptEngine.java:87)
+        //            ... 77 more
         try {
             return engine.eval(expression);
         } catch (final ScriptException e) {
@@ -112,8 +95,8 @@ public class WrappedKotlinScriptEngine implements Closeable {
     }
 
     public void remove(final String variable) {
-        binding.remove(variable);
         eval("val " + variable + " = null");
+        binding.remove(variable);
     }
 
     public boolean contains(final String variable) {
