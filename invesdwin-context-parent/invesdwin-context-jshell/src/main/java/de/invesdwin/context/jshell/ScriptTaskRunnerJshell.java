@@ -11,8 +11,7 @@ import de.invesdwin.util.error.Throwables;
 
 @Immutable
 @Named
-public final class ScriptTaskRunnerJshell
-        implements IScriptTaskRunnerJshell, FactoryBean<ScriptTaskRunnerJshell> {
+public final class ScriptTaskRunnerJshell implements IScriptTaskRunnerJshell, FactoryBean<ScriptTaskRunnerJshell> {
 
     public static final ScriptTaskRunnerJshell INSTANCE = new ScriptTaskRunnerJshell();
 
