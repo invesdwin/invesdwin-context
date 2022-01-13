@@ -1,25 +1,25 @@
-package de.invesdwin.context.scala;
+package de.invesdwin.context.jshell;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
-import de.invesdwin.context.scala.pool.ScalaScriptEngineObjectPool;
-import de.invesdwin.context.scala.pool.WrappedScalaScriptEngine;
+import de.invesdwin.context.jshell.pool.BeanshellScriptEngineObjectPool;
+import de.invesdwin.context.jshell.pool.WrappedBeanshellScriptEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 
 @NotThreadSafe
-public class ScriptTaskEngineScala implements IScriptTaskEngine {
+public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
 
-    private WrappedScalaScriptEngine scriptEngine;
-    private final ScriptTaskInputsScala inputs;
-    private final ScriptTaskResultsScala results;
+    private WrappedBeanshellScriptEngine scriptEngine;
+    private final ScriptTaskInputsBeanshell inputs;
+    private final ScriptTaskResultsBeanshell results;
 
-    public ScriptTaskEngineScala(final WrappedScalaScriptEngine scriptEngine) {
+    public ScriptTaskEngineBeanshell(final WrappedBeanshellScriptEngine scriptEngine) {
         this.scriptEngine = scriptEngine;
-        this.inputs = new ScriptTaskInputsScala(this);
-        this.results = new ScriptTaskResultsScala(this);
+        this.inputs = new ScriptTaskInputsBeanshell(this);
+        this.results = new ScriptTaskResultsBeanshell(this);
     }
 
     @Override
@@ -28,12 +28,12 @@ public class ScriptTaskEngineScala implements IScriptTaskEngine {
     }
 
     @Override
-    public ScriptTaskInputsScala getInputs() {
+    public ScriptTaskInputsBeanshell getInputs() {
         return inputs;
     }
 
     @Override
-    public ScriptTaskResultsScala getResults() {
+    public ScriptTaskResultsBeanshell getResults() {
         return results;
     }
 
@@ -43,7 +43,7 @@ public class ScriptTaskEngineScala implements IScriptTaskEngine {
     }
 
     @Override
-    public WrappedScalaScriptEngine unwrap() {
+    public WrappedBeanshellScriptEngine unwrap() {
         return scriptEngine;
     }
 
@@ -60,13 +60,13 @@ public class ScriptTaskEngineScala implements IScriptTaskEngine {
         return null;
     }
 
-    public static ScriptTaskEngineScala newInstance() {
-        return new ScriptTaskEngineScala(ScalaScriptEngineObjectPool.INSTANCE.borrowObject()) {
+    public static ScriptTaskEngineBeanshell newInstance() {
+        return new ScriptTaskEngineBeanshell(BeanshellScriptEngineObjectPool.INSTANCE.borrowObject()) {
             @Override
             public void close() {
-                final WrappedScalaScriptEngine unwrap = unwrap();
+                final WrappedBeanshellScriptEngine unwrap = unwrap();
                 if (unwrap != null) {
-                    ScalaScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
+                    BeanshellScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
                 }
                 super.close();
             }

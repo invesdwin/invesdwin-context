@@ -1,0 +1,142 @@
+getBooleanVector = putBooleanVector == void ? null : putBooleanVector;
+if(getBooleanVector != void)
+	throw new Exception("getBooleanVector not null!");
+getBooleanVectorAsList = putBooleanVectorAsList == void ? null : putBooleanVectorAsList;
+if(getBooleanVectorAsList != void)
+	throw new Exception("getBooleanVectorAsList not null!");
+getBooleanMatrix = putBooleanMatrix == void ? null : putBooleanMatrix;
+if(getBooleanMatrix != void)
+	throw new Exception("getBooleanMatrix not null!");
+getBooleanMatrixAsList = putBooleanMatrixAsList == void ? null : putBooleanMatrixAsList;
+if(getBooleanMatrixAsList != void)
+	throw new Exception("getBooleanMatrixAsList not null!");
+
+getByteVector = putByteVector == void ? null : putByteVector;
+if(getByteVector != void)
+	throw new Exception("getByteVector not null!");
+getByteVectorAsList = putByteVectorAsList == void ? null : putByteVectorAsList;
+if(getByteVectorAsList != void)
+	throw new Exception("getByteVectorAsList not null!");
+getByteMatrix = putByteMatrix == void ? null : putByteMatrix;
+if(getByteMatrix != void)
+	throw new Exception("getByteMatrix not null!");
+getByteMatrixAsList = putByteMatrixAsList == void ? null : putByteMatrixAsList;
+if(getByteMatrixAsList != void)
+	throw new Exception("getByteMatrixAsList not null!");
+
+getCharacterVector = putCharacterVector == void ? null : putCharacterVector;
+if(getCharacterVector != void)
+	throw new Exception("getCharacterVector not null!");
+getCharacterVectorAsList = putCharacterVectorAsList == void ? null : putCharacterVectorAsList;
+if(getCharacterVectorAsList != void)
+	throw new Exception("getCharacterVectorAsList not null!");
+getCharacterMatrix = putCharacterMatrix == void ? null : putCharacterMatrix;
+if(getCharacterMatrix != void)
+	throw new Exception("getCharacterMatrix not null!");
+getCharacterMatrixAsList = putCharacterMatrixAsList == void ? null : putCharacterMatrixAsList;
+if(getCharacterMatrixAsList != void)
+	throw new Exception("getCharacterMatrixAsList not null!");
+
+getDecimalVector = putDecimalVector == void ? null : putDecimalVector;
+if(getDecimalVector != void)
+	throw new Exception("getDecimalVector not null!");
+getDecimalVectorAsList = putDecimalVectorAsList == void ? null : putDecimalVectorAsList;
+if(getDecimalVectorAsList != void)
+	throw new Exception("getDecimalVectorAsList not null!");
+getDecimalMatrix = putDecimalMatrix == void ? null : putDecimalMatrix;
+if(getDecimalMatrix != void)
+	throw new Exception("getDecimalMatrix not null!");
+getDecimalMatrixAsList = putDecimalMatrixAsList == void ? null : putDecimalMatrixAsList;
+if(getDecimalMatrixAsList != void)
+	throw new Exception("getDecimalMatrixAsList not null!");
+
+getDoubleVector = putDoubleVector == void ? null : putDoubleVector;
+if(getDoubleVector != void)
+	throw new Exception("getDoubleVector not null!");
+getDoubleVectorAsList = putDoubleVectorAsList == void ? null : putDoubleVectorAsList;
+if(getDoubleVectorAsList != void)
+	throw new Exception("getDoubleVectorAsList not null!");
+getDoubleMatrix = putDoubleMatrix == void ? null : putDoubleMatrix;
+if(getDoubleMatrix != void)
+	throw new Exception("getDoubleMatrix not null!");
+getDoubleMatrixAsList = putDoubleMatrixAsList == void ? null : putDoubleMatrixAsList;
+if(getDoubleMatrixAsList != void)
+	throw new Exception("getDoubleMatrixAsList not null!");
+
+getFloatVector = putFloatVector == void ? null : putFloatVector;
+if(getFloatVector != void)
+	throw new Exception("getFloatVector not null!");
+getFloatVectorAsList = putFloatVectorAsList == void ? null : putFloatVectorAsList;
+if(getFloatVectorAsList != void)
+	throw new Exception("getFloatVectorAsList not null!");
+getFloatMatrix = putFloatMatrix == void ? null : putFloatMatrix;
+if(getFloatMatrix != void)
+	throw new Exception("getFloatMatrix not null!");
+getFloatMatrixAsList = putFloatMatrixAsList == void ? null : putFloatMatrixAsList;
+if(getFloatMatrixAsList != void)
+	throw new Exception("getFloatMatrixAsList not null!");
+
+getIntegerVector = putIntegerVector == void ? null : putIntegerVector;
+if(getIntegerVector != void)
+	throw new Exception("getIntegerVector not null!");
+getIntegerVectorAsList = putIntegerVectorAsList == void ? null : putIntegerVectorAsList;
+if(getIntegerVectorAsList != void)
+	throw new Exception("getIntegerVectorAsList not null!");
+getIntegerMatrix = putIntegerMatrix == void ? null : putIntegerMatrix;
+if(getIntegerMatrix != void)
+	throw new Exception("getIntegerMatrix not null!");
+getIntegerMatrixAsList = putIntegerMatrixAsList == void ? null : putIntegerMatrixAsList;
+if(getIntegerMatrixAsList != void)
+	throw new Exception("getIntegerMatrixAsList not null!");
+
+getLongVector = putLongVector == void ? null : putLongVector;
+if(getLongVector != void)
+	throw new Exception("getLongVector not null!");
+getLongVectorAsList = putLongVectorAsList == void ? null : putLongVectorAsList;
+if(getLongVectorAsList != void)
+	throw new Exception("getLongVectorAsList not null!");
+getLongMatrix = putLongMatrix == void ? null : putLongMatrix;
+if(getLongMatrix != void)
+	throw new Exception("getLongMatrix not null!");
+getLongMatrixAsList = putLongMatrixAsList == void ? null : putLongMatrixAsList;
+if(getLongMatrixAsList != void)
+	throw new Exception("getLongMatrixAsList not null!");
+
+getPercentVector = putPercentVector == void ? null : putPercentVector;
+if(getPercentVector != void)
+	throw new Exception("getPercentVector not null!");
+getPercentVectorAsList = putPercentVectorAsList == void ? null : putPercentVectorAsList;
+if(getPercentVectorAsList != void)
+	throw new Exception("getPercentVectorAsList not null!");
+getPercentMatrix = putPercentMatrix == void ? null : putPercentMatrix;
+if(getPercentMatrix != void)
+	throw new Exception("getPercentMatrix not null!");
+getPercentMatrixAsList = putPercentMatrixAsList == void ? null : putPercentMatrixAsList;
+if(getPercentMatrixAsList != void)
+	throw new Exception("getPercentMatrixAsList not null!");
+
+getShortVector = putShortVector == void ? null : putShortVector;
+if(getShortVector != void)
+	throw new Exception("getShortVector not null!");
+getShortVectorAsList = putShortVectorAsList == void ? null : putShortVectorAsList;
+if(getShortVectorAsList != void)
+	throw new Exception("getShortVectorAsList not null!");
+getShortMatrix = putShortMatrix == void ? null : putShortMatrix;
+if(getShortMatrix != void)
+	throw new Exception("getShortMatrix not null!");
+getShortMatrixAsList = putShortMatrixAsList == void ? null : putShortMatrixAsList;
+if(getShortMatrixAsList != void)
+	throw new Exception("getShortMatrixAsList not null!");
+
+getStringVector = putStringVector == void ? null : putStringVector;
+if(getStringVector != void)
+	throw new Exception("getStringVector not null!");
+getStringVectorAsList = putStringVectorAsList == void ? null : putStringVectorAsList;
+if(getStringVectorAsList != void)
+	throw new Exception("getStringVectorAsList not null!");
+getStringMatrix = putStringMatrix == void ? null : putStringMatrix;
+if(getStringMatrix != void)
+	throw new Exception("getStringMatrix not null!");
+getStringMatrixAsList = putStringMatrixAsList == void ? null : putStringMatrixAsList;
+if(getStringMatrixAsList != void)
+	throw new Exception("getStringMatrixAsList not null!");

@@ -1,0 +1,49 @@
+System.out.println("getCharacter");
+if(getCharacter != void)
+	throw new Exception("getCharacter already defined!");
+getCharacter = putCharacter;
+getCharacterType = getCharacter.getClass();
+System.out.println(getCharacterType);
+System.out.println(getCharacter);
+if(getCharacterType != Character.class)
+	throw new Exception("getCharacter not Character!");
+
+System.out.println("getCharacterVector");
+if(getCharacterVector != void)
+	throw new Exception("getCharacterVector already defined!");
+getCharacterVector = putCharacterVector;
+getCharacterVectorType = getCharacterVector.getClass().getComponentType();
+System.out.println(getCharacterVectorType);
+System.out.println(getCharacterVector);
+if(getCharacterVectorType != char.class)
+	throw new Exception("getCharacterVector not Character!");
+
+System.out.println("getCharacterVectorAsList");
+if(getCharacterVectorAsList != void)
+	throw new Exception("getCharacterVectorAsList already defined!");
+getCharacterVectorAsList = putCharacterVectorAsList;
+getCharacterVectorAsListType = getCharacterVectorAsList.getClass().getComponentType();
+System.out.println(getCharacterVectorAsListType);
+System.out.println(getCharacterVectorAsList);
+if(getCharacterVectorAsListType != char.class)
+	throw new Exception("getCharacterVectorAsList not Character!");
+
+System.out.println("getCharacterMatrix");
+if(getCharacterMatrix != void)
+	throw new Exception("getCharacterMatrix already defined!");
+getCharacterMatrix = putCharacterMatrix;
+getCharacterMatrixType = getCharacterMatrix[0].getClass().getComponentType();
+System.out.println(getCharacterMatrixType);
+System.out.println(getCharacterMatrix);
+if(getCharacterMatrixType != char.class)
+	throw new Exception("getCharacterMatrix not Character!");
+
+System.out.println("getCharacterMatrixAsList");
+if(getCharacterMatrixAsList != void)
+	throw new Exception("getCharacterMatrixAsList already defined!");
+getCharacterMatrixAsList = putCharacterMatrixAsList;
+getCharacterMatrixAsListType = getCharacterMatrixAsList[0].getClass().getComponentType();
+System.out.println(getCharacterMatrixAsListType);
+System.out.println(getCharacterMatrixAsList);
+if(getCharacterMatrixAsListType != char.class)
+	throw new Exception("getCharacterMatrixAsList not Character!");

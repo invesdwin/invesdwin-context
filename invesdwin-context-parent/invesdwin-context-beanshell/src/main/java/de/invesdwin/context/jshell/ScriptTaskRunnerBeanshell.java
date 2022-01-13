@@ -1,0 +1,64 @@
+package de.invesdwin.context.jshell;
+
+import javax.annotation.concurrent.Immutable;
+import javax.inject.Named;
+
+import org.springframework.beans.factory.FactoryBean;
+
+import de.invesdwin.context.jshell.pool.BeanshellScriptEngineObjectPool;
+import de.invesdwin.context.jshell.pool.WrappedBeanshellScriptEngine;
+import de.invesdwin.util.error.Throwables;
+
+@Immutable
+@Named
+public final class ScriptTaskRunnerBeanshell implements IScriptTaskRunnerBeanshell, FactoryBean<ScriptTaskRunnerBeanshell> {
+
+    public static final ScriptTaskRunnerBeanshell INSTANCE = new ScriptTaskRunnerBeanshell();
+
+    /**
+     * public for ServiceLoader support
+     */
+    public ScriptTaskRunnerBeanshell() {
+    }
+
+    @Override
+    public <T> T run(final AScriptTaskBeanshell<T> scriptTask) {
+        //get session
+        final WrappedBeanshellScriptEngine scriptEngine = BeanshellScriptEngineObjectPool.INSTANCE.borrowObject();
+        try {
+            //inputs
+            final ScriptTaskEngineBeanshell engine = new ScriptTaskEngineBeanshell(scriptEngine);
+            scriptTask.populateInputs(engine.getInputs());
+
+            //execute
+            scriptTask.executeScript(engine);
+
+            //results
+            final T result = scriptTask.extractResults(engine.getResults());
+            engine.close();
+
+            //return
+            BeanshellScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
+            return result;
+        } catch (final Throwable t) {
+            BeanshellScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
+            throw Throwables.propagate(t);
+        }
+    }
+
+    @Override
+    public ScriptTaskRunnerBeanshell getObject() throws Exception {
+        return INSTANCE;
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return ScriptTaskRunnerBeanshell.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
+
+}

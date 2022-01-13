@@ -12,19 +12,19 @@ import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 @NotThreadSafe
 public class ScriptTaskEngineJshell implements IScriptTaskEngine {
 
-    private WrappedJshellScriptEngine javascriptScriptEngine;
+    private WrappedJshellScriptEngine scriptEngine;
     private final ScriptTaskInputsJshell inputs;
     private final ScriptTaskResultsJshell results;
 
-    public ScriptTaskEngineJshell(final WrappedJshellScriptEngine javascriptScriptEngine) {
-        this.javascriptScriptEngine = javascriptScriptEngine;
+    public ScriptTaskEngineJshell(final WrappedJshellScriptEngine scriptEngine) {
+        this.scriptEngine = scriptEngine;
         this.inputs = new ScriptTaskInputsJshell(this);
         this.results = new ScriptTaskResultsJshell(this);
     }
 
     @Override
     public void eval(final String expression) {
-        javascriptScriptEngine.eval(expression);
+        scriptEngine.eval(expression);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class ScriptTaskEngineJshell implements IScriptTaskEngine {
 
     @Override
     public void close() {
-        javascriptScriptEngine = null;
+        scriptEngine = null;
     }
 
     @Override
     public WrappedJshellScriptEngine unwrap() {
-        return javascriptScriptEngine;
+        return scriptEngine;
     }
 
     /**

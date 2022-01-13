@@ -26,6 +26,7 @@
 		<module>invesdwin-context-jruby</module>
 		<module>invesdwin-context-javascript</module>
 		<module>invesdwin-context-jshell</module>
+		<module>invesdwin-context-beanshell</module>
 	</modules>
 
 	<licenses>
@@ -98,6 +99,7 @@
 		<version.postgresql>42.2.14</version.postgresql>
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
+		<version.bsh>2.0b6</version.bsh>
 	</properties>
 
 	<dependencyManagement>
@@ -179,6 +181,11 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jshell</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-beanshell</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 
@@ -605,10 +612,15 @@
 			</dependency>
 
 			<dependency>
-			<groupId>com.github.rjolly</groupId>
-			<artifactId>jshellscriptengine</artifactId>
-			<version>${version.jshellscriptengine}</version>
-		</dependency>
+				<groupId>com.github.rjolly</groupId>
+				<artifactId>jshellscriptengine</artifactId>
+				<version>${version.jshellscriptengine}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache-extras.beanshell</groupId>
+				<artifactId>bsh</artifactId>
+				<version>${version.bsh}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
