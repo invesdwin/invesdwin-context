@@ -5,8 +5,8 @@ import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import de.invesdwin.context.jshell.pool.BeanshellScriptEngineObjectPool;
-import de.invesdwin.context.jshell.pool.WrappedBeanshellScriptEngine;
+import de.invesdwin.context.jshell.pool.BeanshellInterpreterObjectPool;
+import de.invesdwin.context.jshell.pool.WrappedBeanshellInterpreter;
 import de.invesdwin.util.error.Throwables;
 
 @Immutable
@@ -24,7 +24,7 @@ public final class ScriptTaskRunnerBeanshell implements IScriptTaskRunnerBeanshe
     @Override
     public <T> T run(final AScriptTaskBeanshell<T> scriptTask) {
         //get session
-        final WrappedBeanshellScriptEngine scriptEngine = BeanshellScriptEngineObjectPool.INSTANCE.borrowObject();
+        final WrappedBeanshellInterpreter scriptEngine = BeanshellInterpreterObjectPool.INSTANCE.borrowObject();
         try {
             //inputs
             final ScriptTaskEngineBeanshell engine = new ScriptTaskEngineBeanshell(scriptEngine);
@@ -38,10 +38,10 @@ public final class ScriptTaskRunnerBeanshell implements IScriptTaskRunnerBeanshe
             engine.close();
 
             //return
-            BeanshellScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
+            BeanshellInterpreterObjectPool.INSTANCE.returnObject(scriptEngine);
             return result;
         } catch (final Throwable t) {
-            BeanshellScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
+            BeanshellInterpreterObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
         }
     }

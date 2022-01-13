@@ -1,142 +1,142 @@
-getBooleanVector = putBooleanVector == void ? null : putBooleanVector;
-if(getBooleanVector != void)
+getBooleanVector = putBooleanVector;
+if(getBooleanVector != null)
 	throw new Exception("getBooleanVector not null!");
-getBooleanVectorAsList = putBooleanVectorAsList == void ? null : putBooleanVectorAsList;
-if(getBooleanVectorAsList != void)
+getBooleanVectorAsList = putBooleanVectorAsList;
+if(getBooleanVectorAsList != null)
 	throw new Exception("getBooleanVectorAsList not null!");
-getBooleanMatrix = putBooleanMatrix == void ? null : putBooleanMatrix;
-if(getBooleanMatrix != void)
+getBooleanMatrix = putBooleanMatrix;
+if(getBooleanMatrix != null)
 	throw new Exception("getBooleanMatrix not null!");
-getBooleanMatrixAsList = putBooleanMatrixAsList == void ? null : putBooleanMatrixAsList;
-if(getBooleanMatrixAsList != void)
+getBooleanMatrixAsList = putBooleanMatrixAsList;
+if(getBooleanMatrixAsList != null)
 	throw new Exception("getBooleanMatrixAsList not null!");
 
-getByteVector = putByteVector == void ? null : putByteVector;
-if(getByteVector != void)
+getByteVector = putByteVector;
+if(getByteVector != null)
 	throw new Exception("getByteVector not null!");
-getByteVectorAsList = putByteVectorAsList == void ? null : putByteVectorAsList;
-if(getByteVectorAsList != void)
+getByteVectorAsList = putByteVectorAsList;
+if(getByteVectorAsList != null)
 	throw new Exception("getByteVectorAsList not null!");
-getByteMatrix = putByteMatrix == void ? null : putByteMatrix;
-if(getByteMatrix != void)
+getByteMatrix = putByteMatrix;
+if(getByteMatrix != null)
 	throw new Exception("getByteMatrix not null!");
-getByteMatrixAsList = putByteMatrixAsList == void ? null : putByteMatrixAsList;
-if(getByteMatrixAsList != void)
+getByteMatrixAsList = putByteMatrixAsList;
+if(getByteMatrixAsList != null)
 	throw new Exception("getByteMatrixAsList not null!");
 
-getCharacterVector = putCharacterVector == void ? null : putCharacterVector;
-if(getCharacterVector != void)
+getCharacterVector = putCharacterVector;
+if(getCharacterVector != null)
 	throw new Exception("getCharacterVector not null!");
-getCharacterVectorAsList = putCharacterVectorAsList == void ? null : putCharacterVectorAsList;
-if(getCharacterVectorAsList != void)
+getCharacterVectorAsList = putCharacterVectorAsList;
+if(getCharacterVectorAsList != null)
 	throw new Exception("getCharacterVectorAsList not null!");
-getCharacterMatrix = putCharacterMatrix == void ? null : putCharacterMatrix;
-if(getCharacterMatrix != void)
+getCharacterMatrix = putCharacterMatrix;
+if(getCharacterMatrix != null)
 	throw new Exception("getCharacterMatrix not null!");
-getCharacterMatrixAsList = putCharacterMatrixAsList == void ? null : putCharacterMatrixAsList;
-if(getCharacterMatrixAsList != void)
+getCharacterMatrixAsList = putCharacterMatrixAsList;
+if(getCharacterMatrixAsList != null)
 	throw new Exception("getCharacterMatrixAsList not null!");
 
-getDecimalVector = putDecimalVector == void ? null : putDecimalVector;
-if(getDecimalVector != void)
+getDecimalVector = putDecimalVector;
+if(getDecimalVector != null)
 	throw new Exception("getDecimalVector not null!");
-getDecimalVectorAsList = putDecimalVectorAsList == void ? null : putDecimalVectorAsList;
-if(getDecimalVectorAsList != void)
+getDecimalVectorAsList = putDecimalVectorAsList;
+if(getDecimalVectorAsList != null)
 	throw new Exception("getDecimalVectorAsList not null!");
-getDecimalMatrix = putDecimalMatrix == void ? null : putDecimalMatrix;
-if(getDecimalMatrix != void)
+getDecimalMatrix = putDecimalMatrix;
+if(getDecimalMatrix != null)
 	throw new Exception("getDecimalMatrix not null!");
-getDecimalMatrixAsList = putDecimalMatrixAsList == void ? null : putDecimalMatrixAsList;
-if(getDecimalMatrixAsList != void)
+getDecimalMatrixAsList = putDecimalMatrixAsList;
+if(getDecimalMatrixAsList != null)
 	throw new Exception("getDecimalMatrixAsList not null!");
 
-getDoubleVector = putDoubleVector == void ? null : putDoubleVector;
-if(getDoubleVector != void)
+getDoubleVector = putDoubleVector;
+if(getDoubleVector != null)
 	throw new Exception("getDoubleVector not null!");
-getDoubleVectorAsList = putDoubleVectorAsList == void ? null : putDoubleVectorAsList;
-if(getDoubleVectorAsList != void)
+getDoubleVectorAsList = putDoubleVectorAsList;
+if(getDoubleVectorAsList != null)
 	throw new Exception("getDoubleVectorAsList not null!");
-getDoubleMatrix = putDoubleMatrix == void ? null : putDoubleMatrix;
-if(getDoubleMatrix != void)
+getDoubleMatrix = putDoubleMatrix;
+if(getDoubleMatrix != null)
 	throw new Exception("getDoubleMatrix not null!");
-getDoubleMatrixAsList = putDoubleMatrixAsList == void ? null : putDoubleMatrixAsList;
-if(getDoubleMatrixAsList != void)
+getDoubleMatrixAsList = putDoubleMatrixAsList;
+if(getDoubleMatrixAsList != null)
 	throw new Exception("getDoubleMatrixAsList not null!");
 
-getFloatVector = putFloatVector == void ? null : putFloatVector;
-if(getFloatVector != void)
+getFloatVector = putFloatVector;
+if(getFloatVector != null)
 	throw new Exception("getFloatVector not null!");
-getFloatVectorAsList = putFloatVectorAsList == void ? null : putFloatVectorAsList;
-if(getFloatVectorAsList != void)
+getFloatVectorAsList = putFloatVectorAsList;
+if(getFloatVectorAsList != null)
 	throw new Exception("getFloatVectorAsList not null!");
-getFloatMatrix = putFloatMatrix == void ? null : putFloatMatrix;
-if(getFloatMatrix != void)
+getFloatMatrix = putFloatMatrix;
+if(getFloatMatrix != null)
 	throw new Exception("getFloatMatrix not null!");
-getFloatMatrixAsList = putFloatMatrixAsList == void ? null : putFloatMatrixAsList;
-if(getFloatMatrixAsList != void)
+getFloatMatrixAsList = putFloatMatrixAsList;
+if(getFloatMatrixAsList != null)
 	throw new Exception("getFloatMatrixAsList not null!");
 
-getIntegerVector = putIntegerVector == void ? null : putIntegerVector;
-if(getIntegerVector != void)
+getIntegerVector = putIntegerVector;
+if(getIntegerVector != null)
 	throw new Exception("getIntegerVector not null!");
-getIntegerVectorAsList = putIntegerVectorAsList == void ? null : putIntegerVectorAsList;
-if(getIntegerVectorAsList != void)
+getIntegerVectorAsList = putIntegerVectorAsList;
+if(getIntegerVectorAsList != null)
 	throw new Exception("getIntegerVectorAsList not null!");
-getIntegerMatrix = putIntegerMatrix == void ? null : putIntegerMatrix;
-if(getIntegerMatrix != void)
+getIntegerMatrix = putIntegerMatrix;
+if(getIntegerMatrix != null)
 	throw new Exception("getIntegerMatrix not null!");
-getIntegerMatrixAsList = putIntegerMatrixAsList == void ? null : putIntegerMatrixAsList;
-if(getIntegerMatrixAsList != void)
+getIntegerMatrixAsList = putIntegerMatrixAsList;
+if(getIntegerMatrixAsList != null)
 	throw new Exception("getIntegerMatrixAsList not null!");
 
-getLongVector = putLongVector == void ? null : putLongVector;
-if(getLongVector != void)
+getLongVector = putLongVector;
+if(getLongVector != null)
 	throw new Exception("getLongVector not null!");
-getLongVectorAsList = putLongVectorAsList == void ? null : putLongVectorAsList;
-if(getLongVectorAsList != void)
+getLongVectorAsList = putLongVectorAsList;
+if(getLongVectorAsList != null)
 	throw new Exception("getLongVectorAsList not null!");
-getLongMatrix = putLongMatrix == void ? null : putLongMatrix;
-if(getLongMatrix != void)
+getLongMatrix = putLongMatrix;
+if(getLongMatrix != null)
 	throw new Exception("getLongMatrix not null!");
-getLongMatrixAsList = putLongMatrixAsList == void ? null : putLongMatrixAsList;
-if(getLongMatrixAsList != void)
+getLongMatrixAsList = putLongMatrixAsList;
+if(getLongMatrixAsList != null)
 	throw new Exception("getLongMatrixAsList not null!");
 
-getPercentVector = putPercentVector == void ? null : putPercentVector;
-if(getPercentVector != void)
+getPercentVector = putPercentVector;
+if(getPercentVector != null)
 	throw new Exception("getPercentVector not null!");
-getPercentVectorAsList = putPercentVectorAsList == void ? null : putPercentVectorAsList;
-if(getPercentVectorAsList != void)
+getPercentVectorAsList = putPercentVectorAsList;
+if(getPercentVectorAsList != null)
 	throw new Exception("getPercentVectorAsList not null!");
-getPercentMatrix = putPercentMatrix == void ? null : putPercentMatrix;
-if(getPercentMatrix != void)
+getPercentMatrix = putPercentMatrix;
+if(getPercentMatrix != null)
 	throw new Exception("getPercentMatrix not null!");
-getPercentMatrixAsList = putPercentMatrixAsList == void ? null : putPercentMatrixAsList;
-if(getPercentMatrixAsList != void)
+getPercentMatrixAsList = putPercentMatrixAsList;
+if(getPercentMatrixAsList != null)
 	throw new Exception("getPercentMatrixAsList not null!");
 
-getShortVector = putShortVector == void ? null : putShortVector;
-if(getShortVector != void)
+getShortVector = putShortVector;
+if(getShortVector != null)
 	throw new Exception("getShortVector not null!");
-getShortVectorAsList = putShortVectorAsList == void ? null : putShortVectorAsList;
-if(getShortVectorAsList != void)
+getShortVectorAsList = putShortVectorAsList;
+if(getShortVectorAsList != null)
 	throw new Exception("getShortVectorAsList not null!");
-getShortMatrix = putShortMatrix == void ? null : putShortMatrix;
-if(getShortMatrix != void)
+getShortMatrix = putShortMatrix;
+if(getShortMatrix != null)
 	throw new Exception("getShortMatrix not null!");
-getShortMatrixAsList = putShortMatrixAsList == void ? null : putShortMatrixAsList;
-if(getShortMatrixAsList != void)
+getShortMatrixAsList = putShortMatrixAsList;
+if(getShortMatrixAsList != null)
 	throw new Exception("getShortMatrixAsList not null!");
 
-getStringVector = putStringVector == void ? null : putStringVector;
-if(getStringVector != void)
+getStringVector = putStringVector;
+if(getStringVector != null)
 	throw new Exception("getStringVector not null!");
-getStringVectorAsList = putStringVectorAsList == void ? null : putStringVectorAsList;
-if(getStringVectorAsList != void)
+getStringVectorAsList = putStringVectorAsList;
+if(getStringVectorAsList != null)
 	throw new Exception("getStringVectorAsList not null!");
-getStringMatrix = putStringMatrix == void ? null : putStringMatrix;
-if(getStringMatrix != void)
+getStringMatrix = putStringMatrix;
+if(getStringMatrix != null)
 	throw new Exception("getStringMatrix not null!");
-getStringMatrixAsList = putStringMatrixAsList == void ? null : putStringMatrixAsList;
-if(getStringMatrixAsList != void)
+getStringMatrixAsList = putStringMatrixAsList;
+if(getStringMatrixAsList != null)
 	throw new Exception("getStringMatrixAsList not null!");

@@ -13,33 +13,33 @@ import de.invesdwin.util.concurrent.pool.AInvalidatingObjectPool;
  */
 @ThreadSafe
 @Named
-public final class BeanshellScriptEngineObjectPool extends AInvalidatingObjectPool<WrappedBeanshellScriptEngine>
-        implements FactoryBean<BeanshellScriptEngineObjectPool> {
+public final class BeanshellInterpreterObjectPool extends AInvalidatingObjectPool<WrappedBeanshellInterpreter>
+        implements FactoryBean<BeanshellInterpreterObjectPool> {
 
-    public static final BeanshellScriptEngineObjectPool INSTANCE = new BeanshellScriptEngineObjectPool();
+    public static final BeanshellInterpreterObjectPool INSTANCE = new BeanshellInterpreterObjectPool();
 
-    private BeanshellScriptEngineObjectPool() {
+    private BeanshellInterpreterObjectPool() {
         super();
     }
 
     @Override
-    public void invalidateObject(final WrappedBeanshellScriptEngine obj) {
+    public void invalidateObject(final WrappedBeanshellInterpreter obj) {
         obj.close();
     }
 
     @Override
-    protected WrappedBeanshellScriptEngine newObject() {
-        return new WrappedBeanshellScriptEngine();
+    protected WrappedBeanshellInterpreter newObject() {
+        return new WrappedBeanshellInterpreter();
     }
 
     @Override
-    public BeanshellScriptEngineObjectPool getObject() {
+    public BeanshellInterpreterObjectPool getObject() {
         return INSTANCE;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return BeanshellScriptEngineObjectPool.class;
+        return BeanshellInterpreterObjectPool.class;
     }
 
     @Override

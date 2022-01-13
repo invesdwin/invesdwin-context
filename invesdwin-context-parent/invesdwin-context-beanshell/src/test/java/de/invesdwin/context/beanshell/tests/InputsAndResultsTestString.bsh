@@ -11,10 +11,10 @@ if(getStringType != String.class)
 System.out.println("getStringWithNull");
 if(getStringWithNull != void)
 	throw new Exception("getStringWithNull already defined!");
-getStringWithNull = putStringWithNull == void ? null : putStringWithNull;
-System.out.println(getStringWithNull == void ? null : getStringWithNull);
-if(getStringWithNull != void)
-	throw new Exception("getStringWithNull not void!");
+getStringWithNull = putStringWithNull;
+System.out.println(getStringWithNull);
+if(getStringWithNull != null)
+	throw new Exception("getStringWithNull not null!");
 
 System.out.println("getStringVector");
 if(getStringVector != void)
