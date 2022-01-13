@@ -17,8 +17,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>ch.obermuhlner</groupId>
-			<artifactId>jshell-scriptengine</artifactId>
+			<!-- this is a lot faster than: https://github.com/eobermuhlner/jshell-scriptengine -->
+			<!-- because it isolates the classloader per jshell script engine? at least not reusing engines makes it a lot faster -->
+			<groupId>com.github.rjolly</groupId>
+			<artifactId>jshellscriptengine</artifactId>
 		</dependency>
 	</dependencies>
 

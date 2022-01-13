@@ -97,7 +97,7 @@
 		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
 		<version.postgresql>42.2.14</version.postgresql>
 
-		<version.jshell-scriptengine>1.1.0</version.jshell-scriptengine>
+		<version.jshellscriptengine>1.0</version.jshellscriptengine>
 	</properties>
 
 	<dependencyManagement>
@@ -605,10 +605,10 @@
 			</dependency>
 
 			<dependency>
-				<groupId>ch.obermuhlner</groupId>
-				<artifactId>jshell-scriptengine</artifactId>
-				<version>${version.jshell-scriptengine}</version>
-			</dependency>
+			<groupId>com.github.rjolly</groupId>
+			<artifactId>jshellscriptengine</artifactId>
+			<version>${version.jshellscriptengine}</version>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 

@@ -50,7 +50,6 @@ public class WrappedJshellScriptEngine implements Closeable {
         } else {
             invocable = null;
         }
-        reset();
     }
 
     public ScriptEngine getEngine() {
@@ -92,7 +91,6 @@ public class WrappedJshellScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("bindings", binding);
     }
 
     @Override
