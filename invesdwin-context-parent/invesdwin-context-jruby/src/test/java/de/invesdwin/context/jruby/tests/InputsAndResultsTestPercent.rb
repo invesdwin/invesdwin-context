@@ -6,8 +6,8 @@ getPercent = putPercent
 getPercentType = getPercent.class
 puts(getPercentType)
 puts(getPercent)
-if(getPercentType != 'number')
-	raise "getPercent not number!"
+if(getPercentType != Float)
+	raise "getPercent not Float!"
 end
 
 puts("getPercentVector")
@@ -18,8 +18,8 @@ getPercentVector = putPercentVector
 getPercentVectorType = getPercentVector[0].class
 puts(getPercentVectorType)
 puts(getPercentVector)
-if(getPercentVectorType != 'number')
-	raise "getPercentVector not number!"
+if(getPercentVectorType != Float)
+	raise "getPercentVector not Float!"
 end
 
 puts("getPercentVectorAsList")
@@ -30,8 +30,8 @@ getPercentVectorAsList = putPercentVectorAsList
 getPercentVectorAsListType = getPercentVectorAsList[0].class
 puts(getPercentVectorAsListType)
 puts(getPercentVectorAsList)
-if(getPercentVectorAsListType != 'number')
-	raise "getPercentVectorAsList not number!"
+if(getPercentVectorAsListType != Float)
+	raise "getPercentVectorAsList not Float!"
 end
 
 puts("getPercentMatrix")
@@ -42,8 +42,8 @@ getPercentMatrix = putPercentMatrix
 getPercentMatrixType = getPercentMatrix[0][0].class
 puts(getPercentMatrixType)
 puts(getPercentMatrix)
-if(getPercentMatrixType != 'number')
-	raise "getPercentMatrix not number!"
+if(getPercentMatrixType != Float)
+	raise "getPercentMatrix not Float!"
 end
 
 puts("getPercentMatrixAsList")
@@ -54,6 +54,6 @@ getPercentMatrixAsList = putPercentMatrixAsList
 getPercentMatrixAsListType = getPercentMatrixAsList[0][0].class
 puts(getPercentMatrixAsListType)
 puts(getPercentMatrixAsList)
-if(getPercentMatrixAsListType != 'number')
-	raise "getPercentMatrixAsList not number!"
+if(getPercentMatrixAsListType != Float)
+	raise "getPercentMatrixAsList not Float!"
 end

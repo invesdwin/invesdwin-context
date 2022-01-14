@@ -6,8 +6,8 @@ getShort = putShort
 getShortType = getShort.class
 puts(getShortType)
 puts(getShort)
-if(getShortType != 'number')
-	raise "getShort not number!"
+if(getShortType != Integer)
+	raise "getShort not Integer!"
 end
 
 puts("getShortVector")
@@ -18,8 +18,8 @@ getShortVector = putShortVector
 getShortVectorType = getShortVector[0].class
 puts(getShortVectorType)
 puts(getShortVector)
-if(getShortVectorType != 'number')
-	raise "getShortVector not number!"
+if(getShortVectorType != Integer)
+	raise "getShortVector not Integer!"
 end
 
 puts("getShortVectorAsList")
@@ -30,8 +30,8 @@ getShortVectorAsList = putShortVectorAsList
 getShortVectorAsListType = getShortVectorAsList[0].class
 puts(getShortVectorAsListType)
 puts(getShortVectorAsList)
-if(getShortVectorAsListType != 'number')
-	raise "getShortVectorAsList not number!"
+if(getShortVectorAsListType != Integer)
+	raise "getShortVectorAsList not Integer!"
 end
 
 puts("getShortMatrix")
@@ -42,8 +42,8 @@ getShortMatrix = putShortMatrix
 getShortMatrixType = getShortMatrix[0][0].class
 puts(getShortMatrixType)
 puts(getShortMatrix)
-if(getShortMatrixType != 'number')
-	raise "getShortMatrix not number!"
+if(getShortMatrixType != Integer)
+	raise "getShortMatrix not Integer!"
 end
 
 puts("getShortMatrixAsList")
@@ -54,6 +54,6 @@ getShortMatrixAsList = putShortMatrixAsList
 getShortMatrixAsListType = getShortMatrixAsList[0][0].class
 puts(getShortMatrixAsListType)
 puts(getShortMatrixAsList)
-if(getShortMatrixAsListType != 'number')
-	raise "getShortMatrixAsList not number!"
+if(getShortMatrixAsListType != Integer)
+	raise "getShortMatrixAsList not Integer!"
 end

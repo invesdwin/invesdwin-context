@@ -1,12 +1,13 @@
 puts("getDecimal")
 unless (defined?(getDecimal)).nil?
 	raise "getDecimal already defined!"
+end
 getDecimal = putDecimal
 getDecimalType = getDecimal.class
 puts(getDecimalType)
 puts(getDecimal)
-if(getDecimalType != 'number')
-	raise "getDecimal not number!"
+if(getDecimalType != Float)
+	raise "getDecimal not Float!"
 end
 
 puts("getDecimalVector")
@@ -17,8 +18,8 @@ getDecimalVector = putDecimalVector
 getDecimalVectorType = getDecimalVector[0].class
 puts(getDecimalVectorType)
 puts(getDecimalVector)
-if(getDecimalVectorType != 'number')
-	raise "getDecimalVector not number!"
+if(getDecimalVectorType != Float)
+	raise "getDecimalVector not Float!"
 end
 
 puts("getDecimalVectorAsList")
@@ -29,8 +30,8 @@ getDecimalVectorAsList = putDecimalVectorAsList
 getDecimalVectorAsListType = getDecimalVectorAsList[0].class
 puts(getDecimalVectorAsListType)
 puts(getDecimalVectorAsList)
-if(getDecimalVectorAsListType != 'number')
-	raise "getDecimalVectorAsList not number!"
+if(getDecimalVectorAsListType != Float)
+	raise "getDecimalVectorAsList not Float!"
 end
 
 puts("getDecimalMatrix")
@@ -41,8 +42,8 @@ getDecimalMatrix = putDecimalMatrix
 getDecimalMatrixType = getDecimalMatrix[0][0].class
 puts(getDecimalMatrixType)
 puts(getDecimalMatrix)
-if(getDecimalMatrixType != 'number')
-	raise "getDecimalMatrix not number!"
+if(getDecimalMatrixType != Float)
+	raise "getDecimalMatrix not Float!"
 end
 
 puts("getDecimalMatrixAsList")
@@ -53,6 +54,6 @@ getDecimalMatrixAsList = putDecimalMatrixAsList
 getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0].class
 puts(getDecimalMatrixAsListType)
 puts(getDecimalMatrixAsList)
-if(getDecimalMatrixAsListType != 'number')
-	raise "getDecimalMatrixAsList not number!"
+if(getDecimalMatrixAsListType != Float)
+	raise "getDecimalMatrixAsList not Float!"
 end

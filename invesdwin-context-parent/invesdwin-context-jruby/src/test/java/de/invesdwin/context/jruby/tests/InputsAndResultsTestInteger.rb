@@ -6,8 +6,8 @@ getInteger = putInteger
 getIntegerType = getInteger.class
 puts(getIntegerType)
 puts(getInteger)
-if(getIntegerType != 'number')
-	raise "getInteger not number!"
+if(getIntegerType != Integer)
+	raise "getInteger not Integer!"
 end
 
 puts("getIntegerVector")
@@ -18,8 +18,8 @@ getIntegerVector = putIntegerVector
 getIntegerVectorType = getIntegerVector[0].class
 puts(getIntegerVectorType)
 puts(getIntegerVector)
-if(getIntegerVectorType != 'number')
-	raise "getIntegerVector not number!"
+if(getIntegerVectorType != Integer)
+	raise "getIntegerVector not Integer!"
 end
 
 puts("getIntegerVectorAsList")
@@ -30,8 +30,8 @@ getIntegerVectorAsList = putIntegerVectorAsList
 getIntegerVectorAsListType = getIntegerVectorAsList[0].class
 puts(getIntegerVectorAsListType)
 puts(getIntegerVectorAsList)
-if(getIntegerVectorAsListType != 'number')
-	raise "getIntegerVectorAsList not number!"
+if(getIntegerVectorAsListType != Integer)
+	raise "getIntegerVectorAsList not Integer!"
 end
 
 puts("getIntegerMatrix")
@@ -42,8 +42,8 @@ getIntegerMatrix = putIntegerMatrix
 getIntegerMatrixType = getIntegerMatrix[0][0].class
 puts(getIntegerMatrixType)
 puts(getIntegerMatrix)
-if(getIntegerMatrixType != 'number')
-	raise "getIntegerMatrix not number!"
+if(getIntegerMatrixType != Integer)
+	raise "getIntegerMatrix not Integer!"
 end
 
 puts("getIntegerMatrixAsList")
@@ -54,6 +54,6 @@ getIntegerMatrixAsList = putIntegerMatrixAsList
 getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].class
 puts(getIntegerMatrixAsListType)
 puts(getIntegerMatrixAsList)
-if(getIntegerMatrixAsListType != 'number')
-	raise "getIntegerMatrixAsList not number!"
+if(getIntegerMatrixAsListType != Integer)
+	raise "getIntegerMatrixAsList not Integer!"
 end

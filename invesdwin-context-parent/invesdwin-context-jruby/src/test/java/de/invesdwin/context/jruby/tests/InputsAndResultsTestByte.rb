@@ -6,8 +6,8 @@ getByte = putByte
 getByteType = getByte.class
 puts(getByteType)
 puts(getByte)
-if(getByteType != 'number')
-	raise "getByte not number!"
+if(getByteType != Integer)
+	raise "getByte not Integer!"
 end
 
 puts("getByteVector")
@@ -18,8 +18,8 @@ getByteVector = putByteVector
 getByteVectorType = getByteVector[0].class
 puts(getByteVectorType)
 puts(getByteVector)
-if(getByteVectorType != 'number')
-	raise "getByteVector not number!"
+if(getByteVectorType != Integer)
+	raise "getByteVector not Integer!"
 end
 
 puts("getByteVectorAsList")
@@ -30,8 +30,8 @@ getByteVectorAsList = putByteVectorAsList
 getByteVectorAsListType = getByteVectorAsList[0].class
 puts(getByteVectorAsListType)
 puts(getByteVectorAsList)
-if(getByteVectorAsListType != 'number')
-	raise "getByteVectorAsList not number!"
+if(getByteVectorAsListType != Integer)
+	raise "getByteVectorAsList not Integer!"
 end
 
 puts("getByteMatrix")
@@ -42,8 +42,8 @@ getByteMatrix = putByteMatrix
 getByteMatrixType = getByteMatrix[0][0].class
 puts(getByteMatrixType)
 puts(getByteMatrix)
-if(getByteMatrixType != 'number')
-	raise "getByteMatrix not number!"
+if(getByteMatrixType != Integer)
+	raise "getByteMatrix not Integer!"
 end
 
 puts("getByteMatrixAsList")
@@ -54,6 +54,6 @@ getByteMatrixAsList = putByteMatrixAsList
 getByteMatrixAsListType = getByteMatrixAsList[0][0].class
 puts(getByteMatrixAsListType)
 puts(getByteMatrixAsList)
-if(getByteMatrixAsListType != 'number')
-	raise "getByteMatrixAsList not number!"
+if(getByteMatrixAsListType != Integer)
+	raise "getByteMatrixAsList not Integer!"
 end

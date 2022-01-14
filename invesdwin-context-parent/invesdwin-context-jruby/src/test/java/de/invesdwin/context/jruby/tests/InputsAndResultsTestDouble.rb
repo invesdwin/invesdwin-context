@@ -6,8 +6,8 @@ getDouble = putDouble
 getDoubleType = getDouble.class
 puts(getDoubleType)
 puts(getDouble)
-if(getDoubleType != 'number')
-	raise "getDouble not number!"
+if(getDoubleType != Float)
+	raise "getDouble not Float!"
 end
 
 puts("getDoubleVector")
@@ -18,8 +18,8 @@ getDoubleVector = putDoubleVector
 getDoubleVectorType = getDoubleVector[0].class
 puts(getDoubleVectorType)
 puts(getDoubleVector)
-if(getDoubleVectorType != 'number')
-	raise "getDoubleVector not number!"
+if(getDoubleVectorType != Float)
+	raise "getDoubleVector not Float!"
 end
 
 puts("getDoubleVectorAsList")
@@ -30,8 +30,8 @@ getDoubleVectorAsList = putDoubleVectorAsList
 getDoubleVectorAsListType = getDoubleVectorAsList[0].class
 puts(getDoubleVectorAsListType)
 puts(getDoubleVectorAsList)
-if(getDoubleVectorAsListType != 'number')
-	raise "getDoubleVectorAsList not number!"
+if(getDoubleVectorAsListType != Float)
+	raise "getDoubleVectorAsList not Float!"
 end
 
 puts("getDoubleMatrix")
@@ -42,8 +42,8 @@ getDoubleMatrix = putDoubleMatrix
 getDoubleMatrixType = getDoubleMatrix[0][0].class
 puts(getDoubleMatrixType)
 puts(getDoubleMatrix)
-if(getDoubleMatrixType != 'number')
-	raise "getDoubleMatrix not number!"
+if(getDoubleMatrixType != Float)
+	raise "getDoubleMatrix not Float!"
 end
 
 puts("getDoubleMatrixAsList")
@@ -54,6 +54,6 @@ getDoubleMatrixAsList = putDoubleMatrixAsList
 getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].class
 puts(getDoubleMatrixAsListType)
 puts(getDoubleMatrixAsList)
-if(getDoubleMatrixAsListType != 'number')
-	raise "getDoubleMatrixAsList not number!"
+if(getDoubleMatrixAsListType != Float)
+	raise "getDoubleMatrixAsList not Float!"
 end

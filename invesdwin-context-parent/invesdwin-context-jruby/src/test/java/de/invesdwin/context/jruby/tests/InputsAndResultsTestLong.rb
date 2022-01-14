@@ -6,8 +6,8 @@ getLong = putLong
 getLongType = getLong.class
 puts(getLongType)
 puts(getLong)
-if(getLongType != 'number')
-	raise "getLong not number!"
+if(getLongType != Integer)
+	raise "getLong not Integer!"
 end
 
 puts("getLongVector")
@@ -18,8 +18,8 @@ getLongVector = putLongVector
 getLongVectorType = getLongVector[0].class
 puts(getLongVectorType)
 puts(getLongVector)
-if(getLongVectorType != 'number')
-	raise "getLongVector not number!"
+if(getLongVectorType != Integer)
+	raise "getLongVector not Integer!"
 end
 
 puts("getLongVectorAsList")
@@ -30,8 +30,8 @@ getLongVectorAsList = putLongVectorAsList
 getLongVectorAsListType = getLongVectorAsList[0].class
 puts(getLongVectorAsListType)
 puts(getLongVectorAsList)
-if(getLongVectorAsListType != 'number')
-	raise "getLongVectorAsList not number!"
+if(getLongVectorAsListType != Integer)
+	raise "getLongVectorAsList not Integer!"
 end
 
 puts("getLongMatrix")
@@ -42,8 +42,8 @@ getLongMatrix = putLongMatrix
 getLongMatrixType = getLongMatrix[0][0].class
 puts(getLongMatrixType)
 puts(getLongMatrix)
-if(getLongMatrixType != 'number')
-	raise "getLongMatrix not number!"
+if(getLongMatrixType != Integer)
+	raise "getLongMatrix not Integer!"
 end
 
 puts("getLongMatrixAsList")
@@ -54,6 +54,6 @@ getLongMatrixAsList = putLongMatrixAsList
 getLongMatrixAsListType = getLongMatrixAsList[0][0].class
 puts(getLongMatrixAsListType)
 puts(getLongMatrixAsList)
-if(getLongMatrixAsListType != 'number')
-	raise "getLongMatrixAsList not number!"
+if(getLongMatrixAsListType != Integer)
+	raise "getLongMatrixAsList not Integer!"
 end

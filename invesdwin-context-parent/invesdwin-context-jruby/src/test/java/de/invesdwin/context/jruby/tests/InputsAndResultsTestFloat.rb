@@ -6,8 +6,8 @@ getFloat = putFloat
 getFloatType = getFloat.class
 puts(getFloatType)
 puts(getFloat)
-if(getFloatType != 'number')
-	raise "getFloat not number!"
+if(getFloatType != Float)
+	raise "getFloat not Float!"
 end
 
 puts("getFloatVector")
@@ -18,8 +18,8 @@ getFloatVector = putFloatVector
 getFloatVectorType = getFloatVector[0].class
 puts(getFloatVectorType)
 puts(getFloatVector)
-if(getFloatVectorType != 'number')
-	raise "getFloatVector not number!"
+if(getFloatVectorType != Float)
+	raise "getFloatVector not Float!"
 end
 
 puts("getFloatVectorAsList")
@@ -30,8 +30,8 @@ getFloatVectorAsList = putFloatVectorAsList
 getFloatVectorAsListType = getFloatVectorAsList[0].class
 puts(getFloatVectorAsListType)
 puts(getFloatVectorAsList)
-if(getFloatVectorAsListType != 'number')
-	raise "getFloatVectorAsList not number!"
+if(getFloatVectorAsListType != Float)
+	raise "getFloatVectorAsList not Float!"
 end
 
 puts("getFloatMatrix")
@@ -42,8 +42,8 @@ getFloatMatrix = putFloatMatrix
 getFloatMatrixType = getFloatMatrix[0][0].class
 puts(getFloatMatrixType)
 puts(getFloatMatrix)
-if(getFloatMatrixType != 'number')
-	raise "getFloatMatrix not number!"
+if(getFloatMatrixType != Float)
+	raise "getFloatMatrix not Float!"
 end
 
 puts("getFloatMatrixAsList")
@@ -54,6 +54,6 @@ getFloatMatrixAsList = putFloatMatrixAsList
 getFloatMatrixAsListType = getFloatMatrixAsList[0][0].class
 puts(getFloatMatrixAsListType)
 puts(getFloatMatrixAsList)
-if(getFloatMatrixAsListType != 'number')
-	raise "getFloatMatrixAsList not number!"
+if(getFloatMatrixAsListType != Float)
+	raise "getFloatMatrixAsList not Float!"
 end

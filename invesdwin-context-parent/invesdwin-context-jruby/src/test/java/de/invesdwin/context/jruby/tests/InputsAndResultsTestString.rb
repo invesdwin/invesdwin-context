@@ -6,8 +6,8 @@ getString = putString
 getStringType = getString.class
 puts(getStringType)
 puts(getString)
-if(getStringType != 'string')
-	raise "getString not string!"
+if(getStringType != String)
+	raise "getString not String!"
 end
 
 puts("getStringWithNull")
@@ -18,7 +18,7 @@ getStringWithNull = putStringWithNull
 getStringWithNullType = getStringWithNull.class
 puts(getStringWithNullType)
 puts(getStringWithNull)
-if(getStringWithNull != null)
+unless(getStringWithNull.nil?)
 	raise "getStringWithNull not null!"
 end
 
@@ -30,8 +30,8 @@ getStringVector = putStringVector
 getStringVectorType = getStringVector[0].class
 puts(getStringVectorType)
 puts(getStringVector)
-if(getStringVectorType != 'string')
-	raise "getStringVector not string!"
+if(getStringVectorType != String)
+	raise "getStringVector not String!"
 end
 
 puts("getStringVectorWithNull")
@@ -42,10 +42,10 @@ getStringVectorWithNull = putStringVectorWithNull
 getStringVectorWithNullType = getStringVectorWithNull[0].class
 puts(getStringVectorWithNullType)
 puts(getStringVectorWithNull)
-if(getStringVectorWithNullType != 'string')
-	raise "getStringVectorWithNull not string!"
+if(getStringVectorWithNullType != String)
+	raise "getStringVectorWithNull not String!"
 end
-if(getStringVectorWithNull[1] != null)
+unless(getStringVectorWithNull[1].nil?)
 	raise "getStringVectorWithNull[1] not null!"
 end
 
@@ -57,8 +57,8 @@ getStringVectorAsList = putStringVectorAsList
 getStringVectorAsListType = getStringVectorAsList[0].class
 puts(getStringVectorAsListType)
 puts(getStringVectorAsList)
-if(getStringVectorAsListType != 'string')
-	raise "getStringVectorAsList not string!"
+if(getStringVectorAsListType != String)
+	raise "getStringVectorAsList not String!"
 end
 
 puts("getStringVectorAsListWithNull")
@@ -69,10 +69,10 @@ getStringVectorAsListWithNull = putStringVectorAsListWithNull
 getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0].class
 puts(getStringVectorAsListWithNullType)
 puts(getStringVectorAsListWithNull)
-if(getStringVectorAsListWithNullType != 'string')
-	raise "getStringVectorAsListWithNull not string!"
+if(getStringVectorAsListWithNullType != String)
+	raise "getStringVectorAsListWithNull not String!"
 end
-if(getStringVectorAsListWithNull[1] != null)
+unless(getStringVectorAsListWithNull[1].nil?)
 	raise "getStringVectorAsListWithNull[1] not null!"
 end
 
@@ -84,8 +84,8 @@ getStringMatrix = putStringMatrix
 getStringMatrixType = getStringMatrix[0][0].class
 puts(getStringMatrixType)
 puts(getStringMatrix)
-if(getStringMatrixType != 'string')
-	raise "getStringMatrix not string!"
+if(getStringMatrixType != String)
+	raise "getStringMatrix not String!"
 end
 
 puts("getStringMatrixWithNull")
@@ -96,16 +96,16 @@ getStringMatrixWithNull = putStringMatrixWithNull
 getStringMatrixWithNullType = getStringMatrixWithNull[0][1].class
 puts(getStringMatrixWithNullType)
 puts(getStringMatrixWithNull)
-if(getStringMatrixWithNullType != 'string')
-	raise "getStringMatrixWithNull not string!"
+if(getStringMatrixWithNullType != String)
+	raise "getStringMatrixWithNull not String!"
 end
-if(getStringMatrixWithNull[0][0] != null)
+unless(getStringMatrixWithNull[0][0].nil?)
 	raise "getStringMatrixWithNull[0][0] not null!"
 end
-if(getStringMatrixWithNull[1][1] != null)
+unless(getStringMatrixWithNull[1][1].nil?)
 	raise "getStringMatrixWithNull[1][1] not null!"
 end
-if(getStringMatrixWithNull[2][2] != null)
+unless(getStringMatrixWithNull[2][2].nil?)
 	raise "getStringMatrixWithNull[2][2] not null!"
 end
 
@@ -117,8 +117,8 @@ getStringMatrixAsList = putStringMatrixAsList
 getStringMatrixAsListType = getStringMatrixAsList[0][0].class
 puts(getStringMatrixAsListType)
 puts(getStringMatrixAsList)
-if(getStringMatrixAsListType != 'string')
-	raise "getStringMatrixAsList not string!"
+if(getStringMatrixAsListType != String)
+	raise "getStringMatrixAsList not String!"
 end
 
 puts("getStringMatrixAsListWithNull")
@@ -129,15 +129,15 @@ getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
 getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].class
 puts(getStringMatrixAsListWithNullType)
 puts(getStringMatrixAsListWithNull)
-if(getStringMatrixAsListWithNullType != 'string')
-	raise "getStringMatrixAsListWithNull not string!"
+if(getStringMatrixAsListWithNullType != String)
+	raise "getStringMatrixAsListWithNull not String!"
 end
-if(getStringMatrixAsListWithNull[0][0] != null)
+unless(getStringMatrixAsListWithNull[0][0].nil?)
 	raise "getStringMatrixAsListWithNull[0][0] not null!"
 end
-if(getStringMatrixAsListWithNull[1][1] != null)
+unless(getStringMatrixAsListWithNull[1][1].nil?)
 	raise "getStringMatrixAsListWithNull[1][1] not null!"
 end
-if(getStringMatrixAsListWithNull[2][2] != null)
+unless(getStringMatrixAsListWithNull[2][2].nil?)
 	raise "getStringMatrixAsListWithNull[2][2] not null!"
 end

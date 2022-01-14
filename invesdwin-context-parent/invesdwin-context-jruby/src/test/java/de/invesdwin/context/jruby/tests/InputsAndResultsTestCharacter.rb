@@ -6,8 +6,8 @@ getCharacter = putCharacter
 getCharacterType = getCharacter.class
 puts(getCharacterType)
 puts(getCharacter)
-if(getCharacterType != 'string')
-	raise "getCharacter not string!"
+if(getCharacterType != Integer)
+	raise "getCharacter not Integer"
 end
 
 puts("getCharacterVector")
@@ -18,8 +18,8 @@ getCharacterVector = putCharacterVector
 getCharacterVectorType = getCharacterVector[0].class
 puts(getCharacterVectorType)
 puts(getCharacterVector)
-if(getCharacterVectorType != 'string')
-	raise "getCharacterVector not string!"
+if(getCharacterVectorType != Integer)
+	raise "getCharacterVector not Integer"
 end
 
 puts("getCharacterVectorAsList")
@@ -30,8 +30,8 @@ getCharacterVectorAsList = putCharacterVectorAsList
 getCharacterVectorAsListType = getCharacterVectorAsList[0].class
 puts(getCharacterVectorAsListType)
 puts(getCharacterVectorAsList)
-if(getCharacterVectorAsListType != 'string')
-	raise "getCharacterVectorAsList not string!"
+if(getCharacterVectorAsListType != Integer)
+	raise "getCharacterVectorAsList not Integer"
 end
 
 puts("getCharacterMatrix")
@@ -42,8 +42,8 @@ getCharacterMatrix = putCharacterMatrix
 getCharacterMatrixType = getCharacterMatrix[0][0].class
 puts(getCharacterMatrixType)
 puts(getCharacterMatrix)
-if(getCharacterMatrixType != 'string')
-	raise "getCharacterMatrix not string!"
+if(getCharacterMatrixType != Integer)
+	raise "getCharacterMatrix not Integer"
 end
 
 puts("getCharacterMatrixAsList")
@@ -54,6 +54,6 @@ getCharacterMatrixAsList = putCharacterMatrixAsList
 getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0].class
 puts(getCharacterMatrixAsListType)
 puts(getCharacterMatrixAsList)
-if(getCharacterMatrixAsListType != 'string')
-	raise "getCharacterMatrixAsList not string!"
+if(getCharacterMatrixAsListType != Integer)
+	raise "getCharacterMatrixAsList not Integer"
 end
