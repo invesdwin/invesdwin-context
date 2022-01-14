@@ -1,7 +1,6 @@
 package de.invesdwin.context.clojure.pool;
 
 import java.io.Closeable;
-import java.io.PushbackReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 
 import clojure.lang.Compiler;
+import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
 
 @NotThreadSafe
@@ -41,7 +41,7 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     public Object evalParsing(final String expression) {
-        final PushbackReader reader = new PushbackReader(new StringReader(expression));
+        final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
         Object finalResult = null;
         while (true) {
             final Object form = LispReader.read(reader, false, this, false);
@@ -62,7 +62,7 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     private List<Object> parse(final String expression) {
-        final PushbackReader reader = new PushbackReader(new StringReader(expression));
+        final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
         final List<Object> parsed = new ArrayList<>();
         while (true) {
             final Object form = LispReader.read(reader, false, this, false);
