@@ -1,49 +1,58 @@
-print("getDecimal")
+puts("getDecimal")
 if (defined?(getDecimal)).nil?
 	raise "getDecimal already defined!"
 getDecimal = putDecimal
 getDecimalType = getDecimal.class
-print(getDecimalType)
-print(getDecimal)
+puts(getDecimalType)
+puts(getDecimal)
 if(getDecimalType != 'number')
 	raise "getDecimal not number!"
+end
 
-print("getDecimalVector")
+puts("getDecimalVector")
 if (defined?(getDecimalVector)).nil?
 	raise "getDecimalVector already defined!"
+end
 getDecimalVector = putDecimalVector
 getDecimalVectorType = getDecimalVector[0].class
-print(getDecimalVectorType)
-print(getDecimalVector)
+puts(getDecimalVectorType)
+puts(getDecimalVector)
 if(getDecimalVectorType != 'number')
 	raise "getDecimalVector not number!"
+end
 
-print("getDecimalVectorAsList")
+puts("getDecimalVectorAsList")
 if (defined?(getDecimalVectorAsList)).nil?
 	raise "getDecimalVectorAsList already defined!"
+end
 getDecimalVectorAsList = putDecimalVectorAsList
 getDecimalVectorAsListType = getDecimalVectorAsList[0].class
-print(getDecimalVectorAsListType)
-print(getDecimalVectorAsList)
+puts(getDecimalVectorAsListType)
+puts(getDecimalVectorAsList)
 if(getDecimalVectorAsListType != 'number')
 	raise "getDecimalVectorAsList not number!"
+end
 
-print("getDecimalMatrix")
+puts("getDecimalMatrix")
 if (defined?(getDecimalMatrix)).nil?
 	raise "getDecimalMatrix already defined!"
+end
 getDecimalMatrix = putDecimalMatrix
 getDecimalMatrixType = getDecimalMatrix[0][0].class
-print(getDecimalMatrixType)
-print(getDecimalMatrix)
+puts(getDecimalMatrixType)
+puts(getDecimalMatrix)
 if(getDecimalMatrixType != 'number')
 	raise "getDecimalMatrix not number!"
+end
 
-print("getDecimalMatrixAsList")
+puts("getDecimalMatrixAsList")
 if (defined?(getDecimalMatrixAsList)).nil?
 	raise "getDecimalMatrixAsList already defined!"
+end
 getDecimalMatrixAsList = putDecimalMatrixAsList
 getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0].class
-print(getDecimalMatrixAsListType)
-print(getDecimalMatrixAsList)
+puts(getDecimalMatrixAsListType)
+puts(getDecimalMatrixAsList)
 if(getDecimalMatrixAsListType != 'number')
 	raise "getDecimalMatrixAsList not number!"
+end

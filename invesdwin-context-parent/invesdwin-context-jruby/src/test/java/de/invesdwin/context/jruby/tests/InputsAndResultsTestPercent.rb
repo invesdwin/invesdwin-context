@@ -1,49 +1,59 @@
-print("getPercent")
+puts("getPercent")
 if (defined?(getPercent)).nil?
 	raise "getPercent already defined!"
+end
 getPercent = putPercent
 getPercentType = getPercent.class
-print(getPercentType)
-print(getPercent)
+puts(getPercentType)
+puts(getPercent)
 if(getPercentType != 'number')
 	raise "getPercent not number!"
+end
 
-print("getPercentVector")
+puts("getPercentVector")
 if (defined?(getPercentVector)).nil?
 	raise "getPercentVector already defined!"
+end
 getPercentVector = putPercentVector
 getPercentVectorType = getPercentVector[0].class
-print(getPercentVectorType)
-print(getPercentVector)
+puts(getPercentVectorType)
+puts(getPercentVector)
 if(getPercentVectorType != 'number')
 	raise "getPercentVector not number!"
+end
 
-print("getPercentVectorAsList")
+puts("getPercentVectorAsList")
 if (defined?(getPercentVectorAsList)).nil?
 	raise "getPercentVectorAsList already defined!"
+end
 getPercentVectorAsList = putPercentVectorAsList
 getPercentVectorAsListType = getPercentVectorAsList[0].class
-print(getPercentVectorAsListType)
-print(getPercentVectorAsList)
+puts(getPercentVectorAsListType)
+puts(getPercentVectorAsList)
 if(getPercentVectorAsListType != 'number')
 	raise "getPercentVectorAsList not number!"
+end
 
-print("getPercentMatrix")
+puts("getPercentMatrix")
 if (defined?(getPercentMatrix)).nil?
 	raise "getPercentMatrix already defined!"
+end
 getPercentMatrix = putPercentMatrix
 getPercentMatrixType = getPercentMatrix[0][0].class
-print(getPercentMatrixType)
-print(getPercentMatrix)
+puts(getPercentMatrixType)
+puts(getPercentMatrix)
 if(getPercentMatrixType != 'number')
 	raise "getPercentMatrix not number!"
+end
 
-print("getPercentMatrixAsList")
+puts("getPercentMatrixAsList")
 if (defined?(getPercentMatrixAsList)).nil?
 	raise "getPercentMatrixAsList already defined!"
+end
 getPercentMatrixAsList = putPercentMatrixAsList
 getPercentMatrixAsListType = getPercentMatrixAsList[0][0].class
-print(getPercentMatrixAsListType)
-print(getPercentMatrixAsList)
+puts(getPercentMatrixAsListType)
+puts(getPercentMatrixAsList)
 if(getPercentMatrixAsListType != 'number')
 	raise "getPercentMatrixAsList not number!"
+end

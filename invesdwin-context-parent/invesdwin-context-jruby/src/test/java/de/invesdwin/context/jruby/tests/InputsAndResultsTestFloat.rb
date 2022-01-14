@@ -1,49 +1,59 @@
-print("getFloat")
+puts("getFloat")
 if (defined?(getFloat)).nil?
 	raise "getFloat already defined!"
+end
 getFloat = putFloat
 getFloatType = getFloat.class
-print(getFloatType)
-print(getFloat)
+puts(getFloatType)
+puts(getFloat)
 if(getFloatType != 'number')
 	raise "getFloat not number!"
+end
 
-print("getFloatVector")
+puts("getFloatVector")
 if (defined?(getFloatVector)).nil?
 	raise "getFloatVector already defined!"
+end
 getFloatVector = putFloatVector
 getFloatVectorType = getFloatVector[0].class
-print(getFloatVectorType)
-print(getFloatVector)
+puts(getFloatVectorType)
+puts(getFloatVector)
 if(getFloatVectorType != 'number')
 	raise "getFloatVector not number!"
+end
 
-print("getFloatVectorAsList")
+puts("getFloatVectorAsList")
 if (defined?(getFloatVectorAsList)).nil?
 	raise "getFloatVectorAsList already defined!"
+end
 getFloatVectorAsList = putFloatVectorAsList
 getFloatVectorAsListType = getFloatVectorAsList[0].class
-print(getFloatVectorAsListType)
-print(getFloatVectorAsList)
+puts(getFloatVectorAsListType)
+puts(getFloatVectorAsList)
 if(getFloatVectorAsListType != 'number')
 	raise "getFloatVectorAsList not number!"
+end
 
-print("getFloatMatrix")
+puts("getFloatMatrix")
 if (defined?(getFloatMatrix)).nil?
 	raise "getFloatMatrix already defined!"
+end
 getFloatMatrix = putFloatMatrix
 getFloatMatrixType = getFloatMatrix[0][0].class
-print(getFloatMatrixType)
-print(getFloatMatrix)
+puts(getFloatMatrixType)
+puts(getFloatMatrix)
 if(getFloatMatrixType != 'number')
 	raise "getFloatMatrix not number!"
+end
 
-print("getFloatMatrixAsList")
+puts("getFloatMatrixAsList")
 if (defined?(getFloatMatrixAsList)).nil?
 	raise "getFloatMatrixAsList already defined!"
+end
 getFloatMatrixAsList = putFloatMatrixAsList
 getFloatMatrixAsListType = getFloatMatrixAsList[0][0].class
-print(getFloatMatrixAsListType)
-print(getFloatMatrixAsList)
+puts(getFloatMatrixAsListType)
+puts(getFloatMatrixAsList)
 if(getFloatMatrixAsListType != 'number')
 	raise "getFloatMatrixAsList not number!"
+end

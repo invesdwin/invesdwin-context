@@ -1,49 +1,59 @@
-print("getShort")
+puts("getShort")
 if (defined?(getShort)).nil?
 	raise "getShort already defined!"
+end
 getShort = putShort
 getShortType = getShort.class
-print(getShortType)
-print(getShort)
+puts(getShortType)
+puts(getShort)
 if(getShortType != 'number')
 	raise "getShort not number!"
+end
 
-print("getShortVector")
+puts("getShortVector")
 if (defined?(getShortVector)).nil?
 	raise "getShortVector already defined!"
+end
 getShortVector = putShortVector
 getShortVectorType = getShortVector[0].class
-print(getShortVectorType)
-print(getShortVector)
+puts(getShortVectorType)
+puts(getShortVector)
 if(getShortVectorType != 'number')
 	raise "getShortVector not number!"
+end
 
-print("getShortVectorAsList")
+puts("getShortVectorAsList")
 if (defined?(getShortVectorAsList)).nil?
 	raise "getShortVectorAsList already defined!"
+end
 getShortVectorAsList = putShortVectorAsList
 getShortVectorAsListType = getShortVectorAsList[0].class
-print(getShortVectorAsListType)
-print(getShortVectorAsList)
+puts(getShortVectorAsListType)
+puts(getShortVectorAsList)
 if(getShortVectorAsListType != 'number')
 	raise "getShortVectorAsList not number!"
+end
 
-print("getShortMatrix")
+puts("getShortMatrix")
 if (defined?(getShortMatrix)).nil?
 	raise "getShortMatrix already defined!"
+end
 getShortMatrix = putShortMatrix
 getShortMatrixType = getShortMatrix[0][0].class
-print(getShortMatrixType)
-print(getShortMatrix)
+puts(getShortMatrixType)
+puts(getShortMatrix)
 if(getShortMatrixType != 'number')
 	raise "getShortMatrix not number!"
+end
 
-print("getShortMatrixAsList")
+puts("getShortMatrixAsList")
 if (defined?(getShortMatrixAsList)).nil?
 	raise "getShortMatrixAsList already defined!"
+end
 getShortMatrixAsList = putShortMatrixAsList
 getShortMatrixAsListType = getShortMatrixAsList[0][0].class
-print(getShortMatrixAsListType)
-print(getShortMatrixAsList)
+puts(getShortMatrixAsListType)
+puts(getShortMatrixAsList)
 if(getShortMatrixAsListType != 'number')
 	raise "getShortMatrixAsList not number!"
+end

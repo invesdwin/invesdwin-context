@@ -1,49 +1,59 @@
-print("getByte")
+puts("getByte")
 if (defined?(getByte)).nil?
 	raise "getByte already defined"
+end
 getByte = putByte
 getByteType = getByte.class
-print(getByteType)
-print(getByte)
+puts(getByteType)
+puts(getByte)
 if(getByteType != 'number')
 	raise "getByte not number!"
+end
 
-print("getByteVector")
+puts("getByteVector")
 if (defined?(getByteVector)).nil?
 	raise "getByteVector already defined"
+end
 getByteVector = putByteVector
 getByteVectorType = getByteVector[0].class
-print(getByteVectorType)
-print(getByteVector)
+puts(getByteVectorType)
+puts(getByteVector)
 if(getByteVectorType != 'number')
 	raise "getByteVector not number!"
+end
 
-print("getByteVectorAsList")
+puts("getByteVectorAsList")
 if (defined?(getByteVectorAsList)).nil?
 	raise "getByteVectorAsList already defined"
+end
 getByteVectorAsList = putByteVectorAsList
 getByteVectorAsListType = getByteVectorAsList[0].class
-print(getByteVectorAsListType)
-print(getByteVectorAsList)
+puts(getByteVectorAsListType)
+puts(getByteVectorAsList)
 if(getByteVectorAsListType != 'number')
 	raise "getByteVectorAsList not number!"
+end
 
-print("getByteMatrix")
+puts("getByteMatrix")
 if (defined?(getByteMatrix)).nil?
 	raise "getByteMatrix already defined"
+end
 getByteMatrix = putByteMatrix
 getByteMatrixType = getByteMatrix[0][0].class
-print(getByteMatrixType)
-print(getByteMatrix)
+puts(getByteMatrixType)
+puts(getByteMatrix)
 if(getByteMatrixType != 'number')
 	raise "getByteMatrix not number!"
+end
 
-print("getByteMatrixAsList")
+puts("getByteMatrixAsList")
 if (defined?(getByteMatrixAsList)).nil?
 	raise "getByteMatrixAsList already defined"
+end
 getByteMatrixAsList = putByteMatrixAsList
 getByteMatrixAsListType = getByteMatrixAsList[0][0].class
-print(getByteMatrixAsListType)
-print(getByteMatrixAsList)
+puts(getByteMatrixAsListType)
+puts(getByteMatrixAsList)
 if(getByteMatrixAsListType != 'number')
 	raise "getByteMatrixAsList not number!"
+end

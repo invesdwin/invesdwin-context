@@ -1,49 +1,59 @@
-print("getInteger")
+puts("getInteger")
 if (defined?(getInteger)).nil?
 	raise "getInteger already defined!"
+end
 getInteger = putInteger
 getIntegerType = getInteger.class
-print(getIntegerType)
-print(getInteger)
+puts(getIntegerType)
+puts(getInteger)
 if(getIntegerType != 'number')
 	raise "getInteger not number!"
+end
 
-print("getIntegerVector")
+puts("getIntegerVector")
 if (defined?(getIntegerVector)).nil?
 	raise "getIntegerVector already defined!"
+end
 getIntegerVector = putIntegerVector
 getIntegerVectorType = getIntegerVector[0].class
-print(getIntegerVectorType)
-print(getIntegerVector)
+puts(getIntegerVectorType)
+puts(getIntegerVector)
 if(getIntegerVectorType != 'number')
 	raise "getIntegerVector not number!"
+end
 
-print("getIntegerVectorAsList")
+puts("getIntegerVectorAsList")
 if (defined?(getIntegerVectorAsList)).nil?
 	raise "getIntegerVectorAsList already defined!"
+end
 getIntegerVectorAsList = putIntegerVectorAsList
 getIntegerVectorAsListType = getIntegerVectorAsList[0].class
-print(getIntegerVectorAsListType)
-print(getIntegerVectorAsList)
+puts(getIntegerVectorAsListType)
+puts(getIntegerVectorAsList)
 if(getIntegerVectorAsListType != 'number')
 	raise "getIntegerVectorAsList not number!"
+end
 
-print("getIntegerMatrix")
+puts("getIntegerMatrix")
 if (defined?(getIntegerMatrix)).nil?
 	raise "getIntegerMatrix already defined!"
+end
 getIntegerMatrix = putIntegerMatrix
 getIntegerMatrixType = getIntegerMatrix[0][0].class
-print(getIntegerMatrixType)
-print(getIntegerMatrix)
+puts(getIntegerMatrixType)
+puts(getIntegerMatrix)
 if(getIntegerMatrixType != 'number')
 	raise "getIntegerMatrix not number!"
+end
 
-print("getIntegerMatrixAsList")
+puts("getIntegerMatrixAsList")
 if (defined?(getIntegerMatrixAsList)).nil?
 	raise "getIntegerMatrixAsList already defined!"
+end
 getIntegerMatrixAsList = putIntegerMatrixAsList
 getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].class
-print(getIntegerMatrixAsListType)
-print(getIntegerMatrixAsList)
+puts(getIntegerMatrixAsListType)
+puts(getIntegerMatrixAsList)
 if(getIntegerMatrixAsListType != 'number')
 	raise "getIntegerMatrixAsList not number!"
+end

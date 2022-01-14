@@ -1,49 +1,59 @@
-print("getDouble")
+puts("getDouble")
 if (defined?(getDouble)).nil?
 	raise "getDouble already defined!"
+end
 getDouble = putDouble
 getDoubleType = getDouble.class
-print(getDoubleType)
-print(getDouble)
+puts(getDoubleType)
+puts(getDouble)
 if(getDoubleType != 'number')
 	raise "getDouble not number!"
+end
 
-print("getDoubleVector")
+puts("getDoubleVector")
 if (defined?(getDoubleVector)).nil?
 	raise "getDoubleVector already defined!"
+end
 getDoubleVector = putDoubleVector
 getDoubleVectorType = getDoubleVector[0].class
-print(getDoubleVectorType)
-print(getDoubleVector)
+puts(getDoubleVectorType)
+puts(getDoubleVector)
 if(getDoubleVectorType != 'number')
 	raise "getDoubleVector not number!"
+end
 
-print("getDoubleVectorAsList")
+puts("getDoubleVectorAsList")
 if (defined?(getDoubleVectorAsList)).nil?
 	raise "getDoubleVectorAsList already defined!"
+end
 getDoubleVectorAsList = putDoubleVectorAsList
 getDoubleVectorAsListType = getDoubleVectorAsList[0].class
-print(getDoubleVectorAsListType)
-print(getDoubleVectorAsList)
+puts(getDoubleVectorAsListType)
+puts(getDoubleVectorAsList)
 if(getDoubleVectorAsListType != 'number')
 	raise "getDoubleVectorAsList not number!"
+end
 
-print("getDoubleMatrix")
+puts("getDoubleMatrix")
 if (defined?(getDoubleMatrix)).nil?
 	raise "getDoubleMatrix already defined!"
+end
 getDoubleMatrix = putDoubleMatrix
 getDoubleMatrixType = getDoubleMatrix[0][0].class
-print(getDoubleMatrixType)
-print(getDoubleMatrix)
+puts(getDoubleMatrixType)
+puts(getDoubleMatrix)
 if(getDoubleMatrixType != 'number')
 	raise "getDoubleMatrix not number!"
+end
 
-print("getDoubleMatrixAsList")
+puts("getDoubleMatrixAsList")
 if (defined?(getDoubleMatrixAsList)).nil?
 	raise "getDoubleMatrixAsList already defined!"
+end
 getDoubleMatrixAsList = putDoubleMatrixAsList
 getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].class
-print(getDoubleMatrixAsListType)
-print(getDoubleMatrixAsList)
+puts(getDoubleMatrixAsListType)
+puts(getDoubleMatrixAsList)
 if(getDoubleMatrixAsListType != 'number')
 	raise "getDoubleMatrixAsList not number!"
+end
