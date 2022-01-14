@@ -30,6 +30,7 @@ public class WrappedClojureEngine implements Closeable {
                 .expireAfterAccess(1, TimeUnit.MINUTES)
                 .softValues()
                 .<String, List<Object>> build((key) -> parse(key));
+        binding.put("clojure.core.*file*", "/clojure-dynamic-script");
     }
 
     public ClojureBindings getBinding() {
