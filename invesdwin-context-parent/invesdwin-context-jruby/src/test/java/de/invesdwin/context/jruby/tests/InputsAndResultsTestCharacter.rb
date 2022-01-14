@@ -1,49 +1,49 @@
 print("getCharacter")
 if (defined?(getCharacter)).nil?
-	throw "getCharacter already defined!"
+	raise "getCharacter already defined!"
 getCharacter = putCharacter
-getCharacterType = typeof getCharacter
+getCharacterType = getCharacter.class
 print(getCharacterType)
 print(getCharacter)
-if(getCharacterType !== 'string')
-	throw "getCharacter not string!"
+if(getCharacterType != 'string')
+	raise "getCharacter not string!"
 
 print("getCharacterVector")
 if (defined?(getCharacterVector)).nil?
-	throw "getCharacterVector already defined!"
+	raise "getCharacterVector already defined!"
 getCharacterVector = putCharacterVector
-getCharacterVectorType = typeof getCharacterVector[0]
+getCharacterVectorType = getCharacterVector[0].class
 print(getCharacterVectorType)
 print(getCharacterVector)
-if(getCharacterVectorType !== 'string')
-	throw "getCharacterVector not string!"
+if(getCharacterVectorType != 'string')
+	raise "getCharacterVector not string!"
 
 print("getCharacterVectorAsList")
 if (defined?(getCharacterVectorAsList)).nil?
-	throw "getCharacterVectorAsList already defined!"
+	raise "getCharacterVectorAsList already defined!"
 getCharacterVectorAsList = putCharacterVectorAsList
-getCharacterVectorAsListType = typeof getCharacterVectorAsList[0]
+getCharacterVectorAsListType = getCharacterVectorAsList[0].class
 print(getCharacterVectorAsListType)
 print(getCharacterVectorAsList)
-if(getCharacterVectorAsListType !== 'string')
-	throw "getCharacterVectorAsList not string!"
+if(getCharacterVectorAsListType != 'string')
+	raise "getCharacterVectorAsList not string!"
 
 print("getCharacterMatrix")
 if (defined?(getCharacterMatrix)).nil?
-	throw "getCharacterMatrix already defined!"
+	raise "getCharacterMatrix already defined!"
 getCharacterMatrix = putCharacterMatrix
-getCharacterMatrixType = typeof getCharacterMatrix[0][0]
+getCharacterMatrixType = getCharacterMatrix[0][0].class
 print(getCharacterMatrixType)
 print(getCharacterMatrix)
-if(getCharacterMatrixType !== 'string')
-	throw "getCharacterMatrix not string!"
+if(getCharacterMatrixType != 'string')
+	raise "getCharacterMatrix not string!"
 
 print("getCharacterMatrixAsList")
 if (defined?(getCharacterMatrixAsList)).nil?
-	throw "getCharacterMatrixAsList already defined!"
+	raise "getCharacterMatrixAsList already defined!"
 getCharacterMatrixAsList = putCharacterMatrixAsList
-getCharacterMatrixAsListType = typeof getCharacterMatrixAsList[0][0]
+getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0].class
 print(getCharacterMatrixAsListType)
 print(getCharacterMatrixAsList)
-if(getCharacterMatrixAsListType !== 'string')
-	throw "getCharacterMatrixAsList not string!"
+if(getCharacterMatrixAsListType != 'string')
+	raise "getCharacterMatrixAsList not string!"

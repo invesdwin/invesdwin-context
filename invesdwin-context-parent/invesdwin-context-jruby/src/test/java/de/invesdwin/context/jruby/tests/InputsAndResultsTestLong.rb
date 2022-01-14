@@ -1,49 +1,49 @@
 print("getLong")
 if (defined?(getLong)).nil?
-	throw "getLong already defined!"
+	raise "getLong already defined!"
 getLong = putLong
-getLongType = typeof getLong
+getLongType = getLong.class
 print(getLongType)
 print(getLong)
-if(getLongType !== 'number')
-	throw "getLong not number!"
+if(getLongType != 'number')
+	raise "getLong not number!"
 
 print("getLongVector")
 if (defined?(getLongVector)).nil?
-	throw "getLongVector already defined!"
+	raise "getLongVector already defined!"
 getLongVector = putLongVector
-getLongVectorType = typeof getLongVector[0]
+getLongVectorType = getLongVector[0].class
 print(getLongVectorType)
 print(getLongVector)
-if(getLongVectorType !== 'number')
-	throw "getLongVector not number!"
+if(getLongVectorType != 'number')
+	raise "getLongVector not number!"
 
 print("getLongVectorAsList")
 if (defined?(getLongVectorAsList)).nil?
-	throw "getLongVectorAsList already defined!"
+	raise "getLongVectorAsList already defined!"
 getLongVectorAsList = putLongVectorAsList
-getLongVectorAsListType = typeof getLongVectorAsList[0]
+getLongVectorAsListType = getLongVectorAsList[0].class
 print(getLongVectorAsListType)
 print(getLongVectorAsList)
-if(getLongVectorAsListType !== 'number')
-	throw "getLongVectorAsList not number!"
+if(getLongVectorAsListType != 'number')
+	raise "getLongVectorAsList not number!"
 
 print("getLongMatrix")
 if (defined?(getLongMatrix)).nil?
-	throw "getLongMatrix already defined!"
+	raise "getLongMatrix already defined!"
 getLongMatrix = putLongMatrix
-getLongMatrixType = typeof getLongMatrix[0][0]
+getLongMatrixType = getLongMatrix[0][0].class
 print(getLongMatrixType)
 print(getLongMatrix)
-if(getLongMatrixType !== 'number')
-	throw "getLongMatrix not number!"
+if(getLongMatrixType != 'number')
+	raise "getLongMatrix not number!"
 
 print("getLongMatrixAsList")
 if (defined?(getLongMatrixAsList)).nil?
-	throw "getLongMatrixAsList already defined!"
+	raise "getLongMatrixAsList already defined!"
 getLongMatrixAsList = putLongMatrixAsList
-getLongMatrixAsListType = typeof getLongMatrixAsList[0][0]
+getLongMatrixAsListType = getLongMatrixAsList[0][0].class
 print(getLongMatrixAsListType)
 print(getLongMatrixAsList)
-if(getLongMatrixAsListType !== 'number')
-	throw "getLongMatrixAsList not number!"
+if(getLongMatrixAsListType != 'number')
+	raise "getLongMatrixAsList not number!"

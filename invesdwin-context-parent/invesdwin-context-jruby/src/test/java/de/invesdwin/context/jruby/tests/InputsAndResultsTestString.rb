@@ -1,115 +1,115 @@
 print("getString")
 if (defined?(getString)).nil?
-	throw "getString already defined!"
+	raise "getString already defined!"
 getString = putString
-getStringType = typeof getString
+getStringType = getString.class
 print(getStringType)
 print(getString)
-if(getStringType !== 'string')
-	throw "getString not string!"
+if(getStringType != 'string')
+	raise "getString not string!"
 
 print("getStringWithNull")
 if (defined?(getStringWithNull)).nil?
-	throw "getStringWithNull already defined!"
+	raise "getStringWithNull already defined!"
 getStringWithNull = putStringWithNull
-getStringWithNullType = typeof getStringWithNull
+getStringWithNullType = getStringWithNull.class
 print(getStringWithNullType)
 print(getStringWithNull)
-if(getStringWithNull !== null)
-	throw "getStringWithNull not null!"
+if(getStringWithNull != null)
+	raise "getStringWithNull not null!"
 
 print("getStringVector")
 if (defined?(getStringVector)).nil?
-	throw "getStringVector already defined!"
+	raise "getStringVector already defined!"
 getStringVector = putStringVector
-getStringVectorType = typeof getStringVector[0]
+getStringVectorType = getStringVector[0].class
 print(getStringVectorType)
 print(getStringVector)
-if(getStringVectorType !== 'string')
-	throw "getStringVector not string!"
+if(getStringVectorType != 'string')
+	raise "getStringVector not string!"
 
 print("getStringVectorWithNull")
 if (defined?(getStringVectorWithNull)).nil?
-	throw "getStringVectorWithNull already defined!"
+	raise "getStringVectorWithNull already defined!"
 getStringVectorWithNull = putStringVectorWithNull
-getStringVectorWithNullType = typeof getStringVectorWithNull[0]
+getStringVectorWithNullType = getStringVectorWithNull[0].class
 print(getStringVectorWithNullType)
 print(getStringVectorWithNull)
-if(getStringVectorWithNullType !== 'string')
-	throw "getStringVectorWithNull not string!"
-if(getStringVectorWithNull[1] !== null)
-	throw "getStringVectorWithNull[1] not null!"
+if(getStringVectorWithNullType != 'string')
+	raise "getStringVectorWithNull not string!"
+if(getStringVectorWithNull[1] != null)
+	raise "getStringVectorWithNull[1] not null!"
 
 print("getStringVectorAsList")
 if (defined?(getStringVectorAsList)).nil?
-	throw "getStringVectorAsList already defined!"
+	raise "getStringVectorAsList already defined!"
 getStringVectorAsList = putStringVectorAsList
-getStringVectorAsListType = typeof getStringVectorAsList[0]
+getStringVectorAsListType = getStringVectorAsList[0].class
 print(getStringVectorAsListType)
 print(getStringVectorAsList)
-if(getStringVectorAsListType !== 'string')
-	throw "getStringVectorAsList not string!"
+if(getStringVectorAsListType != 'string')
+	raise "getStringVectorAsList not string!"
 
 print("getStringVectorAsListWithNull")
 if (defined?(getStringVectorAsListWithNull)).nil?
-	throw "getStringVectorAsListWithNull already defined!"
+	raise "getStringVectorAsListWithNull already defined!"
 getStringVectorAsListWithNull = putStringVectorAsListWithNull
-getStringVectorAsListWithNullType = typeof getStringVectorAsListWithNull[0]
+getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0].class
 print(getStringVectorAsListWithNullType)
 print(getStringVectorAsListWithNull)
-if(getStringVectorAsListWithNullType !== 'string')
-	throw "getStringVectorAsListWithNull not string!"
-if(getStringVectorAsListWithNull[1] !== null)
-	throw "getStringVectorAsListWithNull[1] not null!"
+if(getStringVectorAsListWithNullType != 'string')
+	raise "getStringVectorAsListWithNull not string!"
+if(getStringVectorAsListWithNull[1] != null)
+	raise "getStringVectorAsListWithNull[1] not null!"
 
 print("getStringMatrix")
 if (defined?(getStringMatrix)).nil?
-	throw "getStringMatrix already defined!"
+	raise "getStringMatrix already defined!"
 getStringMatrix = putStringMatrix
-getStringMatrixType = typeof getStringMatrix[0][0]
+getStringMatrixType = getStringMatrix[0][0].class
 print(getStringMatrixType)
 print(getStringMatrix)
-if(getStringMatrixType !== 'string')
-	throw "getStringMatrix not string!"
+if(getStringMatrixType != 'string')
+	raise "getStringMatrix not string!"
 
 print("getStringMatrixWithNull")
 if (defined?(getStringMatrixWithNull)).nil?
-	throw "getStringMatrixWithNull already defined!"
+	raise "getStringMatrixWithNull already defined!"
 getStringMatrixWithNull = putStringMatrixWithNull
-getStringMatrixWithNullType = typeof getStringMatrixWithNull[0][1]
+getStringMatrixWithNullType = getStringMatrixWithNull[0][1].class
 print(getStringMatrixWithNullType)
 print(getStringMatrixWithNull)
-if(getStringMatrixWithNullType !== 'string')
-	throw "getStringMatrixWithNull not string!"
-if(getStringMatrixWithNull[0][0] !== null)
-	throw "getStringMatrixWithNull[0][0] not null!"
-if(getStringMatrixWithNull[1][1] !== null)
-	throw "getStringMatrixWithNull[1][1] not null!"
-if(getStringMatrixWithNull[2][2] !== null)
-	throw "getStringMatrixWithNull[2][2] not null!"
+if(getStringMatrixWithNullType != 'string')
+	raise "getStringMatrixWithNull not string!"
+if(getStringMatrixWithNull[0][0] != null)
+	raise "getStringMatrixWithNull[0][0] not null!"
+if(getStringMatrixWithNull[1][1] != null)
+	raise "getStringMatrixWithNull[1][1] not null!"
+if(getStringMatrixWithNull[2][2] != null)
+	raise "getStringMatrixWithNull[2][2] not null!"
 
 print("getStringMatrixAsList")
 if (defined?(getStringMatrixAsList)).nil?
-	throw "getStringMatrixAsList already defined!"
+	raise "getStringMatrixAsList already defined!"
 getStringMatrixAsList = putStringMatrixAsList
-getStringMatrixAsListType = typeof getStringMatrixAsList[0][0]
+getStringMatrixAsListType = getStringMatrixAsList[0][0].class
 print(getStringMatrixAsListType)
 print(getStringMatrixAsList)
-if(getStringMatrixAsListType !== 'string')
-	throw "getStringMatrixAsList not string!"
+if(getStringMatrixAsListType != 'string')
+	raise "getStringMatrixAsList not string!"
 
 print("getStringMatrixAsListWithNull")
 if (defined?(getStringMatrixAsListWithNull)).nil?
-	throw "getStringMatrixAsListWithNull already defined!"
+	raise "getStringMatrixAsListWithNull already defined!"
 getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
-getStringMatrixAsListWithNullType = typeof getStringMatrixAsListWithNull[0][1]
+getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].class
 print(getStringMatrixAsListWithNullType)
 print(getStringMatrixAsListWithNull)
-if(getStringMatrixAsListWithNullType !== 'string')
-	throw "getStringMatrixAsListWithNull not string!"
-if(getStringMatrixAsListWithNull[0][0] !== null)
-	throw "getStringMatrixAsListWithNull[0][0] not null!"
-if(getStringMatrixAsListWithNull[1][1] !== null)
-	throw "getStringMatrixAsListWithNull[1][1] not null!"
-if(getStringMatrixAsListWithNull[2][2] !== null)
-	throw "getStringMatrixAsListWithNull[2][2] not null!"
+if(getStringMatrixAsListWithNullType != 'string')
+	raise "getStringMatrixAsListWithNull not string!"
+if(getStringMatrixAsListWithNull[0][0] != null)
+	raise "getStringMatrixAsListWithNull[0][0] not null!"
+if(getStringMatrixAsListWithNull[1][1] != null)
+	raise "getStringMatrixAsListWithNull[1][1] not null!"
+if(getStringMatrixAsListWithNull[2][2] != null)
+	raise "getStringMatrixAsListWithNull[2][2] not null!"

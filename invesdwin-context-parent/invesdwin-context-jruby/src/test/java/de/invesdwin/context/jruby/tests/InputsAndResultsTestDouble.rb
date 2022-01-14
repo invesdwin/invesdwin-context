@@ -1,49 +1,49 @@
 print("getDouble")
 if (defined?(getDouble)).nil?
-	throw "getDouble already defined!"
+	raise "getDouble already defined!"
 getDouble = putDouble
-getDoubleType = typeof getDouble
+getDoubleType = getDouble.class
 print(getDoubleType)
 print(getDouble)
-if(getDoubleType !== 'number')
-	throw "getDouble not number!"
+if(getDoubleType != 'number')
+	raise "getDouble not number!"
 
 print("getDoubleVector")
 if (defined?(getDoubleVector)).nil?
-	throw "getDoubleVector already defined!"
+	raise "getDoubleVector already defined!"
 getDoubleVector = putDoubleVector
-getDoubleVectorType = typeof getDoubleVector[0]
+getDoubleVectorType = getDoubleVector[0].class
 print(getDoubleVectorType)
 print(getDoubleVector)
-if(getDoubleVectorType !== 'number')
-	throw "getDoubleVector not number!"
+if(getDoubleVectorType != 'number')
+	raise "getDoubleVector not number!"
 
 print("getDoubleVectorAsList")
 if (defined?(getDoubleVectorAsList)).nil?
-	throw "getDoubleVectorAsList already defined!"
+	raise "getDoubleVectorAsList already defined!"
 getDoubleVectorAsList = putDoubleVectorAsList
-getDoubleVectorAsListType = typeof getDoubleVectorAsList[0]
+getDoubleVectorAsListType = getDoubleVectorAsList[0].class
 print(getDoubleVectorAsListType)
 print(getDoubleVectorAsList)
-if(getDoubleVectorAsListType !== 'number')
-	throw "getDoubleVectorAsList not number!"
+if(getDoubleVectorAsListType != 'number')
+	raise "getDoubleVectorAsList not number!"
 
 print("getDoubleMatrix")
 if (defined?(getDoubleMatrix)).nil?
-	throw "getDoubleMatrix already defined!"
+	raise "getDoubleMatrix already defined!"
 getDoubleMatrix = putDoubleMatrix
-getDoubleMatrixType = typeof getDoubleMatrix[0][0]
+getDoubleMatrixType = getDoubleMatrix[0][0].class
 print(getDoubleMatrixType)
 print(getDoubleMatrix)
-if(getDoubleMatrixType !== 'number')
-	throw "getDoubleMatrix not number!"
+if(getDoubleMatrixType != 'number')
+	raise "getDoubleMatrix not number!"
 
 print("getDoubleMatrixAsList")
 if (defined?(getDoubleMatrixAsList)).nil?
-	throw "getDoubleMatrixAsList already defined!"
+	raise "getDoubleMatrixAsList already defined!"
 getDoubleMatrixAsList = putDoubleMatrixAsList
-getDoubleMatrixAsListType = typeof getDoubleMatrixAsList[0][0]
+getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].class
 print(getDoubleMatrixAsListType)
 print(getDoubleMatrixAsList)
-if(getDoubleMatrixAsListType !== 'number')
-	throw "getDoubleMatrixAsList not number!"
+if(getDoubleMatrixAsListType != 'number')
+	raise "getDoubleMatrixAsList not number!"

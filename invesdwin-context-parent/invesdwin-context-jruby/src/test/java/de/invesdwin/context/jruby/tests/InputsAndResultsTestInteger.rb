@@ -1,49 +1,49 @@
 print("getInteger")
 if (defined?(getInteger)).nil?
-	throw "getInteger already defined!"
+	raise "getInteger already defined!"
 getInteger = putInteger
-getIntegerType = typeof getInteger
+getIntegerType = getInteger.class
 print(getIntegerType)
 print(getInteger)
-if(getIntegerType !== 'number')
-	throw "getInteger not number!"
+if(getIntegerType != 'number')
+	raise "getInteger not number!"
 
 print("getIntegerVector")
 if (defined?(getIntegerVector)).nil?
-	throw "getIntegerVector already defined!"
+	raise "getIntegerVector already defined!"
 getIntegerVector = putIntegerVector
-getIntegerVectorType = typeof getIntegerVector[0]
+getIntegerVectorType = getIntegerVector[0].class
 print(getIntegerVectorType)
 print(getIntegerVector)
-if(getIntegerVectorType !== 'number')
-	throw "getIntegerVector not number!"
+if(getIntegerVectorType != 'number')
+	raise "getIntegerVector not number!"
 
 print("getIntegerVectorAsList")
 if (defined?(getIntegerVectorAsList)).nil?
-	throw "getIntegerVectorAsList already defined!"
+	raise "getIntegerVectorAsList already defined!"
 getIntegerVectorAsList = putIntegerVectorAsList
-getIntegerVectorAsListType = typeof getIntegerVectorAsList[0]
+getIntegerVectorAsListType = getIntegerVectorAsList[0].class
 print(getIntegerVectorAsListType)
 print(getIntegerVectorAsList)
-if(getIntegerVectorAsListType !== 'number')
-	throw "getIntegerVectorAsList not number!"
+if(getIntegerVectorAsListType != 'number')
+	raise "getIntegerVectorAsList not number!"
 
 print("getIntegerMatrix")
 if (defined?(getIntegerMatrix)).nil?
-	throw "getIntegerMatrix already defined!"
+	raise "getIntegerMatrix already defined!"
 getIntegerMatrix = putIntegerMatrix
-getIntegerMatrixType = typeof getIntegerMatrix[0][0]
+getIntegerMatrixType = getIntegerMatrix[0][0].class
 print(getIntegerMatrixType)
 print(getIntegerMatrix)
-if(getIntegerMatrixType !== 'number')
-	throw "getIntegerMatrix not number!"
+if(getIntegerMatrixType != 'number')
+	raise "getIntegerMatrix not number!"
 
 print("getIntegerMatrixAsList")
 if (defined?(getIntegerMatrixAsList)).nil?
-	throw "getIntegerMatrixAsList already defined!"
+	raise "getIntegerMatrixAsList already defined!"
 getIntegerMatrixAsList = putIntegerMatrixAsList
-getIntegerMatrixAsListType = typeof getIntegerMatrixAsList[0][0]
+getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].class
 print(getIntegerMatrixAsListType)
 print(getIntegerMatrixAsList)
-if(getIntegerMatrixAsListType !== 'number')
-	throw "getIntegerMatrixAsList not number!"
+if(getIntegerMatrixAsListType != 'number')
+	raise "getIntegerMatrixAsList not number!"

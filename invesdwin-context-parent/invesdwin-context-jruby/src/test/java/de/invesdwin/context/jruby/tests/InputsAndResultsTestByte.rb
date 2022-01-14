@@ -1,49 +1,49 @@
 print("getByte")
 if (defined?(getByte)).nil?
-	throw "getByte already defined"
+	raise "getByte already defined"
 getByte = putByte
-getByteType = typeof getByte
+getByteType = getByte.class
 print(getByteType)
 print(getByte)
-if(getByteType !== 'number')
-	throw "getByte not number!"
+if(getByteType != 'number')
+	raise "getByte not number!"
 
 print("getByteVector")
 if (defined?(getByteVector)).nil?
-	throw "getByteVector already defined"
+	raise "getByteVector already defined"
 getByteVector = putByteVector
-getByteVectorType = typeof getByteVector[0]
+getByteVectorType = getByteVector[0].class
 print(getByteVectorType)
 print(getByteVector)
-if(getByteVectorType !== 'number')
-	throw "getByteVector not number!"
+if(getByteVectorType != 'number')
+	raise "getByteVector not number!"
 
 print("getByteVectorAsList")
 if (defined?(getByteVectorAsList)).nil?
-	throw "getByteVectorAsList already defined"
+	raise "getByteVectorAsList already defined"
 getByteVectorAsList = putByteVectorAsList
-getByteVectorAsListType = typeof getByteVectorAsList[0]
+getByteVectorAsListType = getByteVectorAsList[0].class
 print(getByteVectorAsListType)
 print(getByteVectorAsList)
-if(getByteVectorAsListType !== 'number')
-	throw "getByteVectorAsList not number!"
+if(getByteVectorAsListType != 'number')
+	raise "getByteVectorAsList not number!"
 
 print("getByteMatrix")
 if (defined?(getByteMatrix)).nil?
-	throw "getByteMatrix already defined"
+	raise "getByteMatrix already defined"
 getByteMatrix = putByteMatrix
-getByteMatrixType = typeof getByteMatrix[0][0]
+getByteMatrixType = getByteMatrix[0][0].class
 print(getByteMatrixType)
 print(getByteMatrix)
-if(getByteMatrixType !== 'number')
-	throw "getByteMatrix not number!"
+if(getByteMatrixType != 'number')
+	raise "getByteMatrix not number!"
 
 print("getByteMatrixAsList")
 if (defined?(getByteMatrixAsList)).nil?
-	throw "getByteMatrixAsList already defined"
+	raise "getByteMatrixAsList already defined"
 getByteMatrixAsList = putByteMatrixAsList
-getByteMatrixAsListType = typeof getByteMatrixAsList[0][0]
+getByteMatrixAsListType = getByteMatrixAsList[0][0].class
 print(getByteMatrixAsListType)
 print(getByteMatrixAsList)
-if(getByteMatrixAsListType !== 'number')
-	throw "getByteMatrixAsList not number!"
+if(getByteMatrixAsListType != 'number')
+	raise "getByteMatrixAsList not number!"

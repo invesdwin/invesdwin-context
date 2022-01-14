@@ -1,49 +1,49 @@
 print("getBoolean")
 if (defined?(getBoolean)).nil?
-	throw "getBoolean already defined!"
+	raise "getBoolean already defined!"
 getBoolean = putBoolean
-getBooleanType = typeof getBoolean
+getBooleanType = getBoolean.class
 print(getBooleanType)
 print(getBoolean)
-if(getBooleanType !== 'boolean')
-	throw "getBoolean not boolean!"
+if(getBooleanType != 'boolean')
+	raise "getBoolean not boolean!"
 
 print("getBooleanVector")
 if (defined?(getBooleanVector)).nil?
-	throw "getBooleanVector already defined!"
+	raise "getBooleanVector already defined!"
 getBooleanVector = putBooleanVector
-getBooleanVectorType = typeof getBooleanVector[0]
+getBooleanVectorType = getBooleanVector[0].class
 print(getBooleanVectorType)
 print(getBooleanVector)
-if(getBooleanVectorType !== 'boolean')
-	throw "getBooleanVector not boolean!"
+if(getBooleanVectorType != 'boolean')
+	raise "getBooleanVector not boolean!"
 
 print("getBooleanVectorAsList")
 if (defined?(getBooleanVectorAsList)).nil?
-	throw "getBooleanVectorAsList already defined!"
+	raise "getBooleanVectorAsList already defined!"
 getBooleanVectorAsList = putBooleanVectorAsList
-getBooleanVectorAsListType = typeof getBooleanVectorAsList[0]
+getBooleanVectorAsListType = getBooleanVectorAsList[0].class
 print(getBooleanVectorAsListType)
 print(getBooleanVectorAsList)
-if(getBooleanVectorAsListType !== 'boolean')
-	throw "getBooleanVectorAsList not boolean!"
+if(getBooleanVectorAsListType != 'boolean')
+	raise "getBooleanVectorAsList not boolean!"
 
 print("getBooleanMatrix")
 if (defined?(getBooleanMatrix)).nil?
-	throw "getBooleanMatrix already defined!"
+	raise "getBooleanMatrix already defined!"
 getBooleanMatrix = putBooleanMatrix
-getBooleanMatrixType = typeof getBooleanMatrix[0][0]
+getBooleanMatrixType = getBooleanMatrix[0][0].class
 print(getBooleanMatrixType)
 print(getBooleanMatrix)
-if(getBooleanMatrixType !== 'boolean')
-	throw "getBooleanMatrix not boolean!"
+if(getBooleanMatrixType != 'boolean')
+	raise "getBooleanMatrix not boolean!"
 
 print("getBooleanMatrixAsList")
 if (defined?(getBooleanMatrixAsList)).nil?
-	throw "getBooleanMatrixAsList already defined!"
+	raise "getBooleanMatrixAsList already defined!"
 getBooleanMatrixAsList = putBooleanMatrixAsList
-getBooleanMatrixAsListType = typeof getBooleanMatrixAsList[0][0]
+getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0].class
 print(getBooleanMatrixAsListType)
 print(getBooleanMatrixAsList)
-if(getBooleanMatrixAsListType !== 'boolean')
-	throw "getBooleanMatrixAsList not boolean!"
+if(getBooleanMatrixAsListType != 'boolean')
+	raise "getBooleanMatrixAsList not boolean!"

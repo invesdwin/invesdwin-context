@@ -71,7 +71,7 @@ public class InputsAndResultsTestInteger {
 
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
-                engine.eval(new ClassPathResource(InputsAndResultsTestInteger.class.getSimpleName() + ".js",
+                engine.eval(new ClassPathResource(InputsAndResultsTestInteger.class.getSimpleName() + ".rb",
                         InputsAndResultsTestInteger.class));
             }
 

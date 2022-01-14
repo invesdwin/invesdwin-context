@@ -1,49 +1,49 @@
 print("getDecimal")
 if (defined?(getDecimal)).nil?
-	throw "getDecimal already defined!"
+	raise "getDecimal already defined!"
 getDecimal = putDecimal
-getDecimalType = typeof getDecimal
+getDecimalType = getDecimal.class
 print(getDecimalType)
 print(getDecimal)
-if(getDecimalType !== 'number')
-	throw "getDecimal not number!"
+if(getDecimalType != 'number')
+	raise "getDecimal not number!"
 
 print("getDecimalVector")
 if (defined?(getDecimalVector)).nil?
-	throw "getDecimalVector already defined!"
+	raise "getDecimalVector already defined!"
 getDecimalVector = putDecimalVector
-getDecimalVectorType = typeof getDecimalVector[0]
+getDecimalVectorType = getDecimalVector[0].class
 print(getDecimalVectorType)
 print(getDecimalVector)
-if(getDecimalVectorType !== 'number')
-	throw "getDecimalVector not number!"
+if(getDecimalVectorType != 'number')
+	raise "getDecimalVector not number!"
 
 print("getDecimalVectorAsList")
 if (defined?(getDecimalVectorAsList)).nil?
-	throw "getDecimalVectorAsList already defined!"
+	raise "getDecimalVectorAsList already defined!"
 getDecimalVectorAsList = putDecimalVectorAsList
-getDecimalVectorAsListType = typeof getDecimalVectorAsList[0]
+getDecimalVectorAsListType = getDecimalVectorAsList[0].class
 print(getDecimalVectorAsListType)
 print(getDecimalVectorAsList)
-if(getDecimalVectorAsListType !== 'number')
-	throw "getDecimalVectorAsList not number!"
+if(getDecimalVectorAsListType != 'number')
+	raise "getDecimalVectorAsList not number!"
 
 print("getDecimalMatrix")
 if (defined?(getDecimalMatrix)).nil?
-	throw "getDecimalMatrix already defined!"
+	raise "getDecimalMatrix already defined!"
 getDecimalMatrix = putDecimalMatrix
-getDecimalMatrixType = typeof getDecimalMatrix[0][0]
+getDecimalMatrixType = getDecimalMatrix[0][0].class
 print(getDecimalMatrixType)
 print(getDecimalMatrix)
-if(getDecimalMatrixType !== 'number')
-	throw "getDecimalMatrix not number!"
+if(getDecimalMatrixType != 'number')
+	raise "getDecimalMatrix not number!"
 
 print("getDecimalMatrixAsList")
 if (defined?(getDecimalMatrixAsList)).nil?
-	throw "getDecimalMatrixAsList already defined!"
+	raise "getDecimalMatrixAsList already defined!"
 getDecimalMatrixAsList = putDecimalMatrixAsList
-getDecimalMatrixAsListType = typeof getDecimalMatrixAsList[0][0]
+getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0].class
 print(getDecimalMatrixAsListType)
 print(getDecimalMatrixAsList)
-if(getDecimalMatrixAsListType !== 'number')
-	throw "getDecimalMatrixAsList not number!"
+if(getDecimalMatrixAsListType != 'number')
+	raise "getDecimalMatrixAsList not number!"

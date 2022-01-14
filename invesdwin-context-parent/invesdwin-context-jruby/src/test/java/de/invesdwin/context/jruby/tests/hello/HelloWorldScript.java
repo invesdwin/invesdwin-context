@@ -33,7 +33,7 @@ public class HelloWorldScript {
                 //execute this script inline:
                 //                engine.eval("world = \"Hello \" + hello + \"!\"");
                 //or run it from a file:
-                engine.eval(new ClassPathResource(HelloWorldScript.class.getSimpleName() + ".js", getClass()));
+                engine.eval(new ClassPathResource(HelloWorldScript.class.getSimpleName() + ".rb", getClass()));
             }
 
             @Override

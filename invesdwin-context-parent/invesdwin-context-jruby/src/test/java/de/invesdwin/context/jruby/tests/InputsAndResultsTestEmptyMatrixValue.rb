@@ -1,97 +1,97 @@
 getBooleanMatrix = putBooleanMatrix
 if(getBooleanMatrix.length != 2)
-	throw "getBooleanMatrix empty!"
+	raise "getBooleanMatrix empty!"
 
 getBooleanMatrixAsList = putBooleanMatrixAsList
 if(getBooleanMatrixAsList.length != 2)
-	throw "getBooleanMatrixAsList empty!"
+	raise "getBooleanMatrixAsList empty!"
 
 
 getByteMatrix = putByteMatrix
 if(getByteMatrix.length != 2)
-	throw "getByteMatrix empty!"
+	raise "getByteMatrix empty!"
 
 getByteMatrixAsList = putByteMatrixAsList
 if(getByteMatrixAsList.length != 2)
-	throw "getByteMatrixAsList empty!"
+	raise "getByteMatrixAsList empty!"
 
 
 getCharacterMatrix = putCharacterMatrix
 if(getCharacterMatrix.length != 2)
-	throw "getCharacterMatrix empty!"
+	raise "getCharacterMatrix empty!"
 
 getCharacterMatrixAsList = putCharacterMatrixAsList
 if(getCharacterMatrixAsList.length != 2)
-	throw "getCharacterMatrixAsList empty!"
+	raise "getCharacterMatrixAsList empty!"
 
 
 getDecimalMatrix = putDecimalMatrix
 if(getDecimalMatrix.length != 2)
-	throw "getDecimalMatrix empty!"
+	raise "getDecimalMatrix empty!"
 
 getDecimalMatrixAsList = putDecimalMatrixAsList
 if(getDecimalMatrixAsList.length != 2)
-	throw "getDecimalMatrixAsList empty!"
+	raise "getDecimalMatrixAsList empty!"
 
 
 getDoubleMatrix = putDoubleMatrix
 if(getDoubleMatrix.length != 2)
-	throw "getDoubleMatrix empty!"
+	raise "getDoubleMatrix empty!"
 
 getDoubleMatrixAsList = putDoubleMatrixAsList
 if(getDoubleMatrixAsList.length != 2)
-	throw "getDoubleMatrixAsList empty!"
+	raise "getDoubleMatrixAsList empty!"
 
 
 getFloatMatrix = putFloatMatrix
 if(getFloatMatrix.length != 2)
-	throw "getFloatMatrix empty!"
+	raise "getFloatMatrix empty!"
 
 getFloatMatrixAsList = putFloatMatrixAsList
 if(getFloatMatrixAsList.length != 2)
-	throw "getFloatMatrixAsList empty!"
+	raise "getFloatMatrixAsList empty!"
 
 
 getIntegerMatrix = putIntegerMatrix
 if(getIntegerMatrix.length != 2)
-	throw "getIntegerMatrix empty!"
+	raise "getIntegerMatrix empty!"
 
 getIntegerMatrixAsList = putIntegerMatrixAsList
 if(getIntegerMatrixAsList.length != 2)
-	throw "getIntegerMatrixAsList empty!"
+	raise "getIntegerMatrixAsList empty!"
 
 
 getLongMatrix = putLongMatrix
 if(getLongMatrix.length != 2)
-	throw "getLongMatrix empty!"
+	raise "getLongMatrix empty!"
 
 getLongMatrixAsList = putLongMatrixAsList
 if(getLongMatrixAsList.length != 2)
-	throw "getLongMatrixAsList empty!"
+	raise "getLongMatrixAsList empty!"
 
 
 getPercentMatrix = putPercentMatrix
 if(getPercentMatrix.length != 2)
-	throw "getPercentMatrix empty!"
+	raise "getPercentMatrix empty!"
 
 getPercentMatrixAsList = putPercentMatrixAsList
 if(getPercentMatrixAsList.length != 2)
-	throw "getPercentMatrixAsList empty!"
+	raise "getPercentMatrixAsList empty!"
 
 
 getShortMatrix = putShortMatrix
 if(getShortMatrix.length != 2)
-	throw "getShortMatrix empty!"
+	raise "getShortMatrix empty!"
 
 getShortMatrixAsList = putShortMatrixAsList
 if(getShortMatrixAsList.length != 2)
-	throw "getShortMatrixAsList empty!"
+	raise "getShortMatrixAsList empty!"
 
 
 getStringMatrix = putStringMatrix
 if(getStringMatrix.length != 2)
-	throw "getStringMatrix empty!"
+	raise "getStringMatrix empty!"
 
 getStringMatrixAsList = putStringMatrixAsList
 if(getStringMatrixAsList.length != 2)
-	throw "getStringMatrixAsList empty!"
+	raise "getStringMatrixAsList empty!"

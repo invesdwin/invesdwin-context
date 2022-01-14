@@ -1,49 +1,49 @@
 print("getShort")
 if (defined?(getShort)).nil?
-	throw "getShort already defined!"
+	raise "getShort already defined!"
 getShort = putShort
-getShortType = typeof getShort
+getShortType = getShort.class
 print(getShortType)
 print(getShort)
-if(getShortType !== 'number')
-	throw "getShort not number!"
+if(getShortType != 'number')
+	raise "getShort not number!"
 
 print("getShortVector")
 if (defined?(getShortVector)).nil?
-	throw "getShortVector already defined!"
+	raise "getShortVector already defined!"
 getShortVector = putShortVector
-getShortVectorType = typeof getShortVector[0]
+getShortVectorType = getShortVector[0].class
 print(getShortVectorType)
 print(getShortVector)
-if(getShortVectorType !== 'number')
-	throw "getShortVector not number!"
+if(getShortVectorType != 'number')
+	raise "getShortVector not number!"
 
 print("getShortVectorAsList")
 if (defined?(getShortVectorAsList)).nil?
-	throw "getShortVectorAsList already defined!"
+	raise "getShortVectorAsList already defined!"
 getShortVectorAsList = putShortVectorAsList
-getShortVectorAsListType = typeof getShortVectorAsList[0]
+getShortVectorAsListType = getShortVectorAsList[0].class
 print(getShortVectorAsListType)
 print(getShortVectorAsList)
-if(getShortVectorAsListType !== 'number')
-	throw "getShortVectorAsList not number!"
+if(getShortVectorAsListType != 'number')
+	raise "getShortVectorAsList not number!"
 
 print("getShortMatrix")
 if (defined?(getShortMatrix)).nil?
-	throw "getShortMatrix already defined!"
+	raise "getShortMatrix already defined!"
 getShortMatrix = putShortMatrix
-getShortMatrixType = typeof getShortMatrix[0][0]
+getShortMatrixType = getShortMatrix[0][0].class
 print(getShortMatrixType)
 print(getShortMatrix)
-if(getShortMatrixType !== 'number')
-	throw "getShortMatrix not number!"
+if(getShortMatrixType != 'number')
+	raise "getShortMatrix not number!"
 
 print("getShortMatrixAsList")
 if (defined?(getShortMatrixAsList)).nil?
-	throw "getShortMatrixAsList already defined!"
+	raise "getShortMatrixAsList already defined!"
 getShortMatrixAsList = putShortMatrixAsList
-getShortMatrixAsListType = typeof getShortMatrixAsList[0][0]
+getShortMatrixAsListType = getShortMatrixAsList[0][0].class
 print(getShortMatrixAsListType)
 print(getShortMatrixAsList)
-if(getShortMatrixAsListType !== 'number')
-	throw "getShortMatrixAsList not number!"
+if(getShortMatrixAsListType != 'number')
+	raise "getShortMatrixAsList not number!"
