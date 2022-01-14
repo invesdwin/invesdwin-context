@@ -41,10 +41,10 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     public Object evalParsing(final String expression) {
-        final StringReader reader = new StringReader(expression);
+        final PushbackReader reader = new PushbackReader(new StringReader(expression));
         Object finalResult = null;
         while (true) {
-            final Object form = LispReader.read(new PushbackReader(reader), false, this, false);
+            final Object form = LispReader.read(reader, false, this, false);
             if (form == this) {
                 break;
             }
@@ -62,10 +62,10 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     private List<Object> parse(final String expression) {
-        final StringReader reader = new StringReader(expression);
+        final PushbackReader reader = new PushbackReader(new StringReader(expression));
         final List<Object> parsed = new ArrayList<>();
         while (true) {
-            final Object form = LispReader.read(new PushbackReader(reader), false, this, false);
+            final Object form = LispReader.read(reader, false, this, false);
             if (form == this) {
                 break;
             }
