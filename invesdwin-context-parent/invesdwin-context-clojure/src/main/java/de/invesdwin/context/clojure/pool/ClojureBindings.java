@@ -38,8 +38,25 @@ public class ClojureBindings implements Bindings {
     }
 
     @Override
-    public boolean containsKey(final Object key) {
-        return get(key) != null;
+    public boolean containsKey(final Object keyObject) {
+        String key = (String) keyObject;
+        final int dot = key.lastIndexOf('.');
+        final String nameSpace;
+        if (dot < 0) {
+            nameSpace = USER_NS;
+        } else {
+            nameSpace = key.substring(0, dot);
+            key = key.substring(dot + 1);
+        }
+        final Object valAt = RT.var(nameSpace, key);
+        final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
+        if (valVar == null) {
+            return false;
+        }
+        if (!valVar.isBound()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -58,11 +75,15 @@ public class ClojureBindings implements Bindings {
             nameSpace = key.substring(0, dot);
             key = key.substring(dot + 1);
         }
-        try {
-            return RT.var(nameSpace, key).get();
-        } catch (final Error e) {
+        final Object valAt = RT.var(nameSpace, key);
+        final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
+        if (valVar == null) {
             return null;
         }
+        if (!valVar.isBound()) {
+            return null;
+        }
+        return valVar.get();
     }
 
     private Object get(final String nameSpace, final String key) {
@@ -93,7 +114,7 @@ public class ClojureBindings implements Bindings {
 
     @Override
     public Object remove(final Object key) {
-        RT.var(CORE_NS, "ns-unmap").invoke(Symbol.intern(USER_NS), key.toString());
+        RT.var(CORE_NS, "ns-unmap").invoke(Symbol.intern(USER_NS), Symbol.intern(key.toString()));
         return null;
     }
 
