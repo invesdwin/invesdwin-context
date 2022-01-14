@@ -92,6 +92,10 @@ public class WrappedJrubyScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
+        if (scriptCache != null) {
+            //we have to reset the script cache or ruby throws weird AssertionErrors
+            scriptCache.asMap().clear();
+        }
     }
 
     @Override
