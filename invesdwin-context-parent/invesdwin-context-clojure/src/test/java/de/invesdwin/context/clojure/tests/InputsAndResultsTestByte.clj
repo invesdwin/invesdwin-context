@@ -1,6 +1,6 @@
 (println "getByte")
 (if-not (nil? getByte)
-	(throw (Exception. (str "getByte already defined"))
+	(throw (Exception. "getByte already defined"))
 )
 (def getByte putByte)
 (def getByteType getByte.class)
