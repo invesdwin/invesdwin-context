@@ -21,8 +21,8 @@
 			<artifactId>clojure</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.clojars.ato</groupId>
-			<artifactId>clojure-jsr223</artifactId>
+			<groupId>clojure-jsr-223</groupId>
+			<artifactId>clojure-jsr-223</artifactId>
 		</dependency>
 	</dependencies>
 
