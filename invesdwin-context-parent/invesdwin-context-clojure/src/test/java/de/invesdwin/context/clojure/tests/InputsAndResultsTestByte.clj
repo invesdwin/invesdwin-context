@@ -1,59 +1,59 @@
-puts("getByte")
-unless (defined?(getByte)).nil?
-	raise "getByte already defined" + (defined?(getByte)).nil?
-end
-getByte = putByte
-getByteType = getByte.class
-puts(getByteType)
-puts(getByte)
-if(getByteType != Integer)
-	raise "getByte not Integer!"
-end
+(println "getByte")
+(if-not (nil? getByte)
+	(throw (Exception. (str "getByte already defined"))
+)
+(def getByte putByte)
+(def getByteType getByte.class)
+(println getByteType)
+(println getByte)
+(if-not (= getByteType Integer)
+	(throw (Exception. "getByte not Integer!"))
+)
 
-puts("getByteVector")
-unless (defined?(getByteVector)).nil?
-	raise "getByteVector already defined"
-end
-getByteVector = putByteVector
-getByteVectorType = getByteVector[0].class
-puts(getByteVectorType)
-puts(getByteVector)
-if(getByteVectorType != Integer)
-	raise "getByteVector not Integer!"
-end
+(println "getByteVector")
+(if-not (nil? getByteVector)
+	(throw (Exception. "getByteVector already defined"))
+)
+(def getByteVector putByteVector)
+(def getByteVectorType getByteVector[0].class)
+(println getByteVectorType)
+(println getByteVector)
+(if-not (= getByteVectorType Integer)
+	(throw (Exception. "getByteVector not Integer!"))
+)
 
-puts("getByteVectorAsList")
-unless (defined?(getByteVectorAsList)).nil?
-	raise "getByteVectorAsList already defined"
-end
-getByteVectorAsList = putByteVectorAsList
-getByteVectorAsListType = getByteVectorAsList[0].class
-puts(getByteVectorAsListType)
-puts(getByteVectorAsList)
-if(getByteVectorAsListType != Integer)
-	raise "getByteVectorAsList not Integer!"
-end
+(println "getByteVectorAsList")
+(if-not (nil? getByteVectorAsList)
+	(throw (Exception. "getByteVectorAsList already defined"))
+)
+(def getByteVectorAsList putByteVectorAsList)
+(def getByteVectorAsListType getByteVectorAsList[0].class)
+(println getByteVectorAsListType)
+(println getByteVectorAsList)
+(if-not (= getByteVectorAsListType Integer)
+	(throw (Exception. "getByteVectorAsList not Integer!"))
+)
 
-puts("getByteMatrix")
-unless (defined?(getByteMatrix)).nil?
-	raise "getByteMatrix already defined"
-end
-getByteMatrix = putByteMatrix
-getByteMatrixType = getByteMatrix[0][0].class
-puts(getByteMatrixType)
-puts(getByteMatrix)
-if(getByteMatrixType != Integer)
-	raise "getByteMatrix not Integer!"
-end
+(println "getByteMatrix")
+(if-not (nil? getByteMatrix)
+	(throw (Exception. "getByteMatrix already defined"))
+)
+(def getByteMatrix putByteMatrix)
+(def getByteMatrixType getByteMatrix[0][0].class)
+(println getByteMatrixType)
+(println getByteMatrix)
+(if-not (= getByteMatrixType Integer)
+	(throw (Exception. "getByteMatrix not Integer!"))
+)
 
-puts("getByteMatrixAsList")
-unless (defined?(getByteMatrixAsList)).nil?
-	raise "getByteMatrixAsList already defined"
-end
-getByteMatrixAsList = putByteMatrixAsList
-getByteMatrixAsListType = getByteMatrixAsList[0][0].class
-puts(getByteMatrixAsListType)
-puts(getByteMatrixAsList)
-if(getByteMatrixAsListType != Integer)
-	raise "getByteMatrixAsList not Integer!"
-end
+(println "getByteMatrixAsList")
+(if-not (nil? getByteMatrixAsList)
+	(throw (Exception. "getByteMatrixAsList already defined"))
+)
+(def getByteMatrixAsList putByteMatrixAsList)
+(def getByteMatrixAsListType getByteMatrixAsList[0][0].class)
+(println getByteMatrixAsListType)
+(println getByteMatrixAsList)
+(if-not (= getByteMatrixAsListType Integer)
+	(throw (Exception. "getByteMatrixAsList not Integer!"))
+)

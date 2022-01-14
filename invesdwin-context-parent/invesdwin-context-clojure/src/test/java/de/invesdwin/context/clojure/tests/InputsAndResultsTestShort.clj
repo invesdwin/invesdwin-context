@@ -1,59 +1,59 @@
-puts("getShort")
-unless (defined?(getShort)).nil?
-	raise "getShort already defined!"
-end
-getShort = putShort
-getShortType = getShort.class
-puts(getShortType)
-puts(getShort)
-if(getShortType != Integer)
-	raise "getShort not Integer!"
-end
+(println "getShort")
+(if-not (nil? getShort)
+	(throw (Exception. "getShort already defined!"))
+)
+(def getShort putShort)
+(def getShortType getShort.class)
+(println getShortType)
+(println getShort)
+(if-not (= getShortType Integer))
+	(throw (Exception. "getShort not Integer!"))
+)
 
-puts("getShortVector")
-unless (defined?(getShortVector)).nil?
-	raise "getShortVector already defined!"
-end
-getShortVector = putShortVector
-getShortVectorType = getShortVector[0].class
-puts(getShortVectorType)
-puts(getShortVector)
-if(getShortVectorType != Integer)
-	raise "getShortVector not Integer!"
-end
+(println "getShortVector")
+(if-not (nil? getShortVector)
+	(throw (Exception. "getShortVector already defined!"))
+)
+(def getShortVector putShortVector)
+(def getShortVectorType getShortVector[0].class)
+(println getShortVectorType)
+(println getShortVector)
+(if-not (= getShortVectorType Integer))
+	(throw (Exception. "getShortVector not Integer!"))
+)
 
-puts("getShortVectorAsList")
-unless (defined?(getShortVectorAsList)).nil?
-	raise "getShortVectorAsList already defined!"
-end
-getShortVectorAsList = putShortVectorAsList
-getShortVectorAsListType = getShortVectorAsList[0].class
-puts(getShortVectorAsListType)
-puts(getShortVectorAsList)
-if(getShortVectorAsListType != Integer)
-	raise "getShortVectorAsList not Integer!"
-end
+(println "getShortVectorAsList")
+(if-not (nil? getShortVectorAsList)
+	(throw (Exception. "getShortVectorAsList already defined!"))
+)
+(def getShortVectorAsList putShortVectorAsList)
+(def getShortVectorAsListType getShortVectorAsList[0].class)
+(println getShortVectorAsListType)
+(println getShortVectorAsList)
+(if-not (= getShortVectorAsListType Integer))
+	(throw (Exception. "getShortVectorAsList not Integer!"))
+)
 
-puts("getShortMatrix")
-unless (defined?(getShortMatrix)).nil?
-	raise "getShortMatrix already defined!"
-end
-getShortMatrix = putShortMatrix
-getShortMatrixType = getShortMatrix[0][0].class
-puts(getShortMatrixType)
-puts(getShortMatrix)
-if(getShortMatrixType != Integer)
-	raise "getShortMatrix not Integer!"
-end
+(println "getShortMatrix")
+(if-not (nil? getShortMatrix)
+	(throw (Exception. "getShortMatrix already defined!"))
+)
+(def getShortMatrix putShortMatrix)
+(def getShortMatrixType getShortMatrix[0][0].class)
+(println getShortMatrixType)
+(println getShortMatrix)
+(if-not (= getShortMatrixType Integer))
+	(throw (Exception. "getShortMatrix not Integer!"))
+)
 
-puts("getShortMatrixAsList")
-unless (defined?(getShortMatrixAsList)).nil?
-	raise "getShortMatrixAsList already defined!"
-end
-getShortMatrixAsList = putShortMatrixAsList
-getShortMatrixAsListType = getShortMatrixAsList[0][0].class
-puts(getShortMatrixAsListType)
-puts(getShortMatrixAsList)
-if(getShortMatrixAsListType != Integer)
-	raise "getShortMatrixAsList not Integer!"
-end
+(println "getShortMatrixAsList")
+(if-not (nil? getShortMatrixAsList)
+	(throw (Exception. "getShortMatrixAsList already defined!"))
+)
+(def getShortMatrixAsList putShortMatrixAsList)
+(def getShortMatrixAsListType getShortMatrixAsList[0][0].class)
+(println getShortMatrixAsListType)
+(println getShortMatrixAsList)
+(if-not (= getShortMatrixAsListType Integer))
+	(throw (Exception. "getShortMatrixAsList not Integer!"))
+)

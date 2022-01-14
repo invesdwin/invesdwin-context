@@ -1,59 +1,59 @@
-puts("getBoolean")
-unless (defined?(getBoolean)).nil?
-	raise "getBoolean already defined!"
-end
-getBoolean = putBoolean
-getBooleanType = getBoolean.class
-puts(getBooleanType)
-puts(getBoolean)
-if(getBooleanType != TrueClass and getBooleanType != FalseClass)
-	raise "getBoolean not boolean!"
-end
+(println "getBoolean")
+(if-not (nil? getBoolean)
+	(throw (Exception. "getBoolean already defined!"))
+)
+(def getBoolean putBoolean)
+(def getBooleanType getBoolean.class)
+(println getBooleanType)
+(println getBoolean)
+(if-not (= getBooleanType Boolean))
+	(throw (Exception. "getBoolean not boolean!"))
+)
 
-puts("getBooleanVector")
-unless (defined?(getBooleanVector)).nil?
-	raise "getBooleanVector already defined!"
-end
-getBooleanVector = putBooleanVector
-getBooleanVectorType = getBooleanVector[0].class
-puts(getBooleanVectorType)
-puts(getBooleanVector)
-if(getBooleanVectorType != TrueClass and getBooleanVectorType != FalseClass)
-	raise "getBooleanVector not boolean!"
-end
+(println "getBooleanVector")
+(if-not (nil? getBooleanVector)
+	(throw (Exception. "getBooleanVector already defined!"))
+)
+(def getBooleanVector putBooleanVector)
+(def getBooleanVectorType getBooleanVector[0].class)
+(println getBooleanVectorType)
+(println getBooleanVector)
+(if-not (= getBooleanVectorType Boolean))
+	(throw (Exception. "getBooleanVector not boolean!"))
+)
 
-puts("getBooleanVectorAsList")
-unless (defined?(getBooleanVectorAsList)).nil?
-	raise "getBooleanVectorAsList already defined!"
-end
-getBooleanVectorAsList = putBooleanVectorAsList
-getBooleanVectorAsListType = getBooleanVectorAsList[0].class
-puts(getBooleanVectorAsListType)
-puts(getBooleanVectorAsList)
-if(getBooleanVectorAsListType != TrueClass and getBooleanVectorAsListType != FalseClass)
-	raise "getBooleanVectorAsList not boolean!"
-end
+(println "getBooleanVectorAsList")
+(if-not (nil? getBooleanVectorAsList)
+	(throw (Exception. "getBooleanVectorAsList already defined!"))
+)
+(def getBooleanVectorAsList putBooleanVectorAsList)
+(def getBooleanVectorAsListType getBooleanVectorAsList[0].class)
+(println getBooleanVectorAsListType)
+(println getBooleanVectorAsList)
+(if-not (= getBooleanVectorAsListType Boolean))
+	(throw (Exception. "getBooleanVectorAsList not boolean!"))
+)
 
-puts("getBooleanMatrix")
-unless (defined?(getBooleanMatrix)).nil?
-	raise "getBooleanMatrix already defined!"
-end
-getBooleanMatrix = putBooleanMatrix
-getBooleanMatrixType = getBooleanMatrix[0][0].class
-puts(getBooleanMatrixType)
-puts(getBooleanMatrix)
-if(getBooleanMatrixType != TrueClass and getBooleanMatrixType != FalseClass)
-	raise "getBooleanMatrix not boolean!"
-end
+(println "getBooleanMatrix")
+(if-not (nil? getBooleanMatrix)
+	(throw (Exception. "getBooleanMatrix already defined!"))
+)
+(def getBooleanMatrix putBooleanMatrix)
+(def getBooleanMatrixType getBooleanMatrix[0][0].class)
+(println getBooleanMatrixType)
+(println getBooleanMatrix)
+(if-not (= getBooleanMatrixType Boolean))
+	(throw (Exception. "getBooleanMatrix not boolean!"))
+)
 
-puts("getBooleanMatrixAsList")
-unless (defined?(getBooleanMatrixAsList)).nil?
-	raise "getBooleanMatrixAsList already defined!"
-end
-getBooleanMatrixAsList = putBooleanMatrixAsList
-getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0].class
-puts(getBooleanMatrixAsListType)
-puts(getBooleanMatrixAsList)
-if(getBooleanMatrixAsListType != TrueClass and getBooleanMatrixAsListType != FalseClass)
-	raise "getBooleanMatrixAsList not boolean!"
-end
+(println "getBooleanMatrixAsList")
+(if-not (nil? getBooleanMatrixAsList)
+	(throw (Exception. "getBooleanMatrixAsList already defined!"))
+)
+(def getBooleanMatrixAsList putBooleanMatrixAsList)
+(def getBooleanMatrixAsListType getBooleanMatrixAsList[0][0].class)
+(println getBooleanMatrixAsListType)
+(println getBooleanMatrixAsList)
+(if-not (= getBooleanMatrixAsListType Boolean))
+	(throw (Exception. "getBooleanMatrixAsList not boolean!"))
+)

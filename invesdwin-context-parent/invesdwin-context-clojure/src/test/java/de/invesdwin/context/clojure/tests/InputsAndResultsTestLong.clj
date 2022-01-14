@@ -1,59 +1,59 @@
-puts("getLong")
-unless (defined?(getLong)).nil?
-	raise "getLong already defined!"
-end
-getLong = putLong
-getLongType = getLong.class
-puts(getLongType)
-puts(getLong)
-if(getLongType != Integer)
-	raise "getLong not Integer!"
-end
+(println "getLong")
+(if-not (nil? getLong)
+	(throw (Exception. "getLong already defined!"))
+)
+(def getLong putLong)
+(def getLongType getLong.class)
+(println getLongType)
+(println getLong)
+(if-not (= getLongType Integer)
+	(throw (Exception. "getLong not Integer!"))
+)
 
-puts("getLongVector")
-unless (defined?(getLongVector)).nil?
-	raise "getLongVector already defined!"
-end
-getLongVector = putLongVector
-getLongVectorType = getLongVector[0].class
-puts(getLongVectorType)
-puts(getLongVector)
-if(getLongVectorType != Integer)
-	raise "getLongVector not Integer!"
-end
+(println "getLongVector")
+(if-not (nil? getLongVector)
+	(throw (Exception. "getLongVector already defined!"))
+)
+(def getLongVector putLongVector)
+(def getLongVectorType getLongVector[0].class)
+(println getLongVectorType)
+(println getLongVector)
+(if-not (= getLongVectorType Integer)
+	(throw (Exception. "getLongVector not Integer!"))
+)
 
-puts("getLongVectorAsList")
-unless (defined?(getLongVectorAsList)).nil?
-	raise "getLongVectorAsList already defined!"
-end
-getLongVectorAsList = putLongVectorAsList
-getLongVectorAsListType = getLongVectorAsList[0].class
-puts(getLongVectorAsListType)
-puts(getLongVectorAsList)
-if(getLongVectorAsListType != Integer)
-	raise "getLongVectorAsList not Integer!"
-end
+(println "getLongVectorAsList")
+(if-not (nil? getLongVectorAsList)
+	(throw (Exception. "getLongVectorAsList already defined!"))
+)
+(def getLongVectorAsList putLongVectorAsList)
+(def getLongVectorAsListType getLongVectorAsList[0].class)
+(println getLongVectorAsListType)
+(println getLongVectorAsList)
+(if-not (= getLongVectorAsListType Integer)
+	(throw (Exception. "getLongVectorAsList not Integer!"))
+)
 
-puts("getLongMatrix")
-unless (defined?(getLongMatrix)).nil?
-	raise "getLongMatrix already defined!"
-end
-getLongMatrix = putLongMatrix
-getLongMatrixType = getLongMatrix[0][0].class
-puts(getLongMatrixType)
-puts(getLongMatrix)
-if(getLongMatrixType != Integer)
-	raise "getLongMatrix not Integer!"
-end
+(println "getLongMatrix")
+(if-not (nil? getLongMatrix)
+	(throw (Exception. "getLongMatrix already defined!"))
+)
+(def getLongMatrix putLongMatrix)
+(def getLongMatrixType getLongMatrix[0][0].class)
+(println getLongMatrixType)
+(println getLongMatrix)
+(if-not (= getLongMatrixType Integer)
+	(throw (Exception. "getLongMatrix not Integer!"))
+)
 
-puts("getLongMatrixAsList")
-unless (defined?(getLongMatrixAsList)).nil?
-	raise "getLongMatrixAsList already defined!"
-end
-getLongMatrixAsList = putLongMatrixAsList
-getLongMatrixAsListType = getLongMatrixAsList[0][0].class
-puts(getLongMatrixAsListType)
-puts(getLongMatrixAsList)
-if(getLongMatrixAsListType != Integer)
-	raise "getLongMatrixAsList not Integer!"
-end
+(println "getLongMatrixAsList")
+(if-not (nil? getLongMatrixAsList)
+	(throw (Exception. "getLongMatrixAsList already defined!"))
+)
+(def getLongMatrixAsList putLongMatrixAsList)
+(def getLongMatrixAsListType getLongMatrixAsList[0][0].class)
+(println getLongMatrixAsListType)
+(println getLongMatrixAsList)
+(if-not (= getLongMatrixAsListType Integer)
+	(throw (Exception. "getLongMatrixAsList not Integer!"))
+)

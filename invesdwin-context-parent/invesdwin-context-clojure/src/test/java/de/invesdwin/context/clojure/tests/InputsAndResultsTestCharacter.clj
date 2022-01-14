@@ -1,59 +1,59 @@
-puts("getCharacter")
-unless (defined?(getCharacter)).nil?
-	raise "getCharacter already defined!"
-end
-getCharacter = putCharacter
-getCharacterType = getCharacter.class
-puts(getCharacterType)
-puts(getCharacter)
-if(getCharacterType != Integer)
-	raise "getCharacter not Integer"
-end
+(println "getCharacter")
+(if-not (nil? getCharacter)
+	(throw (Exception. "getCharacter already defined!"))
+)
+(def getCharacter putCharacter)
+(def getCharacterType getCharacter.class)
+(println getCharacterType)
+(println getCharacter)
+(if-not (= getCharacterType Integer)
+	(throw (Exception. "getCharacter not Integer"))
+)
 
-puts("getCharacterVector")
-unless (defined?(getCharacterVector)).nil?
-	raise "getCharacterVector already defined!"
-end
-getCharacterVector = putCharacterVector
-getCharacterVectorType = getCharacterVector[0].class
-puts(getCharacterVectorType)
-puts(getCharacterVector)
-if(getCharacterVectorType != Integer)
-	raise "getCharacterVector not Integer"
-end
+(println "getCharacterVector")
+(if-not (nil? getCharacterVector)
+	(throw (Exception. "getCharacterVector already defined!"))
+)
+(def getCharacterVector putCharacterVector)
+(def getCharacterVectorType getCharacterVector[0].class)
+(println getCharacterVectorType)
+(println getCharacterVector)
+(if-not (= getCharacterVectorType Integer)
+	(throw (Exception. "getCharacterVector not Integer"))
+)
 
-puts("getCharacterVectorAsList")
-unless (defined?(getCharacterVectorAsList)).nil?
-	raise "getCharacterVectorAsList already defined!"
-end
-getCharacterVectorAsList = putCharacterVectorAsList
-getCharacterVectorAsListType = getCharacterVectorAsList[0].class
-puts(getCharacterVectorAsListType)
-puts(getCharacterVectorAsList)
-if(getCharacterVectorAsListType != Integer)
-	raise "getCharacterVectorAsList not Integer"
-end
+(println "getCharacterVectorAsList")
+(if-not (nil? getCharacterVectorAsList)
+	(throw (Exception. "getCharacterVectorAsList already defined!"))
+)
+(def getCharacterVectorAsList putCharacterVectorAsList)
+(def getCharacterVectorAsListType getCharacterVectorAsList[0].class)
+(println getCharacterVectorAsListType)
+(println getCharacterVectorAsList)
+(if-not (= getCharacterVectorAsListType Integer)
+	(throw (Exception. "getCharacterVectorAsList not Integer"))
+)
 
-puts("getCharacterMatrix")
-unless (defined?(getCharacterMatrix)).nil?
-	raise "getCharacterMatrix already defined!"
-end
-getCharacterMatrix = putCharacterMatrix
-getCharacterMatrixType = getCharacterMatrix[0][0].class
-puts(getCharacterMatrixType)
-puts(getCharacterMatrix)
-if(getCharacterMatrixType != Integer)
-	raise "getCharacterMatrix not Integer"
-end
+(println "getCharacterMatrix")
+(if-not (nil? getCharacterMatrix)
+	(throw (Exception. "getCharacterMatrix already defined!"))
+)
+(def getCharacterMatrix putCharacterMatrix)
+(def getCharacterMatrixType getCharacterMatrix[0][0].class)
+(println getCharacterMatrixType)
+(println getCharacterMatrix)
+(if-not (= getCharacterMatrixType Integer)
+	(throw (Exception. "getCharacterMatrix not Integer"))
+)
 
-puts("getCharacterMatrixAsList")
-unless (defined?(getCharacterMatrixAsList)).nil?
-	raise "getCharacterMatrixAsList already defined!"
-end
-getCharacterMatrixAsList = putCharacterMatrixAsList
-getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0].class
-puts(getCharacterMatrixAsListType)
-puts(getCharacterMatrixAsList)
-if(getCharacterMatrixAsListType != Integer)
-	raise "getCharacterMatrixAsList not Integer"
-end
+(println "getCharacterMatrixAsList")
+(if-not (nil? getCharacterMatrixAsList)
+	(throw (Exception. "getCharacterMatrixAsList already defined!"))
+)
+(def getCharacterMatrixAsList putCharacterMatrixAsList)
+(def getCharacterMatrixAsListType getCharacterMatrixAsList[0][0].class)
+(println getCharacterMatrixAsListType)
+(println getCharacterMatrixAsList)
+(if-not (= getCharacterMatrixAsListType Integer)
+	(throw (Exception. "getCharacterMatrixAsList not Integer"))
+)

@@ -5,8 +5,8 @@ import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import de.invesdwin.context.clojure.pool.ClojureScriptEngineObjectPool;
-import de.invesdwin.context.clojure.pool.WrappedClojureScriptEngine;
+import de.invesdwin.context.clojure.pool.ClojureEngineObjectPool;
+import de.invesdwin.context.clojure.pool.WrappedClojureEngine;
 import de.invesdwin.util.error.Throwables;
 
 @Immutable
@@ -25,7 +25,7 @@ public final class ScriptTaskRunnerClojure
     @Override
     public <T> T run(final AScriptTaskClojure<T> scriptTask) {
         //get session
-        final WrappedClojureScriptEngine scriptEngine = ClojureScriptEngineObjectPool.INSTANCE.borrowObject();
+        final WrappedClojureEngine scriptEngine = ClojureEngineObjectPool.INSTANCE.borrowObject();
         try {
             //inputs
             final ScriptTaskEngineClojure engine = new ScriptTaskEngineClojure(scriptEngine);
@@ -39,10 +39,10 @@ public final class ScriptTaskRunnerClojure
             engine.close();
 
             //return
-            ClojureScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
+            ClojureEngineObjectPool.INSTANCE.returnObject(scriptEngine);
             return result;
         } catch (final Throwable t) {
-            ClojureScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
+            ClojureEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
         }
     }

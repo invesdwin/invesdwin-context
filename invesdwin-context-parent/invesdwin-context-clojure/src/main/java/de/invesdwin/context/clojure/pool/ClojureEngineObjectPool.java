@@ -11,38 +11,38 @@ import de.invesdwin.util.time.duration.Duration;
 
 @ThreadSafe
 @Named
-public final class ClojureScriptEngineObjectPool extends ATimeoutObjectPool<WrappedClojureScriptEngine>
-        implements FactoryBean<ClojureScriptEngineObjectPool> {
+public final class ClojureEngineObjectPool extends ATimeoutObjectPool<WrappedClojureEngine>
+        implements FactoryBean<ClojureEngineObjectPool> {
 
-    public static final ClojureScriptEngineObjectPool INSTANCE = new ClojureScriptEngineObjectPool();
+    public static final ClojureEngineObjectPool INSTANCE = new ClojureEngineObjectPool();
 
-    private ClojureScriptEngineObjectPool() {
+    private ClojureEngineObjectPool() {
         super(Duration.ONE_MINUTE, new Duration(10, FTimeUnit.SECONDS));
     }
 
     @Override
-    public void invalidateObject(final WrappedClojureScriptEngine obj) {
+    public void invalidateObject(final WrappedClojureEngine obj) {
         obj.close();
     }
 
     @Override
-    protected WrappedClojureScriptEngine newObject() {
-        return new WrappedClojureScriptEngine();
+    protected WrappedClojureEngine newObject() {
+        return new WrappedClojureEngine();
     }
 
     @Override
-    protected void passivateObject(final WrappedClojureScriptEngine obj) {
+    protected void passivateObject(final WrappedClojureEngine obj) {
         obj.reset();
     }
 
     @Override
-    public ClojureScriptEngineObjectPool getObject() {
+    public ClojureEngineObjectPool getObject() {
         return INSTANCE;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return ClojureScriptEngineObjectPool.class;
+        return ClojureEngineObjectPool.class;
     }
 
     @Override

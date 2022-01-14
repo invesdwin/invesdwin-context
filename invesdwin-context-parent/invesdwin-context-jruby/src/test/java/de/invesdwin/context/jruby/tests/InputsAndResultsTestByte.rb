@@ -1,6 +1,6 @@
 puts("getByte")
 unless (defined?(getByte)).nil?
-	raise "getByte already defined" + (defined?(getByte)).nil?
+	raise "getByte already defined"
 end
 getByte = putByte
 getByteType = getByte.class

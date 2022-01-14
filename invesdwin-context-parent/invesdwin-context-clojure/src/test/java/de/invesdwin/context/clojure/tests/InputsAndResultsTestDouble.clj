@@ -1,59 +1,59 @@
-puts("getDouble")
-unless (defined?(getDouble)).nil?
-	raise "getDouble already defined!"
-end
-getDouble = putDouble
-getDoubleType = getDouble.class
-puts(getDoubleType)
-puts(getDouble)
-if(getDoubleType != Float)
-	raise "getDouble not Float!"
-end
+(println "getDouble")
+(if-not (nil? getDouble)
+	(throw (Exception. "getDouble already defined!"))
+)
+(def getDouble putDouble)
+(def getDoubleType getDouble.class)
+(println getDoubleType)
+(println getDouble)
+(if-not (= getDoubleType Float)
+	(throw (Exception. "getDouble not Float!"))
+)
 
-puts("getDoubleVector")
-unless (defined?(getDoubleVector)).nil?
-	raise "getDoubleVector already defined!"
-end
-getDoubleVector = putDoubleVector
-getDoubleVectorType = getDoubleVector[0].class
-puts(getDoubleVectorType)
-puts(getDoubleVector)
-if(getDoubleVectorType != Float)
-	raise "getDoubleVector not Float!"
-end
+(println "getDoubleVector")
+(if-not (nil? getDoubleVector)
+	(throw (Exception. "getDoubleVector already defined!"))
+)
+(def getDoubleVector putDoubleVector)
+(def getDoubleVectorType getDoubleVector[0].class)
+(println getDoubleVectorType)
+(println getDoubleVector)
+(if-not (= getDoubleVectorType Float)
+	(throw (Exception. "getDoubleVector not Float!"))
+)
 
-puts("getDoubleVectorAsList")
-unless (defined?(getDoubleVectorAsList)).nil?
-	raise "getDoubleVectorAsList already defined!"
-end
-getDoubleVectorAsList = putDoubleVectorAsList
-getDoubleVectorAsListType = getDoubleVectorAsList[0].class
-puts(getDoubleVectorAsListType)
-puts(getDoubleVectorAsList)
-if(getDoubleVectorAsListType != Float)
-	raise "getDoubleVectorAsList not Float!"
-end
+(println "getDoubleVectorAsList")
+(if-not (nil? getDoubleVectorAsList)
+	(throw (Exception. "getDoubleVectorAsList already defined!"))
+)
+(def getDoubleVectorAsList putDoubleVectorAsList)
+(def getDoubleVectorAsListType getDoubleVectorAsList[0].class)
+(println getDoubleVectorAsListType)
+(println getDoubleVectorAsList)
+(if-not (= getDoubleVectorAsListType Float)
+	(throw (Exception. "getDoubleVectorAsList not Float!"))
+)
 
-puts("getDoubleMatrix")
-unless (defined?(getDoubleMatrix)).nil?
-	raise "getDoubleMatrix already defined!"
-end
-getDoubleMatrix = putDoubleMatrix
-getDoubleMatrixType = getDoubleMatrix[0][0].class
-puts(getDoubleMatrixType)
-puts(getDoubleMatrix)
-if(getDoubleMatrixType != Float)
-	raise "getDoubleMatrix not Float!"
-end
+(println "getDoubleMatrix")
+(if-not (nil? getDoubleMatrix)
+	(throw (Exception. "getDoubleMatrix already defined!"))
+)
+(def getDoubleMatrix putDoubleMatrix)
+(def getDoubleMatrixType getDoubleMatrix[0][0].class)
+(println getDoubleMatrixType)
+(println getDoubleMatrix)
+(if-not (= getDoubleMatrixType Float)
+	(throw (Exception. "getDoubleMatrix not Float!"))
+)
 
-puts("getDoubleMatrixAsList")
-unless (defined?(getDoubleMatrixAsList)).nil?
-	raise "getDoubleMatrixAsList already defined!"
-end
-getDoubleMatrixAsList = putDoubleMatrixAsList
-getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0].class
-puts(getDoubleMatrixAsListType)
-puts(getDoubleMatrixAsList)
-if(getDoubleMatrixAsListType != Float)
-	raise "getDoubleMatrixAsList not Float!"
-end
+(println "getDoubleMatrixAsList")
+(if-not (nil? getDoubleMatrixAsList)
+	(throw (Exception. "getDoubleMatrixAsList already defined!"))
+)
+(def getDoubleMatrixAsList putDoubleMatrixAsList)
+(def getDoubleMatrixAsListType getDoubleMatrixAsList[0][0].class)
+(println getDoubleMatrixAsListType)
+(println getDoubleMatrixAsList)
+(if-not (= getDoubleMatrixAsListType Float)
+	(throw (Exception. "getDoubleMatrixAsList not Float!"))
+)

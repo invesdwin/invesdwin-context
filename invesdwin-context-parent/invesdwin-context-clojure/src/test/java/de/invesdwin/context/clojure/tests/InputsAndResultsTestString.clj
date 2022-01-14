@@ -1,143 +1,143 @@
-puts("getString")
-unless (defined?(getString)).nil?
-	raise "getString already defined!"
-end
-getString = putString
-getStringType = getString.class
-puts(getStringType)
-puts(getString)
-if(getStringType != String)
-	raise "getString not String!"
-end
+(println "getString")
+(if-not (nil? getString)
+	(throw (Exception. "getString already defined!"))
+)
+(def getString putString)
+(def getStringType getString.class)
+(println getStringType)
+(println getString)
+(if-not (= getStringType String)
+	(throw (Exception. "getString not String!"))
+)
 
-puts("getStringWithNull")
-unless (defined?(getStringWithNull)).nil?
-	raise "getStringWithNull already defined!"
-end
-getStringWithNull = putStringWithNull
-getStringWithNullType = getStringWithNull.class
-puts(getStringWithNullType)
-puts(getStringWithNull)
-unless(getStringWithNull.nil?)
-	raise "getStringWithNull not null!"
-end
+(println "getStringWithNull")
+(if-not (nil? getStringWithNull)
+	(throw (Exception. "getStringWithNull already defined!"))
+)
+(def getStringWithNull putStringWithNull)
+(def getStringWithNullType getStringWithNull.class)
+(println getStringWithNullType)
+(println getStringWithNull)
+(if-not (nil? getStringWithNull)
+	(throw (Exception. "getStringWithNull not null!"))
+)
 
-puts("getStringVector")
-unless (defined?(getStringVector)).nil?
-	raise "getStringVector already defined!"
-end
-getStringVector = putStringVector
-getStringVectorType = getStringVector[0].class
-puts(getStringVectorType)
-puts(getStringVector)
-if(getStringVectorType != String)
-	raise "getStringVector not String!"
-end
+(println "getStringVector")
+(if-not (nil? getStringVector)
+	(throw (Exception. "getStringVector already defined!"))
+)
+(def getStringVector putStringVector)
+(def getStringVectorType getStringVector[0].class)
+(println getStringVectorType)
+(println getStringVector)
+(if-not (= getStringVectorType String)
+	(throw (Exception. "getStringVector not String!"))
+)
 
-puts("getStringVectorWithNull")
-unless (defined?(getStringVectorWithNull)).nil?
-	raise "getStringVectorWithNull already defined!"
-end
-getStringVectorWithNull = putStringVectorWithNull
-getStringVectorWithNullType = getStringVectorWithNull[0].class
-puts(getStringVectorWithNullType)
-puts(getStringVectorWithNull)
-if(getStringVectorWithNullType != String)
-	raise "getStringVectorWithNull not String!"
-end
-unless(getStringVectorWithNull[1].nil?)
-	raise "getStringVectorWithNull[1] not null!"
-end
+(println "getStringVectorWithNull")
+(if-not (nil? getStringVectorWithNull)
+	(throw (Exception. "getStringVectorWithNull already defined!"))
+)
+(def getStringVectorWithNull putStringVectorWithNull)
+(def getStringVectorWithNullType getStringVectorWithNull[0].class)
+(println getStringVectorWithNullType)
+(println getStringVectorWithNull)
+(if-not (= getStringVectorWithNullType String)
+	(throw (Exception. "getStringVectorWithNull not String!"))
+)
+(if-not (nil? getStringVectorWithNull[1])
+	(throw (Exception. "getStringVectorWithNull[1] not null!"))
+)
 
-puts("getStringVectorAsList")
-unless (defined?(getStringVectorAsList)).nil?
-	raise "getStringVectorAsList already defined!"
-end
-getStringVectorAsList = putStringVectorAsList
-getStringVectorAsListType = getStringVectorAsList[0].class
-puts(getStringVectorAsListType)
-puts(getStringVectorAsList)
-if(getStringVectorAsListType != String)
-	raise "getStringVectorAsList not String!"
-end
+(println "getStringVectorAsList")
+(if-not (nil? getStringVectorAsList)
+	(throw (Exception. "getStringVectorAsList already defined!"))
+)
+(def getStringVectorAsList putStringVectorAsList)
+(def getStringVectorAsListType getStringVectorAsList[0].class)
+(println getStringVectorAsListType)
+(println getStringVectorAsList)
+(if-not (= getStringVectorAsListType String)
+	(throw (Exception. "getStringVectorAsList not String!"))
+)
 
-puts("getStringVectorAsListWithNull")
-unless (defined?(getStringVectorAsListWithNull)).nil?
-	raise "getStringVectorAsListWithNull already defined!"
-end
-getStringVectorAsListWithNull = putStringVectorAsListWithNull
-getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0].class
-puts(getStringVectorAsListWithNullType)
-puts(getStringVectorAsListWithNull)
-if(getStringVectorAsListWithNullType != String)
-	raise "getStringVectorAsListWithNull not String!"
-end
-unless(getStringVectorAsListWithNull[1].nil?)
-	raise "getStringVectorAsListWithNull[1] not null!"
-end
+(println "getStringVectorAsListWithNull")
+(if-not (nil? getStringVectorAsListWithNull)
+	(throw (Exception. "getStringVectorAsListWithNull already defined!"))
+)
+(def getStringVectorAsListWithNull putStringVectorAsListWithNull)
+(def getStringVectorAsListWithNullType getStringVectorAsListWithNull[0].class)
+(println getStringVectorAsListWithNullType)
+(println getStringVectorAsListWithNull)
+(if-not (= getStringVectorAsListWithNullType String)
+	(throw (Exception. "getStringVectorAsListWithNull not String!"))
+)
+(if-not (nil? getStringVectorAsListWithNull[1])
+	(throw (Exception. "getStringVectorAsListWithNull[1] not null!"))
+)
 
-puts("getStringMatrix")
-unless (defined?(getStringMatrix)).nil?
-	raise "getStringMatrix already defined!"
-end
-getStringMatrix = putStringMatrix
-getStringMatrixType = getStringMatrix[0][0].class
-puts(getStringMatrixType)
-puts(getStringMatrix)
-if(getStringMatrixType != String)
-	raise "getStringMatrix not String!"
-end
+(println "getStringMatrix")
+(if-not (nil? getStringMatrix)
+	(throw (Exception. "getStringMatrix already defined!"))
+)
+(def getStringMatrix putStringMatrix)
+(def getStringMatrixType getStringMatrix[0][0].class)
+(println getStringMatrixType)
+(println getStringMatrix)
+(if-not (= getStringMatrixType String)
+	(throw (Exception. "getStringMatrix not String!"))
+)
 
-puts("getStringMatrixWithNull")
-unless (defined?(getStringMatrixWithNull)).nil?
-	raise "getStringMatrixWithNull already defined!"
-end
-getStringMatrixWithNull = putStringMatrixWithNull
-getStringMatrixWithNullType = getStringMatrixWithNull[0][1].class
-puts(getStringMatrixWithNullType)
-puts(getStringMatrixWithNull)
-if(getStringMatrixWithNullType != String)
-	raise "getStringMatrixWithNull not String!"
-end
-unless(getStringMatrixWithNull[0][0].nil?)
-	raise "getStringMatrixWithNull[0][0] not null!"
-end
-unless(getStringMatrixWithNull[1][1].nil?)
-	raise "getStringMatrixWithNull[1][1] not null!"
-end
-unless(getStringMatrixWithNull[2][2].nil?)
-	raise "getStringMatrixWithNull[2][2] not null!"
-end
+(println "getStringMatrixWithNull")
+(if-not (nil? getStringMatrixWithNull)
+	(throw (Exception. "getStringMatrixWithNull already defined!"))
+)
+(def getStringMatrixWithNull putStringMatrixWithNull)
+(def getStringMatrixWithNullType getStringMatrixWithNull[0][1].class)
+(println getStringMatrixWithNullType)
+(println getStringMatrixWithNull)
+(if-not (= getStringMatrixWithNullType String)
+	(throw (Exception. "getStringMatrixWithNull not String!"))
+)
+(if-not (nil? getStringMatrixWithNull[0][0])
+	(throw (Exception. "getStringMatrixWithNull[0][0] not null!"))
+)
+(if-not (nil? getStringMatrixWithNull[1][1])
+	(throw (Exception. "getStringMatrixWithNull[1][1] not null!"))
+)
+(if-not (nil? getStringMatrixWithNull[2][2])
+	(throw (Exception. "getStringMatrixWithNull[2][2] not null!"))
+)
 
-puts("getStringMatrixAsList")
-unless (defined?(getStringMatrixAsList)).nil?
-	raise "getStringMatrixAsList already defined!"
-end
-getStringMatrixAsList = putStringMatrixAsList
-getStringMatrixAsListType = getStringMatrixAsList[0][0].class
-puts(getStringMatrixAsListType)
-puts(getStringMatrixAsList)
-if(getStringMatrixAsListType != String)
-	raise "getStringMatrixAsList not String!"
-end
+(println "getStringMatrixAsList")
+(if-not (nil? getStringMatrixAsList)
+	(throw (Exception. "getStringMatrixAsList already defined!"))
+)
+(def getStringMatrixAsList putStringMatrixAsList)
+(def getStringMatrixAsListType getStringMatrixAsList[0][0].class)
+(println getStringMatrixAsListType)
+(println getStringMatrixAsList)
+(if-not (= getStringMatrixAsListType String)
+	(throw (Exception. "getStringMatrixAsList not String!"))
+)
 
-puts("getStringMatrixAsListWithNull")
-unless (defined?(getStringMatrixAsListWithNull)).nil?
-	raise "getStringMatrixAsListWithNull already defined!"
-end
-getStringMatrixAsListWithNull = putStringMatrixAsListWithNull
-getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].class
-puts(getStringMatrixAsListWithNullType)
-puts(getStringMatrixAsListWithNull)
-if(getStringMatrixAsListWithNullType != String)
-	raise "getStringMatrixAsListWithNull not String!"
-end
-unless(getStringMatrixAsListWithNull[0][0].nil?)
-	raise "getStringMatrixAsListWithNull[0][0] not null!"
-end
-unless(getStringMatrixAsListWithNull[1][1].nil?)
-	raise "getStringMatrixAsListWithNull[1][1] not null!"
-end
-unless(getStringMatrixAsListWithNull[2][2].nil?)
-	raise "getStringMatrixAsListWithNull[2][2] not null!"
-end
+(println "getStringMatrixAsListWithNull")
+(if-not (nil? getStringMatrixAsListWithNull)
+	(throw (Exception. "getStringMatrixAsListWithNull already defined!"))
+)
+(def getStringMatrixAsListWithNull putStringMatrixAsListWithNull)
+(def getStringMatrixAsListWithNullType getStringMatrixAsListWithNull[0][1].class)
+(println getStringMatrixAsListWithNullType)
+(println getStringMatrixAsListWithNull)
+(if-not (= getStringMatrixAsListWithNullType String)
+	(throw (Exception. "getStringMatrixAsListWithNull not String!"))
+)
+(if-not (nil? getStringMatrixAsListWithNull[0][0])
+	(throw (Exception. "getStringMatrixAsListWithNull[0][0] not null!"))
+)
+(if-not (nil? getStringMatrixAsListWithNull[1][1])
+	(throw (Exception. "getStringMatrixAsListWithNull[1][1] not null!"))
+)
+(if-not (nil? getStringMatrixAsListWithNull[2][2])
+	(throw (Exception. "getStringMatrixAsListWithNull[2][2] not null!"))
+)

@@ -1,59 +1,59 @@
-puts("getPercent")
-unless (defined?(getPercent)).nil?
-	raise "getPercent already defined!"
-end
-getPercent = putPercent
-getPercentType = getPercent.class
-puts(getPercentType)
-puts(getPercent)
-if(getPercentType != Float)
-	raise "getPercent not Float!"
-end
+(println "getPercent")
+(if-not (nil? getPercent)
+	(throw (Exception. "getPercent already defined!"))
+)
+(def getPercent putPercent)
+(def getPercentType getPercent.class)
+(println getPercentType)
+(println getPercent)
+(if-not (= getPercentType Float)
+	(throw (Exception. "getPercent not Float!"))
+)
 
-puts("getPercentVector")
-unless (defined?(getPercentVector)).nil?
-	raise "getPercentVector already defined!"
-end
-getPercentVector = putPercentVector
-getPercentVectorType = getPercentVector[0].class
-puts(getPercentVectorType)
-puts(getPercentVector)
-if(getPercentVectorType != Float)
-	raise "getPercentVector not Float!"
-end
+(println "getPercentVector")
+(if-not (nil? getPercentVector)
+	(throw (Exception. "getPercentVector already defined!"))
+)
+(def getPercentVector putPercentVector)
+(def getPercentVectorType getPercentVector[0].class)
+(println getPercentVectorType)
+(println getPercentVector)
+(if-not (= getPercentVectorType Float)
+	(throw (Exception. "getPercentVector not Float!"))
+)
 
-puts("getPercentVectorAsList")
-unless (defined?(getPercentVectorAsList)).nil?
-	raise "getPercentVectorAsList already defined!"
-end
-getPercentVectorAsList = putPercentVectorAsList
-getPercentVectorAsListType = getPercentVectorAsList[0].class
-puts(getPercentVectorAsListType)
-puts(getPercentVectorAsList)
-if(getPercentVectorAsListType != Float)
-	raise "getPercentVectorAsList not Float!"
-end
+(println "getPercentVectorAsList")
+(if-not (nil? getPercentVectorAsList)
+	(throw (Exception. "getPercentVectorAsList already defined!"))
+)
+(def getPercentVectorAsList putPercentVectorAsList)
+(def getPercentVectorAsListType getPercentVectorAsList[0].class)
+(println getPercentVectorAsListType)
+(println getPercentVectorAsList)
+(if-not (= getPercentVectorAsListType Float)
+	(throw (Exception. "getPercentVectorAsList not Float!"))
+)
 
-puts("getPercentMatrix")
-unless (defined?(getPercentMatrix)).nil?
-	raise "getPercentMatrix already defined!"
-end
-getPercentMatrix = putPercentMatrix
-getPercentMatrixType = getPercentMatrix[0][0].class
-puts(getPercentMatrixType)
-puts(getPercentMatrix)
-if(getPercentMatrixType != Float)
-	raise "getPercentMatrix not Float!"
-end
+(println "getPercentMatrix")
+(if-not (nil? getPercentMatrix)
+	(throw (Exception. "getPercentMatrix already defined!"))
+)
+(def getPercentMatrix putPercentMatrix)
+(def getPercentMatrixType getPercentMatrix[0][0].class)
+(println getPercentMatrixType)
+(println getPercentMatrix)
+(if-not (= getPercentMatrixType Float)
+	(throw (Exception. "getPercentMatrix not Float!"))
+)
 
-puts("getPercentMatrixAsList")
-unless (defined?(getPercentMatrixAsList)).nil?
-	raise "getPercentMatrixAsList already defined!"
-end
-getPercentMatrixAsList = putPercentMatrixAsList
-getPercentMatrixAsListType = getPercentMatrixAsList[0][0].class
-puts(getPercentMatrixAsListType)
-puts(getPercentMatrixAsList)
-if(getPercentMatrixAsListType != Float)
-	raise "getPercentMatrixAsList not Float!"
-end
+(println "getPercentMatrixAsList")
+(if-not (nil? getPercentMatrixAsList)
+	(throw (Exception. "getPercentMatrixAsList already defined!"))
+)
+(def getPercentMatrixAsList putPercentMatrixAsList)
+(def getPercentMatrixAsListType getPercentMatrixAsList[0][0].class)
+(println getPercentMatrixAsListType)
+(println getPercentMatrixAsList)
+(if-not (= getPercentMatrixAsListType Float)
+	(throw (Exception. "getPercentMatrixAsList not Float!"))
+)

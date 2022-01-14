@@ -1,229 +1,229 @@
-getBooleanVector = putBooleanVector
-if(getBooleanVector.length != 0)
-	raise "getBooleanVector not empty!"
-end
+(def getBooleanVector putBooleanVector)
+(if-not (= getBooleanVector.length 0)
+	(throw (Exception. "getBooleanVector not empty!"))
+)
 
-getBooleanVectorAsList = putBooleanVectorAsList
-if(getBooleanVectorAsList.length != 0)
-	raise "getBooleanVectorAsList not empty!"
-end
+(def getBooleanVectorAsList putBooleanVectorAsList)
+(if-not (= getBooleanVectorAsList.length 0)
+	(throw (Exception. "getBooleanVectorAsList not empty!"))
+)
 
-getBooleanMatrix = putBooleanMatrix
-if(getBooleanMatrix.length != 0)
-	raise "getBooleanMatrix not empty!"
-end
+(def getBooleanMatrix putBooleanMatrix)
+(if-not (= getBooleanMatrix.length 0)
+	(throw (Exception. "getBooleanMatrix not empty!"))
+)
 
-getBooleanMatrixAsList = putBooleanMatrixAsList
-if(getBooleanMatrixAsList.length != 0)
-	raise "getBooleanMatrixAsList not empty!"
-end
-
-
-getByteVector = putByteVector
-if(getByteVector.length != 0)
-	raise "getByteVector not empty!"
-end
-
-getByteVectorAsList = putByteVectorAsList
-if(getByteVectorAsList.length != 0)
-	raise "getByteVectorAsList not empty!"
-end
-
-getByteMatrix = putByteMatrix
-if(getByteMatrix.length != 0)
-	raise "getByteMatrix not empty!"
-end
-
-getByteMatrixAsList = putByteMatrixAsList
-if(getByteMatrixAsList.length != 0)
-	raise "getByteMatrixAsList not empty!"
-end
+(def getBooleanMatrixAsList putBooleanMatrixAsList)
+(if-not (= getBooleanMatrixAsList.length 0)
+	(throw (Exception. "getBooleanMatrixAsList not empty!"))
+)
 
 
-getCharacterVector = putCharacterVector
-if(getCharacterVector.length != 0)
-	raise "getCharacterVector not empty!"
-end
+(def getByteVector putByteVector)
+(if-not (= getByteVector.length 0)
+	(throw (Exception. "getByteVector not empty!"))
+)
 
-getCharacterVectorAsList = putCharacterVectorAsList
-if(getCharacterVectorAsList.length != 0)
-	raise "getCharacterVectorAsList not empty!"
-end
+(def getByteVectorAsList putByteVectorAsList)
+(if-not (= getByteVectorAsList.length 0)
+	(throw (Exception. "getByteVectorAsList not empty!"))
+)
 
-getCharacterMatrix = putCharacterMatrix
-if(getCharacterMatrix.length != 0)
-	raise "getCharacterMatrix not empty!"
-end
+(def getByteMatrix putByteMatrix)
+(if-not (= getByteMatrix.length 0)
+	(throw (Exception. "getByteMatrix not empty!"))
+)
 
-getCharacterMatrixAsList = putCharacterMatrixAsList
-if(getCharacterMatrixAsList.length != 0)
-	raise "getCharacterMatrixAsList not empty!"
-end
-
-
-getDecimalVector = putDecimalVector
-if(getDecimalVector.length != 0)
-	raise "getDecimalVector not empty!"
-end
-
-getDecimalVectorAsList = putDecimalVectorAsList
-if(getDecimalVectorAsList.length != 0)
-	raise "getDecimalVectorAsList not empty!"
-end
-
-getDecimalMatrix = putDecimalMatrix
-if(getDecimalMatrix.length != 0)
-	raise "getDecimalMatrix not empty!"
-end
-
-getDecimalMatrixAsList = putDecimalMatrixAsList
-if(getDecimalMatrixAsList.length != 0)
-	raise "getDecimalMatrixAsList not empty!"
-end
+(def getByteMatrixAsList putByteMatrixAsList)
+(if-not (= getByteMatrixAsList.length 0)
+	(throw (Exception. "getByteMatrixAsList not empty!"))
+)
 
 
-getDoubleVector = putDoubleVector
-if(getDoubleVector.length != 0)
-	raise "getDoubleVector not empty!"
-end
+(def getCharacterVector putCharacterVector)
+(if-not (= getCharacterVector.length 0)
+	(throw (Exception. "getCharacterVector not empty!"))
+)
 
-getDoubleVectorAsList = putDoubleVectorAsList
-if(getDoubleVectorAsList.length != 0)
-	raise "getDoubleVectorAsList not empty!"
-end
+(def getCharacterVectorAsList putCharacterVectorAsList)
+(if-not (= getCharacterVectorAsList.length 0)
+	(throw (Exception. "getCharacterVectorAsList not empty!"))
+)
 
-getDoubleMatrix = putDoubleMatrix
-if(getDoubleMatrix.length != 0)
-	raise "getDoubleMatrix not empty!"
-end
+(def getCharacterMatrix putCharacterMatrix)
+(if-not (= getCharacterMatrix.length 0)
+	(throw (Exception. "getCharacterMatrix not empty!"))
+)
 
-getDoubleMatrixAsList = putDoubleMatrixAsList
-if(getDoubleMatrixAsList.length != 0)
-	raise "getDoubleMatrixAsList not empty!"
-end
-
-
-getFloatVector = putFloatVector
-if(getFloatVector.length != 0)
-	raise "getFloatVector not empty!"
-end
-
-getFloatVectorAsList = putFloatVectorAsList
-if(getFloatVectorAsList.length != 0)
-	raise "getFloatVectorAsList not empty!"
-end
-
-getFloatMatrix = putFloatMatrix
-if(getFloatMatrix.length != 0)
-	raise "getFloatMatrix not empty!"
-end
-
-getFloatMatrixAsList = putFloatMatrixAsList
-if(getFloatMatrixAsList.length != 0)
-	raise "getFloatMatrixAsList not empty!"
-end
+(def getCharacterMatrixAsList putCharacterMatrixAsList)
+(if-not (= getCharacterMatrixAsList.length 0)
+	(throw (Exception. "getCharacterMatrixAsList not empty!"))
+)
 
 
-getIntegerVector = putIntegerVector
-if(getIntegerVector.length != 0)
-	raise "getIntegerVector not empty!"
-end
+(def getDecimalVector putDecimalVector)
+(if-not (= getDecimalVector.length 0)
+	(throw (Exception. "getDecimalVector not empty!"))
+)
 
-getIntegerVectorAsList = putIntegerVectorAsList
-if(getIntegerVectorAsList.length != 0)
-	raise "getIntegerVectorAsList not empty!"
-end
+(def getDecimalVectorAsList putDecimalVectorAsList)
+(if-not (= getDecimalVectorAsList.length 0)
+	(throw (Exception. "getDecimalVectorAsList not empty!"))
+)
 
-getIntegerMatrix = putIntegerMatrix
-if(getIntegerMatrix.length != 0)
-	raise "getIntegerMatrix not empty!"
-end
+(def getDecimalMatrix putDecimalMatrix)
+(if-not (= getDecimalMatrix.length 0)
+	(throw (Exception. "getDecimalMatrix not empty!"))
+)
 
-getIntegerMatrixAsList = putIntegerMatrixAsList
-if(getIntegerMatrixAsList.length != 0)
-	raise "getIntegerMatrixAsList not empty!"
-end
-
-
-getLongVector = putLongVector
-if(getLongVector.length != 0)
-	raise "getLongVector not empty!"
-end
-
-getLongVectorAsList = putLongVectorAsList
-if(getLongVectorAsList.length != 0)
-	raise "getLongVectorAsList not empty!"
-end
-
-getLongMatrix = putLongMatrix
-if(getLongMatrix.length != 0)
-	raise "getLongMatrix not empty!"
-end
-
-getLongMatrixAsList = putLongMatrixAsList
-if(getLongMatrixAsList.length != 0)
-	raise "getLongMatrixAsList not empty!"
-end
+(def getDecimalMatrixAsList putDecimalMatrixAsList)
+(if-not (= getDecimalMatrixAsList.length 0)
+	(throw (Exception. "getDecimalMatrixAsList not empty!"))
+)
 
 
-getPercentVector = putPercentVector
-if(getPercentVector.length != 0)
-	raise "getPercentVector not empty!"
-end
+(def getDoubleVector putDoubleVector)
+(if-not (= getDoubleVector.length 0)
+	(throw (Exception. "getDoubleVector not empty!"))
+)
 
-getPercentVectorAsList = putPercentVectorAsList
-if(getPercentVectorAsList.length != 0)
-	raise "getPercentVectorAsList not empty!"
-end
+(def getDoubleVectorAsList putDoubleVectorAsList)
+(if-not (= getDoubleVectorAsList.length 0)
+	(throw (Exception. "getDoubleVectorAsList not empty!"))
+)
 
-getPercentMatrix = putPercentMatrix
-if(getPercentMatrix.length != 0)
-	raise "getPercentMatrix not empty!"
-end
+(def getDoubleMatrix putDoubleMatrix)
+(if-not (= getDoubleMatrix.length 0)
+	(throw (Exception. "getDoubleMatrix not empty!"))
+)
 
-getPercentMatrixAsList = putPercentMatrixAsList
-if(getPercentMatrixAsList.length != 0)
-	raise "getPercentMatrixAsList not empty!"
-end
-
-
-getShortVector = putShortVector
-if(getShortVector.length != 0)
-	raise "getShortVector not empty!"
-end
-
-getShortVectorAsList = putShortVectorAsList
-if(getShortVectorAsList.length != 0)
-	raise "getShortVectorAsList not empty!"
-end
-
-getShortMatrix = putShortMatrix
-if(getShortMatrix.length != 0)
-	raise "getShortMatrix not empty!"
-end
-
-getShortMatrixAsList = putShortMatrixAsList
-if(getShortMatrixAsList.length != 0)
-	raise "getShortMatrixAsList not empty!"
-end
+(def getDoubleMatrixAsList putDoubleMatrixAsList)
+(if-not (= getDoubleMatrixAsList.length 0)
+	(throw (Exception. "getDoubleMatrixAsList not empty!"))
+)
 
 
-getStringVector = putStringVector
-if(getStringVector.length != 0)
-	raise "getStringVector not empty!"
-end
+(def getFloatVector putFloatVector)
+(if-not (= getFloatVector.length 0)
+	(throw (Exception. "getFloatVector not empty!"))
+)
 
-getStringVectorAsList = putStringVectorAsList
-if(getStringVectorAsList.length != 0)
-	raise "getStringVectorAsList not empty!"
-end
+(def getFloatVectorAsList putFloatVectorAsList)
+(if-not (= getFloatVectorAsList.length 0)
+	(throw (Exception. "getFloatVectorAsList not empty!"))
+)
 
-getStringMatrix = putStringMatrix
-if(getStringMatrix.length != 0)
-	raise "getStringMatrix not empty!"
-end
+(def getFloatMatrix putFloatMatrix)
+(if-not (= getFloatMatrix.length 0)
+	(throw (Exception. "getFloatMatrix not empty!"))
+)
 
-getStringMatrixAsList = putStringMatrixAsList
-if(getStringMatrixAsList.length != 0)
-	raise "getStringMatrixAsList not empty!"
-end
+(def getFloatMatrixAsList putFloatMatrixAsList)
+(if-not (= getFloatMatrixAsList.length 0)
+	(throw (Exception. "getFloatMatrixAsList not empty!"))
+)
+
+
+(def getIntegerVector putIntegerVector)
+(if-not (= getIntegerVector.length 0)
+	(throw (Exception. "getIntegerVector not empty!"))
+)
+
+(def getIntegerVectorAsList putIntegerVectorAsList)
+(if-not (= getIntegerVectorAsList.length 0)
+	(throw (Exception. "getIntegerVectorAsList not empty!"))
+)
+
+(def getIntegerMatrix putIntegerMatrix)
+(if-not (= getIntegerMatrix.length 0)
+	(throw (Exception. "getIntegerMatrix not empty!"))
+)
+
+(def getIntegerMatrixAsList putIntegerMatrixAsList)
+(if-not (= getIntegerMatrixAsList.length 0)
+	(throw (Exception. "getIntegerMatrixAsList not empty!"))
+)
+
+
+(def getLongVector putLongVector)
+(if-not (= getLongVector.length 0)
+	(throw (Exception. "getLongVector not empty!"))
+)
+
+(def getLongVectorAsList putLongVectorAsList)
+(if-not (= getLongVectorAsList.length 0)
+	(throw (Exception. "getLongVectorAsList not empty!"))
+)
+
+(def getLongMatrix putLongMatrix)
+(if-not (= getLongMatrix.length 0)
+	(throw (Exception. "getLongMatrix not empty!"))
+)
+
+(def getLongMatrixAsList putLongMatrixAsList)
+(if-not (= getLongMatrixAsList.length 0)
+	(throw (Exception. "getLongMatrixAsList not empty!"))
+)
+
+
+(def getPercentVector putPercentVector)
+(if-not (= getPercentVector.length 0)
+	(throw (Exception. "getPercentVector not empty!"))
+)
+
+(def getPercentVectorAsList putPercentVectorAsList)
+(if-not (= getPercentVectorAsList.length 0)
+	(throw (Exception. "getPercentVectorAsList not empty!"))
+)
+
+(def getPercentMatrix putPercentMatrix)
+(if-not (= getPercentMatrix.length 0)
+	(throw (Exception. "getPercentMatrix not empty!"))
+)
+
+(def getPercentMatrixAsList putPercentMatrixAsList)
+(if-not (= getPercentMatrixAsList.length 0)
+	(throw (Exception. "getPercentMatrixAsList not empty!"))
+)
+
+
+(def getShortVector putShortVector)
+(if-not (= getShortVector.length 0)
+	(throw (Exception. "getShortVector not empty!"))
+)
+
+(def getShortVectorAsList putShortVectorAsList)
+(if-not (= getShortVectorAsList.length 0)
+	(throw (Exception. "getShortVectorAsList not empty!"))
+)
+
+(def getShortMatrix putShortMatrix)
+(if-not (= getShortMatrix.length 0)
+	(throw (Exception. "getShortMatrix not empty!"))
+)
+
+(def getShortMatrixAsList putShortMatrixAsList)
+(if-not (= getShortMatrixAsList.length 0)
+	(throw (Exception. "getShortMatrixAsList not empty!"))
+)
+
+
+(def getStringVector putStringVector)
+(if-not (= getStringVector.length 0)
+	(throw (Exception. "getStringVector not empty!"))
+)
+
+(def getStringVectorAsList putStringVectorAsList)
+(if-not (= getStringVectorAsList.length 0)
+	(throw (Exception. "getStringVectorAsList not empty!"))
+)
+
+(def getStringMatrix putStringMatrix)
+(if-not (= getStringMatrix.length 0)
+	(throw (Exception. "getStringMatrix not empty!"))
+)
+
+(def getStringMatrixAsList putStringMatrixAsList)
+(if-not (= getStringMatrixAsList.length 0)
+	(throw (Exception. "getStringMatrixAsList not empty!"))
+)

@@ -1,59 +1,59 @@
-puts("getDecimal")
-unless (defined?(getDecimal)).nil?
-	raise "getDecimal already defined!"
-end
-getDecimal = putDecimal
-getDecimalType = getDecimal.class
-puts(getDecimalType)
-puts(getDecimal)
-if(getDecimalType != Float)
-	raise "getDecimal not Float!"
-end
+(println "getDecimal")
+(if-not (nil? getDecimal)
+	(throw (Exception. "getDecimal already defined!"))
+)
+(def getDecimal putDecimal)
+(def getDecimalType getDecimal.class)
+(println getDecimalType)
+(println getDecimal)
+(if-not (= getDecimalType Float)
+	(throw (Exception. "getDecimal not Float!"))
+)
 
-puts("getDecimalVector")
-unless (defined?(getDecimalVector)).nil?
-	raise "getDecimalVector already defined!"
-end
-getDecimalVector = putDecimalVector
-getDecimalVectorType = getDecimalVector[0].class
-puts(getDecimalVectorType)
-puts(getDecimalVector)
-if(getDecimalVectorType != Float)
-	raise "getDecimalVector not Float!"
-end
+(println "getDecimalVector")
+(if-not (nil? getDecimalVector)
+	(throw (Exception. "getDecimalVector already defined!"))
+)
+(def getDecimalVector putDecimalVector)
+(def getDecimalVectorType getDecimalVector[0].class)
+(println getDecimalVectorType)
+(println getDecimalVector)
+(if-not (= getDecimalVectorType Float)
+	(throw (Exception. "getDecimalVector not Float!"))
+)
 
-puts("getDecimalVectorAsList")
-unless (defined?(getDecimalVectorAsList)).nil?
-	raise "getDecimalVectorAsList already defined!"
-end
-getDecimalVectorAsList = putDecimalVectorAsList
-getDecimalVectorAsListType = getDecimalVectorAsList[0].class
-puts(getDecimalVectorAsListType)
-puts(getDecimalVectorAsList)
-if(getDecimalVectorAsListType != Float)
-	raise "getDecimalVectorAsList not Float!"
-end
+(println "getDecimalVectorAsList")
+(if-not (nil? getDecimalVectorAsList)
+	(throw (Exception. "getDecimalVectorAsList already defined!"))
+)
+(def getDecimalVectorAsList putDecimalVectorAsList)
+(def getDecimalVectorAsListType getDecimalVectorAsList[0].class)
+(println getDecimalVectorAsListType)
+(println getDecimalVectorAsList)
+(if-not (= getDecimalVectorAsListType Float)
+	(throw (Exception. "getDecimalVectorAsList not Float!"))
+)
 
-puts("getDecimalMatrix")
-unless (defined?(getDecimalMatrix)).nil?
-	raise "getDecimalMatrix already defined!"
-end
-getDecimalMatrix = putDecimalMatrix
-getDecimalMatrixType = getDecimalMatrix[0][0].class
-puts(getDecimalMatrixType)
-puts(getDecimalMatrix)
-if(getDecimalMatrixType != Float)
-	raise "getDecimalMatrix not Float!"
-end
+(println "getDecimalMatrix")
+(if-not (nil? getDecimalMatrix)
+	(throw (Exception. "getDecimalMatrix already defined!"))
+)
+(def getDecimalMatrix putDecimalMatrix)
+(def getDecimalMatrixType getDecimalMatrix[0][0].class)
+(println getDecimalMatrixType)
+(println getDecimalMatrix)
+(if-not (= getDecimalMatrixType Float)
+	(throw (Exception. "getDecimalMatrix not Float!"))
+)
 
-puts("getDecimalMatrixAsList")
-unless (defined?(getDecimalMatrixAsList)).nil?
-	raise "getDecimalMatrixAsList already defined!"
-end
-getDecimalMatrixAsList = putDecimalMatrixAsList
-getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0].class
-puts(getDecimalMatrixAsListType)
-puts(getDecimalMatrixAsList)
-if(getDecimalMatrixAsListType != Float)
-	raise "getDecimalMatrixAsList not Float!"
-end
+(println "getDecimalMatrixAsList")
+(if-not (nil? getDecimalMatrixAsList)
+	(throw (Exception. "getDecimalMatrixAsList already defined!"))
+)
+(def getDecimalMatrixAsList putDecimalMatrixAsList)
+(def getDecimalMatrixAsListType getDecimalMatrixAsList[0][0].class)
+(println getDecimalMatrixAsListType)
+(println getDecimalMatrixAsList)
+(if-not (= getDecimalMatrixAsListType Float)
+	(throw (Exception. "getDecimalMatrixAsList not Float!"))
+)

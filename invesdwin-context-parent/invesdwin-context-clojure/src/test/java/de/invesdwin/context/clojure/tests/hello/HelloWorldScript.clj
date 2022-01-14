@@ -1,1 +1,1 @@
-world = "Hello " + hello + "!"
+(def world (str "Hello " hello "!"))

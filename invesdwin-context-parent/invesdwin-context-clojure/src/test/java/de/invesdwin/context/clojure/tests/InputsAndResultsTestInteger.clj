@@ -1,59 +1,59 @@
-puts("getInteger")
-unless (defined?(getInteger)).nil?
-	raise "getInteger already defined!"
-end
-getInteger = putInteger
-getIntegerType = getInteger.class
-puts(getIntegerType)
-puts(getInteger)
-if(getIntegerType != Integer)
-	raise "getInteger not Integer!"
-end
+(println "getInteger")
+(if-not (nil? getInteger)
+	(throw (Exception. "getInteger already defined!"))
+)
+(def getInteger putInteger)
+(def getIntegerType getInteger.class)
+(println getIntegerType)
+(println getInteger)
+(if-not (= getIntegerType Integer)
+	(throw (Exception. "getInteger not Integer!"))
+)
 
-puts("getIntegerVector")
-unless (defined?(getIntegerVector)).nil?
-	raise "getIntegerVector already defined!"
-end
-getIntegerVector = putIntegerVector
-getIntegerVectorType = getIntegerVector[0].class
-puts(getIntegerVectorType)
-puts(getIntegerVector)
-if(getIntegerVectorType != Integer)
-	raise "getIntegerVector not Integer!"
-end
+(println "getIntegerVector")
+(if-not (nil? getIntegerVector)
+	(throw (Exception. "getIntegerVector already defined!"))
+)
+(def getIntegerVector putIntegerVector)
+(def getIntegerVectorType getIntegerVector[0].class)
+(println getIntegerVectorType)
+(println getIntegerVector)
+(if-not (= getIntegerVectorType Integer)
+	(throw (Exception. "getIntegerVector not Integer!"))
+)
 
-puts("getIntegerVectorAsList")
-unless (defined?(getIntegerVectorAsList)).nil?
-	raise "getIntegerVectorAsList already defined!"
-end
-getIntegerVectorAsList = putIntegerVectorAsList
-getIntegerVectorAsListType = getIntegerVectorAsList[0].class
-puts(getIntegerVectorAsListType)
-puts(getIntegerVectorAsList)
-if(getIntegerVectorAsListType != Integer)
-	raise "getIntegerVectorAsList not Integer!"
-end
+(println "getIntegerVectorAsList")
+(if-not (nil? getIntegerVectorAsList)
+	(throw (Exception. "getIntegerVectorAsList already defined!"))
+)
+(def getIntegerVectorAsList putIntegerVectorAsList)
+(def getIntegerVectorAsListType getIntegerVectorAsList[0].class)
+(println getIntegerVectorAsListType)
+(println getIntegerVectorAsList)
+(if-not (= getIntegerVectorAsListType Integer)
+	(throw (Exception. "getIntegerVectorAsList not Integer!"))
+)
 
-puts("getIntegerMatrix")
-unless (defined?(getIntegerMatrix)).nil?
-	raise "getIntegerMatrix already defined!"
-end
-getIntegerMatrix = putIntegerMatrix
-getIntegerMatrixType = getIntegerMatrix[0][0].class
-puts(getIntegerMatrixType)
-puts(getIntegerMatrix)
-if(getIntegerMatrixType != Integer)
-	raise "getIntegerMatrix not Integer!"
-end
+(println "getIntegerMatrix")
+(if-not (nil? getIntegerMatrix)
+	(throw (Exception. "getIntegerMatrix already defined!"))
+)
+(def getIntegerMatrix putIntegerMatrix)
+(def getIntegerMatrixType getIntegerMatrix[0][0].class)
+(println getIntegerMatrixType)
+(println getIntegerMatrix)
+(if-not (= getIntegerMatrixType Integer)
+	(throw (Exception. "getIntegerMatrix not Integer!"))
+)
 
-puts("getIntegerMatrixAsList")
-unless (defined?(getIntegerMatrixAsList)).nil?
-	raise "getIntegerMatrixAsList already defined!"
-end
-getIntegerMatrixAsList = putIntegerMatrixAsList
-getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0].class
-puts(getIntegerMatrixAsListType)
-puts(getIntegerMatrixAsList)
-if(getIntegerMatrixAsListType != Integer)
-	raise "getIntegerMatrixAsList not Integer!"
-end
+(println "getIntegerMatrixAsList")
+(if-not (nil? getIntegerMatrixAsList)
+	(throw (Exception. "getIntegerMatrixAsList already defined!"))
+)
+(def getIntegerMatrixAsList putIntegerMatrixAsList)
+(def getIntegerMatrixAsListType getIntegerMatrixAsList[0][0].class)
+(println getIntegerMatrixAsListType)
+(println getIntegerMatrixAsList)
+(if-not (= getIntegerMatrixAsListType Integer)
+	(throw (Exception. "getIntegerMatrixAsList not Integer!"))
+)

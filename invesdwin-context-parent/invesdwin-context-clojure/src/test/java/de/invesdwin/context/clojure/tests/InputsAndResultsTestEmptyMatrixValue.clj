@@ -1,119 +1,119 @@
-getBooleanMatrix = putBooleanMatrix
-if(getBooleanMatrix.length != 2)
-	raise "getBooleanMatrix empty!"
-end
+(def getBooleanMatrix putBooleanMatrix)
+(if-not (= getBooleanMatrix.length 2)
+	(throw (Exception. "getBooleanMatrix empty!"))
+)
 
-getBooleanMatrixAsList = putBooleanMatrixAsList
-if(getBooleanMatrixAsList.length != 2)
-	raise "getBooleanMatrixAsList empty!"
-end
-
-
-getByteMatrix = putByteMatrix
-if(getByteMatrix.length != 2)
-	raise "getByteMatrix empty!"
-end
-
-getByteMatrixAsList = putByteMatrixAsList
-if(getByteMatrixAsList.length != 2)
-	raise "getByteMatrixAsList empty!"
-end
+(def getBooleanMatrixAsList putBooleanMatrixAsList)
+(if-not (= getBooleanMatrixAsList.length 2)
+	(throw (Exception. "getBooleanMatrixAsList empty!"))
+)
 
 
-getCharacterMatrix = putCharacterMatrix
-if(getCharacterMatrix.length != 2)
-	raise "getCharacterMatrix empty!"
-end
+(def getByteMatrix putByteMatrix)
+(if-not (= getByteMatrix.length 2)
+	(throw (Exception. "getByteMatrix empty!"))
+)
 
-getCharacterMatrixAsList = putCharacterMatrixAsList
-if(getCharacterMatrixAsList.length != 2)
-	raise "getCharacterMatrixAsList empty!"
-end
-
-
-getDecimalMatrix = putDecimalMatrix
-if(getDecimalMatrix.length != 2)
-	raise "getDecimalMatrix empty!"
-end
-
-getDecimalMatrixAsList = putDecimalMatrixAsList
-if(getDecimalMatrixAsList.length != 2)
-	raise "getDecimalMatrixAsList empty!"
-end
+(def getByteMatrixAsList putByteMatrixAsList)
+(if-not (= getByteMatrixAsList.length 2)
+	(throw (Exception. "getByteMatrixAsList empty!"))
+)
 
 
-getDoubleMatrix = putDoubleMatrix
-if(getDoubleMatrix.length != 2)
-	raise "getDoubleMatrix empty!"
-end
+(def getCharacterMatrix putCharacterMatrix)
+(if-not (= getCharacterMatrix.length 2)
+	(throw (Exception. "getCharacterMatrix empty!"))
+)
 
-getDoubleMatrixAsList = putDoubleMatrixAsList
-if(getDoubleMatrixAsList.length != 2)
-	raise "getDoubleMatrixAsList empty!"
-end
-
-
-getFloatMatrix = putFloatMatrix
-if(getFloatMatrix.length != 2)
-	raise "getFloatMatrix empty!"
-end
-
-getFloatMatrixAsList = putFloatMatrixAsList
-if(getFloatMatrixAsList.length != 2)
-	raise "getFloatMatrixAsList empty!"
-end
+(def getCharacterMatrixAsList putCharacterMatrixAsList)
+(if-not (= getCharacterMatrixAsList.length 2)
+	(throw (Exception. "getCharacterMatrixAsList empty!"))
+)
 
 
-getIntegerMatrix = putIntegerMatrix
-if(getIntegerMatrix.length != 2)
-	raise "getIntegerMatrix empty!"
-end
+(def getDecimalMatrix putDecimalMatrix)
+(if-not (= getDecimalMatrix.length 2)
+	(throw (Exception. "getDecimalMatrix empty!"))
+)
 
-getIntegerMatrixAsList = putIntegerMatrixAsList
-if(getIntegerMatrixAsList.length != 2)
-	raise "getIntegerMatrixAsList empty!"
-end
-
-
-getLongMatrix = putLongMatrix
-if(getLongMatrix.length != 2)
-	raise "getLongMatrix empty!"
-end
-
-getLongMatrixAsList = putLongMatrixAsList
-if(getLongMatrixAsList.length != 2)
-	raise "getLongMatrixAsList empty!"
-end
+(def getDecimalMatrixAsList putDecimalMatrixAsList)
+(if-not (= getDecimalMatrixAsList.length 2)
+	(throw (Exception. "getDecimalMatrixAsList empty!"))
+)
 
 
-getPercentMatrix = putPercentMatrix
-if(getPercentMatrix.length != 2)
-	raise "getPercentMatrix empty!"
-end
+(def getDoubleMatrix putDoubleMatrix)
+(if-not (= getDoubleMatrix.length 2)
+	(throw (Exception. "getDoubleMatrix empty!"))
+)
 
-getPercentMatrixAsList = putPercentMatrixAsList
-if(getPercentMatrixAsList.length != 2)
-	raise "getPercentMatrixAsList empty!"
-end
-
-
-getShortMatrix = putShortMatrix
-if(getShortMatrix.length != 2)
-	raise "getShortMatrix empty!"
-end
-
-getShortMatrixAsList = putShortMatrixAsList
-if(getShortMatrixAsList.length != 2)
-	raise "getShortMatrixAsList empty!"
-end
+(def getDoubleMatrixAsList putDoubleMatrixAsList)
+(if-not (= getDoubleMatrixAsList.length 2)
+	(throw (Exception. "getDoubleMatrixAsList empty!"))
+)
 
 
-getStringMatrix = putStringMatrix
-if(getStringMatrix.length != 2)
-	raise "getStringMatrix empty!"
-end
+(def getFloatMatrix putFloatMatrix)
+(if-not (= getFloatMatrix.length 2)
+	(throw (Exception. "getFloatMatrix empty!"))
+)
 
-getStringMatrixAsList = putStringMatrixAsList
-if(getStringMatrixAsList.length != 2)
-	raise "getStringMatrixAsList empty!"
-end
+(def getFloatMatrixAsList putFloatMatrixAsList)
+(if-not (= getFloatMatrixAsList.length 2)
+	(throw (Exception. "getFloatMatrixAsList empty!"))
+)
+
+
+(def getIntegerMatrix putIntegerMatrix)
+(if-not (= getIntegerMatrix.length 2)
+	(throw (Exception. "getIntegerMatrix empty!"))
+)
+
+(def getIntegerMatrixAsList putIntegerMatrixAsList)
+(if-not (= getIntegerMatrixAsList.length 2)
+	(throw (Exception. "getIntegerMatrixAsList empty!"))
+)
+
+
+(def getLongMatrix putLongMatrix)
+(if-not (= getLongMatrix.length 2)
+	(throw (Exception. "getLongMatrix empty!"))
+)
+
+(def getLongMatrixAsList putLongMatrixAsList)
+(if-not (= getLongMatrixAsList.length 2)
+	(throw (Exception. "getLongMatrixAsList empty!"))
+)
+
+
+(def getPercentMatrix putPercentMatrix)
+(if-not (= getPercentMatrix.length 2)
+	(throw (Exception. "getPercentMatrix empty!"))
+)
+
+(def getPercentMatrixAsList putPercentMatrixAsList)
+(if-not (= getPercentMatrixAsList.length 2)
+	(throw (Exception. "getPercentMatrixAsList empty!"))
+)
+
+
+(def getShortMatrix putShortMatrix)
+(if-not (= getShortMatrix.length 2)
+	(throw (Exception. "getShortMatrix empty!"))
+)
+
+(def getShortMatrixAsList putShortMatrixAsList)
+(if-not (= getShortMatrixAsList.length 2)
+	(throw (Exception. "getShortMatrixAsList empty!"))
+)
+
+
+(def getStringMatrix putStringMatrix)
+(if-not (= getStringMatrix.length 2)
+	(throw (Exception. "getStringMatrix empty!"))
+)
+
+(def getStringMatrixAsList putStringMatrixAsList)
+(if-not (= getStringMatrixAsList.length 2)
+	(throw (Exception. "getStringMatrixAsList empty!"))
+)

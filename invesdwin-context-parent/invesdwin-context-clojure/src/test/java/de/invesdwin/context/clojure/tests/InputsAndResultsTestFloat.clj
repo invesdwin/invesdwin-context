@@ -1,59 +1,59 @@
-puts("getFloat")
-unless (defined?(getFloat)).nil?
-	raise "getFloat already defined!"
-end
-getFloat = putFloat
-getFloatType = getFloat.class
-puts(getFloatType)
-puts(getFloat)
-if(getFloatType != Float)
-	raise "getFloat not Float!"
-end
+(println "getFloat")
+(if-not (nil? getFloat)
+	(throw (Exception. "getFloat already defined!"))
+)
+(def getFloat putFloat)
+(def getFloatType getFloat.class)
+(println getFloatType)
+(println getFloat)
+(if-not (= getFloatType Float)
+	(throw (Exception. "getFloat not Float!"))
+)
 
-puts("getFloatVector")
-unless (defined?(getFloatVector)).nil?
-	raise "getFloatVector already defined!"
-end
-getFloatVector = putFloatVector
-getFloatVectorType = getFloatVector[0].class
-puts(getFloatVectorType)
-puts(getFloatVector)
-if(getFloatVectorType != Float)
-	raise "getFloatVector not Float!"
-end
+(println "getFloatVector")
+(if-not (nil? getFloatVector)
+	(throw (Exception. "getFloatVector already defined!"))
+)
+(def getFloatVector putFloatVector)
+(def getFloatVectorType getFloatVector[0].class)
+(println getFloatVectorType)
+(println getFloatVector)
+(if-not (= getFloatVectorType Float)
+	(throw (Exception. "getFloatVector not Float!"))
+)
 
-puts("getFloatVectorAsList")
-unless (defined?(getFloatVectorAsList)).nil?
-	raise "getFloatVectorAsList already defined!"
-end
-getFloatVectorAsList = putFloatVectorAsList
-getFloatVectorAsListType = getFloatVectorAsList[0].class
-puts(getFloatVectorAsListType)
-puts(getFloatVectorAsList)
-if(getFloatVectorAsListType != Float)
-	raise "getFloatVectorAsList not Float!"
-end
+(println "getFloatVectorAsList")
+(if-not (nil? getFloatVectorAsList)
+	(throw (Exception. "getFloatVectorAsList already defined!"))
+)
+(def getFloatVectorAsList putFloatVectorAsList)
+(def getFloatVectorAsListType getFloatVectorAsList[0].class)
+(println getFloatVectorAsListType)
+(println getFloatVectorAsList)
+(if-not (= getFloatVectorAsListType Float)
+	(throw (Exception. "getFloatVectorAsList not Float!"))
+)
 
-puts("getFloatMatrix")
-unless (defined?(getFloatMatrix)).nil?
-	raise "getFloatMatrix already defined!"
-end
-getFloatMatrix = putFloatMatrix
-getFloatMatrixType = getFloatMatrix[0][0].class
-puts(getFloatMatrixType)
-puts(getFloatMatrix)
-if(getFloatMatrixType != Float)
-	raise "getFloatMatrix not Float!"
-end
+(println "getFloatMatrix")
+(if-not (nil? getFloatMatrix)
+	(throw (Exception. "getFloatMatrix already defined!"))
+)
+(def getFloatMatrix putFloatMatrix)
+(def getFloatMatrixType getFloatMatrix[0][0].class)
+(println getFloatMatrixType)
+(println getFloatMatrix)
+(if-not (= getFloatMatrixType Float)
+	(throw (Exception. "getFloatMatrix not Float!"))
+)
 
-puts("getFloatMatrixAsList")
-unless (defined?(getFloatMatrixAsList)).nil?
-	raise "getFloatMatrixAsList already defined!"
-end
-getFloatMatrixAsList = putFloatMatrixAsList
-getFloatMatrixAsListType = getFloatMatrixAsList[0][0].class
-puts(getFloatMatrixAsListType)
-puts(getFloatMatrixAsList)
-if(getFloatMatrixAsListType != Float)
-	raise "getFloatMatrixAsList not Float!"
-end
+(println "getFloatMatrixAsList")
+(if-not (nil? getFloatMatrixAsList)
+	(throw (Exception. "getFloatMatrixAsList already defined!"))
+)
+(def getFloatMatrixAsList putFloatMatrixAsList)
+(def getFloatMatrixAsListType getFloatMatrixAsList[0][0].class)
+(println getFloatMatrixAsListType)
+(println getFloatMatrixAsList)
+(if-not (= getFloatMatrixAsListType Float)
+	(throw (Exception. "getFloatMatrixAsList not Float!"))
+)

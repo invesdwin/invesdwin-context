@@ -2,8 +2,8 @@ package de.invesdwin.context.clojure;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.clojure.pool.ClojureScriptEngineObjectPool;
-import de.invesdwin.context.clojure.pool.WrappedClojureScriptEngine;
+import de.invesdwin.context.clojure.pool.ClojureEngineObjectPool;
+import de.invesdwin.context.clojure.pool.WrappedClojureEngine;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
@@ -12,11 +12,11 @@ import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 @NotThreadSafe
 public class ScriptTaskEngineClojure implements IScriptTaskEngine {
 
-    private WrappedClojureScriptEngine javascriptScriptEngine;
+    private WrappedClojureEngine javascriptScriptEngine;
     private final ScriptTaskInputsClojure inputs;
     private final ScriptTaskResultsClojure results;
 
-    public ScriptTaskEngineClojure(final WrappedClojureScriptEngine javascriptScriptEngine) {
+    public ScriptTaskEngineClojure(final WrappedClojureEngine javascriptScriptEngine) {
         this.javascriptScriptEngine = javascriptScriptEngine;
         this.inputs = new ScriptTaskInputsClojure(this);
         this.results = new ScriptTaskResultsClojure(this);
@@ -43,7 +43,7 @@ public class ScriptTaskEngineClojure implements IScriptTaskEngine {
     }
 
     @Override
-    public WrappedClojureScriptEngine unwrap() {
+    public WrappedClojureEngine unwrap() {
         return javascriptScriptEngine;
     }
 
@@ -61,12 +61,12 @@ public class ScriptTaskEngineClojure implements IScriptTaskEngine {
     }
 
     public static ScriptTaskEngineClojure newInstance() {
-        return new ScriptTaskEngineClojure(ClojureScriptEngineObjectPool.INSTANCE.borrowObject()) {
+        return new ScriptTaskEngineClojure(ClojureEngineObjectPool.INSTANCE.borrowObject()) {
             @Override
             public void close() {
-                final WrappedClojureScriptEngine unwrap = unwrap();
+                final WrappedClojureEngine unwrap = unwrap();
                 if (unwrap != null) {
-                    ClojureScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
+                    ClojureEngineObjectPool.INSTANCE.returnObject(unwrap);
                 }
                 super.close();
             }
