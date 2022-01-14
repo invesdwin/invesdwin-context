@@ -1,5 +1,5 @@
 puts("getLong")
-if (defined?(getLong)).nil?
+unless (defined?(getLong)).nil?
 	raise "getLong already defined!"
 end
 getLong = putLong
@@ -11,7 +11,7 @@ if(getLongType != 'number')
 end
 
 puts("getLongVector")
-if (defined?(getLongVector)).nil?
+unless (defined?(getLongVector)).nil?
 	raise "getLongVector already defined!"
 end
 getLongVector = putLongVector
@@ -23,7 +23,7 @@ if(getLongVectorType != 'number')
 end
 
 puts("getLongVectorAsList")
-if (defined?(getLongVectorAsList)).nil?
+unless (defined?(getLongVectorAsList)).nil?
 	raise "getLongVectorAsList already defined!"
 end
 getLongVectorAsList = putLongVectorAsList
@@ -35,7 +35,7 @@ if(getLongVectorAsListType != 'number')
 end
 
 puts("getLongMatrix")
-if (defined?(getLongMatrix)).nil?
+unless (defined?(getLongMatrix)).nil?
 	raise "getLongMatrix already defined!"
 end
 getLongMatrix = putLongMatrix
@@ -47,7 +47,7 @@ if(getLongMatrixType != 'number')
 end
 
 puts("getLongMatrixAsList")
-if (defined?(getLongMatrixAsList)).nil?
+unless (defined?(getLongMatrixAsList)).nil?
 	raise "getLongMatrixAsList already defined!"
 end
 getLongMatrixAsList = putLongMatrixAsList

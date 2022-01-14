@@ -1,5 +1,5 @@
 puts("getDouble")
-if (defined?(getDouble)).nil?
+unless (defined?(getDouble)).nil?
 	raise "getDouble already defined!"
 end
 getDouble = putDouble
@@ -11,7 +11,7 @@ if(getDoubleType != 'number')
 end
 
 puts("getDoubleVector")
-if (defined?(getDoubleVector)).nil?
+unless (defined?(getDoubleVector)).nil?
 	raise "getDoubleVector already defined!"
 end
 getDoubleVector = putDoubleVector
@@ -23,7 +23,7 @@ if(getDoubleVectorType != 'number')
 end
 
 puts("getDoubleVectorAsList")
-if (defined?(getDoubleVectorAsList)).nil?
+unless (defined?(getDoubleVectorAsList)).nil?
 	raise "getDoubleVectorAsList already defined!"
 end
 getDoubleVectorAsList = putDoubleVectorAsList
@@ -35,7 +35,7 @@ if(getDoubleVectorAsListType != 'number')
 end
 
 puts("getDoubleMatrix")
-if (defined?(getDoubleMatrix)).nil?
+unless (defined?(getDoubleMatrix)).nil?
 	raise "getDoubleMatrix already defined!"
 end
 getDoubleMatrix = putDoubleMatrix
@@ -47,7 +47,7 @@ if(getDoubleMatrixType != 'number')
 end
 
 puts("getDoubleMatrixAsList")
-if (defined?(getDoubleMatrixAsList)).nil?
+unless (defined?(getDoubleMatrixAsList)).nil?
 	raise "getDoubleMatrixAsList already defined!"
 end
 getDoubleMatrixAsList = putDoubleMatrixAsList

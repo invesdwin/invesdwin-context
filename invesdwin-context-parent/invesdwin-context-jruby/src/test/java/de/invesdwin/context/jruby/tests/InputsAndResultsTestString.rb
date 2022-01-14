@@ -1,5 +1,5 @@
 puts("getString")
-if (defined?(getString)).nil?
+unless (defined?(getString)).nil?
 	raise "getString already defined!"
 end
 getString = putString
@@ -11,7 +11,7 @@ if(getStringType != 'string')
 end
 
 puts("getStringWithNull")
-if (defined?(getStringWithNull)).nil?
+unless (defined?(getStringWithNull)).nil?
 	raise "getStringWithNull already defined!"
 end
 getStringWithNull = putStringWithNull
@@ -23,7 +23,7 @@ if(getStringWithNull != null)
 end
 
 puts("getStringVector")
-if (defined?(getStringVector)).nil?
+unless (defined?(getStringVector)).nil?
 	raise "getStringVector already defined!"
 end
 getStringVector = putStringVector
@@ -35,7 +35,7 @@ if(getStringVectorType != 'string')
 end
 
 puts("getStringVectorWithNull")
-if (defined?(getStringVectorWithNull)).nil?
+unless (defined?(getStringVectorWithNull)).nil?
 	raise "getStringVectorWithNull already defined!"
 end
 getStringVectorWithNull = putStringVectorWithNull
@@ -50,7 +50,7 @@ if(getStringVectorWithNull[1] != null)
 end
 
 puts("getStringVectorAsList")
-if (defined?(getStringVectorAsList)).nil?
+unless (defined?(getStringVectorAsList)).nil?
 	raise "getStringVectorAsList already defined!"
 end
 getStringVectorAsList = putStringVectorAsList
@@ -62,7 +62,7 @@ if(getStringVectorAsListType != 'string')
 end
 
 puts("getStringVectorAsListWithNull")
-if (defined?(getStringVectorAsListWithNull)).nil?
+unless (defined?(getStringVectorAsListWithNull)).nil?
 	raise "getStringVectorAsListWithNull already defined!"
 end
 getStringVectorAsListWithNull = putStringVectorAsListWithNull
@@ -77,7 +77,7 @@ if(getStringVectorAsListWithNull[1] != null)
 end
 
 puts("getStringMatrix")
-if (defined?(getStringMatrix)).nil?
+unless (defined?(getStringMatrix)).nil?
 	raise "getStringMatrix already defined!"
 end
 getStringMatrix = putStringMatrix
@@ -89,7 +89,7 @@ if(getStringMatrixType != 'string')
 end
 
 puts("getStringMatrixWithNull")
-if (defined?(getStringMatrixWithNull)).nil?
+unless (defined?(getStringMatrixWithNull)).nil?
 	raise "getStringMatrixWithNull already defined!"
 end
 getStringMatrixWithNull = putStringMatrixWithNull
@@ -110,7 +110,7 @@ if(getStringMatrixWithNull[2][2] != null)
 end
 
 puts("getStringMatrixAsList")
-if (defined?(getStringMatrixAsList)).nil?
+unless (defined?(getStringMatrixAsList)).nil?
 	raise "getStringMatrixAsList already defined!"
 end
 getStringMatrixAsList = putStringMatrixAsList
@@ -122,7 +122,7 @@ if(getStringMatrixAsListType != 'string')
 end
 
 puts("getStringMatrixAsListWithNull")
-if (defined?(getStringMatrixAsListWithNull)).nil?
+unless (defined?(getStringMatrixAsListWithNull)).nil?
 	raise "getStringMatrixAsListWithNull already defined!"
 end
 getStringMatrixAsListWithNull = putStringMatrixAsListWithNull

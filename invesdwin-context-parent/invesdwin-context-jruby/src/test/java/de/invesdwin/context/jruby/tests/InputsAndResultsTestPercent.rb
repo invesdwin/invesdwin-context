@@ -1,5 +1,5 @@
 puts("getPercent")
-if (defined?(getPercent)).nil?
+unless (defined?(getPercent)).nil?
 	raise "getPercent already defined!"
 end
 getPercent = putPercent
@@ -11,7 +11,7 @@ if(getPercentType != 'number')
 end
 
 puts("getPercentVector")
-if (defined?(getPercentVector)).nil?
+unless (defined?(getPercentVector)).nil?
 	raise "getPercentVector already defined!"
 end
 getPercentVector = putPercentVector
@@ -23,7 +23,7 @@ if(getPercentVectorType != 'number')
 end
 
 puts("getPercentVectorAsList")
-if (defined?(getPercentVectorAsList)).nil?
+unless (defined?(getPercentVectorAsList)).nil?
 	raise "getPercentVectorAsList already defined!"
 end
 getPercentVectorAsList = putPercentVectorAsList
@@ -35,7 +35,7 @@ if(getPercentVectorAsListType != 'number')
 end
 
 puts("getPercentMatrix")
-if (defined?(getPercentMatrix)).nil?
+unless (defined?(getPercentMatrix)).nil?
 	raise "getPercentMatrix already defined!"
 end
 getPercentMatrix = putPercentMatrix
@@ -47,7 +47,7 @@ if(getPercentMatrixType != 'number')
 end
 
 puts("getPercentMatrixAsList")
-if (defined?(getPercentMatrixAsList)).nil?
+unless (defined?(getPercentMatrixAsList)).nil?
 	raise "getPercentMatrixAsList already defined!"
 end
 getPercentMatrixAsList = putPercentMatrixAsList

@@ -1,5 +1,5 @@
 puts("getShort")
-if (defined?(getShort)).nil?
+unless (defined?(getShort)).nil?
 	raise "getShort already defined!"
 end
 getShort = putShort
@@ -11,7 +11,7 @@ if(getShortType != 'number')
 end
 
 puts("getShortVector")
-if (defined?(getShortVector)).nil?
+unless (defined?(getShortVector)).nil?
 	raise "getShortVector already defined!"
 end
 getShortVector = putShortVector
@@ -23,7 +23,7 @@ if(getShortVectorType != 'number')
 end
 
 puts("getShortVectorAsList")
-if (defined?(getShortVectorAsList)).nil?
+unless (defined?(getShortVectorAsList)).nil?
 	raise "getShortVectorAsList already defined!"
 end
 getShortVectorAsList = putShortVectorAsList
@@ -35,7 +35,7 @@ if(getShortVectorAsListType != 'number')
 end
 
 puts("getShortMatrix")
-if (defined?(getShortMatrix)).nil?
+unless (defined?(getShortMatrix)).nil?
 	raise "getShortMatrix already defined!"
 end
 getShortMatrix = putShortMatrix
@@ -47,7 +47,7 @@ if(getShortMatrixType != 'number')
 end
 
 puts("getShortMatrixAsList")
-if (defined?(getShortMatrixAsList)).nil?
+unless (defined?(getShortMatrixAsList)).nil?
 	raise "getShortMatrixAsList already defined!"
 end
 getShortMatrixAsList = putShortMatrixAsList

@@ -1,5 +1,5 @@
 puts("getBoolean")
-if (defined?(getBoolean)).nil?
+unless (defined?(getBoolean)).nil?
 	raise "getBoolean already defined!"
 end
 getBoolean = putBoolean
@@ -11,7 +11,7 @@ if(getBooleanType != 'boolean')
 end
 
 puts("getBooleanVector")
-if (defined?(getBooleanVector)).nil?
+unless (defined?(getBooleanVector)).nil?
 	raise "getBooleanVector already defined!"
 end
 getBooleanVector = putBooleanVector
@@ -23,7 +23,7 @@ if(getBooleanVectorType != 'boolean')
 end
 
 puts("getBooleanVectorAsList")
-if (defined?(getBooleanVectorAsList)).nil?
+unless (defined?(getBooleanVectorAsList)).nil?
 	raise "getBooleanVectorAsList already defined!"
 end
 getBooleanVectorAsList = putBooleanVectorAsList
@@ -35,7 +35,7 @@ if(getBooleanVectorAsListType != 'boolean')
 end
 
 puts("getBooleanMatrix")
-if (defined?(getBooleanMatrix)).nil?
+unless (defined?(getBooleanMatrix)).nil?
 	raise "getBooleanMatrix already defined!"
 end
 getBooleanMatrix = putBooleanMatrix
@@ -47,7 +47,7 @@ if(getBooleanMatrixType != 'boolean')
 end
 
 puts("getBooleanMatrixAsList")
-if (defined?(getBooleanMatrixAsList)).nil?
+unless (defined?(getBooleanMatrixAsList)).nil?
 	raise "getBooleanMatrixAsList already defined!"
 end
 getBooleanMatrixAsList = putBooleanMatrixAsList
