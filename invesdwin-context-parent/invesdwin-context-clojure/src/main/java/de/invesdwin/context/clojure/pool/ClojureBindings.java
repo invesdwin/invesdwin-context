@@ -15,14 +15,12 @@ import clojure.lang.Symbol;
 import clojure.lang.Var;
 
 @NotThreadSafe
-public final class ClojureBindings implements Bindings {
-
-    public static final ClojureBindings INSTANCE = new ClojureBindings();
+public class ClojureBindings implements Bindings {
 
     private static final String CORE_NS = "clojure.core";
     private static final String USER_NS = "user";
 
-    private ClojureBindings() {
+    public ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
         RT.var(CORE_NS, "in-ns").invoke(Symbol.intern(USER_NS));
@@ -95,7 +93,8 @@ public final class ClojureBindings implements Bindings {
 
     @Override
     public Object remove(final Object key) {
-        throw new UnsupportedOperationException();
+        RT.var(CORE_NS, "ns-unmap").invoke(Symbol.intern(USER_NS), key.toString());
+        return null;
     }
 
     @Override
