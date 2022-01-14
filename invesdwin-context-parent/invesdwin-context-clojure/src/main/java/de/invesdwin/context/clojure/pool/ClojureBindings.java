@@ -15,12 +15,14 @@ import clojure.lang.Symbol;
 import clojure.lang.Var;
 
 @NotThreadSafe
-public class ClojureBindings implements Bindings {
+public final class ClojureBindings implements Bindings {
+
+    public static final ClojureBindings INSTANCE = new ClojureBindings();
 
     private static final String CORE_NS = "clojure.core";
     private static final String USER_NS = "user";
 
-    public ClojureBindings() {
+    private ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
         RT.var(CORE_NS, "in-ns").invoke(Symbol.intern(USER_NS));

@@ -20,21 +20,17 @@ public class WrappedClojureEngine implements Closeable {
 
     private final LoadingCache<String, List<Object>> scriptCache;
 
-    private final ClojureBindings binding;
-
     public WrappedClojureEngine() {
-        binding = new ClojureBindings();
-
         scriptCache = Caffeine.newBuilder()
                 .maximumSize(100)
                 .expireAfterAccess(1, TimeUnit.MINUTES)
                 .softValues()
                 .<String, List<Object>> build((key) -> parse(key));
-        binding.put("clojure.core.*file*", "/clojure-dynamic-script");
+        ClojureBindings.INSTANCE.put("clojure.core.*file*", "/clojure-dynamic-script");
     }
 
     public ClojureBindings getBinding() {
-        return binding;
+        return ClojureBindings.INSTANCE;
     }
 
     public Object eval(final String expression) {
@@ -77,7 +73,9 @@ public class WrappedClojureEngine implements Closeable {
 
     public void reset() {
         //https://stackoverflow.com/questions/3636364/can-i-clean-the-repl
-        eval("(map #(ns-unmap *ns* %) (keys (ns-interns *ns*)))");
+        //        eval("(map #(ns-unmap *ns* %) (keys (ns-interns *ns*)))");
+        eval("(remove-ns 'user)");
+        eval("(create-ns 'user)");
     }
 
     @Override
@@ -86,7 +84,7 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     public void put(final String variable, final Object value) {
-        binding.put(variable, value);
+        ClojureBindings.INSTANCE.put(variable, value);
     }
 
     public Object get(final String variable) {
@@ -94,11 +92,11 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     public void remove(final String variable) {
-        binding.remove(variable);
+        ClojureBindings.INSTANCE.remove(variable);
     }
 
     public boolean contains(final String variable) {
-        return binding.containsKey(variable);
+        return ClojureBindings.INSTANCE.containsKey(variable);
     }
 
 }
