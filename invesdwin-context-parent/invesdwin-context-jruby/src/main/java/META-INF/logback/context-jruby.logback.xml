@@ -1,0 +1,7 @@
+<configuration>
+
+	<logger name="de.invesdwin.context.jruby.IScriptTaskRunnerJruby" additivity="true" level="ERROR">
+	</logger>
+
+
+</configuration>
