@@ -2,8 +2,14 @@ package de.invesdwin.context.clojure.pool;
 
 import java.io.Closeable;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.NotThreadSafe;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 
 import clojure.lang.Compiler;
 import clojure.lang.LineNumberingPushbackReader;
@@ -20,9 +26,16 @@ public final class WrappedClojureEngine implements Closeable {
         }
     };
 
+    private final LoadingCache<String, List<Object>> scriptCache;
+
     private final ClojureBindings binding;
 
     private WrappedClojureEngine() {
+        scriptCache = Caffeine.newBuilder()
+                .maximumSize(100)
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .softValues()
+                .<String, List<Object>> build((key) -> parse(key));
         binding = new ClojureBindings();
         binding.put("clojure.core.*file*", "/script");
     }
@@ -32,6 +45,10 @@ public final class WrappedClojureEngine implements Closeable {
     }
 
     public Object eval(final String expression) {
+        return evalCompiling(expression);
+    }
+
+    public Object evalParsing(final String expression) {
         final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
         Object finalResult = null;
         while (true) {
@@ -44,8 +61,34 @@ public final class WrappedClojureEngine implements Closeable {
         return finalResult;
     }
 
+    public void resetScriptCache() {
+        scriptCache.asMap().clear();
+    }
+
+    public Object evalCompiling(final String expression) {
+        final List<Object> parsed = scriptCache.get(expression);
+        for (int i = 0; i < parsed.size() - 2; i++) {
+            Compiler.eval(parsed.get(i));
+        }
+        return Compiler.eval(parsed.get(parsed.size() - 1));
+    }
+
+    private List<Object> parse(final String expression) {
+        final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
+        final List<Object> parsed = new ArrayList<>();
+        while (true) {
+            final Object form = LispReader.read(reader, false, this, false);
+            if (form == this) {
+                break;
+            }
+            parsed.add(form);
+        }
+        return parsed;
+    }
+
     public void reset() {
         binding.clear();
+        resetScriptCache();
     }
 
     @Override
