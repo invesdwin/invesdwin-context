@@ -28,11 +28,14 @@ public final class ClojureBindings implements Bindings {
     private static final String CORE_NS = "clojure.core";
     private static final String USER_NS = "user";
 
+    private static final Symbol CORE_NS_INTERN = Symbol.intern(null, CORE_NS);
+    private static final Symbol USER_NS_INTERN = Symbol.intern(null, USER_NS);
+
     private ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
-        RT.var(CORE_NS, "in-ns").invoke(Symbol.intern(USER_NS));
-        RT.var(CORE_NS, "refer").invoke(Symbol.intern(CORE_NS));
+        RT.var(CORE_NS, "in-ns").invoke(USER_NS_INTERN);
+        RT.var(CORE_NS, "refer").invoke(CORE_NS_INTERN);
     }
 
     @Override
@@ -118,7 +121,7 @@ public final class ClojureBindings implements Bindings {
 
     @Override
     public Object remove(final Object key) {
-        RT.var(CORE_NS, "ns-unmap").invoke(Symbol.intern(USER_NS), Symbol.intern(key.toString()));
+        RT.var(CORE_NS, "ns-unmap").invoke(USER_NS_INTERN, Symbol.intern(key.toString()));
         return null;
     }
 
@@ -131,7 +134,7 @@ public final class ClojureBindings implements Bindings {
 
     @Override
     public void clear() {
-        final Symbol nsSymbol = Symbol.intern(null, USER_NS);
+        final Symbol nsSymbol = USER_NS_INTERN;
         final Namespace ns = Namespace.find(nsSymbol);
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
@@ -171,7 +174,7 @@ public final class ClojureBindings implements Bindings {
     private static Map<String, Object> map() {
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        final Namespace ns = Namespace.find(Symbol.intern(null, USER_NS));
+        final Namespace ns = Namespace.find(USER_NS_INTERN);
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
