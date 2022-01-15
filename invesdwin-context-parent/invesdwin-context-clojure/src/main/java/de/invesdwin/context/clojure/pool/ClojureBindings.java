@@ -8,12 +8,12 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.Bindings;
 
-import clojure.lang.Associative;
 import clojure.lang.MapEntry;
 import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
+import de.invesdwin.util.lang.UniqueNameGenerator;
 
 /**
  * WARNING: this class should not be used directly, instead the thread local instance from WrappedClojureEngine should
@@ -23,17 +23,26 @@ import clojure.lang.Var;
 @NotThreadSafe
 public final class ClojureBindings implements Bindings {
 
-    private static final String CORE_NS = "clojure.core";
-    private static final String USER_NS = "user";
+    private static final UniqueNameGenerator NAMESPACE = new UniqueNameGenerator();
 
+    private static final String CORE_NS = "clojure.core";
     private static final Symbol CORE_NS_INTERN = Symbol.intern(null, CORE_NS);
-    private static final Symbol USER_NS_INTERN = Symbol.intern(null, USER_NS);
+
+    private final String isolatedNamespace;
+    private final Symbol isolatedNamespaceIntern;
 
     public ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
-        RT.var(CORE_NS, "in-ns").invoke(USER_NS_INTERN);
+        this.isolatedNamespace = NAMESPACE.get(ClojureBindings.class.getSimpleName());
+        this.isolatedNamespaceIntern = Symbol.intern(null, isolatedNamespace);
+        //https://clojuredocs.org/clojure.core/in-ns
+        RT.var(CORE_NS, "in-ns").invoke(isolatedNamespaceIntern);
         RT.var(CORE_NS, "refer").invoke(CORE_NS_INTERN);
+    }
+
+    public String getIsolatedNamespace() {
+        return isolatedNamespace;
     }
 
     @Override
@@ -52,7 +61,7 @@ public final class ClojureBindings implements Bindings {
         final int dot = key.lastIndexOf('.');
         final String nameSpace;
         if (dot < 0) {
-            nameSpace = USER_NS;
+            nameSpace = isolatedNamespace;
         } else {
             nameSpace = key.substring(0, dot);
             key = key.substring(dot + 1);
@@ -79,7 +88,7 @@ public final class ClojureBindings implements Bindings {
         final int dot = key.lastIndexOf('.');
         final String nameSpace;
         if (dot < 0) {
-            nameSpace = USER_NS;
+            nameSpace = isolatedNamespace;
         } else {
             nameSpace = key.substring(0, dot);
             key = key.substring(dot + 1);
@@ -104,7 +113,7 @@ public final class ClojureBindings implements Bindings {
         final int dot = name.lastIndexOf('.');
         final String nameSpace, key;
         if (dot < 0) {
-            nameSpace = USER_NS;
+            nameSpace = isolatedNamespace;
             key = name;
         } else {
             nameSpace = name.substring(0, dot);
@@ -119,7 +128,7 @@ public final class ClojureBindings implements Bindings {
 
     @Override
     public Object remove(final Object key) {
-        RT.var(CORE_NS, "ns-unmap").invoke(USER_NS_INTERN, Symbol.intern(key.toString()));
+        RT.var(CORE_NS, "ns-unmap").invoke(isolatedNamespaceIntern, Symbol.intern(key.toString()));
         return null;
     }
 
@@ -132,14 +141,13 @@ public final class ClojureBindings implements Bindings {
 
     @Override
     public void clear() {
-        final Symbol nsSymbol = USER_NS_INTERN;
-        final Associative threadBindings = Var.getThreadBindings();
+        final Symbol nsSymbol = isolatedNamespaceIntern;
 
         final Namespace ns = Namespace.find(nsSymbol);
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
-            final Object valAt = threadBindings.valAt(key);
+            final Object valAt = ns.getMappings().valAt(key);
             final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
             if (valVar == null) {
                 continue; // skip non-variables
@@ -171,15 +179,14 @@ public final class ClojureBindings implements Bindings {
 
     // -- Helper methods --
 
-    private static Map<String, Object> map() {
+    private Map<String, Object> map() {
         final Map<String, Object> map = new HashMap<String, Object>();
-        final Associative threadBindings = Var.getThreadBindings();
 
-        final Namespace ns = Namespace.find(USER_NS_INTERN);
+        final Namespace ns = Namespace.find(isolatedNamespaceIntern);
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
-            final Object valAt = threadBindings.valAt(key);
+            final Object valAt = ns.getMappings().valAt(key);
             final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
             if (valVar == null) {
                 continue; // skip non-variables
