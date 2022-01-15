@@ -13,17 +13,14 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
-import io.netty.util.concurrent.FastThreadLocal;
 
+/**
+ * WARNING: this class should not be used directly, instead the thread local instance from WrappedClojureEngine should
+ * be used. Else bindings will not be visible by scripts, causing issues like this:
+ * https://ask.clojure.org/index.php/11482/unable-resolve-symbol-after-pushthreadbindings-second-thread
+ */
 @NotThreadSafe
 public final class ClojureBindings implements Bindings {
-
-    private static final FastThreadLocal<ClojureBindings> INSTANCE = new FastThreadLocal<ClojureBindings>() {
-        @Override
-        protected ClojureBindings initialValue() throws Exception {
-            return new ClojureBindings();
-        }
-    };
 
     private static final String CORE_NS = "clojure.core";
     private static final String USER_NS = "user";
@@ -31,7 +28,7 @@ public final class ClojureBindings implements Bindings {
     private static final Symbol CORE_NS_INTERN = Symbol.intern(null, CORE_NS);
     private static final Symbol USER_NS_INTERN = Symbol.intern(null, USER_NS);
 
-    private ClojureBindings() {
+    public ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
         RT.var(CORE_NS, "in-ns").invoke(USER_NS_INTERN);
@@ -195,7 +192,4 @@ public final class ClojureBindings implements Bindings {
         return map;
     }
 
-    public static ClojureBindings getInstance() {
-        return INSTANCE.get();
-    }
 }

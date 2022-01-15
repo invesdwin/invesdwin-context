@@ -8,14 +8,22 @@ import javax.annotation.concurrent.NotThreadSafe;
 import clojure.lang.Compiler;
 import clojure.lang.LineNumberingPushbackReader;
 import clojure.lang.LispReader;
+import io.netty.util.concurrent.FastThreadLocal;
 
 @NotThreadSafe
-public class WrappedClojureEngine implements Closeable {
+public final class WrappedClojureEngine implements Closeable {
+
+    private static final FastThreadLocal<WrappedClojureEngine> INSTANCE = new FastThreadLocal<WrappedClojureEngine>() {
+        @Override
+        protected WrappedClojureEngine initialValue() throws Exception {
+            return new WrappedClojureEngine();
+        }
+    };
 
     private final ClojureBindings binding;
 
-    public WrappedClojureEngine() {
-        binding = ClojureBindings.getInstance();
+    private WrappedClojureEngine() {
+        binding = new ClojureBindings();
         binding.put("clojure.core.*file*", "/script");
     }
 
@@ -59,6 +67,10 @@ public class WrappedClojureEngine implements Closeable {
 
     public boolean contains(final String variable) {
         return binding.containsKey(variable);
+    }
+
+    public static WrappedClojureEngine getInstance() {
+        return INSTANCE.get();
     }
 
 }

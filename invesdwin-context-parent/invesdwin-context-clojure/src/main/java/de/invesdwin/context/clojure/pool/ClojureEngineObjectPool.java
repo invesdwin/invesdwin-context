@@ -5,19 +5,17 @@ import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import de.invesdwin.util.concurrent.pool.timeout.ATimeoutObjectPool;
-import de.invesdwin.util.time.date.FTimeUnit;
-import de.invesdwin.util.time.duration.Duration;
+import de.invesdwin.util.concurrent.pool.AInvalidatingObjectPool;
 
 @ThreadSafe
 @Named
-public final class ClojureEngineObjectPool extends ATimeoutObjectPool<WrappedClojureEngine>
+public final class ClojureEngineObjectPool extends AInvalidatingObjectPool<WrappedClojureEngine>
         implements FactoryBean<ClojureEngineObjectPool> {
 
     public static final ClojureEngineObjectPool INSTANCE = new ClojureEngineObjectPool();
 
     private ClojureEngineObjectPool() {
-        super(Duration.ONE_MINUTE, new Duration(10, FTimeUnit.SECONDS));
+        super();
     }
 
     @Override
@@ -27,12 +25,7 @@ public final class ClojureEngineObjectPool extends ATimeoutObjectPool<WrappedClo
 
     @Override
     protected WrappedClojureEngine newObject() {
-        return new WrappedClojureEngine();
-    }
-
-    @Override
-    protected void passivateObject(final WrappedClojureEngine obj) {
-        obj.reset();
+        return WrappedClojureEngine.getInstance();
     }
 
     @Override
