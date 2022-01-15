@@ -15,8 +15,8 @@ public class WrappedClojureEngine implements Closeable {
     private final ClojureBindings binding;
 
     public WrappedClojureEngine() {
-        binding = new ClojureBindings();
-        binding.put("clojure.core.*file*", "/clojure-dynamic-script");
+        binding = ClojureBindings.getInstance();
+        binding.put("clojure.core.*file*", "/script");
     }
 
     public ClojureBindings getBinding() {
@@ -24,10 +24,6 @@ public class WrappedClojureEngine implements Closeable {
     }
 
     public Object eval(final String expression) {
-        return evalParsing(expression);
-    }
-
-    public Object evalParsing(final String expression) {
         final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
         Object finalResult = null;
         while (true) {

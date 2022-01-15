@@ -13,14 +13,22 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
+import io.netty.util.concurrent.FastThreadLocal;
 
 @NotThreadSafe
-public class ClojureBindings implements Bindings {
+public final class ClojureBindings implements Bindings {
+
+    private static final FastThreadLocal<ClojureBindings> INSTANCE = new FastThreadLocal<ClojureBindings>() {
+        @Override
+        protected ClojureBindings initialValue() throws Exception {
+            return new ClojureBindings();
+        }
+    };
 
     private static final String CORE_NS = "clojure.core";
     private static final String USER_NS = "user";
 
-    public ClojureBindings() {
+    private ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
         RT.var(CORE_NS, "in-ns").invoke(Symbol.intern(USER_NS));
@@ -194,5 +202,9 @@ public class ClojureBindings implements Bindings {
         }
 
         return map;
+    }
+
+    public static ClojureBindings getInstance() {
+        return INSTANCE.get();
     }
 }
