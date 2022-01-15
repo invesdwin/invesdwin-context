@@ -110,13 +110,9 @@ public final class ClojureBindings implements Bindings {
             key = name.substring(dot + 1);
         }
         final Object result = get(nameSpace, key);
-        try {
-            final Var var = RT.var(nameSpace, key, null);
-            var.setDynamic();
-            Var.pushThreadBindings(RT.map(var, value));
-        } catch (final Error e) {
-            // ignore
-        }
+        final Var var = RT.var(nameSpace, key, null);
+        var.setDynamic();
+        Var.pushThreadBindings(RT.map(var, value));
         return result;
     }
 
