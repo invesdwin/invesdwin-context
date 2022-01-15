@@ -67,10 +67,11 @@ public final class WrappedClojureEngine implements Closeable {
 
     public Object evalCompiling(final String expression) {
         final List<Object> parsed = scriptCache.get(expression);
-        for (int i = 0; i < parsed.size() - 2; i++) {
+        final int lastIndex = parsed.size() - 1;
+        for (int i = 0; i < lastIndex; i++) {
             Compiler.eval(parsed.get(i));
         }
-        return Compiler.eval(parsed.get(parsed.size() - 1));
+        return Compiler.eval(parsed.get(lastIndex));
     }
 
     private List<Object> parse(final String expression) {
@@ -88,7 +89,6 @@ public final class WrappedClojureEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        resetScriptCache();
     }
 
     @Override
