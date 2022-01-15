@@ -45,6 +45,10 @@ public final class ClojureBindings implements Bindings {
         return isolatedNamespace;
     }
 
+    public Symbol getIsolatedNamespaceIntern() {
+        return isolatedNamespaceIntern;
+    }
+
     @Override
     public int size() {
         return Var.getThreadBindings().count();
