@@ -23,10 +23,10 @@ import de.invesdwin.util.lang.UniqueNameGenerator;
 @NotThreadSafe
 public final class ClojureBindings implements Bindings {
 
-    private static final UniqueNameGenerator NAMESPACE = new UniqueNameGenerator();
+    public static final String CORE_NS = "clojure.core";
+    public static final Symbol CORE_NS_INTERN = Symbol.intern(null, CORE_NS);
 
-    private static final String CORE_NS = "clojure.core";
-    private static final Symbol CORE_NS_INTERN = Symbol.intern(null, CORE_NS);
+    private static final UniqueNameGenerator ISOLATED_NAMESPACE = new UniqueNameGenerator();
 
     private final String isolatedNamespace;
     private final Symbol isolatedNamespaceIntern;
@@ -34,7 +34,7 @@ public final class ClojureBindings implements Bindings {
     public ClojureBindings() {
         final Var nameSpace = RT.var(CORE_NS, "*ns*");
         Var.pushThreadBindings(RT.map(nameSpace, nameSpace.get()));
-        this.isolatedNamespace = NAMESPACE.get(ClojureBindings.class.getSimpleName());
+        this.isolatedNamespace = ISOLATED_NAMESPACE.get(ClojureBindings.class.getSimpleName());
         this.isolatedNamespaceIntern = Symbol.intern(null, isolatedNamespace);
         //https://clojuredocs.org/clojure.core/in-ns
         RT.var(CORE_NS, "in-ns").invoke(isolatedNamespaceIntern);
