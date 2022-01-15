@@ -177,8 +177,6 @@ public final class ClojureBindings implements Bindings {
         return map().entrySet();
     }
 
-    // -- Helper methods --
-
     private Map<String, Object> map() {
         final Map<String, Object> map = new HashMap<String, Object>();
 
