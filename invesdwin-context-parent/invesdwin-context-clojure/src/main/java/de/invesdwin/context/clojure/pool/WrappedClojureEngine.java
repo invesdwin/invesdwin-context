@@ -37,7 +37,7 @@ public final class WrappedClojureEngine implements Closeable {
                 .softValues()
                 .<String, List<Object>> build((key) -> parse(key));
         binding = new ClojureBindings();
-        binding.put("clojure.core.*file*", "/script");
+        binding.put("clojure.core.*file*", "/" + binding.getIsolatedNamespace());
     }
 
     public ClojureBindings getBinding() {
