@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.Bindings;
 
+import clojure.lang.Associative;
 import clojure.lang.MapEntry;
 import clojure.lang.Namespace;
 import clojure.lang.RT;
@@ -132,11 +133,13 @@ public final class ClojureBindings implements Bindings {
     @Override
     public void clear() {
         final Symbol nsSymbol = USER_NS_INTERN;
+        final Associative threadBindings = Var.getThreadBindings();
+
         final Namespace ns = Namespace.find(nsSymbol);
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
-            final Object valAt = ns.getMappings().valAt(key);
+            final Object valAt = threadBindings.valAt(key);
             final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
             if (valVar == null) {
                 continue; // skip non-variables
@@ -170,12 +173,13 @@ public final class ClojureBindings implements Bindings {
 
     private static Map<String, Object> map() {
         final Map<String, Object> map = new HashMap<String, Object>();
+        final Associative threadBindings = Var.getThreadBindings();
 
         final Namespace ns = Namespace.find(USER_NS_INTERN);
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
-            final Object valAt = ns.getMappings().valAt(key);
+            final Object valAt = threadBindings.valAt(key);
             final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
             if (valVar == null) {
                 continue; // skip non-variables
