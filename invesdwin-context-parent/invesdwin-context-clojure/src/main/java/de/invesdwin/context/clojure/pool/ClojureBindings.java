@@ -140,10 +140,6 @@ public final class ClojureBindings implements Bindings {
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
-            // NB: Unfortunately, we cannot simply write:
-            //   final Object value = Var.intern(ns, key).get();
-            // because it issues a warning for already-existing variables.
-            // So instead, we replicate some of its internals here.
             final Object valAt = ns.getMappings().valAt(key);
             final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
             if (valVar == null) {
@@ -183,10 +179,6 @@ public final class ClojureBindings implements Bindings {
         for (final Object el : ns.getMappings()) {
             final MapEntry entry = (MapEntry) el;
             final Symbol key = (Symbol) entry.key();
-            // NB: Unfortunately, we cannot simply write:
-            //   final Object value = Var.intern(ns, key).get();
-            // because it issues a warning for already-existing variables.
-            // So instead, we replicate some of its internals here.
             final Object valAt = ns.getMappings().valAt(key);
             final Var valVar = valAt instanceof Var ? ((Var) valAt) : null;
             if (valVar == null) {
