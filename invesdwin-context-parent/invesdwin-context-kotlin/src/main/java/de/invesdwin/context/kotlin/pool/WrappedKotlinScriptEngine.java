@@ -8,21 +8,24 @@ import javax.script.Compilable;
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+
+import de.invesdwin.util.lang.reflection.Reflections;
 
 @NotThreadSafe
 public class WrappedKotlinScriptEngine implements Closeable {
 
+    private static final String MAIN_KTS_FACTORY = "org.jetbrains.kotlin.mainKts.jsr223.KotlinJsr223MainKtsScriptEngineFactory";
+    private static boolean USE_MAIN_KTS = Reflections.classExists(MAIN_KTS_FACTORY);
     private final ScriptEngine engine;
     private final Compilable compilable;
     private final Invocable invocable;
     private final Bindings binding;
 
     public WrappedKotlinScriptEngine() {
-        //        this.engine = new KotlinJsr223MainKtsScriptEngineFactory().getScriptEngine();
-        final ScriptEngineManager manager = new ScriptEngineManager();
-        this.engine = manager.getEngineByName("kotlin");
+        this.engine = newScriptEngine();
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
@@ -34,7 +37,24 @@ public class WrappedKotlinScriptEngine implements Closeable {
         } else {
             invocable = null;
         }
+        reset();
+    }
 
+    private ScriptEngine newScriptEngine() {
+        if (USE_MAIN_KTS) {
+            final ScriptEngineFactory factory;
+            try {
+                factory = (ScriptEngineFactory) Reflections.classForName(MAIN_KTS_FACTORY)
+                        .getConstructor()
+                        .newInstance();
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+            return factory.getScriptEngine();
+        } else {
+            final ScriptEngineManager manager = new ScriptEngineManager();
+            return manager.getEngineByName("kotlin");
+        }
     }
 
     public ScriptEngine getEngine() {
@@ -76,6 +96,7 @@ public class WrappedKotlinScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
+        binding.put("bindings", binding);
     }
 
     @Override
