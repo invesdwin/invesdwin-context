@@ -99,7 +99,7 @@
 		<version.postgresql>42.2.14</version.postgresql>
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
-		<version.bsh>2.0b6</version.bsh>
+		<version.bsh>2.1.0</version.bsh>
 	</properties>
 
 	<dependencyManagement>

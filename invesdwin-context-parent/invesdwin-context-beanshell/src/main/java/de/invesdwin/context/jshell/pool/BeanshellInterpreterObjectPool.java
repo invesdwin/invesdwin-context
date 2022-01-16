@@ -5,21 +5,19 @@ import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import de.invesdwin.util.concurrent.pool.AInvalidatingObjectPool;
+import de.invesdwin.util.concurrent.pool.timeout.ATimeoutObjectPool;
+import de.invesdwin.util.time.date.FTimeUnit;
+import de.invesdwin.util.time.duration.Duration;
 
-/**
- * We need to always invalidate, otherwise the classloader that keeps the class per statement gets full and each
- * internal map access grinds to a halt. Thus it is cheaper to NOT reuse jshell instances.
- */
 @ThreadSafe
 @Named
-public final class BeanshellInterpreterObjectPool extends AInvalidatingObjectPool<WrappedBeanshellInterpreter>
+public final class BeanshellInterpreterObjectPool extends ATimeoutObjectPool<WrappedBeanshellInterpreter>
         implements FactoryBean<BeanshellInterpreterObjectPool> {
 
     public static final BeanshellInterpreterObjectPool INSTANCE = new BeanshellInterpreterObjectPool();
 
     private BeanshellInterpreterObjectPool() {
-        super();
+        super(Duration.ONE_MINUTE, new Duration(10, FTimeUnit.SECONDS));
     }
 
     @Override
@@ -35,6 +33,11 @@ public final class BeanshellInterpreterObjectPool extends AInvalidatingObjectPoo
     @Override
     public BeanshellInterpreterObjectPool getObject() {
         return INSTANCE;
+    }
+
+    @Override
+    protected void passivateObject(final WrappedBeanshellInterpreter obj) {
+        obj.reset();
     }
 
     @Override
