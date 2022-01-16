@@ -1,12 +1,13 @@
-package de.invesdwin.context.jshell;
+package de.invesdwin.context.beanshell;
 
 import javax.annotation.concurrent.Immutable;
 import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import de.invesdwin.context.jshell.pool.BeanshellScriptEngineObjectPool;
-import de.invesdwin.context.jshell.pool.WrappedBeanshellScriptEngine;
+import de.invesdwin.context.beanshell.pool.BeanshellScriptEngineObjectPool;
+import de.invesdwin.context.beanshell.pool.IBeanshellEngine;
+import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.error.Throwables;
 
 @Immutable
@@ -22,10 +23,12 @@ public final class ScriptTaskRunnerBeanshell
     public ScriptTaskRunnerBeanshell() {
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public <T> T run(final AScriptTaskBeanshell<T> scriptTask) {
         //get session
-        final WrappedBeanshellScriptEngine scriptEngine = BeanshellScriptEngineObjectPool.INSTANCE.borrowObject();
+        final IObjectPool<IBeanshellEngine> pool = (IObjectPool) BeanshellScriptEngineObjectPool.INSTANCE;
+        final IBeanshellEngine scriptEngine = pool.borrowObject();
         try {
             //inputs
             final ScriptTaskEngineBeanshell engine = new ScriptTaskEngineBeanshell(scriptEngine);
@@ -39,10 +42,10 @@ public final class ScriptTaskRunnerBeanshell
             engine.close();
 
             //return
-            BeanshellScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
+            pool.returnObject(scriptEngine);
             return result;
         } catch (final Throwable t) {
-            BeanshellScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
+            pool.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
         }
     }

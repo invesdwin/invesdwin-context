@@ -1,6 +1,5 @@
-package de.invesdwin.context.jshell.pool;
+package de.invesdwin.context.beanshell.pool;
 
-import java.io.Closeable;
 import java.util.Arrays;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -11,7 +10,7 @@ import bsh.NameSpace;
 import bsh.UtilEvalError;
 
 @NotThreadSafe
-public class WrappedBeanshellInterpreter implements Closeable {
+public class WrappedBeanshellInterpreter implements IBeanshellEngine {
 
     private final Interpreter interpreter;
     private final NameSpace nameSpace;

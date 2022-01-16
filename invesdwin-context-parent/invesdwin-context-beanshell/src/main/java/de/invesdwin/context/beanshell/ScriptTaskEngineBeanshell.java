@@ -1,22 +1,23 @@
-package de.invesdwin.context.jshell;
+package de.invesdwin.context.beanshell;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.beanshell.pool.BeanshellInterpreterObjectPool;
+import de.invesdwin.context.beanshell.pool.IBeanshellEngine;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
-import de.invesdwin.context.jshell.pool.BeanshellScriptEngineObjectPool;
-import de.invesdwin.context.jshell.pool.WrappedBeanshellScriptEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
+import de.invesdwin.util.concurrent.pool.IObjectPool;
 
 @NotThreadSafe
 public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
 
-    private WrappedBeanshellScriptEngine scriptEngine;
+    private IBeanshellEngine scriptEngine;
     private final ScriptTaskInputsBeanshell inputs;
     private final ScriptTaskResultsBeanshell results;
 
-    public ScriptTaskEngineBeanshell(final WrappedBeanshellScriptEngine scriptEngine) {
+    public ScriptTaskEngineBeanshell(final IBeanshellEngine scriptEngine) {
         this.scriptEngine = scriptEngine;
         this.inputs = new ScriptTaskInputsBeanshell(this);
         this.results = new ScriptTaskResultsBeanshell(this);
@@ -43,7 +44,7 @@ public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
     }
 
     @Override
-    public WrappedBeanshellScriptEngine unwrap() {
+    public IBeanshellEngine unwrap() {
         return scriptEngine;
     }
 
@@ -60,13 +61,15 @@ public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
         return null;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static ScriptTaskEngineBeanshell newInstance() {
-        return new ScriptTaskEngineBeanshell(BeanshellScriptEngineObjectPool.INSTANCE.borrowObject()) {
+        final IObjectPool<IBeanshellEngine> pool = (IObjectPool) BeanshellInterpreterObjectPool.INSTANCE;
+        return new ScriptTaskEngineBeanshell(pool.borrowObject()) {
             @Override
             public void close() {
-                final WrappedBeanshellScriptEngine unwrap = unwrap();
+                final IBeanshellEngine unwrap = unwrap();
                 if (unwrap != null) {
-                    BeanshellScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
+                    pool.returnObject(unwrap);
                 }
                 super.close();
             }

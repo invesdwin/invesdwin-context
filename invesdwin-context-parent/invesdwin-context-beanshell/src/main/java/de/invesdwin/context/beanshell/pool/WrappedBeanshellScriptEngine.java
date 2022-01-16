@@ -1,6 +1,4 @@
-package de.invesdwin.context.jshell.pool;
-
-import java.io.Closeable;
+package de.invesdwin.context.beanshell.pool;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.Bindings;
@@ -12,7 +10,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 @NotThreadSafe
-public class WrappedBeanshellScriptEngine implements Closeable {
+public class WrappedBeanshellScriptEngine implements IBeanshellEngine {
 
     private final ScriptEngine engine;
     private final Compilable compilable;
@@ -52,6 +50,7 @@ public class WrappedBeanshellScriptEngine implements Closeable {
         return invocable;
     }
 
+    @Override
     public Object eval(final String expression) {
         try {
             return engine.eval(expression);
@@ -60,6 +59,7 @@ public class WrappedBeanshellScriptEngine implements Closeable {
         }
     }
 
+    @Override
     public void reset() {
         binding.clear();
     }
@@ -69,18 +69,22 @@ public class WrappedBeanshellScriptEngine implements Closeable {
         reset();
     }
 
+    @Override
     public void put(final String variable, final Object value) {
         binding.put(variable, value);
     }
 
+    @Override
     public Object get(final String variable) {
         return eval(variable);
     }
 
+    @Override
     public void remove(final String variable) {
         binding.remove(variable);
     }
 
+    @Override
     public boolean contains(final String variable) {
         return binding.containsKey(variable);
     }

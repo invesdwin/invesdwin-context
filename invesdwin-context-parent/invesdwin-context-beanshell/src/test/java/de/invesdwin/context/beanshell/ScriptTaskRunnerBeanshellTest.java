@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.beanshell.tests.InputsAndResultsTests;
-import de.invesdwin.context.jshell.ScriptTaskRunnerBeanshell;
 import de.invesdwin.context.test.ATest;
 
 @NotThreadSafe

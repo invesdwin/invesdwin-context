@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.beanshell.IScriptTaskRunnerBeanshell;
 import de.invesdwin.context.beanshell.tests.hello.HelloWorldScript;
-import de.invesdwin.context.jshell.IScriptTaskRunnerBeanshell;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.future.Futures;

@@ -1,4 +1,4 @@
-package de.invesdwin.context.jshell.pool;
+package de.invesdwin.context.beanshell.pool;
 
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Named;
@@ -26,6 +26,11 @@ public final class BeanshellInterpreterObjectPool extends ATimeoutObjectPool<Wra
     }
 
     @Override
+    protected void passivateObject(final WrappedBeanshellInterpreter obj) {
+        obj.reset();
+    }
+
+    @Override
     protected WrappedBeanshellInterpreter newObject() {
         return new WrappedBeanshellInterpreter();
     }
@@ -33,11 +38,6 @@ public final class BeanshellInterpreterObjectPool extends ATimeoutObjectPool<Wra
     @Override
     public BeanshellInterpreterObjectPool getObject() {
         return INSTANCE;
-    }
-
-    @Override
-    protected void passivateObject(final WrappedBeanshellInterpreter obj) {
-        obj.reset();
     }
 
     @Override

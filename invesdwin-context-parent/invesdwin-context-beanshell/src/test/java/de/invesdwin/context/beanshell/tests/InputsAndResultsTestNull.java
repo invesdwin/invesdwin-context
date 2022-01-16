@@ -2,11 +2,11 @@ package de.invesdwin.context.beanshell.tests;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.beanshell.AScriptTaskBeanshell;
+import de.invesdwin.context.beanshell.IScriptTaskRunnerBeanshell;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.context.integration.script.IScriptTaskInputs;
 import de.invesdwin.context.integration.script.IScriptTaskResults;
-import de.invesdwin.context.jshell.AScriptTaskBeanshell;
-import de.invesdwin.context.jshell.IScriptTaskRunnerBeanshell;
 import de.invesdwin.util.assertions.Assertions;
 
 @NotThreadSafe

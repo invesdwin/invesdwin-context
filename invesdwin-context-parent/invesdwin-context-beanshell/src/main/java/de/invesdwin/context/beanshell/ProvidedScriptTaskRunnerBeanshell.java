@@ -1,4 +1,4 @@
-package de.invesdwin.context.jshell;
+package de.invesdwin.context.beanshell;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
