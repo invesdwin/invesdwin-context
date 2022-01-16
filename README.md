@@ -128,6 +128,32 @@ These modules bundle tools and utilities for creating reports of various types:
 	- `JFreeChartExporter`: allows you to easily export charts lazily, memory sensitive and in parallel as desired into different file formats and dimensions. It also allows you to scale the fonts via a multiplier so they are not too small on higher chart resolutions.
 	- See [invesdwin-context-client-swing-jfreechart](https://github.com/invesdwin/invesdwin-context-client#invesdwin-context-client-swing-jfreechart) for a feature rich interactive financial chart panel implementation.
 
+## Scripting Modules for JVM Languages
+
+This repository contains the following scripting modules for JVM languages:
+
+- **invesdwin-context-clojure**: this is an integration for [Clojure](https://clojure.org/). It contains an improved [JSR-223](https://github.com/cnuernber/dtype-next/issues/52#issuecomment-1013689212) provider that supports isolated namespaces per thread, the ability to remove/clear bindings and reusing compiled scripts.
+- **invesdwin-context-groovy**: this is an integration for [Groovy](https://groovy-lang.org/integrating.html). This is the most popular and fastest binding for java like scripts. JSR-223 is also supported. The threadlocal GroovyProperties.setStrictOverride(true) or global GroovyProperties.setDefaultStrict(true) can be used to switch to a faster but more strict groovy variant that uses `@CompileStatic` and `@TypeChecked` from the outside. Though it is also possible to define such optimized functions [inside of scripts](https://github.com/invesdwin/invesdwin-context/blob/master/invesdwin-context-parent/invesdwin-context-groovy/src/test/java/de/invesdwin/context/groovy/tests/hello/FileStrictHelloWorldScript.groovy).
+- **invesdwin-context-beanshell**: this is an integration for [Beanshell](https://github.com/beanshell/beanshell). It provides some simplifications for java based scripts. The JSR-223 support is [buggy](https://github.com/scijava/scripting-beanshell/issues/2) when handling `null` bindings, so we use the interpreter directly instead.
+- **invesdwin-context-jshell**: this is an integration for [JShell](https://github.com/dmac100/JShellScriptEngine) via JSR-223. It provides the purest java syntax, but is rather slow.
+- **invesdwin-context-kotlin**: this is an integration for [Kotlin](https://github.com/Kotlin/kotlin-script-examples). It will use [kotlin-main-kts](https://github.com/Kotlin/kotlin-script-examples/blob/master/jvm/main-kts/MainKts.md) if that is present on the classpath. Otherwise it will use the default JSR-223 engine.
+- **invesdwin-context-scala**: this is an integration for [Scala](https://www.scala-lang.org/) via JSR-223.
+- **invesdwin-context-jruby**: this is an integration for [JRuby](https://www.jruby.org/) via JSR-223.
+- **invesdwin-context-javascript**: this is an integration for Javascript via JSR-223. It uses [GraalJS](https://github.com/oracle/graaljs) if present on the classpath with a fallback to Nashorn (only available until Java 14).
+
+There are also more elaborate integrations available for other languages:
+
+- **R Modules**: Scripting with R
+	- https://github.com/invesdwin/invesdwin-context-r 
+- **Python Modules**: Scripting with Python
+	- https://github.com/invesdwin/invesdwin-context-python
+- **Matlab/Octave/Scilab Modules**: Scripting with Matlab, Octave and Scilab
+	- https://github.com/invesdwin/invesdwin-context-matlab
+- **Julia Modules**: Scripting with Julia
+	- https://github.com/invesdwin/invesdwin-context-julia
+
+Examples are available in the respective testcases of the modules or the separate project repos.
+
 ## More Modules
 
 There are a few more modules available in their respective github projects including their individual documentation:
@@ -140,14 +166,6 @@ There are a few more modules available in their respective github projects inclu
 	- https://github.com/invesdwin/invesdwin-context-security 
 - **Client Modules**: Desktop and Web Frontends
 	- https://github.com/invesdwin/invesdwin-context-client
-- **R Modules**: Scripting with R
-	- https://github.com/invesdwin/invesdwin-context-r 
-- **Python Modules**: Scripting with Python
-	- https://github.com/invesdwin/invesdwin-context-python
-- **Matlab/Octave/Scilab Modules**: Scripting with Matlab, Octave and Scilab
-	- https://github.com/invesdwin/invesdwin-context-matlab
-- **Julia Modules**: Scripting with Julia
-	- https://github.com/invesdwin/invesdwin-context-julia
 - **Webproxy Modules**: Download Manager for Web Scraping that supports Proxy Servers
 	- https://github.com/invesdwin/invesdwin-webproxy
 	
