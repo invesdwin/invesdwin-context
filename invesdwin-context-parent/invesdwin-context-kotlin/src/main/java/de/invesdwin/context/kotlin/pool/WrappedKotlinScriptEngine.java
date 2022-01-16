@@ -20,6 +20,7 @@ public class WrappedKotlinScriptEngine implements Closeable {
     private final Bindings binding;
 
     public WrappedKotlinScriptEngine() {
+        //        this.engine = new KotlinJsr223MainKtsScriptEngineFactory().getScriptEngine();
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("kotlin");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
