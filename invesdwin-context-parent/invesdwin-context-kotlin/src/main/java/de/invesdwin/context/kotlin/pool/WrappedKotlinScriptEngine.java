@@ -18,7 +18,7 @@ import de.invesdwin.util.lang.reflection.Reflections;
 public class WrappedKotlinScriptEngine implements Closeable {
 
     private static final String MAIN_KTS_FACTORY = "org.jetbrains.kotlin.mainKts.jsr223.KotlinJsr223MainKtsScriptEngineFactory";
-    private static boolean USE_MAIN_KTS = Reflections.classExists(MAIN_KTS_FACTORY);
+    private static final boolean USE_MAIN_KTS = Reflections.classExists(MAIN_KTS_FACTORY);
     private final ScriptEngine engine;
     private final Compilable compilable;
     private final Invocable invocable;
