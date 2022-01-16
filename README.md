@@ -133,13 +133,13 @@ These modules bundle tools and utilities for creating reports of various types:
 This repository contains the following scripting modules for JVM languages:
 
 - **invesdwin-context-clojure**: this is an integration for [Clojure](https://clojure.org/). It contains an improved [JSR-223](https://github.com/cnuernber/dtype-next/issues/52#issuecomment-1013689212) provider that supports isolated namespaces per thread, the ability to remove/clear bindings and reusing compiled scripts.
-- **invesdwin-context-groovy**: this is an integration for [Groovy](https://groovy-lang.org/integrating.html). This is the most popular and fastest binding for java like scripts.
-- **invesdwin-context-beanshell**: this is an integration for [Beanshell](https://github.com/beanshell/beanshell). It provides some simplifications for java based scripts.
-- **invesdwin-context-jshell**: this is an integration for [JShell](https://github.com/dmac100/JShellScriptEngine). It provides the purest java scripts, but is rather slow.
-- **invesdwin-context-kotlin**: this is an integration for [Kotlin](https://github.com/Kotlin/kotlin-script-examples). It will use kotlin-main-kts if that is present on the classpath. Otherwise it will use the default JSR-223 engine.
-- **invesdwin-context-scala**: this is an integration for [Scala](https://www.scala-lang.org/).
-- **invesdwin-context-jruby**: this is an integration for [JRuby](https://www.jruby.org/).
-- **invesdwin-context-javascript**: this is an integration for Javascript. It uses [GraalJS](https://github.com/oracle/graaljs) if present on the classpath with a fallback to Nashorn (only available until Java 14).
+- **invesdwin-context-groovy**: this is an integration for [Groovy](https://groovy-lang.org/integrating.html). This is the most popular and fastest binding for java like scripts. JSR-223 is also supported.
+- **invesdwin-context-beanshell**: this is an integration for [Beanshell](https://github.com/beanshell/beanshell). It provides some simplifications for java based scripts. The JSR-223 support is [buggy](https://github.com/scijava/scripting-beanshell/issues/2) when handling `null` bindings, so we use the interpreter directly instead.
+- **invesdwin-context-jshell**: this is an integration for [JShell](https://github.com/dmac100/JShellScriptEngine) via JSR-223. It provides the purest java syntax, but is rather slow.
+- **invesdwin-context-kotlin**: this is an integration for [Kotlin](https://github.com/Kotlin/kotlin-script-examples). It will use [kotlin-main-kts](https://github.com/Kotlin/kotlin-script-examples/blob/master/jvm/main-kts/MainKts.md) if that is present on the classpath. Otherwise it will use the default JSR-223 engine.
+- **invesdwin-context-scala**: this is an integration for [Scala](https://www.scala-lang.org/) via JSR-223.
+- **invesdwin-context-jruby**: this is an integration for [JRuby](https://www.jruby.org/) via JSR-223.
+- **invesdwin-context-javascript**: this is an integration for Javascript vis JSR-223. It uses [GraalJS](https://github.com/oracle/graaljs) if present on the classpath with a fallback to Nashorn (only available until Java 14).
 
 There are also more elaborate integrations available for other languages:
 
