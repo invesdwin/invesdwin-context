@@ -51,7 +51,7 @@ public final class IntegrationProperties {
             final boolean jniCompressionAllowed = SYSTEM_PROPERTIES.getBoolean(key);
             return jniCompressionAllowed;
         } else {
-            return true;
+            return false;
         }
     }
 
