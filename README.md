@@ -141,6 +141,8 @@ This repository contains the following scripting modules for JVM languages:
 - **invesdwin-context-jruby**: this is an integration for [JRuby](https://www.jruby.org/).
 - **invesdwin-context-javascript**: this is an integration for Javascript. It uses [GraalJS](https://github.com/oracle/graaljs) if present on the classpath with a fallback to Nashorn (only available until Java 14).
 
+Examples are available in the respective testcases of the modules.
+
 ## More Modules
 
 There are a few more modules available in their respective github projects including their individual documentation:
