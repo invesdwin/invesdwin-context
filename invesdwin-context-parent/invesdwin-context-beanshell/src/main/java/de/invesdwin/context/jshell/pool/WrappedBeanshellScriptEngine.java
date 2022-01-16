@@ -4,6 +4,7 @@ import java.io.Closeable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.Bindings;
+import javax.script.Compilable;
 import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -14,6 +15,7 @@ import javax.script.ScriptException;
 public class WrappedBeanshellScriptEngine implements Closeable {
 
     private final ScriptEngine engine;
+    private final Compilable compilable;
     private final Invocable invocable;
     private final Bindings binding;
 
@@ -21,12 +23,17 @@ public class WrappedBeanshellScriptEngine implements Closeable {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("beanshell");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        if (engine instanceof Compilable) {
+            compilable = (Compilable) engine;
+        } else {
+            compilable = null;
+        }
         if (engine instanceof Invocable) {
             invocable = (Invocable) engine;
         } else {
             invocable = null;
         }
-        reset();
+
     }
 
     public ScriptEngine getEngine() {
@@ -35,6 +42,10 @@ public class WrappedBeanshellScriptEngine implements Closeable {
 
     public Bindings getBinding() {
         return binding;
+    }
+
+    public Compilable getCompilable() {
+        return compilable;
     }
 
     public Invocable getInvocable() {
