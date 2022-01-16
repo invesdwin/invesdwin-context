@@ -1,6 +1,7 @@
 package de.invesdwin.context.clojure.pool;
 
 import java.io.Closeable;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ public final class WrappedClojureEngine implements Closeable {
             return new WrappedClojureEngine();
         }
     };
+    private static final Object EOF = new Object();
 
     private final LoadingCache<String, List<Object>> scriptCache;
 
@@ -35,9 +37,9 @@ public final class WrappedClojureEngine implements Closeable {
                 .maximumSize(100)
                 .expireAfterAccess(1, TimeUnit.MINUTES)
                 .softValues()
-                .<String, List<Object>> build((key) -> parse(key));
+                .<String, List<Object>> build((key) -> compile(new StringReader(key)));
         binding = new ClojureBindings();
-        binding.put("clojure.core.*file*", "/" + binding.getIsolatedNamespace());
+        binding.put("clojure.core.*file*", "/" + binding.getNamespace());
     }
 
     public ClojureBindings getBinding() {
@@ -49,11 +51,15 @@ public final class WrappedClojureEngine implements Closeable {
     }
 
     public Object evalParsing(final String expression) {
-        final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
+        return evalParsing(new StringReader(expression));
+    }
+
+    public static Object evalParsing(final Reader reader) {
+        final LineNumberingPushbackReader pushbackReader = new LineNumberingPushbackReader(reader);
         Object finalResult = null;
         while (true) {
-            final Object form = LispReader.read(reader, false, this, false);
-            if (form == this) {
+            final Object form = LispReader.read(pushbackReader, false, EOF, false);
+            if (form == EOF) {
                 break;
             }
             finalResult = Compiler.eval(form);
@@ -66,25 +72,29 @@ public final class WrappedClojureEngine implements Closeable {
     }
 
     public Object evalCompiling(final String expression) {
-        final List<Object> parsed = scriptCache.get(expression);
-        final int lastIndex = parsed.size() - 1;
-        for (int i = 0; i < lastIndex; i++) {
-            Compiler.eval(parsed.get(i));
-        }
-        return Compiler.eval(parsed.get(lastIndex));
+        final List<Object> compiled = scriptCache.get(expression);
+        return evalCompiled(compiled);
     }
 
-    private List<Object> parse(final String expression) {
-        final LineNumberingPushbackReader reader = new LineNumberingPushbackReader(new StringReader(expression));
-        final List<Object> parsed = new ArrayList<>();
+    public static Object evalCompiled(final List<Object> compiled) {
+        final int lastIndex = compiled.size() - 1;
+        for (int i = 0; i < lastIndex; i++) {
+            Compiler.eval(compiled.get(i));
+        }
+        return Compiler.eval(compiled.get(lastIndex));
+    }
+
+    public static List<Object> compile(final Reader reader) {
+        final LineNumberingPushbackReader pushbackReader = new LineNumberingPushbackReader(reader);
+        final List<Object> compiled = new ArrayList<>();
         while (true) {
-            final Object form = LispReader.read(reader, false, this, false);
-            if (form == this) {
+            final Object form = LispReader.read(pushbackReader, false, EOF, false);
+            if (form == EOF) {
                 break;
             }
-            parsed.add(form);
+            compiled.add(form);
         }
-        return parsed;
+        return compiled;
     }
 
     public void reset() {

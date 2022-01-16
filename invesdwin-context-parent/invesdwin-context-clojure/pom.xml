@@ -20,10 +20,6 @@
 			<groupId>org.clojure</groupId>
 			<artifactId>clojure</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.clojars.ato</groupId>
-			<artifactId>clojure-jsr223</artifactId>
-		</dependency>
 	</dependencies>
 
 </project>
