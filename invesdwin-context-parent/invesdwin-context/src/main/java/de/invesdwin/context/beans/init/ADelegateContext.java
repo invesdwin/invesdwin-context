@@ -427,4 +427,10 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     public <T> ObjectProvider<T> getBeanProvider(final ResolvableType requiredType, final boolean allowEagerInit) {
         return delegate.getBeanProvider(requiredType, allowEagerInit);
     }
+
+    @Override
+    public <A extends Annotation> A findAnnotationOnBean(final String beanName, final Class<A> annotationType,
+            final boolean allowFactoryBeanInit) throws NoSuchBeanDefinitionException {
+        return delegate.findAnnotationOnBean(beanName, annotationType, allowFactoryBeanInit);
+    }
 }
