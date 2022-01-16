@@ -128,7 +128,7 @@ These modules bundle tools and utilities for creating reports of various types:
 	- `JFreeChartExporter`: allows you to easily export charts lazily, memory sensitive and in parallel as desired into different file formats and dimensions. It also allows you to scale the fonts via a multiplier so they are not too small on higher chart resolutions.
 	- See [invesdwin-context-client-swing-jfreechart](https://github.com/invesdwin/invesdwin-context-client#invesdwin-context-client-swing-jfreechart) for a feature rich interactive financial chart panel implementation.
 
-## JVM Scripting Modules
+## Scripting Modules for JVM Languages
 
 This repository contains the following scripting modules for JVM languages:
 
