@@ -3,8 +3,8 @@ package de.invesdwin.context.jshell;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
-import de.invesdwin.context.jshell.pool.BeanshellInterpreterObjectPool;
-import de.invesdwin.context.jshell.pool.WrappedBeanshellInterpreter;
+import de.invesdwin.context.jshell.pool.BeanshellScriptEngineObjectPool;
+import de.invesdwin.context.jshell.pool.WrappedBeanshellScriptEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
@@ -12,11 +12,11 @@ import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 @NotThreadSafe
 public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
 
-    private WrappedBeanshellInterpreter scriptEngine;
+    private WrappedBeanshellScriptEngine scriptEngine;
     private final ScriptTaskInputsBeanshell inputs;
     private final ScriptTaskResultsBeanshell results;
 
-    public ScriptTaskEngineBeanshell(final WrappedBeanshellInterpreter scriptEngine) {
+    public ScriptTaskEngineBeanshell(final WrappedBeanshellScriptEngine scriptEngine) {
         this.scriptEngine = scriptEngine;
         this.inputs = new ScriptTaskInputsBeanshell(this);
         this.results = new ScriptTaskResultsBeanshell(this);
@@ -43,7 +43,7 @@ public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
     }
 
     @Override
-    public WrappedBeanshellInterpreter unwrap() {
+    public WrappedBeanshellScriptEngine unwrap() {
         return scriptEngine;
     }
 
@@ -61,12 +61,12 @@ public class ScriptTaskEngineBeanshell implements IScriptTaskEngine {
     }
 
     public static ScriptTaskEngineBeanshell newInstance() {
-        return new ScriptTaskEngineBeanshell(BeanshellInterpreterObjectPool.INSTANCE.borrowObject()) {
+        return new ScriptTaskEngineBeanshell(BeanshellScriptEngineObjectPool.INSTANCE.borrowObject()) {
             @Override
             public void close() {
-                final WrappedBeanshellInterpreter unwrap = unwrap();
+                final WrappedBeanshellScriptEngine unwrap = unwrap();
                 if (unwrap != null) {
-                    BeanshellInterpreterObjectPool.INSTANCE.returnObject(unwrap);
+                    BeanshellScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
                 }
                 super.close();
             }
