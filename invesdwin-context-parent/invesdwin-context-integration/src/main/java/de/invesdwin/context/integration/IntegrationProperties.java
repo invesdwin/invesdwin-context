@@ -51,6 +51,7 @@ public final class IntegrationProperties {
             final boolean jniCompressionAllowed = SYSTEM_PROPERTIES.getBoolean(key);
             return jniCompressionAllowed;
         } else {
+            //default should be false, else LZ4JNI might segfault the jvm in SerializingCollection on incomplete reads
             return false;
         }
     }
