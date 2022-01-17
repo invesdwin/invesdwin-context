@@ -70,7 +70,15 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
 
     @Override
     public int available() throws IOException {
-        return originalLen - o;
+        if (finished) {
+            return 0;
+        }
+        if (o == originalLen) {
+            refill();
+        }
+        final int buffered = originalLen - o;
+        final int available = in.available();
+        return buffered + available;
     }
 
     @Override
