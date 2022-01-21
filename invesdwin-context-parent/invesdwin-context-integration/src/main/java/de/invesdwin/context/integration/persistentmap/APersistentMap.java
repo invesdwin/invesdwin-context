@@ -176,6 +176,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             //keep locked
             return tableFinalizer.table;
         }
+        //we need this overlapping lock to prevent purges from being repeated during init
         initLock.lock();
         readLock.unlock();
         try {
