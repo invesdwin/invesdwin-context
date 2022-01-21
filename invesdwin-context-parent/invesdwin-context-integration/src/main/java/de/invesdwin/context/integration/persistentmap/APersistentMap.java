@@ -176,25 +176,28 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             //keep locked
             return tableFinalizer.table;
         }
-        readLock.unlock();
-
         initLock.lock();
+        readLock.unlock();
         try {
-            if (tableFinalizer.table == null) {
-                //otherwise initialize it with write lock (though check again because of lock switch)
-                initializeTable();
-            }
-
-            //and return the now not null table with read lock
-            readLock.lock();
-            if (tableFinalizer.table == null) {
-                readLock.unlock();
-                throw new IllegalStateException("table should not be null here");
-            }
-            return tableFinalizer.table;
+            return getPreLockedDelegateInitLocked(readLock);
         } finally {
             initLock.unlock();
         }
+    }
+
+    private ConcurrentMap<K, V> getPreLockedDelegateInitLocked(final ILock readLock) {
+        if (tableFinalizer.table == null) {
+            //otherwise initialize it with write lock (though check again because of lock switch)
+            initializeTable();
+        }
+
+        //and return the now not null table with read lock
+        readLock.lock();
+        if (tableFinalizer.table == null) {
+            readLock.unlock();
+            throw new IllegalStateException("table should not be null here");
+        }
+        return tableFinalizer.table;
     }
 
     private void initializeTable() {
@@ -318,15 +321,21 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     private void maybePurgeTable() {
         if (shouldPurgeTable()) {
-            //only purge if currently not used
-            if (tableLock.writeLock().tryLock()) {
+            if (initLock.tryLock()) {
                 try {
-                    //condition could have changed since lock has been acquired
-                    if (shouldPurgeTable()) {
-                        innerDeleteTable();
+                    //only purge if currently not used
+                    if (tableLock.writeLock().tryLock()) {
+                        try {
+                            //condition could have changed since lock has been acquired
+                            if (shouldPurgeTable()) {
+                                innerDeleteTable();
+                            }
+                        } finally {
+                            tableLock.writeLock().unlock();
+                        }
                     }
                 } finally {
-                    tableLock.writeLock().unlock();
+                    initLock.unlock();
                 }
             }
         }
