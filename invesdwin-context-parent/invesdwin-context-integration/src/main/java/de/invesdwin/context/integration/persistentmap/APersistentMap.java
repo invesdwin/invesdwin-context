@@ -48,11 +48,14 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     private Set<Entry<K, V>> entrySet;
     private Collection<V> values;
 
+    private final ILock initLock;
+
     public APersistentMap(final String name) {
         super(name);
         this.iteratorName = new TextDescription("%s[%s].iterator", APersistentMap.class.getSimpleName(), getName());
         this.tableLock = newTableLock();
         this.tableFinalizer = new TableFinalizer<>();
+        this.initLock = newInitLock();
     }
 
     @Override
@@ -132,6 +135,11 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                 .newReadWriteLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_tableLock");
     }
 
+    private ILock newInitLock() {
+        return ILockCollectionFactory.getInstance(isThreadSafe())
+                .newLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_initLock");
+    }
+
     protected boolean isThreadSafe() {
         return true;
     }
@@ -165,20 +173,28 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         final ILock readLock = getReadLock();
         readLock.lock();
         if (tableFinalizer.table != null) {
+            //keep locked
             return tableFinalizer.table;
         }
         readLock.unlock();
 
-        //otherwise initialize it with write lock (though check again because of lock switch)
-        initializeTable();
+        initLock.lock();
+        try {
+            if (tableFinalizer.table == null) {
+                //otherwise initialize it with write lock (though check again because of lock switch)
+                initializeTable();
+            }
 
-        //and return the now not null table with read lock
-        readLock.lock();
-        if (tableFinalizer.table == null) {
-            readLock.unlock();
-            throw new IllegalStateException("table should not be null here");
+            //and return the now not null table with read lock
+            readLock.lock();
+            if (tableFinalizer.table == null) {
+                readLock.unlock();
+                throw new IllegalStateException("table should not be null here");
+            }
+            return tableFinalizer.table;
+        } finally {
+            initLock.unlock();
         }
-        return tableFinalizer.table;
     }
 
     private void initializeTable() {
