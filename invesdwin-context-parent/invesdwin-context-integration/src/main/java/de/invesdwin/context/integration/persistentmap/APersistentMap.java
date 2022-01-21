@@ -203,53 +203,63 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         }
         tableLock.writeLock().lock();
         try {
-            if (tableFinalizer.table == null) {
-                if (getTableCreationTime() == null) {
-                    if (isDiskPersistence()) {
-                        try {
-                            final File timestampFile = getTimestampFile();
-                            Files.forceMkdir(timestampFile.getParentFile());
-                            Files.touch(timestampFile);
-                        } catch (final IOException e) {
-                            throw Err.process(e);
-                        }
-                    }
-                    tableCreationTime = new FDate();
-                }
-                try {
-                    tableFinalizer.table = getFactory().newPersistentMap(this);
-                    tableFinalizer.register(this);
-                    PersistentMapCloseManager.register(this);
-                } catch (final Throwable e) {
-                    if (Throwables.isCausedByType(e, OverlappingFileLockException.class)) {
-                        //Caused by: org.mapdb.DBException$FileLocked: File is already opened and is locked: Y:\InvesdwinData\FinancialdataHistorical\default\APersistentMap\PersistentMapDBFactory\CachingFinancialdataHistoricalServiceTime_getTimeInstrument
-                        //at org.mapdb.volume.Volume.lockFile(Volume.java:495)
-                        //at org.mapdb.volume.MappedFileVol.<init>(MappedFileVol.java:88)
-                        //at org.mapdb.volume.MappedFileVol$MappedFileFactory.factory(MappedFileVol.java:64)
-                        //Caused by: java.nio.channels.OverlappingFileLockException: null
-                        //at java.base/sun.nio.ch.FileLockTable.checkList(FileLockTable.java:229)
-                        //at java.base/sun.nio.ch.FileLockTable.add(FileLockTable.java:123)
-                        //at java.base/sun.nio.ch.FileChannelImpl.tryLock(FileChannelImpl.java:1154)
-                        //at java.base/java.nio.channels.FileChannel.tryLock(FileChannel.java:1165)
-                        //at org.mapdb.volume.Volume.lockFile(Volume.java:490)
-                        throw new RetryLaterRuntimeException(e);
-                    } else if (Strings.containsIgnoreCase(e.getMessage(), "LOCK")) {
-                        //ezdb.DbException: org.fusesource.leveldbjni.internal.NativeDB$DBException: IO error: lock /home/subes/Dokumente/Entwicklung/invesdwin/invesdwin-trading/invesdwin-trading-parent/invesdwin-trading-modules/invesdwin-trading-backtest/.invesdwin/de.invesdwin.context.persistence.leveldb.ADelegateRangeTable/CachingFinancialdataService_getInstrument/LOCK: Die Ressource ist zur Zeit nicht verfügbar
-                        //at ezdb.leveldb.EzLevelDbTable.<init>(EzLevelDbTable.java:50)
-                        //at ezdb.leveldb.EzLevelDb.getTable(EzLevelDb.java:69)
-                        //at de.invesdwin.context.persistence.leveldb.ADelegateRangeTable.getTableWithReadLock(ADelegateRangeTable.java:144)
-                        throw new RetryLaterRuntimeException(e);
-                    } else {
-                        Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
-                                + "] is inconsistent. Resetting data and trying again.", e));
-                        innerDeleteTable();
-                        tableFinalizer.table = getFactory().newPersistentMap(this);
-                        tableFinalizer.register(this);
-                    }
-                }
-            }
+            initializeTableLocked();
         } finally {
             tableLock.writeLock().unlock();
+        }
+    }
+
+    private void initializeTableLocked() {
+        if (tableFinalizer.table == null) {
+            if (getTableCreationTime() == null) {
+                if (isDiskPersistence()) {
+                    try {
+                        final File timestampFile = getTimestampFile();
+                        Files.forceMkdir(timestampFile.getParentFile());
+                        Files.touch(timestampFile);
+                    } catch (final IOException e) {
+                        throw Err.process(e);
+                    }
+                }
+                tableCreationTime = new FDate();
+            }
+            try {
+                tableFinalizer.table = getFactory().newPersistentMap(this);
+                if (tableFinalizer.table == null) {
+                    throw new IllegalStateException("table should not be null");
+                }
+                tableFinalizer.register(this);
+                PersistentMapCloseManager.register(this);
+            } catch (final Throwable e) {
+                if (Throwables.isCausedByType(e, OverlappingFileLockException.class)) {
+                    //Caused by: org.mapdb.DBException$FileLocked: File is already opened and is locked: Y:\InvesdwinData\FinancialdataHistorical\default\APersistentMap\PersistentMapDBFactory\CachingFinancialdataHistoricalServiceTime_getTimeInstrument
+                    //at org.mapdb.volume.Volume.lockFile(Volume.java:495)
+                    //at org.mapdb.volume.MappedFileVol.<init>(MappedFileVol.java:88)
+                    //at org.mapdb.volume.MappedFileVol$MappedFileFactory.factory(MappedFileVol.java:64)
+                    //Caused by: java.nio.channels.OverlappingFileLockException: null
+                    //at java.base/sun.nio.ch.FileLockTable.checkList(FileLockTable.java:229)
+                    //at java.base/sun.nio.ch.FileLockTable.add(FileLockTable.java:123)
+                    //at java.base/sun.nio.ch.FileChannelImpl.tryLock(FileChannelImpl.java:1154)
+                    //at java.base/java.nio.channels.FileChannel.tryLock(FileChannel.java:1165)
+                    //at org.mapdb.volume.Volume.lockFile(Volume.java:490)
+                    throw new RetryLaterRuntimeException(e);
+                } else if (Strings.containsIgnoreCase(e.getMessage(), "LOCK")) {
+                    //ezdb.DbException: org.fusesource.leveldbjni.internal.NativeDB$DBException: IO error: lock /home/subes/Dokumente/Entwicklung/invesdwin/invesdwin-trading/invesdwin-trading-parent/invesdwin-trading-modules/invesdwin-trading-backtest/.invesdwin/de.invesdwin.context.persistence.leveldb.ADelegateRangeTable/CachingFinancialdataService_getInstrument/LOCK: Die Ressource ist zur Zeit nicht verfügbar
+                    //at ezdb.leveldb.EzLevelDbTable.<init>(EzLevelDbTable.java:50)
+                    //at ezdb.leveldb.EzLevelDb.getTable(EzLevelDb.java:69)
+                    //at de.invesdwin.context.persistence.leveldb.ADelegateRangeTable.getTableWithReadLock(ADelegateRangeTable.java:144)
+                    throw new RetryLaterRuntimeException(e);
+                } else {
+                    Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
+                            + "] is inconsistent. Resetting data and trying again.", e));
+                    innerDeleteTable();
+                    tableFinalizer.table = getFactory().newPersistentMap(this);
+                    if (tableFinalizer.table == null) {
+                        throw new IllegalStateException("table should not be null");
+                    }
+                    tableFinalizer.register(this);
+                }
+            }
         }
     }
 
