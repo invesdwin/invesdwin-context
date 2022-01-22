@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,6 +30,7 @@ import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.shutdown.ShutdownHookManager;
 import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FTimeUnit;
 
 /**
  * If you need to store large data on disk, it is better to use LevelDB only for an ordered index and store the actual
@@ -48,14 +50,13 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     private Set<Entry<K, V>> entrySet;
     private Collection<V> values;
 
-    private final ILock initLock;
+    private final AtomicBoolean initializing = new AtomicBoolean();
 
     public APersistentMap(final String name) {
         super(name);
         this.iteratorName = new TextDescription("%s[%s].iterator", APersistentMap.class.getSimpleName(), getName());
         this.tableLock = newTableLock();
         this.tableFinalizer = new TableFinalizer<>();
-        this.initLock = newInitLock();
     }
 
     @Override
@@ -135,11 +136,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                 .newReadWriteLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_tableLock");
     }
 
-    private ILock newInitLock() {
-        return ILockCollectionFactory.getInstance(isThreadSafe())
-                .newLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_initLock");
-    }
-
     protected boolean isThreadSafe() {
         return true;
     }
@@ -176,13 +172,18 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             //keep locked
             return tableFinalizer.table;
         }
-        //we need this overlapping lock to prevent purges from being repeated during init
-        initLock.lock();
         readLock.unlock();
-        try {
-            return initializeTableInitLocked(readLock);
-        } finally {
-            initLock.unlock();
+        if (!initializing.compareAndSet(false, true)) {
+            while (initializing.get()) {
+                FTimeUnit.MILLISECONDS.sleepNoInterrupt(1);
+            }
+            return getPreLockedDelegate();
+        } else {
+            try {
+                return initializeTableInitLocked(readLock);
+            } finally {
+                initializing.set(false);
+            }
         }
     }
 
@@ -267,7 +268,9 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public void close() {
-        initLock.lock();
+        if (initializing.get()) {
+            return;
+        }
         tableLock.writeLock().lock();
         try {
             if (tableFinalizer.table != null) {
@@ -277,7 +280,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             }
         } finally {
             tableLock.writeLock().unlock();
-            initLock.unlock();
         }
     }
 
@@ -321,22 +323,16 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     }
 
     private void maybePurgeTable() {
-        if (shouldPurgeTable()) {
-            if (initLock.tryLock()) {
+        if (!initializing.get() && shouldPurgeTable()) {
+            //only purge if currently not used
+            if (tableLock.writeLock().tryLock()) {
                 try {
-                    //only purge if currently not used
-                    if (tableLock.writeLock().tryLock()) {
-                        try {
-                            //condition could have changed since lock has been acquired
-                            if (shouldPurgeTable()) {
-                                innerDeleteTable();
-                            }
-                        } finally {
-                            tableLock.writeLock().unlock();
-                        }
+                    //condition could have changed since lock has been acquired
+                    if (!initializing.get() && shouldPurgeTable()) {
+                        innerDeleteTable();
                     }
                 } finally {
-                    initLock.unlock();
+                    tableLock.writeLock().unlock();
                 }
             }
         }
@@ -360,6 +356,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         public boolean isThreadLocal() {
             return false;
         }
+
     }
 
     //-----------------------------------------------
