@@ -29,7 +29,6 @@ import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.shutdown.ShutdownHookManager;
 import de.invesdwin.util.time.date.FDate;
-import de.invesdwin.util.time.date.FTimeUnit;
 
 /**
  * If you need to store large data on disk, it is better to use LevelDB only for an ordered index and store the actual
@@ -181,13 +180,13 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         initLock.lock();
         readLock.unlock();
         try {
-            return initializeTableInitLocked(readLock, 0);
+            return initializeTableInitLocked(readLock);
         } finally {
             initLock.unlock();
         }
     }
 
-    private ConcurrentMap<K, V> initializeTableInitLocked(final ILock readLock, final int tries) {
+    private ConcurrentMap<K, V> initializeTableInitLocked(final ILock readLock) {
         //otherwise initialize it with write lock (though check again because of lock switch)
         initializeTable();
 
@@ -195,12 +194,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         readLock.lock();
         if (tableFinalizer.table == null) {
             readLock.unlock();
-            if (tries < 3) {
-                FTimeUnit.MILLISECONDS.sleepNoInterrupt(1);
-                return initializeTableInitLocked(readLock, tries + 1);
-            } else {
-                throw new RetryLaterRuntimeException("table should not be null here");
-            }
+            throw new RetryLaterRuntimeException("table should not be null here");
         }
         return tableFinalizer.table;
     }
