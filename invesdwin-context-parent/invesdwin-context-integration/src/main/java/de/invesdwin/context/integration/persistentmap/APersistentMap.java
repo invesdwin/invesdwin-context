@@ -267,6 +267,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public void close() {
+        initLock.lock();
         tableLock.writeLock().lock();
         try {
             if (tableFinalizer.table != null) {
@@ -276,6 +277,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             }
         } finally {
             tableLock.writeLock().unlock();
+            initLock.unlock();
         }
     }
 
