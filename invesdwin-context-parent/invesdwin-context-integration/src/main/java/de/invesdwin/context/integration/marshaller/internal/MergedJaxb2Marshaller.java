@@ -17,8 +17,8 @@ import org.springframework.util.ClassUtils;
 
 import de.invesdwin.context.integration.marshaller.IMergedJaxbContextPath;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Resources;
 import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.streams.resource.Resources;
 
 /**
  * Collects all generated IMergedContextPaths and adds them to the Jaxb2Marshaller.

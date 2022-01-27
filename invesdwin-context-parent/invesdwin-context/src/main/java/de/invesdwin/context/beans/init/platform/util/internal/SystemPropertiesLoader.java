@@ -15,7 +15,7 @@ import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
-import de.invesdwin.util.lang.Resources;
+import de.invesdwin.util.streams.resource.Resources;
 
 @Immutable
 public final class SystemPropertiesLoader {

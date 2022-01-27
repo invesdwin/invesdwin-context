@@ -18,7 +18,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
-import de.invesdwin.util.lang.Resources;
+import de.invesdwin.util.streams.resource.Resources;
 
 @Immutable
 public final class LogbackConfigurationLoader {
