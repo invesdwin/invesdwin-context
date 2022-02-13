@@ -96,7 +96,7 @@
 
 		<version.hsqldb>2.6.1</version.hsqldb>
 		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
-		<version.postgresql>42.2.14</version.postgresql>
+		<version.postgresql>42.2.25</version.postgresql>
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
 		<version.bsh>2.1.0</version.bsh>
