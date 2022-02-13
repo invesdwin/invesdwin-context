@@ -86,7 +86,7 @@
 		<version.batik>1.13</version.batik>
 		<version.itext>2.1.7.js9</version.itext>
 		<version.bcprov>1.68</version.bcprov>
-		<version.poi>5.0.0</version.poi>
+		<version.poi>5.2.0</version.poi>
 
 		<!-- integration -->
 		<version.spring-batch>4.3.4</version.spring-batch>
@@ -532,11 +532,23 @@
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
 				<version>${version.poi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.logging.log4j</groupId>
+						<artifactId>log4j-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
 				<version>${version.poi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.logging.log4j</groupId>
+						<artifactId>log4j-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
