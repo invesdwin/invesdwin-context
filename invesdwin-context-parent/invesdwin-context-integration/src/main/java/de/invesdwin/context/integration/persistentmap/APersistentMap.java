@@ -314,7 +314,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             final File file = getFile();
             if (file.isDirectory()) {
                 final String[] list = file.list();
-                if (list == null || list.length == 0) {
+                if (list != null && list.length > 0) {
                     Files.deleteNative(file);
                 }
             } else {
