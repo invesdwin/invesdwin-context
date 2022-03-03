@@ -140,19 +140,4 @@
 		</dependency>
 	</dependencies>
 
-
-	<profiles>
-		<profile>
-			<activation>
-				<jdk>1.8</jdk>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>de.invesdwin</groupId>
-					<artifactId>invesdwin-context-java8</artifactId>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
-
 </project>
