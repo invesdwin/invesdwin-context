@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.log.error.Err;
 import de.invesdwin.norva.marker.ISerializableValueObject;
 import de.invesdwin.util.classpath.FastClassPathScanner;
 import de.invesdwin.util.lang.reflection.Reflections;
@@ -39,8 +40,12 @@ public class RegisterTypesForSerializationConfigurer {
         final ScanResult scanner = FastClassPathScanner.getScanResult();
         final List<Class<?>> classesToRegister = new ArrayList<Class<?>>();
         for (final ClassInfo ci : scanner.getClassesImplementing(SERIALIZABLE_INTERFACE.getName())) {
-            final Class<?> clazz = Reflections.classForName(ci.getName());
-            classesToRegister.add(clazz);
+            try {
+                final Class<?> clazz = Reflections.classForName(ci.getName());
+                classesToRegister.add(clazz);
+            } catch (final Throwable t) {
+                Err.process(new RuntimeException("Ignoring", t));
+            }
         }
         return classesToRegister;
     }
