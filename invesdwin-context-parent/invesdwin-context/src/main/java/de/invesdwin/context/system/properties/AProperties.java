@@ -330,13 +330,15 @@ public abstract class AProperties implements IProperties {
         final String str = getString(key);
         try {
             URI uri = URIs.asUri(str);
-            if (uri.getHost() == null) {
+            if (uri.getHost() == null && uri.getScheme() == null) {
                 //without a protocol, calls to getHost and getPort will fail, thus add a fake one!
                 uri = URIs.asUri("p://" + str);
             }
-            Assertions.assertThat(uri.getHost())
-                    .as("Unable to get host from URI (maybe you forgot to add <protocol>:// or so?): " + uri)
-                    .isNotNull();
+            if (!uri.getScheme().equals("file")) {
+                Assertions.assertThat(uri.getHost())
+                        .as("Unable to get host from URI (maybe you forgot to add <protocol>:// or so?): " + uri)
+                        .isNotNull();
+            }
             if (validatePort) {
                 final int port = uri.getPort();
                 if (port == 0) {
