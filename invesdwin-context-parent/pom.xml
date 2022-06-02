@@ -85,7 +85,7 @@
 		<version.jasperreports>6.18.1</version.jasperreports>
 		<version.batik>1.13</version.batik>
 		<version.itext>2.1.7.js9</version.itext>
-		<version.bcprov>1.68</version.bcprov>
+		<version.bcprov>1.70</version.bcprov>
 		<version.poi>5.2.0</version.poi>
 
 		<!-- integration -->
