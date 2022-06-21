@@ -95,7 +95,7 @@
 		<version.spring-ws>3.1.1</version.spring-ws>
 
 		<version.hsqldb>2.6.1</version.hsqldb>
-		<version.mysql-connector-java>8.0.27</version.mysql-connector-java>
+		<version.mysql-connector-java>8.0.28</version.mysql-connector-java>
 		<version.postgresql>42.3.3</version.postgresql>
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
