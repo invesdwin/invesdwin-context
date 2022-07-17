@@ -44,12 +44,12 @@ public class EncryptingDelegateSerde<E> implements ISerde<E> {
             //we can save a copy here
             return delegate.fromBuffer(buffer, length);
         } else {
-            final IByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+            final IByteBuffer decryptedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
             try {
-                final int decompressedLength = encryptionFactory.encrypt(buffer, decompressedBuffer);
-                return delegate.fromBuffer(decompressedBuffer, decompressedLength);
+                final int decryptedLength = encryptionFactory.encrypt(buffer, decryptedBuffer);
+                return delegate.fromBuffer(decryptedBuffer, decryptedLength);
             } finally {
-                ByteBuffers.EXPANDABLE_POOL.returnObject(decompressedBuffer);
+                ByteBuffers.EXPANDABLE_POOL.returnObject(decryptedBuffer);
             }
         }
     }
@@ -63,12 +63,12 @@ public class EncryptingDelegateSerde<E> implements ISerde<E> {
             //we can save a copy here
             return delegate.toBuffer(buffer, obj);
         } else {
-            final IByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
+            final IByteBuffer decryptedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
             try {
-                final int decompressedLength = delegate.toBuffer(decompressedBuffer, obj);
-                return encryptionFactory.decrypt(decompressedBuffer.sliceTo(decompressedLength), buffer);
+                final int decryptedLength = delegate.toBuffer(decryptedBuffer, obj);
+                return encryptionFactory.decrypt(decryptedBuffer.sliceTo(decryptedLength), buffer);
             } finally {
-                ByteBuffers.EXPANDABLE_POOL.returnObject(decompressedBuffer);
+                ByteBuffers.EXPANDABLE_POOL.returnObject(decryptedBuffer);
             }
         }
     }

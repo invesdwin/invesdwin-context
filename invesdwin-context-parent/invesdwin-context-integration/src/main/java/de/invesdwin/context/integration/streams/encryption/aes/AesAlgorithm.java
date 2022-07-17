@@ -18,6 +18,8 @@ import org.apache.commons.crypto.stream.CtrCryptoInputStream;
 import org.apache.commons.crypto.stream.CtrCryptoOutputStream;
 import org.apache.commons.crypto.utils.Utils;
 
+import de.invesdwin.context.integration.streams.encryption.pool.CryptoCipherObjectPool;
+import de.invesdwin.context.integration.streams.encryption.pool.ICryptoCipherFactory;
 import de.invesdwin.context.system.properties.SystemProperties;
 
 /**
@@ -30,7 +32,7 @@ import de.invesdwin.context.system.properties.SystemProperties;
  * https://crypto.stackexchange.com/questions/2173/how-to-calculate-an-iv-when-i-have-a-shared-private-key
  */
 @Immutable
-public enum AesAlgorithm {
+public enum AesAlgorithm implements ICryptoCipherFactory {
     /**
      * encryption only, full blocks, not streaming capable
      */
@@ -115,10 +117,12 @@ public enum AesAlgorithm {
 
     private final String transformation;
     private final int ivBytes;
+    private CryptoCipherObjectPool cipherPool;
 
     AesAlgorithm(final String transformation, final int ivBytes) {
         this.transformation = transformation;
         this.ivBytes = ivBytes;
+        this.cipherPool = new CryptoCipherObjectPool(this);
     }
 
     @Override
@@ -144,7 +148,12 @@ public enum AesAlgorithm {
 
     public abstract AlgorithmParameterSpec newIv(byte[] iv);
 
-    public CryptoCipher newCipher() {
+    public CryptoCipherObjectPool getCipherPool() {
+        return cipherPool;
+    }
+
+    @Override
+    public CryptoCipher newCryptoCipher() {
         try {
             return Utils.getCipherInstance(getTransformation(), SystemProperties.SYSTEM_PROPERTIES);
         } catch (final IOException e) {
