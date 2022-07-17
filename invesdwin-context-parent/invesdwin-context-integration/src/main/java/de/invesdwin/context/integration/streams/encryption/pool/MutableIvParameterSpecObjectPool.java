@@ -1,14 +1,11 @@
 package de.invesdwin.context.integration.streams.encryption.pool;
 
-import java.util.Arrays;
-
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.agrona.concurrent.ManyToManyConcurrentArrayQueue;
 
 import de.invesdwin.util.concurrent.pool.AQueueObjectPool;
 import de.invesdwin.util.concurrent.pool.AgronaObjectPool;
-import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 
 @ThreadSafe
@@ -24,11 +21,6 @@ public class MutableIvParameterSpecObjectPool extends AQueueObjectPool<MutableIv
     @Override
     protected MutableIvParameterSpec newObject() {
         return new MutableIvParameterSpec(ByteBuffers.allocateByteArray(ivBytes));
-    }
-
-    @Override
-    protected void passivateObject(final MutableIvParameterSpec element) {
-        Arrays.fill(element.getIV(), Bytes.ZERO);
     }
 
 }
