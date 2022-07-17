@@ -1,12 +1,12 @@
-package de.invesdwin.context.integration.streams.compressor.lz4;
+package de.invesdwin.context.integration.streams.compression.lz4;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.streams.compressor.CompressingDelegateSerde;
-import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
+import de.invesdwin.context.integration.streams.compression.CompressingDelegateSerde;
+import de.invesdwin.context.integration.streams.compression.ICompressionFactory;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.APooledInputStream;

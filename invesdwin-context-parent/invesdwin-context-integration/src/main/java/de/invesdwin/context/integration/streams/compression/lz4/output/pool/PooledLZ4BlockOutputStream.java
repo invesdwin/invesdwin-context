@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.compressor.lz4.output.pool;
+package de.invesdwin.context.integration.streams.compression.lz4.output.pool;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,7 +6,7 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.integration.streams.compressor.lz4.output.ReusableLZ4BlockOutputStream;
+import de.invesdwin.context.integration.streams.compression.lz4.output.ReusableLZ4BlockOutputStream;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
 import net.jpountz.lz4.LZ4Compressor;
 

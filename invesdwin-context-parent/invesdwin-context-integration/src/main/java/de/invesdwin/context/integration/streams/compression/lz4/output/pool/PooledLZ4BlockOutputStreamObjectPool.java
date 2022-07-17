@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.compressor.lz4.output.pool;
+package de.invesdwin.context.integration.streams.compression.lz4.output.pool;
 
 import java.util.function.Supplier;
 import java.util.zip.Checksum;

@@ -2,7 +2,7 @@ package de.invesdwin.context.integration.serde.reference;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
+import de.invesdwin.context.integration.streams.compression.ICompressionFactory;
 import de.invesdwin.util.concurrent.reference.persistent.ACompressingWeakReference;
 import de.invesdwin.util.marshallers.serde.ISerde;
 

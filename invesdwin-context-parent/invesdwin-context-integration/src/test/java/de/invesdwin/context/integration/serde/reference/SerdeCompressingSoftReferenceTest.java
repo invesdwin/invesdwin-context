@@ -8,7 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import de.invesdwin.context.integration.streams.compressor.lz4.LZ4Streams;
+import de.invesdwin.context.integration.streams.compression.lz4.LZ4Streams;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;

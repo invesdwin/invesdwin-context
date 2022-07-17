@@ -100,6 +100,8 @@
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
 		<version.bsh>2.1.0</version.bsh>
+
+		<version.commons-crypto>1.1.0</version.commons-crypto>
 	</properties>
 
 	<dependencyManagement>
@@ -632,6 +634,12 @@
 				<groupId>org.apache-extras.beanshell</groupId>
 				<artifactId>bsh</artifactId>
 				<version>${version.bsh}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-crypto</artifactId>
+				<version>${version.commons-crypto}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

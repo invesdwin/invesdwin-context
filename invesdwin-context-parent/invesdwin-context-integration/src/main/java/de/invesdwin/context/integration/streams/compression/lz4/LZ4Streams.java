@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.compressor.lz4;
+package de.invesdwin.context.integration.streams.compression.lz4;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,11 +12,11 @@ import javax.annotation.concurrent.Immutable;
 import org.apache.commons.io.IOUtils;
 
 import de.invesdwin.context.integration.IntegrationProperties;
-import de.invesdwin.context.integration.streams.compressor.ICompressionFactory;
-import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStream;
-import de.invesdwin.context.integration.streams.compressor.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
-import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStream;
-import de.invesdwin.context.integration.streams.compressor.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
+import de.invesdwin.context.integration.streams.compression.ICompressionFactory;
+import de.invesdwin.context.integration.streams.compression.lz4.input.pool.PooledLZ4BlockInputStream;
+import de.invesdwin.context.integration.streams.compression.lz4.input.pool.PooledLZ4BlockInputStreamObjectPool;
+import de.invesdwin.context.integration.streams.compression.lz4.output.pool.PooledLZ4BlockOutputStream;
+import de.invesdwin.context.integration.streams.compression.lz4.output.pool.PooledLZ4BlockOutputStreamObjectPool;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.concurrent.pool.AgronaObjectPool;
 import de.invesdwin.util.concurrent.pool.IObjectPool;

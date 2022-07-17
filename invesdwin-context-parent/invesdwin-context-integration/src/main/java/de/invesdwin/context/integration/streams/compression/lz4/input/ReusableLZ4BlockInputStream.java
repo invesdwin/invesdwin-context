@@ -10,7 +10,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package de.invesdwin.context.integration.streams.compressor.lz4.input;
+package de.invesdwin.context.integration.streams.compression.lz4.input;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.integration.streams.compressor.lz4.output.ReusableLZ4BlockOutputStream;
+import de.invesdwin.context.integration.streams.compression.lz4.output.ReusableLZ4BlockOutputStream;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.pool.APooledInputStream;

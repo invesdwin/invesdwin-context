@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.compressor.lz4.output;
+package de.invesdwin.context.integration.streams.compression.lz4.output;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.compressor;
+package de.invesdwin.context.integration.streams.compression;
 
 import javax.annotation.concurrent.Immutable;
 
