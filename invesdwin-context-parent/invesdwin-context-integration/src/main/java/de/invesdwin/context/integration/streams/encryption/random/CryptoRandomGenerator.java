@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.streams.encryption.random;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.Random;
 
 import javax.annotation.concurrent.Immutable;
@@ -85,7 +84,7 @@ public class CryptoRandomGenerator implements RandomGenerator, Closeable {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         finalizer.close();
     }
 

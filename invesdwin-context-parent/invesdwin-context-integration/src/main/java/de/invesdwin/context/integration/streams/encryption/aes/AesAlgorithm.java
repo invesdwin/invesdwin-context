@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.encryption;
+package de.invesdwin.context.integration.streams.encryption.aes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ import de.invesdwin.context.system.properties.SystemProperties;
  * https://crypto.stackexchange.com/questions/2173/how-to-calculate-an-iv-when-i-have-a-shared-private-key
  */
 @Immutable
-public enum CryptoAlgorithm {
+public enum AesAlgorithm {
     /**
      * encryption only, full blocks, not streaming capable
      */
@@ -107,14 +107,16 @@ public enum CryptoAlgorithm {
 
         @Override
         public AlgorithmParameterSpec newIv(final byte[] iv) {
-            return new GCMParameterSpec(CryptoKeyLength._128.getBits(), iv);
+            return new GCMParameterSpec(AesKeyLength._128.getBits(), iv);
         }
     };
+
+    public static final AesAlgorithm DEFAULT = AES_CTR_NoPadding;
 
     private final String transformation;
     private final int ivBytes;
 
-    CryptoAlgorithm(final String transformation, final int ivBytes) {
+    AesAlgorithm(final String transformation, final int ivBytes) {
         this.transformation = transformation;
         this.ivBytes = ivBytes;
     }
