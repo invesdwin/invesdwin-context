@@ -106,6 +106,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         final CryptoCipher cipher = algorithm.getCipherPool().borrowObject();
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
         //each message should be encrypted with a unique IV, the IV can be transmitted unencrypted with the message
+        //use the streaming encryptor/decryptor for a solution with less overhead
         calculateIV(iv.getIV());
         try {
             cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, iv);
