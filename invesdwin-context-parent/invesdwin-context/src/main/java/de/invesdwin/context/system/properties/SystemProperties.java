@@ -28,6 +28,10 @@ import de.invesdwin.util.assertions.Assertions;
 @NotThreadSafe
 public class SystemProperties extends AProperties {
 
+    //CHECKSTYLE:OFF Properties
+    public static final Properties SYSTEM_PROPERTIES = System.getProperties();
+    //CHECKSTYLE:ON
+
     private final String prefix;
 
     static {
@@ -60,9 +64,7 @@ public class SystemProperties extends AProperties {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected AbstractConfiguration createDelegate() {
-        //CHECKSTYLE:OFF Properties
-        final MapConfiguration delegate = new MapConfiguration((Map) System.getProperties());
-        //CHECKSTYLE:ON
+        final MapConfiguration delegate = new MapConfiguration((Map) SYSTEM_PROPERTIES);
         delegate.setThrowExceptionOnMissing(true);
         return delegate;
     }
