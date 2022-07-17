@@ -28,7 +28,7 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
  * Counted IV is the best compromise between security and speed.
  */
 @Immutable
-public class AesEncryptionFactory implements IEncryptionFactory {
+public class AesEncryptionFactoryCountedIV implements IEncryptionFactory {
 
     private final AesAlgorithm algorithm;
     private final byte[] key;
@@ -36,7 +36,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
     private final byte[] initIV;
     private final AtomicLong ivCounter;
 
-    public AesEncryptionFactory(final AesAlgorithm algorithm, final byte[] key) {
+    public AesEncryptionFactoryCountedIV(final AesAlgorithm algorithm, final byte[] key) {
         this.algorithm = algorithm;
         this.key = key;
         this.keyWrapped = AesAlgorithm.wrapKey(key);
