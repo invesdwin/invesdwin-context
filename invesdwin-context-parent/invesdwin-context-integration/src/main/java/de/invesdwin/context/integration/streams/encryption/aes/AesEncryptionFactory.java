@@ -1,53 +1,123 @@
 package de.invesdwin.context.integration.streams.encryption.aes;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.concurrent.Immutable;
 import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.crypto.cipher.CryptoCipher;
+import org.apache.commons.crypto.stream.CalculateIV;
 
 import de.invesdwin.context.integration.streams.encryption.EncryptingDelegateSerde;
 import de.invesdwin.context.integration.streams.encryption.IEncryptionFactory;
+import de.invesdwin.context.integration.streams.encryption.pool.MutableIvParameterSpec;
+import de.invesdwin.context.integration.streams.encryption.random.CryptoRandomGenerator;
+import de.invesdwin.context.integration.streams.encryption.random.CryptoRandomGenerators;
+import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.streams.ADelegateInputStream;
+import de.invesdwin.util.streams.ADelegateOutputStream;
+import de.invesdwin.util.streams.InputStreams;
+import de.invesdwin.util.streams.OutputStreams;
+import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
 public class AesEncryptionFactory implements IEncryptionFactory {
 
     private final AesAlgorithm algorithm;
-    private final byte[] keyBytes;
-    private final Key key;
-    private final byte[] ivBytes;
+    private final byte[] key;
+    private final Key keyWrapped;
+    private final byte[] initIV;
+    private final AtomicLong ivCounter;
 
-    public AesEncryptionFactory(final AesAlgorithm algorithm, final byte[] keyBytes, final byte[] ivBytes) {
+    public AesEncryptionFactory(final AesAlgorithm algorithm, final byte[] key) {
         this.algorithm = algorithm;
-        this.keyBytes = keyBytes;
-        this.key = algorithm.newKey(keyBytes);
-        this.ivBytes = ivBytes;
+        this.key = key;
+        this.keyWrapped = wrapKey(key);
+        this.initIV = newInitIV(algorithm.getIvBytes());
+        this.ivCounter = new AtomicLong();
+        if (initIV.length != algorithm.getIvBytes()) {
+            throw new IllegalArgumentException(
+                    "initIV.length[" + initIV.length + "] != algorithm.getIvBytes[" + algorithm.getIvBytes() + "]");
+        }
+    }
+
+    public AesAlgorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public static Key wrapKey(final byte[] key) {
+        return new SecretKeySpec(key, "AES");
+    }
+
+    private byte[] newInitIV(final int ivBytes) {
+        final byte[] initIV = ByteBuffers.allocateByteArray(ivBytes);
+        try (CryptoRandomGenerator random = CryptoRandomGenerators.newSecureRandom()) {
+            random.nextBytes(initIV);
+        }
+        return initIV;
+    }
+
+    protected void calculateIv(final byte[] iv) {
+        CalculateIV.calculateIV(initIV, ivCounter.incrementAndGet(), iv);
     }
 
     @Override
     public OutputStream newEncryptor(final OutputStream out) {
-        return algorithm.newEncryptor(out, keyBytes, ivBytes);
+        return new ADelegateOutputStream(
+                new TextDescription("%s.newEncryptor", AesEncryptionFactory.class.getSimpleName())) {
+            @Override
+            protected OutputStream newDelegate() {
+                final byte[] iv = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
+                calculateIv(iv);
+                try {
+                    OutputStreams.write(out, iv);
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return algorithm.newEncryptor(out, key, iv);
+            }
+        };
     }
 
     @Override
     public InputStream newDecryptor(final InputStream in) {
-        return algorithm.newDecryptor(in, keyBytes, ivBytes);
+        return new ADelegateInputStream(
+                new TextDescription("%s.newDecryptor", AesEncryptionFactory.class.getSimpleName())) {
+            @Override
+            protected InputStream newDelegate() {
+                final byte[] iv = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
+                try {
+                    InputStreams.readFully(in, iv);
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return algorithm.newDecryptor(in, key, iv);
+            }
+        };
     }
 
     @Override
     public int encrypt(final IByteBuffer src, final IByteBuffer dest) {
         final CryptoCipher cipher = algorithm.getCipherPool().borrowObject();
+        final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
+        calculateIv(iv.getIV());
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, key, algorithm.newIv(ivBytes));
-            return cipher.doFinal(src.asNioByteBuffer(), dest.asNioByteBuffer());
+            cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, iv);
+            dest.putBytes(0, iv.getIV());
+            final IByteBuffer payloadBuffer = dest.sliceFrom(algorithm.getIvBytes());
+            final int length = cipher.doFinal(src.asNioByteBuffer(), payloadBuffer.asNioByteBuffer());
+            return algorithm.getIvBytes() + length;
         } catch (final Exception e) {
             throw new RuntimeException(e);
         } finally {
+            algorithm.getIvParameterSpecPool().returnObject(iv);
             algorithm.getCipherPool().returnObject(cipher);
         }
     }
@@ -55,12 +125,17 @@ public class AesEncryptionFactory implements IEncryptionFactory {
     @Override
     public int decrypt(final IByteBuffer src, final IByteBuffer dest) {
         final CryptoCipher cipher = algorithm.getCipherPool().borrowObject();
+        final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
         try {
-            cipher.init(Cipher.DECRYPT_MODE, key, algorithm.newIv(ivBytes));
-            return cipher.doFinal(src.asNioByteBuffer(), dest.asNioByteBuffer());
+            src.getBytes(0, iv.getIV());
+            cipher.init(Cipher.DECRYPT_MODE, keyWrapped, iv);
+            final IByteBuffer payloadBuffer = src.sliceFrom(algorithm.getIvBytes());
+            final int length = cipher.doFinal(payloadBuffer.asNioByteBuffer(), dest.asNioByteBuffer());
+            return length;
         } catch (final Exception e) {
             throw new RuntimeException(e);
         } finally {
+            algorithm.getIvParameterSpecPool().returnObject(iv);
             algorithm.getCipherPool().returnObject(cipher);
         }
     }
