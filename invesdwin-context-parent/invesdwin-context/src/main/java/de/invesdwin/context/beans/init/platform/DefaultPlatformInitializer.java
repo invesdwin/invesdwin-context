@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -21,6 +20,7 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
 import de.invesdwin.context.beans.init.platform.util.ConscryptConfigurer;
+import de.invesdwin.context.beans.init.platform.util.CryptoPolicyConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
 import de.invesdwin.context.beans.init.platform.util.RegisterTypesForSerializationConfigurer;
 import de.invesdwin.context.beans.init.platform.util.TempDirectoryLockConfigurerer;
@@ -301,7 +301,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
      */
     @Override
     public void initCryptoPolicyUnlimited() {
-        Security.setProperty("crypto.policy", "unlimited");
+        CryptoPolicyConfigurer.configure();
     }
 
     @Override
