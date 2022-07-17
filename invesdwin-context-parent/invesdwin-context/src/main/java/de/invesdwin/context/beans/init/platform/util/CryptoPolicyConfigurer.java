@@ -22,9 +22,8 @@ public final class CryptoPolicyConfigurer {
         try {
             final int maxAllowedKeyLength = Cipher.getMaxAllowedKeyLength("AES");
             if (maxAllowedKeyLength < MAX_ALLOWED_KEY_LENGTH_LOWER_BOUND) {
-                newLog().warn("AES key length of %s is required, but "
-                        + "the detected maximum key length is %s. This may indicate "
-                        + "that the environment is missing the JCE Unlimited " + "Strength Jurisdiction Policy Files.",
+                newLog().warn("AES key length of %s is required, but the detected maximum key length is %s. "
+                        + "This may indicate that the environment is missing the JCE Unlimited Strength Jurisdiction Policy Files.",
                         MAX_ALLOWED_KEY_LENGTH_LOWER_BOUND, maxAllowedKeyLength);
             }
         } catch (final NoSuchAlgorithmException e) {
