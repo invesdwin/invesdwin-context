@@ -18,10 +18,9 @@ import de.invesdwin.context.integration.streams.encryption.IEncryptionFactory;
 import de.invesdwin.context.integration.streams.encryption.pool.MutableIvParameterSpec;
 import de.invesdwin.context.integration.streams.encryption.random.CryptoRandomGenerator;
 import de.invesdwin.context.integration.streams.encryption.random.CryptoRandomGenerators;
-import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.streams.ADelegateInputStream;
-import de.invesdwin.util.streams.ADelegateOutputStream;
+import de.invesdwin.util.streams.ALazyDelegateInputStream;
+import de.invesdwin.util.streams.ALazyDelegateOutputStream;
 import de.invesdwin.util.streams.InputStreams;
 import de.invesdwin.util.streams.OutputStreams;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
@@ -56,7 +55,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         return new SecretKeySpec(key, "AES");
     }
 
-    private byte[] newInitIV(final int ivBytes) {
+    protected byte[] newInitIV(final int ivBytes) {
         final byte[] initIV = ByteBuffers.allocateByteArray(ivBytes);
         try (CryptoRandomGenerator random = CryptoRandomGenerators.newSecureRandom()) {
             random.nextBytes(initIV);
@@ -64,18 +63,17 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         return initIV;
     }
 
-    protected void calculateIv(final byte[] iv) {
+    protected void calculateIV(final byte[] iv) {
         CalculateIV.calculateIV(initIV, ivCounter.incrementAndGet(), iv);
     }
 
     @Override
     public OutputStream newEncryptor(final OutputStream out) {
-        return new ADelegateOutputStream(
-                new TextDescription("%s.newEncryptor", AesEncryptionFactory.class.getSimpleName())) {
+        return new ALazyDelegateOutputStream() {
             @Override
             protected OutputStream newDelegate() {
                 final byte[] iv = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
-                calculateIv(iv);
+                calculateIV(iv);
                 try {
                     OutputStreams.write(out, iv);
                 } catch (final IOException e) {
@@ -88,8 +86,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
 
     @Override
     public InputStream newDecryptor(final InputStream in) {
-        return new ADelegateInputStream(
-                new TextDescription("%s.newDecryptor", AesEncryptionFactory.class.getSimpleName())) {
+        return new ALazyDelegateInputStream() {
             @Override
             protected InputStream newDelegate() {
                 final byte[] iv = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
@@ -107,7 +104,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
     public int encrypt(final IByteBuffer src, final IByteBuffer dest) {
         final CryptoCipher cipher = algorithm.getCipherPool().borrowObject();
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
-        calculateIv(iv.getIV());
+        calculateIV(iv.getIV());
         try {
             cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, iv);
             dest.putBytes(0, iv.getIV());
