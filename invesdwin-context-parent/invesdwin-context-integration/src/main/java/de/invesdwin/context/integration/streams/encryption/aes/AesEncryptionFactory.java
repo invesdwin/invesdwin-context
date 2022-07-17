@@ -72,14 +72,15 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         return new ALazyDelegateOutputStream() {
             @Override
             protected OutputStream newDelegate() {
-                final byte[] iv = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
-                calculateIV(iv);
+                //transmit the first IV through the buffer on first access, afterwards switch to the more efficient counting method
+                final byte[] initIV = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
+                calculateIV(initIV);
                 try {
-                    OutputStreams.write(out, iv);
+                    OutputStreams.write(out, initIV);
                 } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
-                return algorithm.newEncryptor(out, key, iv);
+                return algorithm.newEncryptor(out, key, initIV);
             }
         };
     }
@@ -89,13 +90,13 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         return new ALazyDelegateInputStream() {
             @Override
             protected InputStream newDelegate() {
-                final byte[] iv = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
+                final byte[] initIV = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
                 try {
-                    InputStreams.readFully(in, iv);
+                    InputStreams.readFully(in, initIV);
                 } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
-                return algorithm.newDecryptor(in, key, iv);
+                return algorithm.newDecryptor(in, key, initIV);
             }
         };
     }
@@ -104,6 +105,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
     public int encrypt(final IByteBuffer src, final IByteBuffer dest) {
         final CryptoCipher cipher = algorithm.getCipherPool().borrowObject();
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
+        //each message should be encrypted with a unique IV, the IV can be transmitted unencrypted with the message
         calculateIV(iv.getIV());
         try {
             cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, iv);
