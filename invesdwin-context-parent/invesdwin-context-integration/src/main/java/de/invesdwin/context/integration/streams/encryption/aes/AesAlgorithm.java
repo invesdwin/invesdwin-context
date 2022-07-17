@@ -3,8 +3,12 @@ package de.invesdwin.context.integration.streams.encryption.aes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Key;
+import java.security.spec.AlgorithmParameterSpec;
 
 import javax.annotation.concurrent.Immutable;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.crypto.cipher.CryptoCipher;
 import org.apache.commons.crypto.cipher.CryptoCipherFactory;
@@ -40,13 +44,15 @@ import de.invesdwin.context.system.properties.SystemProperties;
 public enum AesAlgorithm implements ICryptoCipherFactory {
     /**
      * encryption only, full blocks, not streaming capable
+     * 
+     * input/output stream can only encrypt/decrypt full file and needs to be closed
      */
     AES_CBC_PKCS5Padding("AES/CBC/PKCS5Padding", CryptoCipherFactory.AES_BLOCK_SIZE) {
         @Override
         public OutputStream newEncryptor(final OutputStream out, final byte[] key, final byte[] iv) {
             try {
                 return new CryptoOutputStream(getTransformation(), SystemProperties.SYSTEM_PROPERTIES, out,
-                        AesEncryptionFactory.wrapKey(key), new MutableIvParameterSpec(iv));
+                        wrapKey(key), wrapIv(iv));
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
@@ -55,11 +61,21 @@ public enum AesAlgorithm implements ICryptoCipherFactory {
         @Override
         public InputStream newDecryptor(final InputStream in, final byte[] key, final byte[] iv) {
             try {
-                return new CryptoInputStream(getTransformation(), SystemProperties.SYSTEM_PROPERTIES, in,
-                        AesEncryptionFactory.wrapKey(key), new MutableIvParameterSpec(iv));
+                return new CryptoInputStream(getTransformation(), SystemProperties.SYSTEM_PROPERTIES, in, wrapKey(key),
+                        wrapIv(iv));
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        @Override
+        public AlgorithmParameterSpec wrapIv(final byte[] iv) {
+            return new MutableIvParameterSpec(iv);
+        }
+
+        @Override
+        protected AlgorithmParameterSpec wrapIv(final MutableIvParameterSpec iv) {
+            return iv;
         }
     },
     /**
@@ -82,6 +98,44 @@ public enum AesAlgorithm implements ICryptoCipherFactory {
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        @Override
+        public AlgorithmParameterSpec wrapIv(final byte[] iv) {
+            return new MutableIvParameterSpec(iv);
+        }
+
+        @Override
+        protected AlgorithmParameterSpec wrapIv(final MutableIvParameterSpec iv) {
+            return iv;
+        }
+    },
+    /**
+     * authenticated encryption, should be streaming capable but there is no impl in commons-crypto, slower than CTR
+     * 
+     * https://blog.synopse.info/?post/2021/02/13/Fastest-AES-PRNG%2C-AES-CTR-and-AES-GCM-Delphi-implementation
+     * 
+     * https://stackoverflow.com/questions/54659935/java-aes-gcm-very-slow-compared-to-aes-ctr
+     */
+    AES_GCM_NoPadding("AES/GCM/NoPadding", 12) {
+        @Override
+        public OutputStream newEncryptor(final OutputStream out, final byte[] key, final byte[] iv) {
+            throw new UnsupportedOperationException("streams not yet supported for GCM in commons-crypto");
+        }
+
+        @Override
+        public InputStream newDecryptor(final InputStream in, final byte[] key, final byte[] iv) {
+            throw new UnsupportedOperationException("streams not yet supported for GCM in commons-crypto");
+        }
+
+        @Override
+        public AlgorithmParameterSpec wrapIv(final byte[] iv) {
+            return new GCMParameterSpec(AesKeyLength._128.getBits(), iv);
+        }
+
+        @Override
+        protected AlgorithmParameterSpec wrapIv(final MutableIvParameterSpec iv) {
+            return new GCMParameterSpec(AesKeyLength._128.getBits(), iv.getIV());
         }
     };
 
@@ -132,5 +186,13 @@ public enum AesAlgorithm implements ICryptoCipherFactory {
             throw new RuntimeException(e);
         }
     }
+
+    public static Key wrapKey(final byte[] key) {
+        return new SecretKeySpec(key, "AES");
+    }
+
+    public abstract AlgorithmParameterSpec wrapIv(byte[] iv);
+
+    protected abstract AlgorithmParameterSpec wrapIv(MutableIvParameterSpec iv);
 
 }

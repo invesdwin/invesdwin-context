@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.concurrent.Immutable;
 import javax.crypto.Cipher;
@@ -24,24 +23,19 @@ import de.invesdwin.util.streams.OutputStreams;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
-/**
- * Counted IV is the best compromise between security and speed.
- */
 @Immutable
-public class AesEncryptionFactory implements IEncryptionFactory {
+public class AesEncryptionFactoryRandomIV implements IEncryptionFactory {
 
     private final AesAlgorithm algorithm;
     private final byte[] key;
     private final Key keyWrapped;
     private final byte[] initIV;
-    private final AtomicLong ivCounter;
 
-    public AesEncryptionFactory(final AesAlgorithm algorithm, final byte[] key) {
+    public AesEncryptionFactoryRandomIV(final AesAlgorithm algorithm, final byte[] key) {
         this.algorithm = algorithm;
         this.key = key;
         this.keyWrapped = AesAlgorithm.wrapKey(key);
         this.initIV = newInitIV(algorithm.getIvBytes());
-        this.ivCounter = new AtomicLong();
         if (initIV.length != algorithm.getIvBytes()) {
             throw new IllegalArgumentException(
                     "initIV.length[" + initIV.length + "] != algorithm.getIvBytes[" + algorithm.getIvBytes() + "]");
@@ -54,32 +48,16 @@ public class AesEncryptionFactory implements IEncryptionFactory {
 
     protected byte[] newInitIV(final int ivBytes) {
         final byte[] initIV = ByteBuffers.allocateByteArray(ivBytes);
-        final CryptoRandomGenerator random = CryptoRandomGeneratorObjectPool.INSTANCE.borrowObject();
-        try {
-            random.nextBytes(initIV);
-        } finally {
-            CryptoRandomGeneratorObjectPool.INSTANCE.returnObject(random);
-        }
+        randomizeIV(initIV);
         return initIV;
     }
 
-    protected void calculateIV(final byte[] iv) {
-        calculateIV(initIV, ivCounter.incrementAndGet(), iv);
-    }
-
-    public static void calculateIV(final byte[] initIV, final long pCounter, final byte[] iv) {
-        long counter = pCounter;
-        int i = iv.length; // IV length
-        int j = 0; // counter bytes index
-        int sum = 0;
-        while (i-- > 0) {
-            // (sum >>> Byte.SIZE) is the carry for addition
-            sum = (initIV[i] & 0xff) + (sum >>> Byte.SIZE); // NOPMD
-            if (j++ < 8) { // Big-endian, and long is 8 bytes length
-                sum += (byte) counter & 0xff;
-                counter >>>= 8;
-            }
-            iv[i] = (byte) sum;
+    protected void randomizeIV(final byte[] iv) {
+        final CryptoRandomGenerator random = CryptoRandomGeneratorObjectPool.INSTANCE.borrowObject();
+        try {
+            random.nextBytes(iv);
+        } finally {
+            CryptoRandomGeneratorObjectPool.INSTANCE.returnObject(random);
         }
     }
 
@@ -90,7 +68,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
             protected OutputStream newDelegate() {
                 //transmit the first IV through the buffer on first access, afterwards switch to the more efficient counting method
                 final byte[] initIV = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
-                calculateIV(initIV);
+                randomizeIV(initIV);
                 try {
                     OutputStreams.write(out, initIV);
                 } catch (final IOException e) {
@@ -123,9 +101,9 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
         //each message should be encrypted with a unique IV, the IV can be transmitted unencrypted with the message
         //use the streaming encryptor/decryptor for a solution with less overhead
-        calculateIV(iv.getIV());
+        randomizeIV(iv.getIV());
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, algorithm.wrapIv(iv));
+            cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, algorithm.wrapIv(iv.getIV()));
             dest.putBytes(0, iv.getIV());
             final IByteBuffer payloadBuffer = dest.sliceFrom(algorithm.getIvBytes());
             final int length = cipher.doFinal(src.asNioByteBuffer(), payloadBuffer.asNioByteBuffer());
@@ -144,7 +122,7 @@ public class AesEncryptionFactory implements IEncryptionFactory {
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
         try {
             src.getBytes(0, iv.getIV());
-            cipher.init(Cipher.DECRYPT_MODE, keyWrapped, algorithm.wrapIv(iv));
+            cipher.init(Cipher.DECRYPT_MODE, keyWrapped, algorithm.wrapIv(iv.getIV()));
             final IByteBuffer payloadBuffer = src.sliceFrom(algorithm.getIvBytes());
             final int length = cipher.doFinal(payloadBuffer.asNioByteBuffer(), dest.asNioByteBuffer());
             return length;
