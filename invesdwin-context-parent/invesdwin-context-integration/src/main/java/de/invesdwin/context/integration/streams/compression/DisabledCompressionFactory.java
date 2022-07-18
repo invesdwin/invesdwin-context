@@ -40,7 +40,6 @@ public final class DisabledCompressionFactory implements ICompressionFactory {
         return src.capacity();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public <T> ISerde<T> maybeWrap(final ISerde<T> serde) {
         return serde;

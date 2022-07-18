@@ -2,7 +2,6 @@ package de.invesdwin.context.integration.streams.encryption;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.streams.compression.ICompressionFactory;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.SerdeBaseMethods;
@@ -73,8 +72,8 @@ public class EncryptingDelegateSerde<E> implements ISerde<E> {
         }
     }
 
-    public static <T> ISerde<T> maybeWrap(final ISerde<T> delegate, final ICompressionFactory compressionFactory) {
-        return compressionFactory.maybeWrap(delegate);
+    public static <T> ISerde<T> maybeWrap(final ISerde<T> delegate, final IEncryptionFactory encryptionFactory) {
+        return encryptionFactory.maybeWrap(delegate);
     }
 
 }
