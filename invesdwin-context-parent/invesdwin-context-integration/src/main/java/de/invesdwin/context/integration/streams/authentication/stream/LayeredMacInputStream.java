@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.authentication;
+package de.invesdwin.context.integration.streams.authentication.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import de.invesdwin.util.streams.ASimpleDelegateInputStream;
 
 @NotThreadSafe
 public class LayeredMacInputStream extends ASimpleDelegateInputStream {
-    private final IMac mac;
+    protected final IMac mac;
     private final Key key;
 
     public LayeredMacInputStream(final InputStream delegate, final IMac mac, final Key key) {

@@ -8,9 +8,11 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.streams.authentication.AuthenticatingDelegateSerde;
 import de.invesdwin.context.integration.streams.authentication.IAuthenticationFactory;
-import de.invesdwin.context.integration.streams.authentication.LayeredMacInputStream;
-import de.invesdwin.context.integration.streams.authentication.LayeredMacOutputStream;
 import de.invesdwin.context.integration.streams.authentication.pool.IMac;
+import de.invesdwin.context.integration.streams.authentication.stream.ChannelLayeredMacInputStream;
+import de.invesdwin.context.integration.streams.authentication.stream.ChannelLayeredMacOutputStream;
+import de.invesdwin.context.integration.streams.authentication.stream.LayeredMacInputStream;
+import de.invesdwin.context.integration.streams.authentication.stream.LayeredMacOutputStream;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
@@ -27,12 +29,12 @@ public class HmacAuthenticationFactory implements IAuthenticationFactory {
 
     @Override
     public LayeredMacOutputStream newMacOutputStream(final OutputStream out) {
-        return new LayeredMacOutputStream(out, algorithm.newMac(), key);
+        return ChannelLayeredMacOutputStream.maybeWrap(out, algorithm.newMac(), key);
     }
 
     @Override
     public LayeredMacInputStream newMacInputStream(final InputStream in) {
-        return new LayeredMacInputStream(in, algorithm.newMac(), key);
+        return ChannelLayeredMacInputStream.maybeWrap(in, algorithm.newMac(), key);
     }
 
     @Override

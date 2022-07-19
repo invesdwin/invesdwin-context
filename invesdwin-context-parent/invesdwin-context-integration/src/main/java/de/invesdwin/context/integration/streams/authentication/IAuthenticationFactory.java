@@ -3,6 +3,8 @@ package de.invesdwin.context.integration.streams.authentication;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import de.invesdwin.context.integration.streams.authentication.stream.LayeredMacInputStream;
+import de.invesdwin.context.integration.streams.authentication.stream.LayeredMacOutputStream;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 

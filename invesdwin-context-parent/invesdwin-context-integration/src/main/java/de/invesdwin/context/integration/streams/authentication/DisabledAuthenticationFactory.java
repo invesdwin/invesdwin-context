@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.streams.authentication.pool.DisabledMac;
+import de.invesdwin.context.integration.streams.authentication.stream.LayeredMacInputStream;
+import de.invesdwin.context.integration.streams.authentication.stream.LayeredMacOutputStream;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
