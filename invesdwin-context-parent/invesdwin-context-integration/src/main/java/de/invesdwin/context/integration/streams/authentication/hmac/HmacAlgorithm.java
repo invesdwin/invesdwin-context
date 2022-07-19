@@ -14,20 +14,22 @@ import de.invesdwin.context.integration.streams.authentication.pool.MacObjectPoo
 
 @Immutable
 public enum HmacAlgorithm implements IMacFactory {
-    HMAC_MD5(HmacAlgorithms.HMAC_MD5.getName()),
-    HMAC_SHA_1(HmacAlgorithms.HMAC_SHA_1.getName()),
-    HMAC_SHA_224(HmacAlgorithms.HMAC_SHA_224.getName()),
-    HMAC_SHA_256(HmacAlgorithms.HMAC_SHA_256.getName()),
-    HMAC_SHA_384(HmacAlgorithms.HMAC_SHA_384.getName()),
-    HMAC_SHA_512(HmacAlgorithms.HMAC_SHA_512.getName());
+    HMAC_MD5(HmacAlgorithms.HMAC_MD5.getName(), 16),
+    HMAC_SHA_1(HmacAlgorithms.HMAC_SHA_1.getName(), 20),
+    HMAC_SHA_224(HmacAlgorithms.HMAC_SHA_224.getName(), 28),
+    HMAC_SHA_256(HmacAlgorithms.HMAC_SHA_256.getName(), 32),
+    HMAC_SHA_384(HmacAlgorithms.HMAC_SHA_384.getName(), 48),
+    HMAC_SHA_512(HmacAlgorithms.HMAC_SHA_512.getName(), 64);
 
     public static final HmacAlgorithm DEFAULT = HMAC_SHA_256;
     private final String algorithm;
     private final MacObjectPool macPool;
+    private int macLength;
 
-    HmacAlgorithm(final String algorithm) {
+    HmacAlgorithm(final String algorithm, final int macLength) {
         this.algorithm = algorithm;
         this.macPool = new MacObjectPool(this);
+        this.macLength = macLength;
     }
 
     @Override
@@ -37,6 +39,10 @@ public enum HmacAlgorithm implements IMacFactory {
 
     public String getAlgorithm() {
         return algorithm;
+    }
+
+    public int getMacLength() {
+        return macLength;
     }
 
     @Override

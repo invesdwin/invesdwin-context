@@ -22,6 +22,10 @@ public class HmacAuthenticationFactory implements IAuthenticationFactory {
     private final HmacAlgorithm algorithm;
     private final Key key;
 
+    public HmacAuthenticationFactory(final byte[] key) {
+        this(HmacAlgorithm.DEFAULT, key);
+    }
+
     public HmacAuthenticationFactory(final HmacAlgorithm algorithm, final byte[] key) {
         this.algorithm = algorithm;
         this.key = algorithm.wrapKey(key);
