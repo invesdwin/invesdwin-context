@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.encryption.random;
+package de.invesdwin.context.integration.streams.random;
 
 import javax.annotation.concurrent.ThreadSafe;
 
