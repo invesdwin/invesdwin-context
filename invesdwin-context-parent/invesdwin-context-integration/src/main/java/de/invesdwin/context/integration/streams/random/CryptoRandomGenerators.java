@@ -15,7 +15,7 @@ public final class CryptoRandomGenerators {
     private CryptoRandomGenerators() {
     }
 
-    public static CryptoRandomGenerator newSecureRandom() {
+    public static CryptoRandomGenerator newCryptoRandom() {
         try {
             final CryptoRandom cryptoRandom = CryptoRandomFactory.getCryptoRandom(SystemProperties.SYSTEM_PROPERTIES);
             return new CryptoRandomGenerator(cryptoRandom);
@@ -24,8 +24,8 @@ public final class CryptoRandomGenerators {
         }
     }
 
-    public static CryptoRandomGenerator newSecureRandom(final long seed) {
-        final CryptoRandomGenerator random = newSecureRandom();
+    public static CryptoRandomGenerator newCryptoRandom(final long seed) {
+        final CryptoRandomGenerator random = newCryptoRandom();
         random.setSeed(seed);
         return random;
     }

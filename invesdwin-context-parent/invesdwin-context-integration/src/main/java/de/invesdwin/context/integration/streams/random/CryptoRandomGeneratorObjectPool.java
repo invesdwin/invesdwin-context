@@ -18,7 +18,7 @@ public final class CryptoRandomGeneratorObjectPool extends ATimeoutObjectPool<Cr
 
     @Override
     protected CryptoRandomGenerator newObject() {
-        return CryptoRandomGenerators.newSecureRandom();
+        return CryptoRandomGenerators.newCryptoRandom();
     }
 
     @Override
