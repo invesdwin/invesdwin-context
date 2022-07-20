@@ -14,7 +14,7 @@ import de.invesdwin.context.integration.streams.authentication.mac.stream.Channe
 import de.invesdwin.context.integration.streams.authentication.mac.stream.ChannelLayeredMacOutputStream;
 import de.invesdwin.context.integration.streams.authentication.mac.stream.LayeredMacInputStream;
 import de.invesdwin.context.integration.streams.authentication.mac.stream.LayeredMacOutputStream;
-import de.invesdwin.context.integration.streams.derivation.DerivedKeyProvider;
+import de.invesdwin.context.integration.streams.derivation.provider.IDerivedKeyProvider;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
@@ -28,11 +28,11 @@ public class MacAuthenticationFactory implements IAuthenticationFactory {
         this(HmacAlgorithm.DEFAULT, key);
     }
 
-    public MacAuthenticationFactory(final DerivedKeyProvider derivedKeyProvider) {
+    public MacAuthenticationFactory(final IDerivedKeyProvider derivedKeyProvider) {
         this(HmacAlgorithm.DEFAULT, derivedKeyProvider);
     }
 
-    public MacAuthenticationFactory(final IMacAlgorithm algorithm, final DerivedKeyProvider derivedKeyProvider) {
+    public MacAuthenticationFactory(final IMacAlgorithm algorithm, final IDerivedKeyProvider derivedKeyProvider) {
         this(algorithm, derivedKeyProvider.newDerivedKey("mac-key".getBytes(), algorithm.getMacLength()));
     }
 

@@ -1,11 +1,12 @@
-package de.invesdwin.context.integration.streams.derivation;
+package de.invesdwin.context.integration.streams.derivation.provider;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.context.integration.streams.derivation.IDerivationFactory;
 import de.invesdwin.context.integration.streams.derivation.hkdf.HkdfDerivationFactory;
 
 @Immutable
-public class DerivedKeyProvider {
+public class DerivedKeyProvider implements IDerivedKeyProvider {
 
     private final IDerivationFactory derivationFactory;
     private final byte[] key;
@@ -15,6 +16,7 @@ public class DerivedKeyProvider {
         this.key = key;
     }
 
+    @Override
     public byte[] newDerivedKey(final byte[] info, final int length) {
         return derivationFactory.expand(key, info, length);
     }
