@@ -24,7 +24,7 @@ import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 /**
- * Slowest but most secure IV generation.
+ * Slowest but most secure IV generation with a secure random.
  */
 @Immutable
 public class AesEncryptionFactoryRandomIV implements IEncryptionFactory {
