@@ -7,22 +7,22 @@ import de.invesdwin.context.integration.streams.encryption.crypto.aes.AesAlgorit
 import de.invesdwin.context.integration.streams.encryption.crypto.aes.AesKeyLength;
 
 @Immutable
-public class CryptoEncryptionFactory extends CryptoEncryptionFactoryDerivedIV {
+public class CipherEncryptionFactory extends CipherEncryptionFactoryDerivedIV {
 
-    public CryptoEncryptionFactory(final byte[] derivedKey, final byte[] derivedIV) {
+    public CipherEncryptionFactory(final byte[] derivedKey, final byte[] derivedIV) {
         this(AesAlgorithm.DEFAULT, derivedKey, derivedIV);
     }
 
-    public CryptoEncryptionFactory(final IDerivedKeyProvider derivedKeyProvider) {
+    public CipherEncryptionFactory(final IDerivedKeyProvider derivedKeyProvider) {
         this(AesAlgorithm.DEFAULT, derivedKeyProvider);
     }
 
-    public CryptoEncryptionFactory(final ICryptoAlgorithm algorithm, final IDerivedKeyProvider derivedKeyProvider) {
+    public CipherEncryptionFactory(final ICipherAlgorithm algorithm, final IDerivedKeyProvider derivedKeyProvider) {
         super(algorithm, derivedKeyProvider.newDerivedKey("crypto-key".getBytes(), AesKeyLength._256.getBytes()),
                 derivedKeyProvider.newDerivedKey("crypto-iv".getBytes(), algorithm.getIvBytes()));
     }
 
-    public CryptoEncryptionFactory(final ICryptoAlgorithm algorithm, final byte[] derivedKey, final byte[] derivedIV) {
+    public CipherEncryptionFactory(final ICipherAlgorithm algorithm, final byte[] derivedKey, final byte[] derivedIV) {
         super(algorithm, derivedKey, derivedIV);
     }
 

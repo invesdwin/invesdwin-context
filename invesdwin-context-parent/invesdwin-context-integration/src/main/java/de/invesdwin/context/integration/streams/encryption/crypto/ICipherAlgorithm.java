@@ -10,7 +10,7 @@ import de.invesdwin.context.integration.streams.encryption.crypto.pool.ICryptoCi
 import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpec;
 import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpecObjectPool;
 
-public interface ICryptoAlgorithm extends ICryptoCipherFactory {
+public interface ICipherAlgorithm extends ICryptoCipherFactory {
 
     String getAlgorithm();
 

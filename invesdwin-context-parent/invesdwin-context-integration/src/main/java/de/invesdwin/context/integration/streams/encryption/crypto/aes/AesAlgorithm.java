@@ -18,7 +18,7 @@ import org.apache.commons.crypto.stream.CtrCryptoInputStream;
 import org.apache.commons.crypto.stream.CtrCryptoOutputStream;
 import org.apache.commons.crypto.utils.Utils;
 
-import de.invesdwin.context.integration.streams.encryption.crypto.ICryptoAlgorithm;
+import de.invesdwin.context.integration.streams.encryption.crypto.ICipherAlgorithm;
 import de.invesdwin.context.integration.streams.encryption.crypto.pool.CryptoCipherObjectPool;
 import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpec;
 import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpecObjectPool;
@@ -41,7 +41,7 @@ import de.invesdwin.context.system.properties.SystemProperties;
  * https://stackoverflow.com/questions/54659935/java-aes-gcm-very-slow-compared-to-aes-ctr
  */
 @Immutable
-public enum AesAlgorithm implements ICryptoAlgorithm {
+public enum AesAlgorithm implements ICipherAlgorithm {
     /**
      * encryption only, full blocks, not streaming capable
      * 

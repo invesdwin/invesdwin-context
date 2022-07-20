@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.concurrent.Immutable;
 import javax.crypto.Cipher;
@@ -24,21 +25,24 @@ import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 /**
- * Slowest but most secure IV generation with a secure random.
+ * Counted IV has a good speed while sending the IV over the wire for interoperability. This is not as secure as the
+ * derived IV version.
  */
 @Immutable
-public class CryptoEncryptionFactoryRandomIV implements IEncryptionFactory {
+public class CipherEncryptionFactoryCountedIV implements IEncryptionFactory {
 
-    private final ICryptoAlgorithm algorithm;
+    private final ICipherAlgorithm algorithm;
     private final byte[] key;
     private final Key keyWrapped;
     private final byte[] initIV;
+    private final AtomicLong ivCounter;
 
-    public CryptoEncryptionFactoryRandomIV(final ICryptoAlgorithm algorithm, final byte[] key) {
+    public CipherEncryptionFactoryCountedIV(final ICipherAlgorithm algorithm, final byte[] key) {
         this.algorithm = algorithm;
         this.key = key;
         this.keyWrapped = algorithm.wrapKey(key);
         this.initIV = newInitIV(algorithm.getIvBytes());
+        this.ivCounter = new AtomicLong();
         if (initIV.length != algorithm.getIvBytes()) {
             throw new IllegalArgumentException(
                     "initIV.length[" + initIV.length + "] != algorithm.getIvBytes[" + algorithm.getIvBytes() + "]");
@@ -46,23 +50,23 @@ public class CryptoEncryptionFactoryRandomIV implements IEncryptionFactory {
     }
 
     @Override
-    public ICryptoAlgorithm getAlgorithm() {
+    public ICipherAlgorithm getAlgorithm() {
         return algorithm;
     }
 
     protected byte[] newInitIV(final int ivBytes) {
         final byte[] initIV = ByteBuffers.allocateByteArray(ivBytes);
-        randomizeIV(initIV);
-        return initIV;
-    }
-
-    protected void randomizeIV(final byte[] iv) {
         final CryptoRandomGenerator random = CryptoRandomGeneratorObjectPool.INSTANCE.borrowObject();
         try {
-            random.nextBytes(iv);
+            random.nextBytes(initIV);
         } finally {
             CryptoRandomGeneratorObjectPool.INSTANCE.returnObject(random);
         }
+        return initIV;
+    }
+
+    protected void calculateIV(final byte[] iv) {
+        CipherEncryptionFactoryDerivedIV.calculateIV(initIV, ivCounter.incrementAndGet(), iv);
     }
 
     @Override
@@ -72,7 +76,7 @@ public class CryptoEncryptionFactoryRandomIV implements IEncryptionFactory {
             protected OutputStream newDelegate() {
                 //transmit the first IV through the buffer on first access, afterwards switch to the more efficient counting method
                 final byte[] initIV = ByteBuffers.allocateByteArray(algorithm.getIvBytes());
-                randomizeIV(initIV);
+                calculateIV(initIV);
                 try {
                     OutputStreams.write(out, initIV);
                 } catch (final IOException e) {
@@ -105,9 +109,9 @@ public class CryptoEncryptionFactoryRandomIV implements IEncryptionFactory {
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
         //each message should be encrypted with a unique IV, the IV can be transmitted unencrypted with the message
         //use the streaming encryptor/decryptor for a solution with less overhead
-        randomizeIV(iv.getIV());
+        calculateIV(iv.getIV());
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, algorithm.wrapIv(iv.getIV()));
+            cipher.init(Cipher.ENCRYPT_MODE, keyWrapped, algorithm.wrapIv(iv));
             dest.putBytes(0, iv.getIV());
             final IByteBuffer payloadBuffer = dest.sliceFrom(algorithm.getIvBytes());
             final int length = cipher.doFinal(src.asNioByteBuffer(), payloadBuffer.asNioByteBuffer());
@@ -126,7 +130,7 @@ public class CryptoEncryptionFactoryRandomIV implements IEncryptionFactory {
         final MutableIvParameterSpec iv = algorithm.getIvParameterSpecPool().borrowObject();
         try {
             src.getBytes(0, iv.getIV());
-            cipher.init(Cipher.DECRYPT_MODE, keyWrapped, algorithm.wrapIv(iv.getIV()));
+            cipher.init(Cipher.DECRYPT_MODE, keyWrapped, algorithm.wrapIv(iv));
             final IByteBuffer payloadBuffer = src.sliceFrom(algorithm.getIvBytes());
             final int length = cipher.doFinal(payloadBuffer.asNioByteBuffer(), dest.asNioByteBuffer());
             return length;

@@ -20,14 +20,14 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
  * byte array reference from the outside.
  */
 @Immutable
-public class CryptoEncryptionFactoryPresharedIV implements IEncryptionFactory {
+public class CipherEncryptionFactoryPresharedIV implements IEncryptionFactory {
 
-    private final ICryptoAlgorithm algorithm;
+    private final ICipherAlgorithm algorithm;
     private final byte[] key;
     private final Key keyWrapped;
     private final byte[] presharedIv;
 
-    public CryptoEncryptionFactoryPresharedIV(final ICryptoAlgorithm algorithm, final byte[] key,
+    public CipherEncryptionFactoryPresharedIV(final ICipherAlgorithm algorithm, final byte[] key,
             final byte[] presharedIv) {
         this.algorithm = algorithm;
         this.key = key;
@@ -40,7 +40,7 @@ public class CryptoEncryptionFactoryPresharedIV implements IEncryptionFactory {
     }
 
     @Override
-    public ICryptoAlgorithm getAlgorithm() {
+    public ICipherAlgorithm getAlgorithm() {
         return algorithm;
     }
 
