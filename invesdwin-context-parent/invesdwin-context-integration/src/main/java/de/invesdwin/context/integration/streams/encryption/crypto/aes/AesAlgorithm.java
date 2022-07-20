@@ -51,8 +51,8 @@ public enum AesAlgorithm implements ICipherAlgorithm {
         @Override
         public OutputStream newEncryptor(final OutputStream out, final byte[] key, final byte[] iv) {
             try {
-                return new CryptoOutputStream(getAlgorithm(), SystemProperties.SYSTEM_PROPERTIES, out,
-                        wrapKey(key), wrapIv(iv));
+                return new CryptoOutputStream(getAlgorithm(), SystemProperties.SYSTEM_PROPERTIES, out, wrapKey(key),
+                        wrapIv(iv));
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
