@@ -13,7 +13,7 @@ import de.invesdwin.context.integration.streams.derivation.IDerivationFactory;
 @Immutable
 public class HkdfDerivationFactory implements IDerivationFactory {
 
-    public static final HkdfDerivationFactory DEFAULT = new HkdfDerivationFactory(HmacAlgorithm.DEFAULT);
+    public static final HkdfDerivationFactory INSTANCE = new HkdfDerivationFactory(HmacAlgorithm.DEFAULT);
 
     private final IMacAlgorithm algorithm;
 

@@ -43,15 +43,15 @@ public class DerivedKeyProvider implements IDerivedKeyProvider {
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final String password) {
-        return fromPassword(salt, password, HkdfDerivationFactory.DEFAULT, Pbkdf2PasswordEncoder.DEFAULT);
+        return fromPassword(salt, password, HkdfDerivationFactory.INSTANCE, Pbkdf2PasswordEncoder.INSTANCE);
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final byte[] password) {
-        return fromPassword(salt, password, HkdfDerivationFactory.DEFAULT, Pbkdf2PasswordEncoder.DEFAULT);
+        return fromPassword(salt, password, HkdfDerivationFactory.INSTANCE, Pbkdf2PasswordEncoder.INSTANCE);
     }
 
     public static DerivedKeyProvider fromRandom(final byte[] salt, final byte[] random) {
-        return fromRandom(salt, random, HkdfDerivationFactory.DEFAULT);
+        return fromRandom(salt, random, HkdfDerivationFactory.INSTANCE);
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final String password,

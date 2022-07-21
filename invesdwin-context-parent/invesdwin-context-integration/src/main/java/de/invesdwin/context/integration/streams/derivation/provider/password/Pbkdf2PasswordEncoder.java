@@ -20,7 +20,7 @@ public class Pbkdf2PasswordEncoder implements IPasswordEncoder {
     //takes about 200ms for 200k iterations on an I9-9900k
     public static final int DEFAULT_ITERATIONS = 200_000;
     public static final IMacAlgorithm DEFAULT_MAC_ALGORITHM = HmacAlgorithm.HMAC_SHA_512;
-    public static final IPasswordEncoder DEFAULT = new Pbkdf2PasswordEncoder();
+    public static final IPasswordEncoder INSTANCE = new Pbkdf2PasswordEncoder();
 
     private final int iterations;
     private final byte[] secret;
