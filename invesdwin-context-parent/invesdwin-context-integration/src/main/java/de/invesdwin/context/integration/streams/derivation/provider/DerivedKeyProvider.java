@@ -4,8 +4,8 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.streams.derivation.IDerivationFactory;
 import de.invesdwin.context.integration.streams.derivation.hkdf.HkdfDerivationFactory;
-import de.invesdwin.context.integration.streams.derivation.provider.password.IPasswordEncoder;
-import de.invesdwin.context.integration.streams.derivation.provider.password.Pbkdf2PasswordEncoder;
+import de.invesdwin.context.integration.streams.derivation.password.IPasswordEncoder;
+import de.invesdwin.context.integration.streams.derivation.password.Pbkdf2PasswordEncoder;
 
 /**
  * Key derivation techniques are: Password+PBKDF2+HKDFexpands or Random+HKDFextract+HKDFexpands

@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.derivation.provider.password;
+package de.invesdwin.context.integration.streams.derivation.password;
 
 public interface IPasswordEncoder {
 
