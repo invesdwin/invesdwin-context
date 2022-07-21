@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.encryption.crypto.aes;
+package de.invesdwin.context.integration.streams.encryption.cipher.aes;
 
 import javax.annotation.concurrent.Immutable;
 

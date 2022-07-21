@@ -1,10 +1,10 @@
-package de.invesdwin.context.integration.streams.encryption.crypto;
+package de.invesdwin.context.integration.streams.encryption.cipher;
 
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.streams.derivation.provider.IDerivedKeyProvider;
-import de.invesdwin.context.integration.streams.encryption.crypto.aes.AesAlgorithm;
-import de.invesdwin.context.integration.streams.encryption.crypto.aes.AesKeyLength;
+import de.invesdwin.context.integration.streams.encryption.cipher.aes.AesAlgorithm;
+import de.invesdwin.context.integration.streams.encryption.cipher.aes.AesKeyLength;
 
 @Immutable
 public class CipherEncryptionFactory extends CipherEncryptionFactoryDerivedIV {

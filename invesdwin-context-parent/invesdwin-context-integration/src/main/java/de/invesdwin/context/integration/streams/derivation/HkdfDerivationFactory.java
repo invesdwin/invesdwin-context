@@ -1,11 +1,10 @@
-package de.invesdwin.context.integration.streams.derivation.hkdf;
+package de.invesdwin.context.integration.streams.derivation;
 
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.streams.authentication.mac.IMacAlgorithm;
 import de.invesdwin.context.integration.streams.authentication.mac.hmac.HmacAlgorithm;
 import de.invesdwin.context.integration.streams.authentication.mac.pool.IMac;
-import de.invesdwin.context.integration.streams.derivation.IDerivationFactory;
 
 /**
  * Adapted from: https://github.com/NetRiceCake/HKDF/blob/master/src/main/java/com/github/netricecake/hkdf/HKDF.java

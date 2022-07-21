@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.encryption.crypto;
+package de.invesdwin.context.integration.streams.encryption.cipher;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import org.apache.commons.crypto.cipher.CryptoCipher;
 
 import de.invesdwin.context.integration.streams.encryption.EncryptingDelegateSerde;
 import de.invesdwin.context.integration.streams.encryption.IEncryptionFactory;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpec;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.MutableIvParameterSpec;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.ALazyDelegateInputStream;
 import de.invesdwin.util.streams.ALazyDelegateOutputStream;

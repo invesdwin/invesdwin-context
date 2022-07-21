@@ -1,14 +1,14 @@
-package de.invesdwin.context.integration.streams.encryption.crypto;
+package de.invesdwin.context.integration.streams.encryption.cipher;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.CryptoCipherObjectPool;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.ICryptoCipherFactory;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpec;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpecObjectPool;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.CryptoCipherObjectPool;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.ICryptoCipherFactory;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.MutableIvParameterSpec;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.MutableIvParameterSpecObjectPool;
 
 public interface ICipherAlgorithm extends ICryptoCipherFactory {
 

@@ -2,8 +2,8 @@ package de.invesdwin.context.integration.streams.derivation.provider;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.context.integration.streams.derivation.HkdfDerivationFactory;
 import de.invesdwin.context.integration.streams.derivation.IDerivationFactory;
-import de.invesdwin.context.integration.streams.derivation.hkdf.HkdfDerivationFactory;
 import de.invesdwin.context.integration.streams.derivation.password.IPasswordEncoder;
 import de.invesdwin.context.integration.streams.derivation.password.Pbkdf2PasswordEncoder;
 

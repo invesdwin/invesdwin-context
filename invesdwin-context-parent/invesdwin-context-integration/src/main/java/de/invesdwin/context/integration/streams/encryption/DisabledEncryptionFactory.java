@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.streams.encryption.crypto.ICipherAlgorithm;
+import de.invesdwin.context.integration.streams.encryption.cipher.ICipherAlgorithm;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.buffered.PooledFastBufferedOutputStream;

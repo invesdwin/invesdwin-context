@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.encryption.crypto.aes;
+package de.invesdwin.context.integration.streams.encryption.cipher.aes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,10 +18,10 @@ import org.apache.commons.crypto.stream.CtrCryptoInputStream;
 import org.apache.commons.crypto.stream.CtrCryptoOutputStream;
 import org.apache.commons.crypto.utils.Utils;
 
-import de.invesdwin.context.integration.streams.encryption.crypto.ICipherAlgorithm;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.CryptoCipherObjectPool;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpec;
-import de.invesdwin.context.integration.streams.encryption.crypto.pool.MutableIvParameterSpecObjectPool;
+import de.invesdwin.context.integration.streams.encryption.cipher.ICipherAlgorithm;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.CryptoCipherObjectPool;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.MutableIvParameterSpec;
+import de.invesdwin.context.integration.streams.encryption.cipher.pool.MutableIvParameterSpecObjectPool;
 import de.invesdwin.context.system.properties.SystemProperties;
 
 /**

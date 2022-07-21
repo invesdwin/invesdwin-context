@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.encryption.crypto;
+package de.invesdwin.context.integration.streams.encryption.cipher;
 
 import java.io.InputStream;
 import java.io.OutputStream;
