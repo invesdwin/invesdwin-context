@@ -5,20 +5,18 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.agrona.concurrent.ManyToManyConcurrentArrayQueue;
-
-import de.invesdwin.util.concurrent.pool.AQueueObjectPool;
+import de.invesdwin.util.concurrent.pool.AAgronaObjectPool;
 import net.jpountz.lz4.LZ4FastDecompressor;
 
 @ThreadSafe
-public final class PooledLZ4BlockInputStreamObjectPool extends AQueueObjectPool<PooledLZ4BlockInputStream> {
+public final class PooledLZ4BlockInputStreamObjectPool extends AAgronaObjectPool<PooledLZ4BlockInputStream> {
 
     private final LZ4FastDecompressor decompressor;
     private final Supplier<Checksum> checksumFactory;
 
     public PooledLZ4BlockInputStreamObjectPool(final LZ4FastDecompressor decompressor,
             final Supplier<Checksum> checksumFactory, final int maxPoolSize) {
-        super(new ManyToManyConcurrentArrayQueue<PooledLZ4BlockInputStream>(maxPoolSize));
+        super(maxPoolSize);
         this.decompressor = decompressor;
         this.checksumFactory = checksumFactory;
     }
