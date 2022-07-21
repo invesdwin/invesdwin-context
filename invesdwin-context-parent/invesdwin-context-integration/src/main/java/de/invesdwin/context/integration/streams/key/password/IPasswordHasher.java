@@ -11,7 +11,8 @@ package de.invesdwin.context.integration.streams.key.password;
  * 
  * Argon2 is better than Scrypt or Bcrypt:
  * https://medium.com/analytics-vidhya/password-hashing-pbkdf2-scrypt-bcrypt-and-argon2-e25aaf41598e
- *
+ * 
+ * https://github.com/Password4j/password4j/wiki/Recommended-settings#responsiveness-3
  */
 public interface IPasswordHasher {
 

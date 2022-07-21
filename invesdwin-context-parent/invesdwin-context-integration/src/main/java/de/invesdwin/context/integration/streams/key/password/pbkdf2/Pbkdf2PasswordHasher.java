@@ -26,7 +26,7 @@ public class Pbkdf2PasswordHasher implements IPasswordHasher {
     public static final IPasswordHasher INSTANCE = new Pbkdf2PasswordHasher();
 
     private final int iterations;
-    private final byte[] secret;
+    private final byte[] pepper;
     private final IMacAlgorithm macAlgorithm;
     private final String algorithm;
     private final SecretKeyFactoryObjectPool secretKeyFactoryPool;
@@ -35,16 +35,16 @@ public class Pbkdf2PasswordHasher implements IPasswordHasher {
         this(Pbkdf2PasswordHasher.class.getName().getBytes());
     }
 
-    public Pbkdf2PasswordHasher(final byte[] secret) {
-        this(secret, DEFAULT_ITERATIONS);
+    public Pbkdf2PasswordHasher(final byte[] pepper) {
+        this(pepper, DEFAULT_ITERATIONS);
     }
 
-    public Pbkdf2PasswordHasher(final byte[] secret, final int iterations) {
-        this(secret, iterations, DEFAULT_MAC_ALGORITHM);
+    public Pbkdf2PasswordHasher(final byte[] pepper, final int iterations) {
+        this(pepper, iterations, DEFAULT_MAC_ALGORITHM);
     }
 
-    public Pbkdf2PasswordHasher(final byte[] secret, final int iterations, final IMacAlgorithm macAlgorithm) {
-        this.secret = secret;
+    public Pbkdf2PasswordHasher(final byte[] pepper, final int iterations, final IMacAlgorithm macAlgorithm) {
+        this.pepper = pepper;
         this.iterations = iterations;
         this.macAlgorithm = macAlgorithm;
         this.algorithm = ALGORITHM_PREFIX + macAlgorithm.getAlgorithm();
@@ -61,7 +61,7 @@ public class Pbkdf2PasswordHasher implements IPasswordHasher {
 
     @Override
     public byte[] hash(final byte[] salt, final byte[] password, final int length) {
-        final PBEKeySpec spec = new PBEKeySpec(new String(password).toCharArray(), Bytes.concatenate(salt, this.secret),
+        final PBEKeySpec spec = new PBEKeySpec(new String(password).toCharArray(), Bytes.concatenate(salt, this.pepper),
                 this.iterations, length);
         final SecretKeyFactory secretKeyFactory = secretKeyFactoryPool.borrowObject();
         try {
