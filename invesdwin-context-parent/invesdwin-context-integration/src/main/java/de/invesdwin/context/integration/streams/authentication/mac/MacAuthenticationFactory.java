@@ -14,7 +14,7 @@ import de.invesdwin.context.integration.streams.authentication.mac.stream.Channe
 import de.invesdwin.context.integration.streams.authentication.mac.stream.ChannelLayeredMacOutputStream;
 import de.invesdwin.context.integration.streams.authentication.mac.stream.LayeredMacInputStream;
 import de.invesdwin.context.integration.streams.authentication.mac.stream.LayeredMacOutputStream;
-import de.invesdwin.context.integration.streams.derivation.provider.IDerivedKeyProvider;
+import de.invesdwin.context.integration.streams.key.IDerivedKeyProvider;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 

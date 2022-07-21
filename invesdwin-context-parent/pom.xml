@@ -85,7 +85,7 @@
 		<version.jasperreports>6.18.1</version.jasperreports>
 		<version.batik>1.13</version.batik>
 		<version.itext>2.1.7.js9</version.itext>
-		<version.bcprov>1.70</version.bcprov>
+		<version.bcprov>1.71</version.bcprov>
 		<version.poi>5.2.0</version.poi>
 
 		<!-- integration -->
@@ -477,17 +477,22 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk15on</artifactId>
+				<artifactId>bcprov-jdk18on</artifactId>
 				<version>${version.bcprov}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcmail-jdk15on</artifactId>
+				<artifactId>bcprov-ext-jdk18on</artifactId>
 				<version>${version.bcprov}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcpkix-jdk15on</artifactId>
+				<artifactId>bcmail-jdk18on</artifactId>
+				<version>${version.bcprov}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk18on</artifactId>
 				<version>${version.bcprov}</version>
 			</dependency>
 
@@ -517,16 +522,16 @@
 				<version>${version.itext}</version>
 				<exclusions>
 					<exclusion>
-						<artifactId>bcmail-jdk14</artifactId>
-						<groupId>bouncycastle</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>bcprov-jdk14</artifactId>
-						<groupId>bouncycastle</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>bctsp-jdk14</artifactId>
 						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcprov-jdk15on</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcmail-jdk15on</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcpkix-jdk15on</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

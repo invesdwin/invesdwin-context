@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.derivation.provider;
+package de.invesdwin.context.integration.streams.key;
 
 public interface IDerivedKeyProvider {
 

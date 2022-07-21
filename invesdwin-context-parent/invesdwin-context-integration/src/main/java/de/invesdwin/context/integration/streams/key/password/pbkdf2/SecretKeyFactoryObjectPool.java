@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.derivation.password;
+package de.invesdwin.context.integration.streams.key.password.pbkdf2;
 
 import java.security.NoSuchAlgorithmException;
 

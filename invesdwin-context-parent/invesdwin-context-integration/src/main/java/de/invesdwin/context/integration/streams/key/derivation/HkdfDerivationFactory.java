@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.derivation;
+package de.invesdwin.context.integration.streams.key.derivation;
 
 import javax.annotation.concurrent.Immutable;
 

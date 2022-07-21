@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration.streams.derivation.password;
+package de.invesdwin.context.integration.streams.key.password.pbkdf2;
 
 import java.security.spec.InvalidKeySpecException;
 
@@ -8,6 +8,7 @@ import javax.crypto.spec.PBEKeySpec;
 
 import de.invesdwin.context.integration.streams.authentication.mac.IMacAlgorithm;
 import de.invesdwin.context.integration.streams.authentication.mac.hmac.HmacAlgorithm;
+import de.invesdwin.context.integration.streams.key.password.IPasswordHasher;
 import de.invesdwin.util.math.Bytes;
 
 /**
@@ -16,13 +17,13 @@ import de.invesdwin.util.math.Bytes;
  * A java implementation of https://github.com/ctz/fastpbkdf2 would be nice.
  */
 @Immutable
-public class Pbkdf2PasswordEncoder implements IPasswordEncoder {
+public class Pbkdf2PasswordHasher implements IPasswordHasher {
 
     public static final String ALGORITHM_PREFIX = "PBKDF2With";
     //takes about 200ms for 200k iterations on an I9-9900k
     public static final int DEFAULT_ITERATIONS = 200_000;
     public static final IMacAlgorithm DEFAULT_MAC_ALGORITHM = HmacAlgorithm.HMAC_SHA_512;
-    public static final IPasswordEncoder INSTANCE = new Pbkdf2PasswordEncoder();
+    public static final IPasswordHasher INSTANCE = new Pbkdf2PasswordHasher();
 
     private final int iterations;
     private final byte[] secret;
@@ -30,19 +31,19 @@ public class Pbkdf2PasswordEncoder implements IPasswordEncoder {
     private final String algorithm;
     private final SecretKeyFactoryObjectPool secretKeyFactoryPool;
 
-    public Pbkdf2PasswordEncoder() {
-        this(Pbkdf2PasswordEncoder.class.getName().getBytes());
+    public Pbkdf2PasswordHasher() {
+        this(Pbkdf2PasswordHasher.class.getName().getBytes());
     }
 
-    public Pbkdf2PasswordEncoder(final byte[] secret) {
+    public Pbkdf2PasswordHasher(final byte[] secret) {
         this(secret, DEFAULT_ITERATIONS);
     }
 
-    public Pbkdf2PasswordEncoder(final byte[] secret, final int iterations) {
+    public Pbkdf2PasswordHasher(final byte[] secret, final int iterations) {
         this(secret, iterations, DEFAULT_MAC_ALGORITHM);
     }
 
-    public Pbkdf2PasswordEncoder(final byte[] secret, final int iterations, final IMacAlgorithm macAlgorithm) {
+    public Pbkdf2PasswordHasher(final byte[] secret, final int iterations, final IMacAlgorithm macAlgorithm) {
         this.secret = secret;
         this.iterations = iterations;
         this.macAlgorithm = macAlgorithm;
@@ -59,7 +60,7 @@ public class Pbkdf2PasswordEncoder implements IPasswordEncoder {
     }
 
     @Override
-    public byte[] encode(final byte[] salt, final byte[] password, final int length) {
+    public byte[] hash(final byte[] salt, final byte[] password, final int length) {
         final PBEKeySpec spec = new PBEKeySpec(new String(password).toCharArray(), Bytes.concatenate(salt, this.secret),
                 this.iterations, length);
         final SecretKeyFactory secretKeyFactory = secretKeyFactoryPool.borrowObject();

@@ -1,11 +1,11 @@
-package de.invesdwin.context.integration.streams.derivation.provider;
+package de.invesdwin.context.integration.streams.key;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.streams.derivation.HkdfDerivationFactory;
-import de.invesdwin.context.integration.streams.derivation.IDerivationFactory;
-import de.invesdwin.context.integration.streams.derivation.password.IPasswordEncoder;
-import de.invesdwin.context.integration.streams.derivation.password.Pbkdf2PasswordEncoder;
+import de.invesdwin.context.integration.streams.key.derivation.HkdfDerivationFactory;
+import de.invesdwin.context.integration.streams.key.derivation.IDerivationFactory;
+import de.invesdwin.context.integration.streams.key.password.IPasswordHasher;
+import de.invesdwin.context.integration.streams.key.password.pbkdf2.Pbkdf2PasswordHasher;
 
 /**
  * Key derivation techniques are: Password+PBKDF2+HKDFexpands or Random+HKDFextract+HKDFexpands
@@ -43,11 +43,11 @@ public class DerivedKeyProvider implements IDerivedKeyProvider {
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final String password) {
-        return fromPassword(salt, password, HkdfDerivationFactory.INSTANCE, Pbkdf2PasswordEncoder.INSTANCE);
+        return fromPassword(salt, password, HkdfDerivationFactory.INSTANCE, Pbkdf2PasswordHasher.INSTANCE);
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final byte[] password) {
-        return fromPassword(salt, password, HkdfDerivationFactory.INSTANCE, Pbkdf2PasswordEncoder.INSTANCE);
+        return fromPassword(salt, password, HkdfDerivationFactory.INSTANCE, Pbkdf2PasswordHasher.INSTANCE);
     }
 
     public static DerivedKeyProvider fromRandom(final byte[] salt, final byte[] random) {
@@ -55,13 +55,13 @@ public class DerivedKeyProvider implements IDerivedKeyProvider {
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final String password,
-            final IDerivationFactory derivationFactory, final IPasswordEncoder passwordEncoder) {
-        return fromPassword(salt, password.getBytes(), derivationFactory, passwordEncoder);
+            final IDerivationFactory derivationFactory, final IPasswordHasher passwordHasher) {
+        return fromPassword(salt, password.getBytes(), derivationFactory, passwordHasher);
     }
 
     public static DerivedKeyProvider fromPassword(final byte[] salt, final byte[] password,
-            final IDerivationFactory derivationFactory, final IPasswordEncoder passwordEncoder) {
-        final byte[] key = passwordEncoder.encode(salt, password, derivationFactory.getAlgorithm().getMacLength());
+            final IDerivationFactory derivationFactory, final IPasswordHasher passwordHasher) {
+        final byte[] key = passwordHasher.hash(salt, password, derivationFactory.getAlgorithm().getMacLength());
         return new DerivedKeyProvider(salt, key, derivationFactory);
     }
 

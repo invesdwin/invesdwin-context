@@ -241,12 +241,21 @@
 								<!-- use jboss jta specification instead -->
 								<exclude>org.apache.geronimo.specs:geronimo-jta_1.0.1B_spec</exclude>
 								<exclude>javax.transaction:jta</exclude>
-								<!-- use bcprov-jdk15on or bcpkix-jdk15on instead -->
+								<!-- use bcprov-jdk18on or bcpkix-jdk18on instead -->
 								<exclude>org.bouncycastle:bcprov-jdk16</exclude>
 								<exclude>org.bouncycastle:bcprov-jdk15</exclude>
+								<exclude>org.bouncycastle:bcprov-jdk15to18</exclude>
+								<exclude>org.bouncycastle:bcprov-jdk15on</exclude>
 								<exclude>org.bouncycastle:bcprov-jdk15+</exclude>
 								<exclude>org.bouncycastle:bcprov-jdk14</exclude>
 								<exclude>org.bouncycastle:bcprov-jdk12</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk16</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk15</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk15to18</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk15on</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk15+</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk14</exclude>
+								<exclude>org.bouncycastle:bcprov-ext-jdk12</exclude>
 								<!-- use com.narupley:not-going-to-be-commons-ssl instead -->
 								<exclude>ca.juliusdavies:not-yet-commons-ssl</exclude>
 								<!-- use ta-lib:ta-lib from dukascopy instead -->
