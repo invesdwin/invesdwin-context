@@ -12,6 +12,8 @@ import de.invesdwin.util.math.Bytes;
 
 /**
  * Adapted from: org.springframework.security.crypto.password.Pbkdf2PasswordEncoder
+ * 
+ * A java implementation of https://github.com/ctz/fastpbkdf2 would be nice.
  */
 @Immutable
 public class Pbkdf2PasswordEncoder implements IPasswordEncoder {
