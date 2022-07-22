@@ -249,6 +249,8 @@
 								<exclude>org.bouncycastle:bcprov-jdk15+</exclude>
 								<exclude>org.bouncycastle:bcprov-jdk14</exclude>
 								<exclude>org.bouncycastle:bcprov-jdk12</exclude>
+								<!-- bcprov-ext is the same as bcprov just with some more obscure algos -->
+								<exclude>org.bouncycastle:bcprov-ext-jdk18on</exclude>
 								<exclude>org.bouncycastle:bcprov-ext-jdk16</exclude>
 								<exclude>org.bouncycastle:bcprov-ext-jdk15</exclude>
 								<exclude>org.bouncycastle:bcprov-ext-jdk15to18</exclude>
