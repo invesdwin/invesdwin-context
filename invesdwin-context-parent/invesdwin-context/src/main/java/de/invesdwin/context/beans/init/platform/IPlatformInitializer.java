@@ -60,7 +60,9 @@ public interface IPlatformInitializer {
 
     void initClassPathScanner();
 
-    void initConscryptSecurityProvider();
+    void initConscryptSslProvider();
+
+    void initAmazonCorrettoSecurityProvider();
 
     void initCryptoPolicyUnlimited();
 

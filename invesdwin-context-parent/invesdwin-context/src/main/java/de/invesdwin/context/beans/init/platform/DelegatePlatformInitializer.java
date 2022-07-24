@@ -145,8 +145,13 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void initConscryptSecurityProvider() {
-        delegate.initConscryptSecurityProvider();
+    public void initConscryptSslProvider() {
+        delegate.initConscryptSslProvider();
+    }
+
+    @Override
+    public void initAmazonCorrettoSecurityProvider() {
+        delegate.initAmazonCorrettoSecurityProvider();
     }
 
     @Override

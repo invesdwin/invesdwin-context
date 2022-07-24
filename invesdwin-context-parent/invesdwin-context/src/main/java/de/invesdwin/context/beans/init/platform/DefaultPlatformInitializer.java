@@ -18,6 +18,7 @@ import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.context.beans.init.platform.util.AmazonCorrettoSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
 import de.invesdwin.context.beans.init.platform.util.ConscryptConfigurer;
 import de.invesdwin.context.beans.init.platform.util.CryptoPolicyConfigurer;
@@ -289,10 +290,18 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
      * https://github.com/square/okhttp
      */
     @Override
-    public void initConscryptSecurityProvider() {
+    public void initConscryptSslProvider() {
         //conscrypt dependency can be added/removed if desired
         if (Reflections.classExists(ConscryptConfigurer.CONSCRYPT_CLASS)) {
             ConscryptConfigurer.configure();
+        }
+    }
+
+    @Override
+    public void initAmazonCorrettoSecurityProvider() {
+        //conscrypt dependency can be added/removed if desired
+        if (Reflections.classExists(AmazonCorrettoSecurityProviderConfigurer.AMAZON_CORRETTO_CRYPTO_PROVIDER_CLASS)) {
+            AmazonCorrettoSecurityProviderConfigurer.configure();
         }
     }
 

@@ -91,8 +91,11 @@ public final class ContextProperties {
         }
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
-        if (!readConscryptSecurityProviderDisabled()) {
-            initializer.initConscryptSecurityProvider();
+        if (readConscryptSslProviderEnabled()) {
+            initializer.initConscryptSslProvider();
+        }
+        if (readAmazonCorrettoSecurityProviderEnabled()) {
+            initializer.initAmazonCorrettoSecurityProvider();
         }
         initializer.initCryptoPolicyUnlimited();
         URIs.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
@@ -210,15 +213,27 @@ public final class ContextProperties {
         return duration;
     }
 
-    private static boolean readConscryptSecurityProviderDisabled() {
+    private static boolean readConscryptSslProviderEnabled() {
         if (!PlatformInitializerProperties.isAllowed()) {
-            return true;
+            return false;
         }
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-        final String key = "CONSCRYPT_SECURITY_PROVIDER_DISABLED";
+        final String key = "CONSCRYPT_SSL_PROVIDER_ENABLED";
         if (!systemProperties.containsValue(key)) {
-            //default to 30 seconds if for some reason the properties were not loaded
+            return true;
+        } else {
+            return systemProperties.getBoolean(key);
+        }
+    }
+
+    private static boolean readAmazonCorrettoSecurityProviderEnabled() {
+        if (!PlatformInitializerProperties.isAllowed()) {
             return false;
+        }
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "AMAZON_CORRETTO_SECURITY_PROVIDER_ENABLED";
+        if (!systemProperties.containsValue(key)) {
+            return true;
         } else {
             return systemProperties.getBoolean(key);
         }
