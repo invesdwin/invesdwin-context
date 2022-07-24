@@ -91,13 +91,7 @@ public final class ContextProperties {
         }
 
         DEFAULT_NETWORK_TIMEOUT = readDefaultNetworkTimeout();
-        if (readConscryptSslProviderEnabled()) {
-            initializer.initConscryptSslProvider();
-        }
-        if (readAmazonCorrettoSecurityProviderEnabled()) {
-            initializer.initAmazonCorrettoSecurityProvider();
-        }
-        initializer.initCryptoPolicyUnlimited();
+        initSecurityProviders(initializer);
         URIs.setDefaultNetworkTimeout(DEFAULT_NETWORK_TIMEOUT);
         InputStreamHttpResponseConsumer
                 .setDefaultTempDir(new File(TEMP_DIRECTORY, InputStreamHttpResponseConsumer.class.getSimpleName()));
@@ -111,6 +105,19 @@ public final class ContextProperties {
     }
 
     private ContextProperties() {
+    }
+
+    private static void initSecurityProviders(final IPlatformInitializer initializer) {
+        if (readWildflyOpenSslSecurityProviderEnabled()) {
+            initializer.initWildflyOpenSslSecurityProvider();
+        }
+        if (readConscryptSecurityProviderEnabled()) {
+            initializer.initConscryptSecurityProvider();
+        }
+        if (readAmazonCorrettoSecurityProviderEnabled()) {
+            initializer.initAmazonCorrettoSecurityProvider();
+        }
+        initializer.initCryptoPolicyUnlimited();
     }
 
     private static void initDebugStacktraces() {
@@ -213,12 +220,12 @@ public final class ContextProperties {
         return duration;
     }
 
-    private static boolean readConscryptSslProviderEnabled() {
+    private static boolean readConscryptSecurityProviderEnabled() {
         if (!PlatformInitializerProperties.isAllowed()) {
             return false;
         }
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-        final String key = "CONSCRYPT_SSL_PROVIDER_ENABLED";
+        final String key = "CONSCRYPT_SECURITY_PROVIDER_ENABLED";
         if (!systemProperties.containsValue(key)) {
             return true;
         } else {
@@ -232,6 +239,19 @@ public final class ContextProperties {
         }
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String key = "AMAZON_CORRETTO_SECURITY_PROVIDER_ENABLED";
+        if (!systemProperties.containsValue(key)) {
+            return true;
+        } else {
+            return systemProperties.getBoolean(key);
+        }
+    }
+
+    private static boolean readWildflyOpenSslSecurityProviderEnabled() {
+        if (!PlatformInitializerProperties.isAllowed()) {
+            return false;
+        }
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "WILDFLY_OPENSSL_SECURITY_PROVIDER_ENABLED";
         if (!systemProperties.containsValue(key)) {
             return true;
         } else {

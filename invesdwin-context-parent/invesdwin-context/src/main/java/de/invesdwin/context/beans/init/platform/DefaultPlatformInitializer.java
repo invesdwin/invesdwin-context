@@ -20,11 +20,12 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.platform.util.AmazonCorrettoSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
-import de.invesdwin.context.beans.init.platform.util.ConscryptConfigurer;
+import de.invesdwin.context.beans.init.platform.util.ConscryptSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.CryptoPolicyConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
 import de.invesdwin.context.beans.init.platform.util.RegisterTypesForSerializationConfigurer;
 import de.invesdwin.context.beans.init.platform.util.TempDirectoryLockConfigurerer;
+import de.invesdwin.context.beans.init.platform.util.WildflyOpenSslSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
 import de.invesdwin.context.beans.init.platform.util.internal.InstrumentationHookLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.LogbackConfigurationLoader;
@@ -290,18 +291,26 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
      * https://github.com/square/okhttp
      */
     @Override
-    public void initConscryptSslProvider() {
+    public void initConscryptSecurityProvider() {
         //conscrypt dependency can be added/removed if desired
-        if (Reflections.classExists(ConscryptConfigurer.CONSCRYPT_CLASS)) {
-            ConscryptConfigurer.configure();
+        if (Reflections.classExists(ConscryptSecurityProviderConfigurer.CONSCRYPT_CLASS)) {
+            ConscryptSecurityProviderConfigurer.configure();
         }
     }
 
     @Override
     public void initAmazonCorrettoSecurityProvider() {
-        //conscrypt dependency can be added/removed if desired
+        //corretto dependency can be added/removed if desired
         if (Reflections.classExists(AmazonCorrettoSecurityProviderConfigurer.AMAZON_CORRETTO_CRYPTO_PROVIDER_CLASS)) {
             AmazonCorrettoSecurityProviderConfigurer.configure();
+        }
+    }
+
+    @Override
+    public void initWildflyOpenSslSecurityProvider() {
+        //wildfly dependency can be added/removed if desired
+        if (Reflections.classExists(WildflyOpenSslSecurityProviderConfigurer.WILDFLY_OPENSSL_SECURITY_PROVIDER_CLASS)) {
+            WildflyOpenSslSecurityProviderConfigurer.configure();
         }
     }
 

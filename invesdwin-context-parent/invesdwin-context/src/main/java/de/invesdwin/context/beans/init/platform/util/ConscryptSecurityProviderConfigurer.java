@@ -8,11 +8,11 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.util.lang.reflection.Reflections;
 
 @Immutable
-public final class ConscryptConfigurer {
+public final class ConscryptSecurityProviderConfigurer {
 
     public static final String CONSCRYPT_CLASS = "org.conscrypt.Conscrypt";
 
-    private ConscryptConfigurer() {
+    private ConscryptSecurityProviderConfigurer() {
     }
 
     public static void configure() {
