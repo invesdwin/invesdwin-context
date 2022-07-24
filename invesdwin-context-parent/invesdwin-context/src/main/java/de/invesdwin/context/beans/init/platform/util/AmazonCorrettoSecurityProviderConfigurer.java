@@ -2,8 +2,12 @@ package de.invesdwin.context.beans.init.platform.util;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.reflection.Reflections;
 
+/**
+ * https://github.com/corretto/amazon-corretto-crypto-provider#configuration
+ */
 @Immutable
 public final class AmazonCorrettoSecurityProviderConfigurer {
 
@@ -20,6 +24,12 @@ public final class AmazonCorrettoSecurityProviderConfigurer {
                 .in(instance)
                 .invoke();
         if (loadingError == null) {
+            try {
+                Reflections.method("assertHealthy").in(instance).invoke();
+            } catch (final Throwable t) {
+                Err.process(new RuntimeException("ignoring", t));
+                return;
+            }
             //Fixes: https://github.com/google/conscrypt/issues/869
             Reflections.method("install").in(correttoClass).invoke();
         }
