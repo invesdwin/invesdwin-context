@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.compression.CompressingDelegateSerde;
+import de.invesdwin.context.integration.compression.CompressionDelegateSerde;
 import de.invesdwin.context.integration.compression.ICompressionFactory;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -49,7 +49,7 @@ public final class HighLZ4CompressionFactory implements ICompressionFactory {
     @SuppressWarnings("deprecation")
     @Override
     public <T> ISerde<T> maybeWrap(final ISerde<T> serde) {
-        return new CompressingDelegateSerde<>(serde, this);
+        return new CompressionDelegateSerde<>(serde, this);
     }
 
 }

@@ -9,7 +9,7 @@ import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
-public class CompressingDelegateSerde<E> implements ISerde<E> {
+public class CompressionDelegateSerde<E> implements ISerde<E> {
 
     private final ISerde<E> delegate;
     private final ICompressionFactory compressionFactory;
@@ -18,8 +18,8 @@ public class CompressingDelegateSerde<E> implements ISerde<E> {
      * WARNING: for internal use only. Use maybeWrap() instead.
      */
     @Deprecated
-    public CompressingDelegateSerde(final ISerde<E> delegate, final ICompressionFactory compressionFactory) {
-        Assertions.assertThat(delegate).isNotInstanceOf(CompressingDelegateSerde.class);
+    public CompressionDelegateSerde(final ISerde<E> delegate, final ICompressionFactory compressionFactory) {
+        Assertions.assertThat(delegate).isNotInstanceOf(CompressionDelegateSerde.class);
         this.delegate = delegate;
         this.compressionFactory = compressionFactory;
     }
