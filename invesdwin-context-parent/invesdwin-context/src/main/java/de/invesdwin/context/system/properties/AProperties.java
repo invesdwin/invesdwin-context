@@ -50,6 +50,12 @@ public abstract class AProperties implements IProperties {
         return delegate;
     }
 
+    @Override
+    public synchronized void remove(final String key) {
+        final String keyPath = prefix(key);
+        getDelegate().clearProperty(keyPath);
+    }
+
     private void setProperty(final String key, final String value) {
         getDelegate().setProperty(prefix(key), value);
     }

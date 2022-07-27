@@ -18,6 +18,8 @@ public interface IProperties {
 
     String INVESDWIN_DEFAULT_PASSWORD = "invesdwin";
 
+    void remove(String key);
+
     boolean containsKey(String key);
 
     boolean containsValue(String key);

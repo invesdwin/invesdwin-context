@@ -43,6 +43,12 @@ public final class CachingDelegateProperties implements IProperties {
         return delegate;
     }
 
+    @Override
+    public synchronized void remove(final String key) {
+        delegate.remove(key);
+        cache.remove(key);
+    }
+
     public synchronized Object removeFromCache(final String key) {
         final Optional<?> value = cache.remove(key);
         if (value == null) {

@@ -32,6 +32,15 @@ public final class IgnoreExceptionsDelegateProperties implements IProperties {
     }
 
     @Override
+    public void remove(final String key) {
+        try {
+            delegate.remove(key);
+        } catch (final Throwable t) {
+            //noop
+        }
+    }
+
+    @Override
     public boolean containsKey(final String key) {
         try {
             return delegate.containsKey(key);
