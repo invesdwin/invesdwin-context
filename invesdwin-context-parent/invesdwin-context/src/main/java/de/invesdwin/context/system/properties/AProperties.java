@@ -17,7 +17,6 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
-import org.springframework.util.SocketUtils;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
@@ -342,7 +341,7 @@ public abstract class AProperties implements IProperties {
             if (validatePort) {
                 final int port = uri.getPort();
                 if (port == 0) {
-                    final int randomPort = SocketUtils.findAvailableTcpPort();
+                    final int randomPort = de.invesdwin.context.system.internal.SocketUtils.findAvailableTcpPort();
                     //override property
                     uri = URIs.setPort(uri, randomPort);
                     setProperty(key, uri.toString());
@@ -368,7 +367,7 @@ public abstract class AProperties implements IProperties {
         final Integer port = getInteger(key);
         if (validatePort) {
             if (port == 0) {
-                final int randomPort = SocketUtils.findAvailableTcpPort();
+                final int randomPort = de.invesdwin.context.system.internal.SocketUtils.findAvailableTcpPort();
                 //override property
                 setInteger(key, randomPort);
                 return randomPort;
@@ -395,7 +394,7 @@ public abstract class AProperties implements IProperties {
                 final int port = Integer.parseInt(split[1]);
                 if (validatePort) {
                     if (port == 0) {
-                        final int randomPort = SocketUtils.findAvailableTcpPort();
+                        final int randomPort = de.invesdwin.context.system.internal.SocketUtils.findAvailableTcpPort();
                         //override property
                         setString(key, host + ":" + randomPort);
                         return Addresses.asAddress(host, randomPort);

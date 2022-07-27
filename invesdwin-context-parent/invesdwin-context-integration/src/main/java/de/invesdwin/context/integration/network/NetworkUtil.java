@@ -16,17 +16,16 @@ import java.util.Scanner;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.springframework.util.SocketUtils;
-
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
-public final class NetworkUtil extends SocketUtils {
+public final class NetworkUtil extends de.invesdwin.context.system.internal.SocketUtils {
 
-    private NetworkUtil() {}
+    private NetworkUtil() {
+    }
 
     /**
      * Identifies the local ip of the computer in the local network.
