@@ -1,5 +1,6 @@
 package de.invesdwin.context.system.properties;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -13,14 +14,18 @@ public class MapProperties extends AProperties {
 
     private final Map<String, Object> map;
 
-    @SuppressWarnings("unchecked")
-    public MapProperties(final Map<String, ?> map) {
-        this.map = (Map<String, Object>) map;
+    public MapProperties() {
+        this(new HashMap<>());
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public MapProperties(final Properties props) {
-        map = (Map) props;
+        this((Map) props);
+    }
+
+    @SuppressWarnings("unchecked")
+    public MapProperties(final Map<String, ?> map) {
+        this.map = (Map<String, Object>) map;
     }
 
     @Override
