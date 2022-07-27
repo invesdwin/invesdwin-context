@@ -25,6 +25,8 @@ import de.invesdwin.context.beans.hook.PreStartupHookManager;
 import de.invesdwin.context.beans.hook.StartupHookManager;
 import de.invesdwin.context.beans.init.autowirestrategies.DirectChildContext;
 import de.invesdwin.context.beans.init.autowirestrategies.ParentContext;
+import de.invesdwin.context.beans.init.autowirestrategies.processor.ActivateBeanProcessor;
+import de.invesdwin.context.beans.init.autowirestrategies.processor.DeactivateBeanProcessor;
 import de.invesdwin.context.beans.init.locations.IContextLocationValidator;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
@@ -77,6 +79,14 @@ public final class MergedContext extends ADelegateContext {
 
     public static boolean isBootstrapFinished() {
         return bootstrapFinished;
+    }
+
+    public static void deactivateBean(final Class<?> bean) {
+        autowire(new DeactivateBeanProcessor(bean));
+    }
+
+    public static void activateBean(final Class<?> bean) {
+        autowire(new ActivateBeanProcessor(bean));
     }
 
     /**
