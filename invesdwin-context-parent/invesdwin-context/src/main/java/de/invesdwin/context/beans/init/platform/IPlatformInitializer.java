@@ -66,6 +66,8 @@ public interface IPlatformInitializer {
 
     void initWildflyOpenSslSecurityProvider();
 
+    void initBouncyCastleSecurityProvider();
+
     void initCryptoPolicyUnlimited();
 
     void initAgronaBoundsChecks();

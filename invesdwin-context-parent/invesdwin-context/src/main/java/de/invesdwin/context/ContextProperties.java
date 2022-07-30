@@ -117,6 +117,9 @@ public final class ContextProperties {
         if (readAmazonCorrettoSecurityProviderEnabled()) {
             initializer.initAmazonCorrettoSecurityProvider();
         }
+        if (readBouncyCastleSecurityProviderEnabled()) {
+            initializer.initBouncyCastleSecurityProvider();
+        }
         initializer.initCryptoPolicyUnlimited();
     }
 
@@ -252,6 +255,19 @@ public final class ContextProperties {
         }
         final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
         final String key = "WILDFLY_OPENSSL_SECURITY_PROVIDER_ENABLED";
+        if (!systemProperties.containsValue(key)) {
+            return true;
+        } else {
+            return systemProperties.getBoolean(key);
+        }
+    }
+
+    private static boolean readBouncyCastleSecurityProviderEnabled() {
+        if (!PlatformInitializerProperties.isAllowed()) {
+            return false;
+        }
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "BOUNCY_CASTLE_SECURITY_PROVIDER_ENABLED";
         if (!systemProperties.containsValue(key)) {
             return true;
         } else {

@@ -160,6 +160,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initBouncyCastleSecurityProvider() {
+        delegate.initBouncyCastleSecurityProvider();
+    }
+
+    @Override
     public void initCryptoPolicyUnlimited() {
         delegate.initCryptoPolicyUnlimited();
     }

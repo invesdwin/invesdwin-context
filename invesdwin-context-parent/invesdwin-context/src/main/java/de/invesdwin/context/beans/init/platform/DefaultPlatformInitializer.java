@@ -20,6 +20,7 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.platform.util.AmazonCorrettoSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
+import de.invesdwin.context.beans.init.platform.util.BouncyCastleSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.ConscryptSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.CryptoPolicyConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
@@ -311,6 +312,14 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         //wildfly dependency can be added/removed if desired
         if (Reflections.classExists(WildflyOpenSslSecurityProviderConfigurer.WILDFLY_OPENSSL_SECURITY_PROVIDER_CLASS)) {
             WildflyOpenSslSecurityProviderConfigurer.configure();
+        }
+    }
+
+    @Override
+    public void initBouncyCastleSecurityProvider() {
+        //bouncycastle dependency can be added/removed if desired
+        if (Reflections.classExists(BouncyCastleSecurityProviderConfigurer.BOUNCY_CASTLE_PROVIDER_CLASS)) {
+            BouncyCastleSecurityProviderConfigurer.configure();
         }
     }
 
