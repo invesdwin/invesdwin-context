@@ -72,8 +72,4 @@ public class CompressionDelegateSerde<E> implements ISerde<E> {
         }
     }
 
-    public static <T> ISerde<T> maybeWrap(final ISerde<T> delegate, final ICompressionFactory compressionFactory) {
-        return compressionFactory.maybeWrap(delegate);
-    }
-
 }
