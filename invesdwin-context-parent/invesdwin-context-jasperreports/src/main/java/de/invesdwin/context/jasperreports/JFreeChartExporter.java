@@ -41,8 +41,7 @@ import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Strings;
-import de.invesdwin.util.lang.description.TextDescription;
-import de.invesdwin.util.streams.ADelegateInputStream;
+import de.invesdwin.util.streams.ALazyDelegateInputStream;
 import de.invesdwin.util.streams.pool.PooledFastByteArrayOutputStream;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
@@ -239,8 +238,7 @@ public enum JFreeChartExporter {
 
     public InputStream exportToStreamCallable(final Callable<JFreeChart> chart,
             final JFreeChartExporterSettings settings) {
-        return new ADelegateInputStream(new TextDescription("%s: exportToStreamCallable(chart, settings)",
-                JFreeChartExporter.class.getSimpleName())) {
+        return new ALazyDelegateInputStream() {
 
             @Override
             protected InputStream newDelegate() {
@@ -262,9 +260,7 @@ public enum JFreeChartExporter {
     public InputStream exportToStreamCallable(final Callable<JFreeChart> chart,
             final JFreeChartExporterSettings settings, final WrappedExecutorService parallelRenderer,
             final Duration renderTimeout) {
-        return new ADelegateInputStream(
-                new TextDescription("%s: exportToStreamCallable(chart, settings, parallelRenderer, renderTimeout)",
-                        JFreeChartExporter.class.getSimpleName())) {
+        return new ALazyDelegateInputStream() {
 
             private final Lock lock = Locks
                     .newReentrantLock(JFreeChartExporter.class.getSimpleName() + "_exportToStreamCallable_lock");
@@ -287,7 +283,7 @@ public enum JFreeChartExporter {
             }
 
             @Override
-            protected InputStream getDelegate() {
+            public InputStream getDelegate() {
                 try {
                     final boolean locked = lock.tryLock(renderTimeout.longValue(FTimeUnit.MILLISECONDS),
                             FTimeUnit.MILLISECONDS.timeUnitValue());
