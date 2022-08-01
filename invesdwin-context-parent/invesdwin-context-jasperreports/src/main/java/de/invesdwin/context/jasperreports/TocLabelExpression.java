@@ -22,9 +22,14 @@ public class TocLabelExpression extends AbstractSimpleExpression<String> {
             maxHeading = heading;
         }
         if (maxHeading != null) {
-            return maxHeading.getText().replace('\t', ' ').replace("  ", " ");
+            final String text = maxHeading.getText();
+            return processText(text);
         } else {
             return "";
         }
+    }
+
+    public static String processText(final String text) {
+        return text.replace('\t', ' ').replace("  ", " ");
     }
 }

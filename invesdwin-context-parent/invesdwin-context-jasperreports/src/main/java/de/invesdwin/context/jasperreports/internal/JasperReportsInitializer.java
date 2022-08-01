@@ -5,8 +5,10 @@ import javax.inject.Named;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.hook.IPreStartupHook;
+import de.invesdwin.context.jasperreports.producer.PageLabelsClassicPdfProducerFactory;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.design.JRCompiler;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.fill.JRSubreportRunnerFactory;
 
 @Named
@@ -19,7 +21,9 @@ public class JasperReportsInitializer implements IPreStartupHook {
         context.setProperty(JRCompiler.COMPILER_TEMP_DIR, ContextProperties.TEMP_DIRECTORY.getAbsolutePath());
         context.setProperty(JRSubreportRunnerFactory.SUBREPORT_RUNNER_FACTORY,
                 ConfiguredSubreportRunnerFactory.class.getName());
-
+        DefaultJasperReportsContext.getInstance()
+                .setProperty(JRPdfExporter.PDF_PRODUCER_FACTORY_PROPERTY,
+                        PageLabelsClassicPdfProducerFactory.class.getName());
     }
 
 }
