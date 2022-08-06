@@ -5,7 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.util.lang.reflection.Reflections;
 
 /**
- * https://github.com/corretto/amazon-corretto-crypto-provider#configuration
+ * https://github.com/wildfly-security/wildfly-openssl
  */
 @Immutable
 public final class WildflyOpenSslSecurityProviderConfigurer {
