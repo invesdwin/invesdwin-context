@@ -29,7 +29,8 @@ public final class ConscryptSecurityProviderConfigurer {
                     .invoke(true);
             final Class<Provider> openSslProviderClass = Reflections.classForName("org.conscrypt.OpenSSLProvider");
             try {
-                Security.insertProviderAt(openSslProviderClass.getDeclaredConstructor().newInstance(), 1);
+                //only add the provider, don't put it in front
+                Security.addProvider(openSslProviderClass.getDeclaredConstructor().newInstance());
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }

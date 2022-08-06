@@ -1,5 +1,8 @@
 package de.invesdwin.context.beans.init.platform.util;
 
+import java.security.Provider;
+import java.security.Security;
+
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.log.error.Err;
@@ -30,8 +33,8 @@ public final class AmazonCorrettoSecurityProviderConfigurer {
                 Err.process(new RuntimeException("ignoring", t));
                 return;
             }
-            //Fixes: https://github.com/google/conscrypt/issues/869
-            Reflections.method("install").in(correttoClass).invoke();
+            //only add the provider, don't put it in front
+            Security.addProvider((Provider) instance);
         }
     }
 

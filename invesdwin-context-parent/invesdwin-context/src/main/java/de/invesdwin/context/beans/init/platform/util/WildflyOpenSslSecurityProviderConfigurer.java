@@ -17,7 +17,7 @@ public final class WildflyOpenSslSecurityProviderConfigurer {
 
     public static void configure() {
         final Class<Object> wildflyClass = Reflections.classForName(WILDFLY_OPENSSL_SECURITY_PROVIDER_CLASS);
-        Reflections.method("registerFirst").in(wildflyClass).invoke();
+        Reflections.method("register").in(wildflyClass).invoke();
     }
 
 }
