@@ -1,13 +1,13 @@
 package de.invesdwin.context.jfreechart.dataset.points;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.error.FastNoSuchElementException;
 
 /**

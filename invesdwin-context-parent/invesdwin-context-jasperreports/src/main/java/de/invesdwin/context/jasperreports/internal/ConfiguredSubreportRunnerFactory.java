@@ -1,6 +1,5 @@
 package de.invesdwin.context.jasperreports.internal;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -9,6 +8,7 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 
+import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.concurrent.ASimpleDelegateExecutorService;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;

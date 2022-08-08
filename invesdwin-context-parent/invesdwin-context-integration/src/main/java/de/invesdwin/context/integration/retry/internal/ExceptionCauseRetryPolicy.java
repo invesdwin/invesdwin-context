@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.retry.internal;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -31,6 +30,7 @@ import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.error.Throwables;
 
 @NotThreadSafe

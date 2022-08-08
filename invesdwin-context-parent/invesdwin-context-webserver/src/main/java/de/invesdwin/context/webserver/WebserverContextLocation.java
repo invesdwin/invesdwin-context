@@ -1,6 +1,5 @@
 package de.invesdwin.context.webserver;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -11,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import de.invesdwin.context.beans.init.locations.AConditionalContextLocation;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.locations.position.ResourcePosition;
+import de.invesdwin.util.collections.Arrays;
 
 /**
  * Webserver should only be started explicitly.

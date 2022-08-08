@@ -1,12 +1,10 @@
 package de.invesdwin.context.jshell.tests;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
@@ -15,6 +13,7 @@ import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.jshell.AScriptTaskJshell;
 import de.invesdwin.context.jshell.IScriptTaskRunnerJshell;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Arrays;
 
 @NotThreadSafe
 public class InputsAndResultsTestFloat {
@@ -36,7 +35,7 @@ public class InputsAndResultsTestFloat {
         }
 
         //putFloatVectorAsList
-        final List<Float> putFloatVectorAsList = Arrays.asList(ArrayUtils.toObject(putFloatVector));
+        final List<Float> putFloatVectorAsList = Arrays.asList(Arrays.toObject(putFloatVector));
 
         //putFloatMatrix
         final float[][] putFloatMatrix = new float[4][];
@@ -51,7 +50,7 @@ public class InputsAndResultsTestFloat {
         //putFloatMatrixAsList
         final List<List<Float>> putFloatMatrixAsList = new ArrayList<List<Float>>(putFloatMatrix.length);
         for (final float[] vector : putFloatMatrix) {
-            putFloatMatrixAsList.add(Arrays.asList(ArrayUtils.toObject(vector)));
+            putFloatMatrixAsList.add(Arrays.asList(Arrays.toObject(vector)));
         }
 
         new AScriptTaskJshell<Void>() {

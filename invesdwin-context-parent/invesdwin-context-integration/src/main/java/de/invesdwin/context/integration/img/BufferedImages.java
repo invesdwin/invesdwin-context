@@ -7,7 +7,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +16,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Collections;
 
 @NotThreadSafe
 public final class BufferedImages {
@@ -31,7 +31,8 @@ public final class BufferedImages {
         SUPPORTED_FORMAT_NAMES = Collections.unmodifiableSet(supportedFileExtensions);
     }
 
-    private BufferedImages() {}
+    private BufferedImages() {
+    }
 
     public static void resize(final File imgFile, final Dimension newDimension) throws IOException {
         final String formatName = FilenameUtils.getExtension(imgFile.getName()).toLowerCase();

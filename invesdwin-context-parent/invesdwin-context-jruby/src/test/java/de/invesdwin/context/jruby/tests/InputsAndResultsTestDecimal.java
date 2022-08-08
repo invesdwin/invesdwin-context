@@ -1,7 +1,6 @@
 package de.invesdwin.context.jruby.tests;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -14,6 +13,7 @@ import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.jruby.AScriptTaskJruby;
 import de.invesdwin.context.jruby.IScriptTaskRunnerJruby;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.math.decimal.Decimal;
 
 @NotThreadSafe

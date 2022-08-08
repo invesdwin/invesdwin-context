@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -17,6 +16,7 @@ import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.maven.plugin.util.AWebFragmentConfigurationMerger;
 import de.invesdwin.maven.plugin.util.WebFragmentResource;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Strings;
 

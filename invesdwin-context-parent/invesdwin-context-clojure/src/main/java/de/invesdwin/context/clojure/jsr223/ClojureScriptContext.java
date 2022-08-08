@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -13,6 +12,7 @@ import javax.script.ScriptContext;
 
 import de.invesdwin.context.clojure.pool.ClojureBindings;
 import de.invesdwin.context.clojure.pool.WrappedClojureEngine;
+import de.invesdwin.util.collections.Arrays;
 
 @NotThreadSafe
 public class ClojureScriptContext implements ScriptContext {

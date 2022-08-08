@@ -1,12 +1,10 @@
 package de.invesdwin.context.scala.tests;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
@@ -15,6 +13,7 @@ import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.scala.AScriptTaskScala;
 import de.invesdwin.context.scala.IScriptTaskRunnerScala;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Arrays;
 
 @NotThreadSafe
 public class InputsAndResultsTestDouble {
@@ -36,7 +35,7 @@ public class InputsAndResultsTestDouble {
         }
 
         //putDoubleVectorAsList
-        final List<Double> putDoubleVectorAsList = Arrays.asList(ArrayUtils.toObject(putDoubleVector));
+        final List<Double> putDoubleVectorAsList = Arrays.asList(Arrays.toObject(putDoubleVector));
 
         //putDoubleMatrix
         final double[][] putDoubleMatrix = new double[4][];
@@ -51,7 +50,7 @@ public class InputsAndResultsTestDouble {
         //putDoubleMatrixAsList
         final List<List<Double>> putDoubleMatrixAsList = new ArrayList<List<Double>>(putDoubleMatrix.length);
         for (final double[] vector : putDoubleMatrix) {
-            putDoubleMatrixAsList.add(Arrays.asList(ArrayUtils.toObject(vector)));
+            putDoubleMatrixAsList.add(Arrays.asList(Arrays.toObject(vector)));
         }
 
         new AScriptTaskScala<Void>() {

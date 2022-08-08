@@ -9,10 +9,8 @@ import java.util.TreeSet;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.net.ServerSocketFactory;
 
-import org.apache.commons.math3.random.RandomGenerator;
-
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.math.random.RandomGenerators;
+import de.invesdwin.util.math.random.PseudoRandomGenerators;
 
 /**
  * Taken from: org.springframework.util.SocketUtils
@@ -47,8 +45,6 @@ public class SocketUtils {
      * The default maximum value for port ranges used when finding an available socket port.
      */
     public static final int PORT_RANGE_MAX = 65535;
-
-    private static final RandomGenerator RANDOM = RandomGenerators.newDefaultRandom();
 
     /**
      * Although {@code SocketUtils} consists solely of static utility methods, this constructor is intentionally
@@ -268,7 +264,7 @@ public class SocketUtils {
          */
         private int findRandomPort(final int minPort, final int maxPort) {
             final int portRange = maxPort - minPort;
-            return minPort + RANDOM.nextInt(portRange + 1);
+            return minPort + PseudoRandomGenerators.getThreadLocalPseudoRandom().nextInt(portRange + 1);
         }
 
         /**

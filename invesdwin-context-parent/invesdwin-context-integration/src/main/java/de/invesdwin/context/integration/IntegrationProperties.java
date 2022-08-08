@@ -3,7 +3,6 @@ package de.invesdwin.context.integration;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -13,6 +12,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.integration.network.NetworkUtil;
 import de.invesdwin.context.system.properties.SystemProperties;
+import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;

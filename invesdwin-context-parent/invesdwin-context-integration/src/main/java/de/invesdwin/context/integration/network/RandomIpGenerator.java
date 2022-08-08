@@ -4,9 +4,8 @@ import java.net.InetAddress;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.apache.commons.math3.random.RandomDataGenerator;
-
 import de.invesdwin.util.lang.uri.Addresses;
+import de.invesdwin.util.math.random.PseudoRandomGenerators;
 
 /**
  * @see <a href="http://de.wikipedia.org/wiki/IP-Adresse">IP-Segments</a>
@@ -17,7 +16,8 @@ import de.invesdwin.util.lang.uri.Addresses;
 @Immutable
 public final class RandomIpGenerator {
 
-    private RandomIpGenerator() {}
+    private RandomIpGenerator() {
+    }
 
     /**
      * Returns a random ip without private classes.
@@ -41,7 +41,7 @@ public final class RandomIpGenerator {
     }
 
     private static int getRandomByte() {
-        return new RandomDataGenerator().nextInt(0, 255); //Generates from 0 to 255
+        return PseudoRandomGenerators.getThreadLocalPseudoRandom().nextInt(0, 255); //Generates from 0 to 255
     }
 
     private static boolean isPrivateClassA(final int eins) {
