@@ -1,6 +1,5 @@
 package de.invesdwin.context.jcache;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -14,6 +13,7 @@ import javax.cache.integration.CacheWriter;
 
 import de.invesdwin.context.jcache.internal.CacheBuilderInternalFactory;
 import de.invesdwin.util.bean.AValueObject;
+import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.lang.UniqueNameGenerator;
 import de.invesdwin.util.time.duration.Duration;
 

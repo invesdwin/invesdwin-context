@@ -1,12 +1,12 @@
 package de.invesdwin.context.log.error;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Strings;
 
 @Immutable
@@ -16,7 +16,8 @@ final class ThrowableConverter {
     private static final String STACKTRACE_LINE_MARKED = "\n      * ";
     private static final String STACKTRACE_LINE = "\n        ";
 
-    private ThrowableConverter() {}
+    private ThrowableConverter() {
+    }
 
     public static String loggedRuntimeExceptionToString(final LoggedRuntimeException e, final boolean detailed) {
         final StringBuilder s = new StringBuilder("processing ");

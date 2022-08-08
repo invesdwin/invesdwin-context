@@ -2,7 +2,6 @@ package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
@@ -15,6 +14,7 @@ import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.streams.resource.Resources;
 
 @Immutable

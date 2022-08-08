@@ -2,7 +2,6 @@ package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
@@ -18,6 +17,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.streams.resource.Resources;
 
 @Immutable
@@ -26,7 +26,8 @@ public final class LogbackConfigurationLoader {
     private static final String META_INF_LOGBACK = "/META-INF/logback/";
     private static final Log LOG = new Log(LogbackConfigurationLoader.class);
 
-    private LogbackConfigurationLoader() {}
+    private LogbackConfigurationLoader() {
+    }
 
     public static void loadLogbackConfiguration() {
         final org.slf4j.ILoggerFactory lf = org.slf4j.LoggerFactory.getILoggerFactory();

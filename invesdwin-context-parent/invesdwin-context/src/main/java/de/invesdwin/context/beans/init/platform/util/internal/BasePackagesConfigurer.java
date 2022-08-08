@@ -1,6 +1,5 @@
 package de.invesdwin.context.beans.init.platform.util.internal;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -11,6 +10,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.IBasePackageDefinition;
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Strings;
 
 @ThreadSafe

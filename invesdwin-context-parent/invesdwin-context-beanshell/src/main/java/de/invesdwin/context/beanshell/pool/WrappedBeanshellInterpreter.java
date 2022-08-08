@@ -1,13 +1,12 @@
 package de.invesdwin.context.beanshell.pool;
 
-import java.util.Arrays;
-
 import javax.annotation.concurrent.NotThreadSafe;
 
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.NameSpace;
 import bsh.UtilEvalError;
+import de.invesdwin.util.collections.Arrays;
 
 @NotThreadSafe
 public class WrappedBeanshellInterpreter implements IBeanshellEngine {
@@ -29,6 +28,7 @@ public class WrappedBeanshellInterpreter implements IBeanshellEngine {
         return nameSpace;
     }
 
+    @Override
     public Object eval(final String expression) {
         try {
             return interpreter.eval(expression);
@@ -37,6 +37,7 @@ public class WrappedBeanshellInterpreter implements IBeanshellEngine {
         }
     }
 
+    @Override
     public void reset() {
         nameSpace.clear();
     }
@@ -46,6 +47,7 @@ public class WrappedBeanshellInterpreter implements IBeanshellEngine {
         reset();
     }
 
+    @Override
     public void put(final String variable, final Object value) {
         if (value == null) {
             eval(variable + " = null");
@@ -58,14 +60,17 @@ public class WrappedBeanshellInterpreter implements IBeanshellEngine {
         }
     }
 
+    @Override
     public Object get(final String variable) {
         return eval(variable);
     }
 
+    @Override
     public void remove(final String variable) {
         nameSpace.unsetVariable(variable);
     }
 
+    @Override
     public boolean contains(final String variable) {
         return Arrays.binarySearch(nameSpace.getVariableNames(), variable) >= 0;
     }
