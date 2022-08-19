@@ -127,8 +127,8 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
                         if (key.isBefore(from)) {
                             return true;
                         } else if (key.isAfter(to)) {
-                            throw new FastNoSuchElementException(
-                                    "ATimeRefreshingRequestCache: innerGetEntries reached end");
+                            throw FastNoSuchElementException
+                                    .getInstance("ATimeRefreshingRequestCache: innerGetEntries reached end");
                         }
                         return false;
                     }

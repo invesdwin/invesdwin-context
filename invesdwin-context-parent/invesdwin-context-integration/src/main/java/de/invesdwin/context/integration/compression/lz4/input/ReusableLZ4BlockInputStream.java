@@ -12,7 +12,6 @@
  */
 package de.invesdwin.context.integration.compression.lz4.input;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.Checksum;
@@ -20,6 +19,7 @@ import java.util.zip.Checksum;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.compression.lz4.output.ReusableLZ4BlockOutputStream;
+import de.invesdwin.util.error.FastEOFException;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.pool.APooledInputStream;
@@ -138,7 +138,7 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
     private void refill() throws IOException {
         //CHECKSTYLE:ON
         if (!tryReadFully(compressedBuffer, ReusableLZ4BlockOutputStream.HEADER_LENGTH)) {
-            throw new EOFException("Stream ended prematurely");
+            throw FastEOFException.getInstance("Stream ended prematurely");
         }
         for (int i = 0; i < ReusableLZ4BlockOutputStream.MAGIC_LENGTH; ++i) {
             if (compressedBuffer[i] != ReusableLZ4BlockOutputStream.MAGIC[i]) {
@@ -221,7 +221,7 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
 
     private void readFully(final byte[] b, final int len) throws IOException {
         if (!tryReadFully(b, len)) {
-            throw new EOFException("Stream ended prematurely");
+            throw FastEOFException.getInstance("Stream ended prematurely");
         }
     }
 

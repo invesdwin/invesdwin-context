@@ -118,8 +118,8 @@ public abstract class ARetryRetrievalCloseableIterable<T> implements ICloseableI
                 }
                 if (!curDate.equals(fromDate) && curDate.equals(nextDate)) {
                     close();
-                    throw new FastNoSuchElementException(
-                            "ARetryRetrievalCloseableIterable: nextDate is same as curDate");
+                    throw FastNoSuchElementException
+                            .getInstance("ARetryRetrievalCloseableIterable: nextDate is same as curDate");
                 } else {
                     curDate = nextDate;
                     return next;

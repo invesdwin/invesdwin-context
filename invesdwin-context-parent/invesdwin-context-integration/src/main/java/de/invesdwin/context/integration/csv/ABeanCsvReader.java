@@ -65,7 +65,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
     protected final E innerNext() {
         final E next = maybeNext();
         if (next == null) {
-            throw new FastNoSuchElementException("ABeanCsvReader maybeNext() returned null");
+            throw FastNoSuchElementException.getInstance("ABeanCsvReader maybeNext() returned null");
         } else {
             cachedNext = (E) null;
             return next;

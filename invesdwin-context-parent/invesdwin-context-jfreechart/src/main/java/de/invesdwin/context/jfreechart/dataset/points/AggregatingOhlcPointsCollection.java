@@ -78,7 +78,8 @@ public class AggregatingOhlcPointsCollection<E extends IOhlcPoint> extends APoin
                     delegateInProgressOhlcPoint = null;
                     return factory.newCopy(ret);
                 } else {
-                    throw new FastNoSuchElementException("AggregatingOhlcPointsCollection: delegateOhlcPoints is null");
+                    throw FastNoSuchElementException
+                            .getInstance("AggregatingOhlcPointsCollection: delegateOhlcPoints is null");
                 }
             }
 

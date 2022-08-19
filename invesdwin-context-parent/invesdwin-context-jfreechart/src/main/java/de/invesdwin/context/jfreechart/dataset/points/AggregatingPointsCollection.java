@@ -90,8 +90,8 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
                         delegateInProgressSquare = null;
                         curPointsIterator = ret.getPoints().iterator();
                     } else {
-                        throw new FastNoSuchElementException(
-                                "AggregatingPointsCollection: delegateInProgressSquare is null");
+                        throw FastNoSuchElementException
+                                .getInstance("AggregatingPointsCollection: delegateInProgressSquare is null");
                     }
                 }
 
