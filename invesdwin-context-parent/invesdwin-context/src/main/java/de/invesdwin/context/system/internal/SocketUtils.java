@@ -10,6 +10,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.net.ServerSocketFactory;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.random.PseudoRandomGenerators;
 
 /**
@@ -68,8 +69,7 @@ public class SocketUtils {
      * &lt;bean id="bean2" ... p:port="#{socketUtils.findAvailableTcpPort(30000)}" /&gt;</code>
      * </pre>
      */
-    public SocketUtils() {
-    }
+    public SocketUtils() {}
 
     /**
      * Find an available TCP port randomly selected from the range [{@value #PORT_RANGE_MIN}, {@value #PORT_RANGE_MAX}].
@@ -120,7 +120,7 @@ public class SocketUtils {
      * @throws IllegalStateException
      *             if the requested number of available ports could not be found
      */
-    public static SortedSet<Integer> findAvailableTcpPorts(final int numRequested) {
+    public static int[] findAvailableTcpPorts(final int numRequested) {
         return findAvailableTcpPorts(numRequested, PORT_RANGE_MIN, PORT_RANGE_MAX);
     }
 
@@ -138,8 +138,7 @@ public class SocketUtils {
      * @throws IllegalStateException
      *             if the requested number of available ports could not be found
      */
-    public static SortedSet<Integer> findAvailableTcpPorts(final int numRequested, final int minPort,
-            final int maxPort) {
+    public static int[] findAvailableTcpPorts(final int numRequested, final int minPort, final int maxPort) {
         return SocketType.TCP.findAvailablePorts(numRequested, minPort, maxPort);
     }
 
@@ -192,7 +191,7 @@ public class SocketUtils {
      * @throws IllegalStateException
      *             if the requested number of available ports could not be found
      */
-    public static SortedSet<Integer> findAvailableUdpPorts(final int numRequested) {
+    public static int[] findAvailableUdpPorts(final int numRequested) {
         return findAvailableUdpPorts(numRequested, PORT_RANGE_MIN, PORT_RANGE_MAX);
     }
 
@@ -210,8 +209,7 @@ public class SocketUtils {
      * @throws IllegalStateException
      *             if the requested number of available ports could not be found
      */
-    public static SortedSet<Integer> findAvailableUdpPorts(final int numRequested, final int minPort,
-            final int maxPort) {
+    public static int[] findAvailableUdpPorts(final int numRequested, final int minPort, final int maxPort) {
         return SocketType.UDP.findAvailablePorts(numRequested, minPort, maxPort);
     }
 
@@ -317,7 +315,7 @@ public class SocketUtils {
          * @throws IllegalStateException
          *             if the requested number of available ports could not be found
          */
-        SortedSet<Integer> findAvailablePorts(final int numRequested, final int minPort, final int maxPort) {
+        int[] findAvailablePorts(final int numRequested, final int minPort, final int maxPort) {
             Assertions.checkTrue(minPort > 0, "'minPort' must be greater than 0");
             Assertions.checkTrue(maxPort > minPort, "'maxPort' must be greater than 'minPort'");
             Assertions.checkTrue(maxPort <= PORT_RANGE_MAX,
@@ -340,7 +338,7 @@ public class SocketUtils {
                 //CHECKSTYLE:ON
             }
 
-            return availablePorts;
+            return Integers.checkedCastVector(availablePorts);
         }
     }
 
