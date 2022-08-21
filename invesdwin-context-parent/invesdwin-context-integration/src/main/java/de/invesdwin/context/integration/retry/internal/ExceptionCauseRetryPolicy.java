@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.retry.internal;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -49,6 +50,7 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //        <value>javax.persistence.OptimisticLockException</value>
     //    </set>
     //</property>
+    @SuppressWarnings("unchecked")
     private static final List<Class<? extends Exception>> DISALLOWED_CAUSES = Arrays.asList(
             OptimisticLockingFailureException.class, OptimisticLockException.class, ConstraintViolationException.class,
             InterruptedException.class);
@@ -63,10 +65,11 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     //        <value>org.springframework.orm.jpa.JpaSystemException</value>
     //    </set>
     //</property>
+    @SuppressWarnings("unchecked")
     private static final List<Class<? extends Exception>> ALLOWED_CAUSES = Arrays.asList(IOException.class,
-            MessageTimeoutException.class, TransientDataAccessException.class, LockTimeoutException.class,
-            TransactionSystemException.class, JpaSystemException.class, CannotCreateTransactionException.class,
-            TimeoutException.class);
+            UncheckedIOException.class, MessageTimeoutException.class, TransientDataAccessException.class,
+            LockTimeoutException.class, TransactionSystemException.class, JpaSystemException.class,
+            CannotCreateTransactionException.class, TimeoutException.class);
     //java.sql.SQLException: Lock wait timeout exceeded; try restarting transaction
     private static final List<String> ALLOWED_CAUSE_MESSAGE_PARTS = Arrays.asList("try restarting transaction");
 
