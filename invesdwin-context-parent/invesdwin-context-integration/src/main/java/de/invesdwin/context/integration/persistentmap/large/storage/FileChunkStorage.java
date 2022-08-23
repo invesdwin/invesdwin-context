@@ -16,6 +16,9 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataInputStream;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
+/**
+ * Values are deleted on the file system, so no problems with deletion.
+ */
 @ThreadSafe
 public class FileChunkStorage<V> implements IChunkStorage<V> {
 

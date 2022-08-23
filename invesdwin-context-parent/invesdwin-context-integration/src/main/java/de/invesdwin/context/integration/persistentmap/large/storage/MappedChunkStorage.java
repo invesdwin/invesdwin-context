@@ -17,6 +17,10 @@ import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
+/**
+ * Removed values are not reclaimed, they only get removed from the index. We could implement a compaction process for
+ * this sometime (could be done async).
+ */
 @ThreadSafe
 public class MappedChunkStorage<V> implements IChunkStorage<V> {
 

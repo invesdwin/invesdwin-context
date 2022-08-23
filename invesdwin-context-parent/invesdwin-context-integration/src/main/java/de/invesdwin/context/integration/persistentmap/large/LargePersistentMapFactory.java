@@ -8,6 +8,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.context.integration.persistentmap.IKeyMatcher;
 import de.invesdwin.context.integration.persistentmap.IPersistentMapConfig;
 import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
+import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.util.marshallers.serde.ISerde;
 
@@ -29,12 +30,21 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
         return indexFactory.isDiskPersistenceSupported();
     }
 
+    protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde) {
+        return ALargePersistentMap.newDefaultChunkStorage(directory, valueSerde);
+    }
+
     @Override
-    public ConcurrentMap<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
+    public final ConcurrentMap<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
         return new ALargePersistentMap<K, V>(config.getName()) {
             @Override
             protected IPersistentMapFactory<K, ChunkSummary> newIndexFactory() {
                 return indexFactory;
+            }
+
+            @Override
+            protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde) {
+                return LargePersistentMapFactory.this.newChunkStorage(directory, valueSerde);
             }
 
             @Override

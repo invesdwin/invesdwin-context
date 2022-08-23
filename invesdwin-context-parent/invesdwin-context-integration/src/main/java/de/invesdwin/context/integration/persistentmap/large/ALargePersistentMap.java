@@ -84,11 +84,15 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     private IChunkStorage<V> newChunkStorage() {
         final File directory = new File(getFile(), "storage");
-        return newChunkStorage(directory);
+        return newChunkStorage(directory, newValueSerde());
     }
 
-    protected IChunkStorage<V> newChunkStorage(final File directory) {
-        return new MappedChunkStorage<>(directory, newValueSerde());
+    protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde) {
+        return newDefaultChunkStorage(directory, valueSerde);
+    }
+
+    public static <V> MappedChunkStorage<V> newDefaultChunkStorage(final File directory, final ISerde<V> valueSerde) {
+        return new MappedChunkStorage<>(directory, valueSerde);
     }
 
     @Override
