@@ -24,11 +24,6 @@ public abstract class APersistentMapConfig<K, V> implements IPersistentMapConfig
     }
 
     @Override
-    public boolean isDiskPersistence() {
-        return true;
-    }
-
-    @Override
     public ISerde<K> newKeySerde() {
         return new TypeDelegateSerde<K>(getKeyType());
     }

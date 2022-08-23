@@ -11,4 +11,6 @@ public interface IPersistentMapFactory<K, V> {
 
     void removeAll(ConcurrentMap<K, V> table, IKeyMatcher<K> matcher);
 
+    boolean isDiskPersistenceSupported();
+
 }

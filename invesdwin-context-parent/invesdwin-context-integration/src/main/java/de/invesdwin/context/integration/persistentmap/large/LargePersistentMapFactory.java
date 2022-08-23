@@ -25,6 +25,11 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
     }
 
     @Override
+    public boolean isDiskPersistenceSupported() {
+        return indexFactory.isDiskPersistenceSupported();
+    }
+
+    @Override
     public ConcurrentMap<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
         return new ALargePersistentMap<K, V>(config.getName()) {
             @Override

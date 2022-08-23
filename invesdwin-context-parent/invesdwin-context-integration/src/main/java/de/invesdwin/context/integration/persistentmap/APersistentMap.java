@@ -64,7 +64,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     @Override
     public File getDirectory() {
         return new File(new File(getBaseDirectory(), APersistentMap.class.getSimpleName()),
-                Reflections.getClassSimpleNameNonBlank(newFactory().getClass()));
+                Reflections.getClassSimpleNameNonBlank(getFactory().getClass()));
     }
 
     private APersistentMap<K, V> getThis() {
@@ -124,6 +124,11 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         }
     }
 
+    @Override
+    public boolean isDiskPersistence() {
+        return getFactory().isDiskPersistenceSupported();
+    }
+
     protected final IPersistentMapFactory<K, V> getFactory() {
         if (factory == null) {
             this.factory = newFactory();
@@ -155,11 +160,13 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     public FDate getTableCreationTime() {
         if (tableCreationTime == null) {
-            final File timestampFile = getTimestampFile();
-            if (!timestampFile.exists()) {
-                return null;
-            } else {
-                tableCreationTime = FDate.valueOf(timestampFile.lastModified());
+            if (isDiskPersistence()) {
+                final File timestampFile = getTimestampFile();
+                if (!timestampFile.exists()) {
+                    return null;
+                } else {
+                    tableCreationTime = FDate.valueOf(timestampFile.lastModified());
+                }
             }
         }
         return tableCreationTime;
@@ -329,8 +336,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         return false;
     }
 
-    protected void onDeleteTableFinished() {
-    }
+    protected void onDeleteTableFinished() {}
 
     private void maybePurgeTable() {
         if (!initializing.get() && shouldPurgeTable()) {
