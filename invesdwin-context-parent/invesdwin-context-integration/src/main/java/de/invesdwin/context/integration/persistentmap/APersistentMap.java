@@ -270,17 +270,26 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                     //at de.invesdwin.context.persistence.leveldb.ADelegateRangeTable.getTableWithReadLock(ADelegateRangeTable.java:144)
                     throw new RetryLaterRuntimeException(e);
                 } else {
-                    Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
-                            + "] is inconsistent. Resetting data and trying again.", e));
-                    innerDeleteTable();
-                    tableFinalizer.table = getFactory().newPersistentMap(this);
-                    if (tableFinalizer.table == null) {
-                        throw new IllegalStateException("table should not be null");
+                    if (isDeleteTableOnCorruption()) {
+                        Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
+                                + "] is inconsistent. Resetting data and trying again.", e));
+                        innerDeleteTable();
+                        tableFinalizer.table = getFactory().newPersistentMap(this);
+                        if (tableFinalizer.table == null) {
+                            throw new IllegalStateException("table should not be null");
+                        }
+                        tableFinalizer.register(this);
+                    } else {
+                        throw new CorruptedStorageException("Table data for [" + getDirectory() + "/" + getName()
+                                + "] is inconsistent. Automatic recovery is disabled.", e);
                     }
-                    tableFinalizer.register(this);
                 }
             }
         }
+    }
+
+    protected boolean isDeleteTableOnCorruption() {
+        return true;
     }
 
     @Override
