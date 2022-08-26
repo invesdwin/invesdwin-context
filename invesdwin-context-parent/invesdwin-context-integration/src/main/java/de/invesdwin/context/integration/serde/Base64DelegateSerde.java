@@ -31,8 +31,8 @@ public class Base64DelegateSerde<E> implements ISerde<E> {
     }
 
     @Override
-    public E fromBuffer(final IByteBuffer buffer, final int length) {
-        return SerdeBaseMethods.fromBuffer(this, buffer, length);
+    public E fromBuffer(final IByteBuffer buffer) {
+        return SerdeBaseMethods.fromBuffer(this, buffer);
     }
 
     @Override

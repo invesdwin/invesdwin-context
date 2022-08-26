@@ -77,7 +77,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                 return null;
             }
             final IByteBuffer buffer = summary.newBuffer(reader);
-            final V value = valueSerde.fromBuffer(buffer, buffer.capacity());
+            final V value = valueSerde.fromBuffer(buffer);
             return value;
         } finally {
             lock.readLock().unlock();

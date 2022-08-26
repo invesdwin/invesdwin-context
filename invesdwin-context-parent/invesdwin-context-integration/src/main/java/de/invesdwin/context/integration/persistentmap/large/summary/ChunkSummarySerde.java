@@ -23,8 +23,7 @@ public final class ChunkSummarySerde implements ISerde<ChunkSummary> {
 
     private static final int MEMORYRESOURCEURI_INDEX = MEMORYLENGTH_INDEX + MEMORYLENGTH_SIZE;
 
-    private ChunkSummarySerde() {
-    }
+    private ChunkSummarySerde() {}
 
     @Override
     public ChunkSummary fromBytes(final byte[] bytes) {
@@ -37,7 +36,7 @@ public final class ChunkSummarySerde implements ISerde<ChunkSummary> {
     }
 
     @Override
-    public ChunkSummary fromBuffer(final IByteBuffer buffer, final int length) {
+    public ChunkSummary fromBuffer(final IByteBuffer buffer) {
         final int memoryResourceUriSize = buffer.getInt(MEMORYRESOURCEURISIZE_INDEX);
         final long memoryOffset = buffer.getLong(MEMORYOFFSET_INDEX);
         final long memoryLength = buffer.getLong(MEMORYLENGTH_INDEX);

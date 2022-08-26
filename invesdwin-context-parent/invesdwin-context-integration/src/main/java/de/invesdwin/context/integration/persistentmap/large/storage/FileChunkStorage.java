@@ -41,7 +41,7 @@ public class FileChunkStorage<V> implements IChunkStorage<V> {
         final IByteBuffer buffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
         try (BufferedFileDataInputStream in = new BufferedFileDataInputStream(file)) {
             buffer.putBytesTo(0, (DataInput) in, Integers.checkedCast(summary.getMemoryLength()));
-            final V value = valueSerde.fromBuffer(buffer, buffer.capacity());
+            final V value = valueSerde.fromBuffer(buffer);
             return value;
         } catch (final IOException e) {
             throw new RuntimeException(e);

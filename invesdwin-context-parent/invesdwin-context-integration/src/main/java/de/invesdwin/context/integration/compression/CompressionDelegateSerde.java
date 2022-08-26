@@ -35,18 +35,18 @@ public class CompressionDelegateSerde<E> implements ISerde<E> {
     }
 
     @Override
-    public E fromBuffer(final IByteBuffer buffer, final int length) {
-        if (length == 0) {
+    public E fromBuffer(final IByteBuffer buffer) {
+        if (buffer.capacity() == 0) {
             return null;
         }
         if (compressionFactory == DisabledCompressionFactory.INSTANCE) {
             //we can save a copy here
-            return delegate.fromBuffer(buffer, length);
+            return delegate.fromBuffer(buffer);
         } else {
             final IByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
             try {
                 final int decompressedLength = compressionFactory.decompress(buffer, decompressedBuffer);
-                return delegate.fromBuffer(decompressedBuffer, decompressedLength);
+                return delegate.fromBuffer(decompressedBuffer.sliceTo(decompressedLength));
             } finally {
                 ByteBuffers.EXPANDABLE_POOL.returnObject(decompressedBuffer);
             }
