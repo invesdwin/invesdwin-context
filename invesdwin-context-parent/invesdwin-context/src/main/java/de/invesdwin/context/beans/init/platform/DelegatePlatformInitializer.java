@@ -175,6 +175,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initNettyBoundsChecks() {
+        delegate.initNettyBoundsChecks();
+    }
+
+    @Override
     public void initDisableJavaModuleSystemRestrictions() {
         delegate.initDisableJavaModuleSystemRestrictions();
     }

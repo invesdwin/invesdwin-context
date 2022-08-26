@@ -344,6 +344,16 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initNettyBoundsChecks() {
+        if (Throwables.isDebugStackTraceEnabled()) {
+            //CHECKSTYLE:OFF
+            final String key = "io.netty.buffer.checkBounds";
+            System.setProperty(key, "true");
+            //CHECKSTYLE:ON
+        }
+    }
+
+    @Override
     public void initDisableJavaModuleSystemRestrictions() {
         Reflections.disableJavaModuleSystemRestrictions();
     }

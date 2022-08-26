@@ -46,6 +46,7 @@ public final class PreMergedContext extends ADelegateContext {
                 final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
                 //needs to happen after properties have been loaded
                 initializer.initAgronaBoundsChecks();
+                initializer.initNettyBoundsChecks();
                 initializer.initClassPathScanner();
                 initializer.registerTypesForSerialization();
                 Assertions.assertThat(Err.UNCAUGHT_EXCEPTION_HANDLER).isNotNull();
