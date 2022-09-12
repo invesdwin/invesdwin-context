@@ -81,6 +81,7 @@ public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {
             }
             do {
                 try {
+                    //will return null here at the end (by contract)
                     cachedNext = finalizer.itemReader.read();
                 } catch (final Exception e) {
                     throw Err.process(e);
