@@ -177,8 +177,4 @@ public abstract class ADecompressingInputStream extends ADelegateInputStream {
         return readNBytes;
     }
 
-    @Override
-    protected boolean shouldCloseOnMinus1Read() {
-        return false;
-    }
 }
