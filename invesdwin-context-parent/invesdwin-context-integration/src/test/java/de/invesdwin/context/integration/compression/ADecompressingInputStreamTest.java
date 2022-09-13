@@ -15,7 +15,15 @@ public class ADecompressingInputStreamTest extends ATest {
 
     @Test
     public void testDecompression() throws IOException {
-        //            IOUtils.copy(new DecompressingInputStream(new FileInputStream(new File("/home/subes/Desktop/allCountries.zip"))),
-        //                    new FileOutputStream(new File("/home/subes/Desktop/allCountriesTest.txt")));
+        //        IOUtils.copy(new ADecompressingInputStream(new TextDescription("asdf")) {
+        //            @Override
+        //            protected java.io.InputStream innerNewDelegate() {
+        //                try {
+        //                    return new FileInputStream(new File("/home/subes/Desktop/sound/mktsymbols_v2.zip"));
+        //                } catch (final FileNotFoundException e) {
+        //                    throw new RuntimeException(e);
+        //                }
+        //            }
+        //        }, new FileOutputStream(new File("/home/subes/Desktop/sound/mktsymbols_v2.txt")));
     }
 }

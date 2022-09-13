@@ -43,7 +43,9 @@ public abstract class ADecompressingInputStream extends ADelegateInputStream {
             markableIn = in;
         }
         try {
-            return new ArchiveStreamFactory().createArchiveInputStream(markableIn);
+            final ArchiveInputStream archiveInputStream = new ArchiveStreamFactory()
+                    .createArchiveInputStream(markableIn);
+            return archiveInputStream;
         } catch (final ArchiveException e) {
             try {
                 return new CompressorStreamFactory().createCompressorInputStream(markableIn);
@@ -64,9 +66,8 @@ public abstract class ADecompressingInputStream extends ADelegateInputStream {
     @Override
     public int read() throws IOException {
         int b = super.read();
-        final InputStream delegate = getDelegate();
-        if (b == -1 && delegate instanceof ArchiveInputStream) {
-            final ArchiveInputStream archiveIn = (ArchiveInputStream) delegate;
+        if (b == -1 && getDelegate() instanceof ArchiveInputStream) {
+            final ArchiveInputStream archiveIn = (ArchiveInputStream) getDelegate();
             if (!oneArchiveEntryAlreadyExtraced) {
                 ArchiveEntry entry = archiveIn.getNextEntry();
                 while (entry != null && (entry.isDirectory() || Strings.isBlank(entry.getName()))) {
@@ -79,6 +80,101 @@ public abstract class ADecompressingInputStream extends ADelegateInputStream {
             }
         }
         return b;
+    }
+
+    @Override
+    public int read(final byte[] b) throws IOException {
+        int read = super.read(b);
+        if (read <= 0 && b.length > 0 && getDelegate() instanceof ArchiveInputStream) {
+            final ArchiveInputStream archiveIn = (ArchiveInputStream) getDelegate();
+            if (!oneArchiveEntryAlreadyExtraced) {
+                ArchiveEntry entry = archiveIn.getNextEntry();
+                while (entry != null && (entry.isDirectory() || Strings.isBlank(entry.getName()))) {
+                    entry = archiveIn.getNextEntry();
+                }
+                if (entry != null) {
+                    oneArchiveEntryAlreadyExtraced = true;
+                    read = super.read(b);
+                }
+            }
+        }
+        return read;
+    }
+
+    @Override
+    public int read(final byte[] b, final int off, final int len) throws IOException {
+        int read = super.read(b, off, len);
+        if (read <= 0 && off < b.length && len > 0 && getDelegate() instanceof ArchiveInputStream) {
+            final ArchiveInputStream archiveIn = (ArchiveInputStream) getDelegate();
+            if (!oneArchiveEntryAlreadyExtraced) {
+                ArchiveEntry entry = archiveIn.getNextEntry();
+                while (entry != null && (entry.isDirectory() || Strings.isBlank(entry.getName()))) {
+                    entry = archiveIn.getNextEntry();
+                }
+                if (entry != null) {
+                    oneArchiveEntryAlreadyExtraced = true;
+                    read = super.read(b, off, len);
+                }
+            }
+        }
+        return read;
+    }
+
+    @Override
+    public byte[] readAllBytes() throws IOException {
+        byte[] readAllBytes = super.readAllBytes();
+        if ((readAllBytes == null || readAllBytes.length == 0) && getDelegate() instanceof ArchiveInputStream) {
+            final ArchiveInputStream archiveIn = (ArchiveInputStream) getDelegate();
+            if (!oneArchiveEntryAlreadyExtraced) {
+                ArchiveEntry entry = archiveIn.getNextEntry();
+                while (entry != null && (entry.isDirectory() || Strings.isBlank(entry.getName()))) {
+                    entry = archiveIn.getNextEntry();
+                }
+                if (entry != null) {
+                    oneArchiveEntryAlreadyExtraced = true;
+                    readAllBytes = super.readAllBytes();
+                }
+            }
+        }
+        return readAllBytes;
+    }
+
+    @Override
+    public int readNBytes(final byte[] b, final int off, final int len) throws IOException {
+        int readNBytes = super.readNBytes(b, off, len);
+        if (readNBytes <= 0 && off < b.length && len > 0 && getDelegate() instanceof ArchiveInputStream) {
+            final ArchiveInputStream archiveIn = (ArchiveInputStream) getDelegate();
+            if (!oneArchiveEntryAlreadyExtraced) {
+                ArchiveEntry entry = archiveIn.getNextEntry();
+                while (entry != null && (entry.isDirectory() || Strings.isBlank(entry.getName()))) {
+                    entry = archiveIn.getNextEntry();
+                }
+                if (entry != null) {
+                    oneArchiveEntryAlreadyExtraced = true;
+                    readNBytes = super.readNBytes(b, off, len);
+                }
+            }
+        }
+        return readNBytes;
+    }
+
+    @Override
+    public byte[] readNBytes(final int len) throws IOException {
+        byte[] readNBytes = super.readNBytes(len);
+        if ((readNBytes == null || readNBytes.length == 0) && len > 0 && getDelegate() instanceof ArchiveInputStream) {
+            final ArchiveInputStream archiveIn = (ArchiveInputStream) getDelegate();
+            if (!oneArchiveEntryAlreadyExtraced) {
+                ArchiveEntry entry = archiveIn.getNextEntry();
+                while (entry != null && (entry.isDirectory() || Strings.isBlank(entry.getName()))) {
+                    entry = archiveIn.getNextEntry();
+                }
+                if (entry != null) {
+                    oneArchiveEntryAlreadyExtraced = true;
+                    readNBytes = super.readNBytes(len);
+                }
+            }
+        }
+        return readNBytes;
     }
 
     @Override
