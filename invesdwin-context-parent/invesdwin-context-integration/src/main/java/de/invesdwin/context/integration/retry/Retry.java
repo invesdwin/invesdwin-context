@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Causes the method invocation to be retries when an IOException or a RetryAgainException occurs. When an interrupt
+ * Causes the method invocation to be retries when an IOException or a RetryLaterException occurs. When an interrupt
  * occurs, retries get aborted.
  * 
  * @author subes
