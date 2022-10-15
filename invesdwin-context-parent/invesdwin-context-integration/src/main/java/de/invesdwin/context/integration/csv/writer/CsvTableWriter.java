@@ -13,8 +13,8 @@ import org.apache.commons.io.output.AppendableOutputStream;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.loadingcache.ALoadingCache;
-import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
+import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class CsvTableWriter implements Closeable, ITableWriter {

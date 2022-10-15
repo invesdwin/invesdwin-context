@@ -8,7 +8,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.lang.UniqueNameGenerator;
+import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import net.sf.jasperreports.engine.JRVirtualizer;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import net.sf.jasperreports.engine.fill.JRSwapFileVirtualizer;

@@ -34,8 +34,8 @@ import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.lang.Strings;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class TestContextLoader implements ContextLoader {

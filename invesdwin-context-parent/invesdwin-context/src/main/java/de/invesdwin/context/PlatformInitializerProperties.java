@@ -6,7 +6,7 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.date.FDate;
 

@@ -17,7 +17,7 @@ import org.springframework.util.ClassUtils;
 
 import de.invesdwin.context.integration.marshaller.IMergedJaxbContextPath;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.streams.resource.Resources;
 
 /**

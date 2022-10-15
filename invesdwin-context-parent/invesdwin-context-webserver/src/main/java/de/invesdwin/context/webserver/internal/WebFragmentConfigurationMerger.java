@@ -18,7 +18,7 @@ import de.invesdwin.maven.plugin.util.AWebFragmentConfigurationMerger;
 import de.invesdwin.maven.plugin.util.WebFragmentResource;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class WebFragmentConfigurationMerger extends AWebFragmentConfigurationMerger {

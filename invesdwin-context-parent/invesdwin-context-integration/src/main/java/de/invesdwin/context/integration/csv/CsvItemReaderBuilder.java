@@ -16,7 +16,7 @@ import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class CsvItemReaderBuilder<T> {

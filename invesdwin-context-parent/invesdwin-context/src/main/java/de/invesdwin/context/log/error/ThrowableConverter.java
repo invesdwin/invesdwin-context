@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.collections.Arrays;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @Immutable
 final class ThrowableConverter {

@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @ThreadSafe
 public class JavaServicesTest extends ATest {

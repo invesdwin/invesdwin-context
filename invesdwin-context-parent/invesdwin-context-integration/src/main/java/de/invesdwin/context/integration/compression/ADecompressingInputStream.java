@@ -13,8 +13,8 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
-import de.invesdwin.util.lang.Strings;
-import de.invesdwin.util.lang.description.TextDescription;
+import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.lang.string.description.TextDescription;
 import de.invesdwin.util.streams.ADelegateInputStream;
 
 /**

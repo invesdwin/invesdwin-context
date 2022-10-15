@@ -2,7 +2,7 @@ package de.invesdwin.context.integration.script;
 
 import java.util.List;
 
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.math.Characters;

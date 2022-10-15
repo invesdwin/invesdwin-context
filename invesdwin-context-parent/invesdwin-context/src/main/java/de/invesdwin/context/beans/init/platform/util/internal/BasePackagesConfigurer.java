@@ -11,7 +11,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.IBasePackageDefinition;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.collections.Arrays;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @ThreadSafe
 public final class BasePackagesConfigurer {

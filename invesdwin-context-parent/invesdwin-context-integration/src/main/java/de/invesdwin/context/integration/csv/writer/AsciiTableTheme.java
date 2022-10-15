@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 /**
  * https://github.com/iNamik/java_text_tables/blob/dc624fdf7b03ca20aa070c5af5f5fb86fba1e0c5/src/main/java/com/inamik/text/tables/grid/Border.java#L185

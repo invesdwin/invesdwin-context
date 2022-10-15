@@ -18,7 +18,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable

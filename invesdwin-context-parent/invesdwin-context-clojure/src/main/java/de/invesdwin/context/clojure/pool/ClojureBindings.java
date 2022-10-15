@@ -13,7 +13,7 @@ import clojure.lang.Namespace;
 import clojure.lang.RT;
 import clojure.lang.Symbol;
 import clojure.lang.Var;
-import de.invesdwin.util.lang.UniqueNameGenerator;
+import de.invesdwin.util.lang.string.UniqueNameGenerator;
 
 /**
  * WARNING: this class should not be used directly, instead the thread local instance from WrappedClojureEngine should

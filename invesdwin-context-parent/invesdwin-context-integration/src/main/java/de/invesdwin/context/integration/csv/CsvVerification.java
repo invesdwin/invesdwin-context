@@ -9,7 +9,7 @@ import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.validation.BindException;
 
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @Immutable
 public class CsvVerification {

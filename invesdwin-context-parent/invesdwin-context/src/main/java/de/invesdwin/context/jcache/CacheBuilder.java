@@ -14,7 +14,7 @@ import javax.cache.integration.CacheWriter;
 import de.invesdwin.context.jcache.internal.CacheBuilderInternalFactory;
 import de.invesdwin.util.bean.AValueObject;
 import de.invesdwin.util.collections.Collections;
-import de.invesdwin.util.lang.UniqueNameGenerator;
+import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe

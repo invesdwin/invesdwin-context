@@ -19,7 +19,7 @@ import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.concurrent.loop.LoopInterruptedCheck;
 import de.invesdwin.util.concurrent.reference.IReference;
 import de.invesdwin.util.error.Throwables;
-import de.invesdwin.util.lang.ProcessedEventsRateString;
+import de.invesdwin.util.lang.string.ProcessedEventsRateString;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;

@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @ThreadSafe
 @Aspect

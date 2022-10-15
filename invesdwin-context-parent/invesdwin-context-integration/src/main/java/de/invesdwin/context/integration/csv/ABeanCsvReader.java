@@ -10,8 +10,8 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.collections.iterable.ACloseableIterator;
 import de.invesdwin.util.error.FastNoSuchElementException;
-import de.invesdwin.util.lang.description.TextDescription;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
+import de.invesdwin.util.lang.string.description.TextDescription;
 
 @NotThreadSafe
 public abstract class ABeanCsvReader<E> extends ACloseableIterator<E> {

@@ -6,7 +6,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @SuppressWarnings("serial")
 @ThreadSafe

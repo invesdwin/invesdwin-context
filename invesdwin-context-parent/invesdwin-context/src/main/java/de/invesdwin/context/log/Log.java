@@ -199,17 +199,17 @@ public final class Log extends org.slf4j.ext.XLogger {
     }
 
     private static String format(final String messagePattern, final Object arg) {
-        return de.invesdwin.util.lang.description.internal.TextDescriptionFormatter.format(messagePattern,
+        return de.invesdwin.util.lang.string.description.internal.TextDescriptionFormatter.format(messagePattern,
                 new Object[] { arg });
     }
 
     private static String format(final String messagePattern, final Object arg1, final Object arg2) {
-        return de.invesdwin.util.lang.description.internal.TextDescriptionFormatter.format(messagePattern,
+        return de.invesdwin.util.lang.string.description.internal.TextDescriptionFormatter.format(messagePattern,
                 new Object[] { arg1, arg2 });
     }
 
     private static String format(final String messagePattern, final Object[] argArray) {
-        return de.invesdwin.util.lang.description.internal.TextDescriptionFormatter.format(messagePattern, argArray);
+        return de.invesdwin.util.lang.string.description.internal.TextDescriptionFormatter.format(messagePattern, argArray);
     }
 
 }

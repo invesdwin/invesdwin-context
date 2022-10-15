@@ -11,7 +11,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Closeables;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class HtmlTableWriter implements ITableWriter {

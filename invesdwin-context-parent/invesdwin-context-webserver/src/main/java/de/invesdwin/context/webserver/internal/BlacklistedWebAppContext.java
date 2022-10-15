@@ -13,7 +13,7 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 
 /**
  * Works around the Jetty limitation, that it only loads web-fragments from WEB-INF/lib/*.jar.

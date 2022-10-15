@@ -21,7 +21,7 @@ import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
 @NotThreadSafe

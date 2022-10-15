@@ -12,7 +12,7 @@ import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.scala.AScriptTaskScala;
 import de.invesdwin.context.scala.IScriptTaskRunnerScala;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.lang.Strings;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.math.Characters;
