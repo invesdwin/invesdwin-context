@@ -17,6 +17,7 @@ import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;
 import de.invesdwin.util.math.Booleans;
+import de.invesdwin.util.swing.HiDPI;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -99,13 +100,17 @@ public final class ContextProperties {
         CPU_THREAD_POOL_COUNT = readCpuThreadPoolCount();
         Executors.setCpuThreadPoolCount(CPU_THREAD_POOL_COUNT);
 
+        final Double hiDpiScaleFactor = readHiDpiScaleFactor();
+        if (hiDpiScaleFactor != null) {
+            HiDPI.setScaleFactor(hiDpiScaleFactor);
+        }
+
         initDebugStacktraces();
 
         USER_NAME = new SystemProperties().getString("user.name");
     }
 
-    private ContextProperties() {
-    }
+    private ContextProperties() {}
 
     private static void initSecurityProviders(final IPlatformInitializer initializer) {
         if (readWildflyOpenSslSecurityProviderEnabled()) {
@@ -296,6 +301,16 @@ public final class ContextProperties {
             //webstart safety for access control
             PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
             return Runtime.getRuntime().availableProcessors();
+        }
+    }
+
+    private static Double readHiDpiScaleFactor() {
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "HIDPI_SCALE_FACTOR";
+        if (!PlatformInitializerProperties.isAllowed() || !systemProperties.containsValue(key)) {
+            return null;
+        } else {
+            return systemProperties.getDouble(key);
         }
     }
 
