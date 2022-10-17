@@ -18,6 +18,8 @@ public interface IProperties {
 
     String INVESDWIN_DEFAULT_PASSWORD = "invesdwin";
 
+    List<String> getKeys();
+
     void remove(String key);
 
     boolean containsKey(String key);
@@ -65,6 +67,8 @@ public interface IProperties {
     void setDecimal(String key, Decimal value);
 
     String getString(String key);
+
+    Object getProperty(String key);
 
     void setString(String key, String value);
 
