@@ -3,9 +3,11 @@ pipeline {
   stages {
     stage('Build and test') {
       steps{
-        withMaven {
-          sh 'mvn clean install -f invesdwin-context-parent/pom.xml -T4'
-        }  
+	    wrap([$class: 'Xvfb']) {
+		  withMaven {
+            sh 'mvn clean install -f invesdwin-context-parent/pom.xml -T4'
+          }
+	    }
       }
     }
   }
