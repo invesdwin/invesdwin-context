@@ -44,6 +44,11 @@ public final class CachingDelegateProperties implements IProperties {
     }
 
     @Override
+    public List<String> getKeys() {
+        return delegate.getKeys();
+    }
+
+    @Override
     public synchronized void remove(final String key) {
         delegate.remove(key);
         cache.remove(key);
@@ -321,6 +326,12 @@ public final class CachingDelegateProperties implements IProperties {
                 return delegate.getString(key);
             }
         });
+    }
+
+    @Override
+    public Object getProperty(final String key) {
+        //don't cache this
+        return delegate.getProperty(key);
     }
 
     @Override

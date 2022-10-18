@@ -21,6 +21,7 @@ import org.apache.commons.configuration2.AbstractConfiguration;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.list.Lists;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
@@ -48,6 +49,11 @@ public abstract class AProperties implements IProperties {
             delegate = createDelegate();
         }
         return delegate;
+    }
+
+    @Override
+    public synchronized List<String> getKeys() {
+        return Lists.toListWithoutHasNext(getDelegate().getKeys());
     }
 
     @Override
@@ -190,6 +196,12 @@ public abstract class AProperties implements IProperties {
     public synchronized String getString(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
+    }
+
+    @Override
+    public synchronized Object getProperty(final String key) {
+        final String keyPath = prefix(key);
+        return maybeThrowIfMissing(keyPath, getDelegate().getProperty(keyPath));
     }
 
     @Override

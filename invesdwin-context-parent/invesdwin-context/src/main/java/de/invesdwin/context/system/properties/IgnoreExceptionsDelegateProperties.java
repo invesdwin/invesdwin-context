@@ -32,6 +32,11 @@ public final class IgnoreExceptionsDelegateProperties implements IProperties {
     }
 
     @Override
+    public List<String> getKeys() {
+        return delegate.getKeys();
+    }
+
+    @Override
     public void remove(final String key) {
         try {
             delegate.remove(key);
@@ -242,6 +247,15 @@ public final class IgnoreExceptionsDelegateProperties implements IProperties {
     public String getString(final String key) {
         try {
             return delegate.getString(key);
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    @Override
+    public Object getProperty(final String key) {
+        try {
+            return delegate.getProperty(key);
         } catch (final Throwable t) {
             return null;
         }
