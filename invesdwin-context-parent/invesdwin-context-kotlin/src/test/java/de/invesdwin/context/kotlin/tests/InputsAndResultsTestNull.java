@@ -22,8 +22,7 @@ public class InputsAndResultsTestNull {
         new AScriptTaskKotlin<Void>() {
 
             @Override
-            public void populateInputs(final IScriptTaskInputs inputs) {
-            }
+            public void populateInputs(final IScriptTaskInputs inputs) {}
 
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
@@ -40,9 +39,8 @@ public class InputsAndResultsTestNull {
                 Assertions.checkFalse(engine.getResults().isNull("testVariable"));
                 Assertions.checkTrue(engine.getResults().isNotNull("testVariable"));
                 engine.getInputs().remove("testVariable");
-                //kotlin has no real remove, we just null the value and remove it from the binding instead
-                Assertions.checkFalse(engine.getResults().isNotDefined("testVariable"));
-                Assertions.checkTrue(engine.getResults().isDefined("testVariable"));
+                Assertions.checkTrue(engine.getResults().isNotDefined("testVariable"));
+                Assertions.checkFalse(engine.getResults().isDefined("testVariable"));
             }
 
             @Override
