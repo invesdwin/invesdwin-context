@@ -22,7 +22,7 @@
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
 		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
 		<version.compiler>1.8</version.compiler>
-		<version.hsqldb>2.7.5</version.hsqldb>
+		<version.hsqldb>2.7.1</version.hsqldb>
 	</properties>
 
 	<dependencyManagement>
