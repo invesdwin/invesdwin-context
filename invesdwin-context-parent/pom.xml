@@ -39,7 +39,7 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.compiler>17</version.compiler>
+		<version.compiler>1.8</version.compiler>
 
 		<project.version.invesdwin-maven-plugin>1.0.14-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<project.version.invesdwin-checkstyle-plugin>1.0.3</project.version.invesdwin-checkstyle-plugin>

@@ -19,7 +19,7 @@
 		<version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
 		<version.maven-dependency-plugin>3.3.0</version.maven-dependency-plugin>
-		<version.compiler>17</version.compiler>
+		<version.compiler>1.8</version.compiler>
 		<version.hsqldb>2.7.1</version.hsqldb>
 	</properties>
 
