@@ -1,16 +1,16 @@
 package de.invesdwin.context.beans.validator;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.bean.AValueObject;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @ThreadSafe
 public class BeanValidatorTest extends ATest {
@@ -18,7 +18,7 @@ public class BeanValidatorTest extends ATest {
     @Inject
     private BeanValidator clazz;
     @Inject
-    private javax.validation.Validator jsrInterface;
+    private jakarta.validation.Validator jsrInterface;
     @Inject
     private org.springframework.validation.Validator springInterface;
 

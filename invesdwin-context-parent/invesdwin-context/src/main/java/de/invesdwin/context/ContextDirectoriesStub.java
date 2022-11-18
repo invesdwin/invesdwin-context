@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import org.apache.commons.io.FilenameUtils;
 

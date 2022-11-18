@@ -1,7 +1,7 @@
 package de.invesdwin.context.jasperreports.internal;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.hook.IPreStartupHook;

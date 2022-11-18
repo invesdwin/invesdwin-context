@@ -1,8 +1,8 @@
 package de.invesdwin.context.beans.internal;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.task.AsyncTaskExecutor;

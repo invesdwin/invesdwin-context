@@ -1,7 +1,7 @@
 package de.invesdwin.context.beans.init;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

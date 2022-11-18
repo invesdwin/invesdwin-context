@@ -4,30 +4,29 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Named;
-import javax.validation.Configuration;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.MessageInterpolator;
-import javax.validation.Validation;
-import javax.validation.bootstrap.GenericBootstrap;
-import javax.validation.executable.ExecutableValidator;
-import javax.validation.metadata.BeanDescriptor;
+import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.Errors;
-import org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator;
 
 import de.invesdwin.context.beans.VerboseConstraintViolationException;
+import jakarta.validation.Configuration;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.MessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.bootstrap.GenericBootstrap;
+import jakarta.validation.executable.ExecutableValidator;
+import jakarta.validation.metadata.BeanDescriptor;
 
 @Named
 @ThreadSafe
 public class BeanValidator
-        implements org.springframework.validation.Validator, javax.validation.Validator, FactoryBean<BeanValidator> {
+        implements org.springframework.validation.Validator, jakarta.validation.Validator, FactoryBean<BeanValidator> {
 
     private static final BeanValidator INSTANCE = new BeanValidator();
-    private final javax.validation.Validator delegate;
+    private final jakarta.validation.Validator delegate;
 
     public BeanValidator() {
         final GenericBootstrap bootstrap = Validation.byDefaultProvider();

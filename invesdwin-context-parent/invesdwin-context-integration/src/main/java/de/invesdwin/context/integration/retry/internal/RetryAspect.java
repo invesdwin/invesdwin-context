@@ -1,7 +1,7 @@
 package de.invesdwin.context.integration.retry.internal;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

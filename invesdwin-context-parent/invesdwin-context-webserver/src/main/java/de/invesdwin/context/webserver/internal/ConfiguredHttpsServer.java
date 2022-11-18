@@ -44,7 +44,7 @@ public class ConfiguredHttpsServer extends Server {
     }
 
     private SslConnectionFactory prepareSsl(final ALPNServerConnectionFactory alpn) {
-        final SslContextFactory sslContextFactory = new SslContextFactory();
+        final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
         sslContextFactory.setKeyStoreResource(new JettySpringResource(WebserverProperties.getKeystoreResource()));
         sslContextFactory.setKeyStorePassword(WebserverProperties.getKeystoreKeypass());
         sslContextFactory.setCertAlias(WebserverProperties.getKeystoreAlias());

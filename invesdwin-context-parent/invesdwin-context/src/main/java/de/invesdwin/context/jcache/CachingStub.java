@@ -2,7 +2,7 @@ package de.invesdwin.context.jcache;
 
 import javax.annotation.concurrent.Immutable;
 import javax.cache.Caching;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.context.test.stub.StubSupport;

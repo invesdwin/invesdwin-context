@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.channels.ReadableByteChannel;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -59,15 +59,6 @@ public class JettySpringResource extends Resource {
     }
 
     @Override
-    public URL getURL() {
-        try {
-            return resource.getURL();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public File getFile() throws IOException {
         return resource.getFile();
     }
@@ -110,6 +101,15 @@ public class JettySpringResource extends Resource {
     @Override
     public String toString() {
         return resource.toString();
+    }
+
+    @Override
+    public URI getURI() {
+        try {
+            return resource.getURI();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

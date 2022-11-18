@@ -6,13 +6,13 @@ import java.util.ServiceLoader;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.lang.string.Strings;
+import jakarta.inject.Named;
 
 /**
  * This instance will use the IScriptTaskRunner that was chosen by the user either by including the appropriate runtime
@@ -30,8 +30,7 @@ public final class ProvidedScriptTaskRunnerJshell
     @GuardedBy("this.class")
     private static IScriptTaskRunnerJshell providedInstance;
 
-    private ProvidedScriptTaskRunnerJshell() {
-    }
+    private ProvidedScriptTaskRunnerJshell() {}
 
     public static synchronized IScriptTaskRunnerJshell getProvidedInstance() {
         if (providedInstance == null) {

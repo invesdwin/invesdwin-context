@@ -1,7 +1,7 @@
 package de.invesdwin.context.beans.init.duplicate.two;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import de.invesdwin.context.beans.init.duplicate.IBeanWithSameClassName;
 

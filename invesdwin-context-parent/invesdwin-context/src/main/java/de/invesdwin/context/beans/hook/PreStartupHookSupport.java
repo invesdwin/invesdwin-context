@@ -1,7 +1,7 @@
 package de.invesdwin.context.beans.hook;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 @Immutable
 @Named

@@ -1,7 +1,7 @@
 package de.invesdwin.context.beans.init;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;

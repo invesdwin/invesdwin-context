@@ -209,7 +209,8 @@ public final class Log extends org.slf4j.ext.XLogger {
     }
 
     private static String format(final String messagePattern, final Object[] argArray) {
-        return de.invesdwin.util.lang.string.description.internal.TextDescriptionFormatter.format(messagePattern, argArray);
+        return de.invesdwin.util.lang.string.description.internal.TextDescriptionFormatter.format(messagePattern,
+                argArray);
     }
 
 }

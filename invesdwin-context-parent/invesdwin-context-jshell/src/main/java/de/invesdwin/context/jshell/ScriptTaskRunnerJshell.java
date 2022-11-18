@@ -1,13 +1,13 @@
 package de.invesdwin.context.jshell;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.jshell.pool.JshellScriptEngineObjectPool;
 import de.invesdwin.context.jshell.pool.WrappedJshellScriptEngine;
 import de.invesdwin.util.error.Throwables;
+import jakarta.inject.Named;
 
 @Immutable
 @Named
@@ -18,8 +18,7 @@ public final class ScriptTaskRunnerJshell implements IScriptTaskRunnerJshell, Fa
     /**
      * public for ServiceLoader support
      */
-    public ScriptTaskRunnerJshell() {
-    }
+    public ScriptTaskRunnerJshell() {}
 
     @Override
     public <T> T run(final AScriptTaskJshell<T> scriptTask) {

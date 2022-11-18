@@ -22,7 +22,7 @@ import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
-public final class NetworkUtil extends de.invesdwin.context.system.internal.SocketUtils {
+public final class NetworkUtil extends de.invesdwin.util.streams.SocketUtils {
 
     private NetworkUtil() {
     }

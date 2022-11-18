@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -432,5 +433,16 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
     public <A extends Annotation> A findAnnotationOnBean(final String beanName, final Class<A> annotationType,
             final boolean allowFactoryBeanInit) throws NoSuchBeanDefinitionException {
         return delegate.findAnnotationOnBean(beanName, annotationType, allowFactoryBeanInit);
+    }
+
+    @Override
+    public void removeApplicationListener(final ApplicationListener<?> listener) {
+        delegate.removeApplicationListener(listener);
+    }
+
+    @Override
+    public <A extends Annotation> Set<A> findAllAnnotationsOnBean(final String beanName, final Class<A> annotationType,
+            final boolean allowFactoryBeanInit) throws NoSuchBeanDefinitionException {
+        return delegate.findAllAnnotationsOnBean(beanName, annotationType, allowFactoryBeanInit);
     }
 }

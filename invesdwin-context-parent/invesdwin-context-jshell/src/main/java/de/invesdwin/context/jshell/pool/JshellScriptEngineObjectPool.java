@@ -1,11 +1,11 @@
 package de.invesdwin.context.jshell.pool;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.util.concurrent.pool.AInvalidatingObjectPool;
+import jakarta.inject.Named;
 
 /**
  * We need to always invalidate, otherwise the classloader that keeps the class per statement gets full and each

@@ -3,7 +3,7 @@ package de.invesdwin.context.beans.init.locations;
 import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.springframework.context.support.GenericApplicationContext;
 

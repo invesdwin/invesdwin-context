@@ -3,7 +3,6 @@ package de.invesdwin.context.webserver.test.internal;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Named;
 
 import org.eclipse.jetty.server.Server;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -19,6 +18,7 @@ import de.invesdwin.context.webserver.test.WebserverTest;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.shutdown.IShutdownHook;
 import de.invesdwin.util.shutdown.ShutdownHookManager;
+import jakarta.inject.Named;
 
 @Named
 @NotThreadSafe

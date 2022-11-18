@@ -3,10 +3,10 @@ package de.invesdwin.context.beans;
 import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 import de.invesdwin.util.lang.string.Strings;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 @SuppressWarnings("serial")
 @ThreadSafe

@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.util.Map;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.websocket.server.ServerEndpointConfig;
 
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -13,7 +12,9 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.log.Log;
+import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.lang.string.Strings;
+import jakarta.websocket.server.ServerEndpointConfig;
 
 /**
  * Works around the Jetty limitation, that it only loads web-fragments from WEB-INF/lib/*.jar.
@@ -49,8 +50,11 @@ public class BlacklistedWebAppContext extends WebAppContext {
 
     @Override
     protected void startContext() throws Exception {
-        final org.eclipse.jetty.websocket.jsr356.server.ServerContainer serverContainer = org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer
-                .initialize(this);
+        final jakarta.websocket.server.ServerContainer serverContainer = Reflections.staticMethod("initialize")
+                .withReturnType(jakarta.websocket.server.ServerContainer.class)
+                .withParameterTypes(org.eclipse.jetty.servlet.ServletContextHandler.class)
+                .in(org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer.class)
+                .invoke(this);
         final Map<String, ServerEndpointConfig> endpointConfigs = MergedContext.getInstance()
                 .getBeansOfType(ServerEndpointConfig.class);
         if (endpointConfigs != null) {

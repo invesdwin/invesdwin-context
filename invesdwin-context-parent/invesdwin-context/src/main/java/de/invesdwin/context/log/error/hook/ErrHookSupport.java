@@ -1,7 +1,7 @@
 package de.invesdwin.context.log.error.hook;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 

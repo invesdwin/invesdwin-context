@@ -1,9 +1,9 @@
 package com.otherproject.test;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.persistence.Entity;
 
 import de.invesdwin.context.persistence.jpa.api.dao.entity.AEntity;
+import jakarta.persistence.Entity;
 
 @SuppressWarnings("serial")
 @NotThreadSafe

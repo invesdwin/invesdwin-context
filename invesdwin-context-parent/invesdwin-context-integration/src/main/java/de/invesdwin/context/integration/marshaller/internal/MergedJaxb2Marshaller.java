@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.concurrent.ThreadSafe;
-import javax.xml.bind.Marshaller;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -19,6 +18,7 @@ import de.invesdwin.context.integration.marshaller.IMergedJaxbContextPath;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.streams.resource.Resources;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * Collects all generated IMergedContextPaths and adds them to the Jaxb2Marshaller.

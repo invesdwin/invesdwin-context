@@ -3,7 +3,7 @@ package de.invesdwin.context.beans.init.internal;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import org.springframework.core.io.ClassPathResource;
 

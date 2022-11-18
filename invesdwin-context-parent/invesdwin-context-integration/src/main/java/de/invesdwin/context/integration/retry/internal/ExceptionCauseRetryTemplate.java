@@ -1,7 +1,7 @@
 package de.invesdwin.context.integration.retry.internal;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.retry.RetryCallback;

@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -17,11 +15,11 @@
 		<project.version.invesdwin-maven-plugin>1.0.14-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.1.0</version.maven-enforcer-plugin>
 		<version.junit>5.8.2</version.junit>
-		<version.build-helper-maven-plugin>3.0.0</version.build-helper-maven-plugin>
-		<version.maven-compiler-plugin>3.8.0</version.maven-compiler-plugin>
+		<version.build-helper-maven-plugin>3.3.0</version.build-helper-maven-plugin>
+		<version.maven-compiler-plugin>3.10.1</version.maven-compiler-plugin>
 		<version.lifecycle-mapping>1.0.0</version.lifecycle-mapping>
-		<version.maven-dependency-plugin>3.1.1</version.maven-dependency-plugin>
-		<version.compiler>1.8</version.compiler>
+		<version.maven-dependency-plugin>3.3.0</version.maven-dependency-plugin>
+		<version.compiler>17</version.compiler>
 		<version.hsqldb>2.7.1</version.hsqldb>
 	</properties>
 
@@ -208,10 +206,13 @@
 								<exclude>commons-logging:commons-logging</exclude>
 								<exclude>org.aspectj:aspectjrt</exclude>
 								<exclude>javax.servlet:servlet-api</exclude>
+								<exclude>javax.servlet:javax.servlet-api</exclude>
+								<exclude>javax.xml.soap:javax.xml.soap-api</exclude>
 								<exclude>org.eclipse.jetty.orbit:javax.servlet</exclude>
 								<exclude>org.apache.geronimo.specs:geronimo-jaxb_2.1_spec</exclude>
 								<exclude>commons-logging:commons-logging-api</exclude>
 								<exclude>javax.persistence:persistence-api</exclude>
+								<exclude>javax.persistence:javax.persistence-api</exclude>
 								<exclude>log4j:log4j</exclude>
 								<exclude>org.apache.logging.log4j:log4j-core</exclude>
 								<exclude>org.slf4j:slf4j-log4j12</exclude>

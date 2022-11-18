@@ -3,7 +3,7 @@ package de.invesdwin.context.test.stub;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.test.ATest;
