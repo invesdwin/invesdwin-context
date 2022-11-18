@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.invesdwin</groupId>
@@ -19,14 +17,15 @@
 		<dependency>
 			<groupId>net.sourceforge.dynamicreports</groupId>
 			<artifactId>dynamicreports-core</artifactId>
+			<classifier>jakarta</classifier>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.lowagie</groupId>
-			<artifactId>itext</artifactId>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
