@@ -72,7 +72,7 @@ public final class SystemPropertiesLoader {
         final List<Resource> filtered = new ArrayList<>(properties.length);
         final String[] basePackages = BasePackagesConfigurer.getBasePackagesArray();
         for (int i = 0; i < properties.length; i++) {
-            final Resource file = properties[0];
+            final Resource file = properties[i];
             if (Strings.startsWithAny(file.getFilename(), basePackages)) {
                 filtered.add(file);
             }
