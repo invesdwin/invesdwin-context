@@ -16,12 +16,15 @@ import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import de.invesdwin.context.beans.validator.DecimalRange.List;
 import de.invesdwin.util.math.Doubles;
 import jakarta.validation.Constraint;
 import jakarta.validation.OverridesAttribute;
@@ -29,6 +32,8 @@ import jakarta.validation.Payload;
 import jakarta.validation.ReportAsSingleViolation;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraintvalidation.SupportedValidationTarget;
+import jakarta.validation.constraintvalidation.ValidationTarget;
 
 /**
  * The annotated element has to be in the appropriate range. Apply on numeric values or string representation of the
@@ -38,8 +43,10 @@ import jakarta.validation.constraints.DecimalMin;
  */
 @Documented
 @Constraint(validatedBy = {})
-@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
+@SupportedValidationTarget(ValidationTarget.ANNOTATED_ELEMENT)
+@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
+@Repeatable(List.class)
 @DecimalMin("0")
 @DecimalMax("" + Double.MAX_VALUE)
 @ReportAsSingleViolation
@@ -57,9 +64,9 @@ public @interface DecimalRange {
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * Defines several {@code @Range} annotations on the same element.
+     * Defines several {@code @DecimalRange} annotations on the same element.
      */
-    @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
+    @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
     @Retention(RUNTIME)
     @Documented
     @interface List {
