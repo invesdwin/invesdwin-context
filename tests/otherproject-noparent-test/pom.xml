@@ -286,8 +286,9 @@
 								<exclude>jakarta.activation:jakarta.activation-api</exclude>
 								<exclude>com.sun.activation:javax.activation</exclude>
 								<exclude>javax.activation:activation</exclude>
-								<!-- use com.sun.mail:javax.mail instead -->
+								<!-- use jakarta.mail:jakarat.mail.api instead -->
 								<exclude>javax.mail:mail</exclude>
+								<exclude>com.sun.mail:javax.mail</exclude>
 								<!-- use org.hibernate.validator:... instead -->
 								<exclude>org.hibernate:hibernate-validator-annotation-processor</exclude>
 								<exclude>org.hibernate:hibernate-validator</exclude>
