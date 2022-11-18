@@ -15,6 +15,7 @@ import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.collections.Arrays;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.streams.resource.Resources;
 
 @Immutable
@@ -24,8 +25,7 @@ public final class SystemPropertiesLoader {
     private static final String META_INF_ENV = META_INF + "env/";
     private static final Log LOG = new Log(SystemPropertiesLoader.class);
 
-    private SystemPropertiesLoader() {
-    }
+    private SystemPropertiesLoader() {}
 
     /**
      * This should only be used by infrastructure classes.
@@ -33,7 +33,8 @@ public final class SystemPropertiesLoader {
     public static void loadSystemProperties() {
         try {
             final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            final Resource[] properties = resolver.getResources("classpath*:" + META_INF + "*.properties");
+            Resource[] properties = resolver.getResources("classpath*:" + META_INF + "*.properties");
+            properties = filterProperties(properties);
             logPropertiesBeingLoaded(properties);
             for (final Resource p : properties) {
                 SystemProperties.setSystemProperties(p, false);
@@ -65,6 +66,18 @@ public final class SystemPropertiesLoader {
         } catch (final IOException e) {
             throw Err.process(e);
         }
+    }
+
+    private static Resource[] filterProperties(final Resource[] properties) {
+        final List<Resource> filtered = new ArrayList<>(properties.length);
+        final String[] basePackages = BasePackagesConfigurer.getBasePackagesArray();
+        for (int i = 0; i < properties.length; i++) {
+            final Resource file = properties[0];
+            if (Strings.startsWithAny(file.getFilename(), basePackages)) {
+                filtered.add(file);
+            }
+        }
+        return filtered.toArray(Resources.EMPTY_ARRAY);
     }
 
     private static void logPropertiesBeingLoaded(final Resource[] properties) {
