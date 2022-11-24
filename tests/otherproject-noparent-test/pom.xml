@@ -282,8 +282,8 @@
 								<exclude>javax.jdo:jdo-api</exclude>
 								<!-- use individual libs instead -->
 								<exclude>javax:javaee-api</exclude>
-								<!-- use com.sun.activation:jakarta.activation instead -->
-								<exclude>jakarta.activation:jakarta.activation-api</exclude>
+								<!-- use jakarta.activation:jakarta.activation-api instead -->
+								<exclude>com.sun.activation:jakarta.activation</exclude>
 								<exclude>com.sun.activation:javax.activation</exclude>
 								<exclude>javax.activation:activation</exclude>
 								<!-- use jakarta.mail:jakarat.mail.api instead -->
