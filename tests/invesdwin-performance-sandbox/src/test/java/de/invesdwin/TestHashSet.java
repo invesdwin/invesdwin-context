@@ -97,6 +97,19 @@ public class TestHashSet extends AbstractPerformanceTest {
         return test(set);
     }
 
+    public int fastUtilHashBigSet() {
+        // fair comparison -- growing table
+        final Set<Long> set = new it.unimi.dsi.fastutil.objects.ObjectOpenHashBigSet<>();
+        return test(set);
+    }
+
+    public int fastUtilHashSetFromMap() {
+        // fair comparison -- growing table
+        final Set<Long> set = java.util.Collections
+                .newSetFromMap(new it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap<>());
+        return test(set);
+    }
+
     public int troveHashSet() {
         // fair comparison -- growing table
         final Set<Long> set = new gnu.trove.set.hash.THashSet<>();
@@ -116,6 +129,8 @@ public class TestHashSet extends AbstractPerformanceTest {
         testRuntime("kolobokeSet", test::kolobokeSet);
         testRuntime("guavaCompactHashSet", test::guavaCompactHashSet);
         testRuntime("fastUtilHashSet", test::fastUtilHashSet);
+        testRuntime("fastUtilHashBigSet", test::fastUtilHashBigSet);
+        testRuntime("fastUtilHashSetFromMap", test::fastUtilHashSetFromMap);
         testRuntime("troveHashSet", test::troveHashSet);
     }
 
@@ -143,6 +158,11 @@ public class TestHashSet extends AbstractPerformanceTest {
         testSize("GuavaCompactHashSet", guavaCompactHashSet, guavaCompactHashSet::add);
         final it.unimi.dsi.fastutil.objects.ObjectOpenHashSet fastUtilHashSet = new it.unimi.dsi.fastutil.objects.ObjectOpenHashSet();
         testSize("FastUtilHashSet", fastUtilHashSet, fastUtilHashSet::add);
+        final it.unimi.dsi.fastutil.objects.ObjectOpenHashBigSet fastUtilHashBigSet = new it.unimi.dsi.fastutil.objects.ObjectOpenHashBigSet();
+        testSize("FastUtilHashBigSet", fastUtilHashBigSet, fastUtilHashBigSet::add);
+        final Set fastUtilHashSetFromMap = java.util.Collections
+                .newSetFromMap(new it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap());
+        testSize("FastUtilHashSetFromMap", fastUtilHashSetFromMap, fastUtilHashSetFromMap::add);
         final gnu.trove.set.hash.THashSet troveHashSet = new gnu.trove.set.hash.THashSet();
         testSize("TroveHashSet", troveHashSet, troveHashSet::add);
     }

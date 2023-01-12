@@ -354,7 +354,7 @@ public class TestHashMap extends AbstractPerformanceTest {
         testRuntime("hashMap", test::hashMap);
         testRuntime("compactHashMap", test::compactHashMap);
         testRuntime("hppcMap", test::hppcMap);
-        //        testRuntime("kolobokeMap", test::kolobokeMap);
+        testRuntime("kolobokeMap", test::kolobokeMap);
         testRuntime("guavaCompactHashMap", test::guavaCompactHashMap);
         testRuntime("fastUtilHashMap", test::fastUtilHashMap);
         testRuntime("troveHashMap", test::troveHashMap);
