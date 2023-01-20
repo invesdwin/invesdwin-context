@@ -116,10 +116,10 @@ public abstract class ARetryRetrievalCloseableIterable<T> implements ICloseableI
                 if (nextDate == null) {
                     throw new NullPointerException("nextDate is null for [" + next + "]");
                 }
-                if (!curDate.equals(fromDate) && curDate.equals(nextDate)) {
+                if (!curDate.equals(fromDate) && nextDate.isBeforeNotNullSafe(curDate)) {
                     close();
                     throw FastNoSuchElementException
-                            .getInstance("ARetryRetrievalCloseableIterable: nextDate is same as curDate");
+                            .getInstance("ARetryRetrievalCloseableIterable: nextDate is before as curDate");
                 } else {
                     curDate = nextDate;
                     return next;
