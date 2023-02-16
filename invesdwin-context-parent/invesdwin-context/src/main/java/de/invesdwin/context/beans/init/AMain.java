@@ -52,6 +52,8 @@ public abstract class AMain {
                 }
                 startApplication(parser);
             }
+        } catch (final RuntimeException e) {
+            throw Err.process(e);
         } catch (final Exception e) {
             final LoggedRuntimeException processed = Err.process(e);
             printHelp(parser);
