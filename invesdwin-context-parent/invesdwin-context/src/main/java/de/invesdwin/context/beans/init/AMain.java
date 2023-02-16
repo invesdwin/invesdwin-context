@@ -52,10 +52,12 @@ public abstract class AMain {
                 }
                 startApplication(parser);
             }
-        } catch (final Throwable e) {
+        } catch (final Exception e) {
             final LoggedRuntimeException processed = Err.process(e);
             printHelp(parser);
             throw processed; //for the case when the main method was called directly
+        } catch (final Throwable e) {
+            throw Err.process(e);
         }
     }
 
@@ -63,6 +65,9 @@ public abstract class AMain {
         return new CmdLineParser(this);
     }
 
+    /**
+     * Checked exceptions will be logged with help text, runtime exceptions will only be logged without help text.
+     */
     protected abstract void startApplication(CmdLineParser parser) throws Exception;
 
     protected final void waitForShutdown() {
