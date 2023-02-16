@@ -5,14 +5,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import jakarta.inject.Named;
 
 import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.context.test.ATest;
+import de.invesdwin.context.test.TestContext;
 import de.invesdwin.context.test.stub.StubSupport;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
+import jakarta.inject.Named;
 
 @Named
 @NotThreadSafe
@@ -30,7 +31,7 @@ public class ContextDirectoriesStub extends StubSupport {
     }
 
     @Override
-    public void tearDownOnce(final ATest test) throws Exception {
+    public void setUpOnce(final ATest test, final TestContext ctx) throws Exception {
         cleanDirectory(ContextProperties.getCacheDirectory());
         cleanDirectory(ContextProperties.TEMP_DIRECTORY);
         final File homeDirectory = ContextProperties.getHomeDirectory();
