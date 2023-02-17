@@ -20,7 +20,7 @@ import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
-public abstract class AMain {
+public abstract class AMain implements Runnable {
 
     protected final Log log = new Log(this);
 
@@ -28,6 +28,7 @@ public abstract class AMain {
     protected boolean help;
 
     protected final String[] args;
+    protected boolean bootstrap;
 
     protected AMain(final String[] args) {
         this(args, true);
@@ -35,11 +36,16 @@ public abstract class AMain {
 
     protected AMain(final String[] args, final boolean bootstrap) {
         this.args = args;
-        parseCommandline(args, bootstrap);
-        Assertions.assertThat(PreMergedContext.class).isNotNull();
+        this.bootstrap = bootstrap;
     }
 
-    private void parseCommandline(final String[] args, final boolean bootstrap) {
+    @Override
+    public final void run() {
+        Assertions.assertThat(PreMergedContext.class).isNotNull();
+        parseCommandline();
+    }
+
+    private void parseCommandline() {
         final CmdLineParser parser = newCmdLineParser();
         try {
             final String[] filteredArgs = parseSystemProperties(args);

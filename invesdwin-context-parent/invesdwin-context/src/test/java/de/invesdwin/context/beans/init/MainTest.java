@@ -1,7 +1,6 @@
 package de.invesdwin.context.beans.init;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineParser;
@@ -12,6 +11,7 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.shutdown.IShutdownHook;
 import de.invesdwin.util.shutdown.ShutdownHookManager;
+import jakarta.inject.Inject;
 
 @NotThreadSafe
 public class MainTest extends AMain {
@@ -36,16 +36,7 @@ public class MainTest extends AMain {
 
     public MainTest() {
         super(ARGS);
-        Assertions.assertThat(new SystemProperties().getString(TEST_SYSPROP_KEY)).isEqualTo(TEST_SYSPROP_VALUE);
-        Assertions.assertThat(new SystemProperties().getString(TEST_SYSPROP_TOO_KEY)).isEqualTo(TEST_SYSPROP_TOO_VALUE);
-        Assertions.assertThat(test).isTrue();
-        Assertions.assertThat(ShutdownHookManager.isShuttingDown()).isFalse();
-        ShutdownHookManager.register(new IShutdownHook() {
-            @Override
-            public void shutdown() throws Exception {
-                Assertions.assertThat(ShutdownHookManager.isShuttingDown()).isTrue();
-            }
-        });
+        run();
     }
 
     @Test
@@ -68,6 +59,16 @@ public class MainTest extends AMain {
 
     @Override
     protected void startApplication(final CmdLineParser parser) {
+        Assertions.assertThat(new SystemProperties().getString(TEST_SYSPROP_KEY)).isEqualTo(TEST_SYSPROP_VALUE);
+        Assertions.assertThat(new SystemProperties().getString(TEST_SYSPROP_TOO_KEY)).isEqualTo(TEST_SYSPROP_TOO_VALUE);
+        Assertions.assertThat(test).isTrue();
+        Assertions.assertThat(ShutdownHookManager.isShuttingDown()).isFalse();
+        ShutdownHookManager.register(new IShutdownHook() {
+            @Override
+            public void shutdown() throws Exception {
+                Assertions.assertThat(ShutdownHookManager.isShuttingDown()).isTrue();
+            }
+        });
         Assertions.assertThat(test).isTrue();
     }
 
