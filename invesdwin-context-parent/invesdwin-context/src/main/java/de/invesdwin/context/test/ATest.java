@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
-import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +16,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.log.Log;
@@ -25,6 +25,7 @@ import de.invesdwin.context.test.internal.LoadTimeWeavingSpringExtension;
 import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.time.Instant;
+import jakarta.inject.Inject;
 
 /**
  * If a BeanNotFoundException occurs during tests where EntityManagerFactory is not found, then it means that the test
@@ -75,7 +76,9 @@ public abstract class ATest implements ITestLifecycle {
     //CHECKSTYLE:ON
 
     static {
-        Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
+        if (PlatformInitializerProperties.isAllowed()) {
+            Assertions.assertThat(PreMergedContext.getInstance()).isNotNull();
+        }
     }
 
     @Inject
