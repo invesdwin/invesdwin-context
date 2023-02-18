@@ -22,8 +22,7 @@ public final class BasePackagesConfigurer {
     private static Set<String> basePackages;
     private static String[] basePackagesArray;
 
-    private BasePackagesConfigurer() {
-    }
+    private BasePackagesConfigurer() {}
 
     public static synchronized Set<String> getBasePackages() {
         if (basePackages == null) {
@@ -43,9 +42,7 @@ public final class BasePackagesConfigurer {
                         basePackageSingularPlural += "s";
                     }
 
-                    //CHECKSTYLE:OFF
-                    LOG.info("Loading {} {} {}", basePackages.size(), basePackageSingularPlural, basePackages);
-                    //CHECKSTYLE:ON
+                    LOG.info("Loading " + basePackages.size() + " " + basePackageSingularPlural + " " + basePackages);
                 }
             } catch (final Throwable t) {
                 //webstart safety for access control
