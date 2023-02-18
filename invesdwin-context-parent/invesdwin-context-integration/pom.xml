@@ -75,6 +75,10 @@
 			<artifactId>commons-compress</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.rauschig</groupId>
+			<artifactId>jarchivelib</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
 		</dependency>
