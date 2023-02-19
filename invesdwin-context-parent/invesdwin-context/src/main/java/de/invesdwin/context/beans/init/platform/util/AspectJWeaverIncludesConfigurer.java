@@ -68,6 +68,8 @@ public final class AspectJWeaverIncludesConfigurer {
                 if (!isShowWeaveInfo()) {
                     //prevent log pollution in hadoop
                     template = template.replace("-showWeaveInfo", "");
+                    template = template.replace(
+                            "-XmessageHandlerClass:org.springframework.aop.aspectj.AspectJWeaverMessageHandler", "");
                 }
 
                 final File file = new File(ContextProperties.TEMP_CLASSPATH_DIRECTORY, "META-INF/aop.xml");
