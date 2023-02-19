@@ -4,23 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.net.URI;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.agrona.concurrent.UnsafeBuffer;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.type.filter.RegexPatternTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.platform.util.AmazonCorrettoSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.AspectJWeaverIncludesConfigurer;
 import de.invesdwin.context.beans.init.platform.util.BouncyCastleSecurityProviderConfigurer;
+import de.invesdwin.context.beans.init.platform.util.ClassPathScannerConfigurer;
 import de.invesdwin.context.beans.init.platform.util.ConscryptSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.CryptoPolicyConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
@@ -40,12 +35,11 @@ import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.classpath.ClassPathScanner;
-import de.invesdwin.util.classpath.FastClassPathScanner;
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -234,7 +228,8 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         if (!isTestEnvironment) {
             //Productive logs should not mix each other between processes
             logDirSr += "/";
-            logDirSr += PlatformInitializerProperties.START_OF_APPLICATION_CLOCK_TIME.toString("yyyyMMddHHmmss");
+            logDirSr += new FDate(PlatformInitializerProperties.START_OF_APPLICATION_CLOCK_TIME_MILLIS)
+                    .toString("yyyyMMddHHmmss");
             logDirSr += "_";
             logDirSr += ManagementFactory.getRuntimeMXBean().getName();
         }
@@ -260,8 +255,8 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public Resource initSystemPropertiesResource() {
-        return new FileSystemResource(new File(ContextProperties.getHomeDirectory(), "system.properties"));
+    public URI initSystemPropertiesUri() {
+        return new File(ContextProperties.getHomeDirectory(), "system.properties").toURI();
     }
 
     @Override
@@ -271,19 +266,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initClassPathScanner() {
-        //filter out test classes to prevent issues with class not found or resource not found in production
-        FastClassPathScanner.addBlacklistPath("de/invesdwin/*Test");
-        FastClassPathScanner.addBlacklistPath("de/invesdwin/*Stub");
-        FastClassPathScanner.addBlacklistPath("de/invesdwin/*/test/*");
-        for (final String basePackage : ContextProperties.getBasePackages()) {
-            FastClassPathScanner.addWhitelistPath(basePackage.replace(".", "/"));
-        }
-
-        final List<TypeFilter> defaultExcludeFilters = new ArrayList<TypeFilter>();
-        //filter out test classes to prevent issues with class not found or resource not found in production
-        defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*(Test|Stub)")));
-        defaultExcludeFilters.add(new RegexPatternTypeFilter(Pattern.compile("de\\.invesdwin\\..*\\.test\\..*")));
-        ClassPathScanner.setDefaultExcludeFilters(defaultExcludeFilters);
+        ClassPathScannerConfigurer.configure();
     }
 
     /**

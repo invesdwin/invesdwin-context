@@ -3,7 +3,7 @@ package de.invesdwin.context.beans.init.platform.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.Immutable;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -11,7 +11,7 @@ import org.springframework.core.io.Resource;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
 
-@ThreadSafe
+@Immutable
 public class ComponentScanConfigurer {
 
     public Map<String, Resource> getApplicationContextXmlConfigs(final boolean defaultLazyInit) {

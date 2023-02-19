@@ -2,8 +2,7 @@ package de.invesdwin.context.beans.init.platform;
 
 import java.io.File;
 import java.lang.Thread.UncaughtExceptionHandler;
-
-import org.springframework.core.io.Resource;
+import java.net.URI;
 
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
@@ -54,7 +53,7 @@ public interface IPlatformInitializer {
 
     File initCacheDirectory(File fallbackWorkDirectory);
 
-    Resource initSystemPropertiesResource();
+    URI initSystemPropertiesUri();
 
     void registerTypesForSerialization();
 

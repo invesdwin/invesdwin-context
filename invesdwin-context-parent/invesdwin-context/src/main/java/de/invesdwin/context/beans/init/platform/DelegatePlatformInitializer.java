@@ -2,10 +2,9 @@ package de.invesdwin.context.beans.init.platform;
 
 import java.io.File;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.URI;
 
 import javax.annotation.concurrent.NotThreadSafe;
-
-import org.springframework.core.io.Resource;
 
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
@@ -130,8 +129,8 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public Resource initSystemPropertiesResource() {
-        return delegate.initSystemPropertiesResource();
+    public URI initSystemPropertiesUri() {
+        return delegate.initSystemPropertiesUri();
     }
 
     @Override

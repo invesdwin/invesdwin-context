@@ -34,6 +34,7 @@ import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.streams.resource.Resources;
+import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.duration.Duration;
 
 /**
@@ -202,7 +203,7 @@ public final class MergedContext extends ADelegateContext {
     public static void logBootstrapFinished() {
         instance.getBean(StartupHookManager.class).start();
         LOG.info("Bootstrap finished after: %s",
-                PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME.toDuration());
+                new Instant(PlatformInitializerProperties.START_OF_APPLICATION_CPU_TIME_NANOS).toDuration());
         bootstrapFinished = true;
         bootstrapRunning = false;
     }

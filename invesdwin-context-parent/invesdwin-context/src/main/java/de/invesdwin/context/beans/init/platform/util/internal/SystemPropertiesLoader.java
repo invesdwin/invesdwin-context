@@ -1,12 +1,15 @@
 package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import de.invesdwin.context.ContextProperties;
@@ -41,8 +44,7 @@ public final class SystemPropertiesLoader {
             }
             final List<Resource> overrideProperties = new ArrayList<Resource>();
             final List<String> overridePropertiesNames = new ArrayList<String>();
-            final Resource systemPropertiesResource = PlatformInitializerProperties.getInitializer()
-                    .initSystemPropertiesResource();
+            final Resource systemPropertiesResource = initSystemPropertiesResource();
             if (systemPropertiesResource != null && systemPropertiesResource.exists()) {
                 overrideProperties.add(systemPropertiesResource);
             }
@@ -65,6 +67,18 @@ public final class SystemPropertiesLoader {
             }
         } catch (final IOException e) {
             throw Err.process(e);
+        }
+    }
+
+    private static Resource initSystemPropertiesResource() {
+        final URI uri = PlatformInitializerProperties.getInitializer().initSystemPropertiesUri();
+        if (uri == null) {
+            return null;
+        }
+        try {
+            return new UrlResource(uri);
+        } catch (final MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 
