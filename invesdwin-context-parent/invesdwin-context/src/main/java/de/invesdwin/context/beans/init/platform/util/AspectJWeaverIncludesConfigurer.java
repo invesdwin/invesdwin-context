@@ -10,6 +10,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.io.IOUtils;
+import org.aspectj.weaver.tools.WeavingAdaptor;
 import org.springframework.core.io.ClassPathResource;
 
 import de.invesdwin.context.ContextProperties;
@@ -20,10 +21,29 @@ import de.invesdwin.util.lang.Files;
 @ThreadSafe
 public final class AspectJWeaverIncludesConfigurer {
 
+    public static final String SHOW_WEAVE_INFO_PROPERTY = WeavingAdaptor.SHOW_WEAVE_INFO_PROPERTY;
+
     @GuardedBy("AspectJWeaverIncludesConfigurer.class")
     private static File alreadyGenerated;
 
     private AspectJWeaverIncludesConfigurer() {}
+
+    public static void setShowWeaveInfo(final boolean showWeaveInfo) {
+        //CHECKSTYLE:OFF
+        System.setProperty(SHOW_WEAVE_INFO_PROPERTY, String.valueOf(showWeaveInfo));
+        //CHECKSTYLE:ON
+    }
+
+    public static boolean isShowWeaveInfo() {
+        //CHECKSTYLE:OFF
+        final String str = System.getProperty(SHOW_WEAVE_INFO_PROPERTY);
+        //CHECKSTYLE:ON
+        if (str == null) {
+            //default is true so that error messages get logged
+            return true;
+        }
+        return Boolean.parseBoolean(str);
+    }
 
     public static synchronized void configure() {
         try {
@@ -44,6 +64,12 @@ public final class AspectJWeaverIncludesConfigurer {
                     template = IOUtils.toString(in, Charset.defaultCharset());
                 }
                 template = template.replace("<!--INCLUDES-->", includes);
+
+                if (!isShowWeaveInfo()) {
+                    //prevent log pollution in hadoop
+                    template = template.replace("-showWeaveInfo", "");
+                }
+
                 final File file = new File(ContextProperties.TEMP_CLASSPATH_DIRECTORY, "META-INF/aop.xml");
                 Files.writeStringToFile(file, template, Charset.defaultCharset());
                 alreadyGenerated = file;
