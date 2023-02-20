@@ -12,9 +12,9 @@ import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.streams.buffer.MemoryMappedFile;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
 /**
@@ -30,7 +30,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             .newReadWriteLock(MappedChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
     private long position;
-    private volatile MemoryMappedFile reader;
+    private volatile IMemoryMappedFile reader;
 
     public MappedChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde) {
         this.memoryFile = new File(memoryDirectory.getAbsolutePath() + ".bin");
@@ -42,7 +42,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
         this.valueSerde = valueSerde;
     }
 
-    private MemoryMappedFile getReader() {
+    private IMemoryMappedFile getReader() {
         if (reader == null) {
             if (!memoryFile.exists()) {
                 return null;
@@ -55,7 +55,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                     }
                     final long positionCopy = position;
                     try {
-                        reader = new MemoryMappedFile(memoryFile.getAbsolutePath(), positionCopy, true);
+                        reader = IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy, true);
                     } catch (final IOException e) {
                         throw new RuntimeException("file=" + memoryFile.getAbsolutePath() + " position=" + positionCopy,
                                 e);
@@ -72,7 +72,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     public V get(final ChunkSummary summary) {
         lock.readLock().lock();
         try {
-            final MemoryMappedFile reader = getReader();
+            final IMemoryMappedFile reader = getReader();
             if (reader == null) {
                 return null;
             }
