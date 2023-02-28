@@ -68,4 +68,21 @@ public class TimeRangedOHLCDataItem {
                 .toString();
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof TimeRangedOHLCDataItem) {
+            final TimeRangedOHLCDataItem cObj = (TimeRangedOHLCDataItem) obj;
+            return Objects.equals(startTime, cObj.startTime) && Objects.equals(endTime, cObj.endTime)
+                    && Objects.equals(open, cObj.open) && Objects.equals(high, cObj.high)
+                    && Objects.equals(low, cObj.low) && Objects.equals(close, cObj.close)
+                    && Objects.equals(volume, cObj.volume);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(startTime, endTime, open, high, low, close, volume);
+    }
+
 }
