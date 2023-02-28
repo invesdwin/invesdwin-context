@@ -82,7 +82,7 @@ public class TimeRangedOHLCDataItem {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(startTime, endTime, open, high, low, close, volume);
+        return Objects.hashCode(TimeRangedOHLCDataItem.class, startTime, endTime, open, high, low, close, volume);
     }
 
 }
