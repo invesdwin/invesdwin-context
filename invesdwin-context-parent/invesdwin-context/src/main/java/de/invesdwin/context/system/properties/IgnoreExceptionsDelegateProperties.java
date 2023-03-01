@@ -470,4 +470,9 @@ public final class IgnoreExceptionsDelegateProperties implements IProperties {
         return delegate.getErrorMessage(key, value, expectedType, message);
     }
 
+    @Override
+    public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
+        delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
+    }
+
 }

@@ -212,6 +212,7 @@ public abstract class AProperties implements IProperties {
         return actualValue;
     }
 
+    @Override
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         if (!ContextProperties.IS_TEST_ENVIRONMENT && defaultValueWarning != null
                 && defaultValueWarning.equals(actualValue)) {

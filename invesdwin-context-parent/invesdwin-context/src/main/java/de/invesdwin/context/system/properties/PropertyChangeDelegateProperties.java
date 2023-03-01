@@ -321,4 +321,9 @@ public class PropertyChangeDelegateProperties extends APropertyChangeSupportedBa
         return delegate.getStringWithSecurityWarning(key, defaultValueWarning);
     }
 
+    @Override
+    public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
+        delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
+    }
+
 }

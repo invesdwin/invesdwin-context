@@ -4,13 +4,13 @@ import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.Errors;
 
 import de.invesdwin.context.beans.VerboseConstraintViolationException;
+import jakarta.inject.Named;
 import jakarta.validation.Configuration;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -58,7 +58,7 @@ public class BeanValidator
     }
 
     public boolean isValid(final Object target) {
-        return delegate.validate(target).size() == 0;
+        return delegate.validate(target).isEmpty();
     }
 
     public ConstraintViolationException validate(final Object target, final Locale locale) {
@@ -73,10 +73,17 @@ public class BeanValidator
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ConstraintViolationException validate(final Object target) {
         final Set<ConstraintViolation<?>> constraintViolations = (Set) delegate.validate(target);
-        if (constraintViolations.size() > 0) {
+        if (!constraintViolations.isEmpty()) {
             return new VerboseConstraintViolationException(constraintViolations);
         } else {
             return null;
+        }
+    }
+
+    public void validateThrow(final Object target) {
+        final ConstraintViolationException error = validate(target);
+        if (error != null) {
+            throw error;
         }
     }
 
