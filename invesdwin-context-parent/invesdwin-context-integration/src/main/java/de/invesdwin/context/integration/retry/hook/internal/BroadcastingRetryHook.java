@@ -21,21 +21,36 @@ public class BroadcastingRetryHook implements IRetryHook {
 
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
-        for (final IRetryHook hook : hooks) {
+        if (hooks.isEmpty()) {
+            return;
+        }
+        final IRetryHook[] array = hooks.asArray(IRetryHook.EMPTY_ARRAY);
+        for (int i = 0; i < array.length; i++) {
+            final IRetryHook hook = array[i];
             hook.onBeforeRetry(originator, retryCount, cause);
         }
     }
 
     @Override
     public void onRetryAborted(final RetryOriginator originator, final int retryCount, final Throwable cause) {
-        for (final IRetryHook hook : hooks) {
+        if (hooks.isEmpty()) {
+            return;
+        }
+        final IRetryHook[] array = hooks.asArray(IRetryHook.EMPTY_ARRAY);
+        for (int i = 0; i < array.length; i++) {
+            final IRetryHook hook = array[i];
             hook.onRetryAborted(originator, retryCount, cause);
         }
     }
 
     @Override
     public void onRetrySucceeded(final RetryOriginator originator, final int retryCount) {
-        for (final IRetryHook hook : hooks) {
+        if (hooks.isEmpty()) {
+            return;
+        }
+        final IRetryHook[] array = hooks.asArray(IRetryHook.EMPTY_ARRAY);
+        for (int i = 0; i < array.length; i++) {
+            final IRetryHook hook = array[i];
             hook.onRetrySucceeded(originator, retryCount);
         }
     }

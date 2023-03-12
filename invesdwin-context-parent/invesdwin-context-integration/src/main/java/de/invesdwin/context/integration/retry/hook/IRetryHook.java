@@ -4,6 +4,8 @@ import de.invesdwin.context.integration.retry.task.RetryOriginator;
 
 public interface IRetryHook {
 
+    IRetryHook[] EMPTY_ARRAY = new IRetryHook[0];
+
     /**
      * Just throw another exception to abort the retry.
      */
