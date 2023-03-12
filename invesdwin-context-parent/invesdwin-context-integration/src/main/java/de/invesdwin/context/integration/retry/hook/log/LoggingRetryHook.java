@@ -13,6 +13,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.reference.IMutableReference;
 import de.invesdwin.util.concurrent.reference.ThreadLocalReference;
 import de.invesdwin.util.error.Throwables;
+import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -20,10 +21,14 @@ import de.invesdwin.util.time.duration.Duration;
 public class LoggingRetryHook implements IRetryHook {
 
     private static final IMutableReference<LoggingPreviousCause> PREVIOUS_CAUSE_HOLDER = new ThreadLocalReference<LoggingPreviousCause>();
+    private static final IMutableReference<Boolean> SKIP_RETRY_LOG = new ThreadLocalReference<Boolean>();
     private static final Log LOG = new Log(LoggingRetryHook.class);
 
     @Override
     public void onBeforeRetry(final RetryOriginator originator, final int retryCount, final Throwable cause) {
+        if (isSkipRetryLog()) {
+            return;
+        }
         onBeforeRetry(PREVIOUS_CAUSE_HOLDER, originator, retryCount, cause);
     }
 
@@ -45,6 +50,20 @@ public class LoggingRetryHook implements IRetryHook {
         return PREVIOUS_CAUSE_HOLDER.get() != null;
     }
 
+    public static boolean isSkipRetryLog() {
+        return Booleans.isTrue(SKIP_RETRY_LOG.get());
+    }
+
+    public static boolean setSkipRetryLog(final boolean skipRetryLog) {
+        final boolean before = isSkipRetryLog();
+        if (skipRetryLog) {
+            SKIP_RETRY_LOG.set(Boolean.TRUE);
+        } else {
+            SKIP_RETRY_LOG.set(null);
+        }
+        return before;
+    }
+
     public static void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
             final LoggingReason reason, final Instant waitingSince) {
         LOG.catching(Level.ERROR, new FastRetryLaterRuntimeException(
@@ -53,6 +72,9 @@ public class LoggingRetryHook implements IRetryHook {
 
     @Override
     public void onRetryAborted(final RetryOriginator originator, final int retryCount, final Throwable cause) {
+        if (isSkipRetryLog()) {
+            return;
+        }
         onRetryAborted(PREVIOUS_CAUSE_HOLDER, originator, retryCount, cause);
     }
 
@@ -66,6 +88,9 @@ public class LoggingRetryHook implements IRetryHook {
 
     @Override
     public void onRetrySucceeded(final RetryOriginator originator, final int retryCount) {
+        if (isSkipRetryLog()) {
+            return;
+        }
         onRetrySucceeded(PREVIOUS_CAUSE_HOLDER, originator, retryCount);
     }
 
