@@ -49,6 +49,8 @@ public interface IFileChannel<FILEINFO> extends Closeable, ISerializableValueObj
 
     void upload(InputStream input);
 
+    void download(File destination);
+
     byte[] download();
 
     void delete();
