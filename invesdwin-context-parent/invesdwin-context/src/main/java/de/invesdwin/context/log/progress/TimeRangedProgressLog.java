@@ -14,7 +14,7 @@ import de.invesdwin.util.time.duration.AEstimatedRemainingDuration;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe
-public class TimeRangedProgressLogger {
+public class TimeRangedProgressLog {
 
     private final LoopInterruptedCheck loopCheck = new LoopInterruptedCheck(Duration.ONE_SECOND);
 
@@ -38,7 +38,7 @@ public class TimeRangedProgressLogger {
     private Percent progress;
     private Duration duration;
 
-    public TimeRangedProgressLogger(final Log log, final String items, final String forName, final FDate from,
+    public TimeRangedProgressLog(final Log log, final String items, final String forName, final FDate from,
             final FDate to) {
         this.log = log;
         this.items = items;
