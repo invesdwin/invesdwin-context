@@ -171,7 +171,7 @@ public final class ContextProperties {
     /**
      * http://stackoverflow.com/questions/585534/what-is-the-best-way-to-find-the-users-home-directory-in-java
      * 
-     * this should $HOME
+     * this should be $HOME
      */
     public static String getSystemHomeDirectory() {
         return new SystemProperties().getString("user.home");
