@@ -233,7 +233,7 @@ public abstract class AProperties implements IProperties {
             return Enum.valueOf(enumType, value);
         } catch (final IllegalArgumentException e) {
             throw new IllegalArgumentException(
-                    getErrorMessage(key, value, Duration.class, "Expected format: " + getEnumFormat(FTimeUnit.class)));
+                    getErrorMessage(key, value, Duration.class, "Expected format: " + getEnumFormat(enumType)));
         }
     }
 
