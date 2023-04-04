@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -24,8 +26,7 @@ import de.invesdwin.util.time.date.FTimeUnit;
 @Immutable
 public final class NetworkUtil extends de.invesdwin.util.streams.SocketUtils {
 
-    private NetworkUtil() {
-    }
+    private NetworkUtil() {}
 
     /**
      * Identifies the local ip of the computer in the local network.
@@ -189,6 +190,16 @@ public final class NetworkUtil extends de.invesdwin.util.streams.SocketUtils {
         try (@SuppressWarnings("resource")
         Scanner s = new Scanner(stream).useDelimiter("\\A")) {
             return s.hasNext() ? s.next() : "";
+        }
+    }
+
+    public static boolean isTcpPortOpen(final InetSocketAddress address) {
+        try (Socket socket = new Socket()) {
+            socket.connect(address);
+            return socket.isConnected();
+        } catch (final IOException e) {
+            //ignore
+            return false;
         }
     }
 
