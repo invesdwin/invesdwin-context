@@ -14,6 +14,7 @@ import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
@@ -108,12 +109,9 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
 
     @Override
     public ChunkSummary put(final V value) {
-        final IByteBuffer buffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
-        final int length = valueSerde.toBuffer(buffer, value);
-        try {
+        try (ICloseableByteBuffer buffer = ByteBuffers.EXPANDABLE_POOL.borrowObject()) {
+            final int length = valueSerde.toBuffer(buffer, value);
             return write(buffer, length);
-        } finally {
-            ByteBuffers.EXPANDABLE_POOL.returnObject(buffer);
         }
     }
 

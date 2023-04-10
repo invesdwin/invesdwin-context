@@ -7,6 +7,7 @@ import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.SerdeBaseMethods;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
 
 @Immutable
 public class CompressionDelegateSerde<E> implements ISerde<E> {
@@ -43,12 +44,9 @@ public class CompressionDelegateSerde<E> implements ISerde<E> {
             //we can save a copy here
             return delegate.fromBuffer(buffer);
         } else {
-            final IByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
-            try {
+            try (ICloseableByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject()) {
                 final int decompressedLength = compressionFactory.decompress(buffer, decompressedBuffer);
                 return delegate.fromBuffer(decompressedBuffer.sliceTo(decompressedLength));
-            } finally {
-                ByteBuffers.EXPANDABLE_POOL.returnObject(decompressedBuffer);
             }
         }
     }
@@ -62,12 +60,9 @@ public class CompressionDelegateSerde<E> implements ISerde<E> {
             //we can save a copy here
             return delegate.toBuffer(buffer, obj);
         } else {
-            final IByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject();
-            try {
+            try (ICloseableByteBuffer decompressedBuffer = ByteBuffers.EXPANDABLE_POOL.borrowObject()) {
                 final int decompressedLength = delegate.toBuffer(decompressedBuffer, obj);
                 return compressionFactory.compress(decompressedBuffer.sliceTo(decompressedLength), buffer);
-            } finally {
-                ByteBuffers.EXPANDABLE_POOL.returnObject(decompressedBuffer);
             }
         }
     }
