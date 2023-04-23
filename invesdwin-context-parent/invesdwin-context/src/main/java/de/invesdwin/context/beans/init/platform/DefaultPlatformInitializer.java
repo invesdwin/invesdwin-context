@@ -143,7 +143,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public File initTempDirectory() {
-        return DynamicInstrumentationProperties.USER_TEMP_DIRECTORY;
+        return DynamicInstrumentationProperties.PROCESS_TEMP_DIRECTORY;
     }
 
     @Override
