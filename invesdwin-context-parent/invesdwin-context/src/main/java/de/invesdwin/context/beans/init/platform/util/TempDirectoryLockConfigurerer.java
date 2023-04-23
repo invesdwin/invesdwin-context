@@ -15,12 +15,11 @@ public final class TempDirectoryLockConfigurerer {
 
     public static final String TEMP_DIRECTORY_LOCK_FILE_NAME = "running.lock";
 
-    private TempDirectoryLockConfigurerer() {
-    }
+    private TempDirectoryLockConfigurerer() {}
 
     public static void deleteObsoleteTempDirectories(final File tempDirectory) {
         final File tempDirectoryParent = tempDirectory.getParentFile();
-        if (!tempDirectoryParent.getName().equals(DynamicInstrumentationProperties.TEMP_DIRECTORY_PARENT_NAME)) {
+        if (!tempDirectoryParent.getName().equals(DynamicInstrumentationProperties.USER_TEMP_DIRECTORY_NAME)) {
             //failsafe so that we don't delete the wrong directory siblings
             return;
         }
