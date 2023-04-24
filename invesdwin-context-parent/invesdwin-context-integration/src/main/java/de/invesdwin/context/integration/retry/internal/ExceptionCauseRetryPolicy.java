@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -30,6 +29,7 @@ import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.error.Throwables;
+import jakarta.inject.Named;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolationException;
@@ -95,6 +95,10 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
         return shouldRetry(lastThrowable);
     }
 
+    /**
+     * WARNING: use Retries.shouldRetry() instead
+     */
+    @Deprecated
     public static boolean shouldRetry(final Throwable lastThrowable) {
         Throwable cause = lastThrowable;
         while (cause != null) {

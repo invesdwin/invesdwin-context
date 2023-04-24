@@ -8,13 +8,14 @@ import de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryPolicy
 @Immutable
 public final class Retries {
 
-    private Retries() {
-    }
+    private Retries() {}
 
+    @SuppressWarnings("deprecation")
     public static boolean isRetrying() {
         return LoggingRetryHook.isRetrying();
     }
 
+    @SuppressWarnings("deprecation")
     public static boolean shouldRetry(final Throwable reason) {
         return ExceptionCauseRetryPolicy.shouldRetry(reason);
     }

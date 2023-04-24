@@ -46,6 +46,10 @@ public class LoggingRetryHook implements IRetryHook {
         }
     }
 
+    /**
+     * WARNING: use Retries.isRetrying() instead
+     */
+    @Deprecated
     public static boolean isRetrying() {
         return PREVIOUS_CAUSE_HOLDER.get() != null;
     }
