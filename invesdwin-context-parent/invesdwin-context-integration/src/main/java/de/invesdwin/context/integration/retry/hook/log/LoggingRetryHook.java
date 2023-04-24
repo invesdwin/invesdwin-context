@@ -98,7 +98,7 @@ public class LoggingRetryHook implements IRetryHook {
         onRetrySucceeded(PREVIOUS_CAUSE_HOLDER, originator, retryCount);
     }
 
-    private void onRetrySucceeded(final IMutableReference<LoggingPreviousCause> previousCauseHolder,
+    public static void onRetrySucceeded(final IMutableReference<LoggingPreviousCause> previousCauseHolder,
             final RetryOriginator originator, final int retryCount) {
         LOG.warn(createSuccessMessage(originator, retryCount));
         previousCauseHolder.set(null);
