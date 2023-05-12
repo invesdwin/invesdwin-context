@@ -1,13 +1,13 @@
 package de.invesdwin.context.beanshell.pool;
 
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.util.concurrent.pool.timeout.ATimeoutObjectPool;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
+import jakarta.inject.Named;
 
 @ThreadSafe
 @Named
@@ -26,8 +26,9 @@ public final class BeanshellScriptEngineObjectPool extends ATimeoutObjectPool<Wr
     }
 
     @Override
-    protected void passivateObject(final WrappedBeanshellScriptEngine obj) {
+    protected boolean passivateObject(final WrappedBeanshellScriptEngine obj) {
         obj.reset();
+        return true;
     }
 
     @Override

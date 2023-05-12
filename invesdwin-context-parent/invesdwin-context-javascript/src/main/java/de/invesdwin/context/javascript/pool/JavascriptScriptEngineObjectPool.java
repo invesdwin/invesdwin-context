@@ -1,13 +1,13 @@
 package de.invesdwin.context.javascript.pool;
 
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.util.concurrent.pool.timeout.ATimeoutObjectPool;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
+import jakarta.inject.Named;
 
 @ThreadSafe
 @Named
@@ -31,8 +31,9 @@ public final class JavascriptScriptEngineObjectPool extends ATimeoutObjectPool<W
     }
 
     @Override
-    protected void passivateObject(final WrappedJavascriptScriptEngine obj) {
+    protected boolean passivateObject(final WrappedJavascriptScriptEngine obj) {
         obj.reset();
+        return true;
     }
 
     @Override
