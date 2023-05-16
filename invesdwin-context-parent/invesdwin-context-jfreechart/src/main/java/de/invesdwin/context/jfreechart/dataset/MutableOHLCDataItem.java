@@ -3,11 +3,12 @@ package de.invesdwin.context.jfreechart.dataset;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDates;
 
 @NotThreadSafe
 public class MutableOHLCDataItem extends TimeRangedOHLCDataItem {
 
-    public static final MutableOHLCDataItem DUMMY_VALUE = new MutableOHLCDataItem(FDate.MIN_DATE, FDate.MIN_DATE) {
+    public static final MutableOHLCDataItem DUMMY_VALUE = new MutableOHLCDataItem(FDates.MIN_DATE, FDates.MIN_DATE) {
 
         @Override
         public void setStartTime(final FDate date) {
