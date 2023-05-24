@@ -1,9 +1,9 @@
 package de.invesdwin.context.integration.retry.internal;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -54,7 +54,7 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     @SuppressWarnings("unchecked")
     private static final List<Class<? extends Exception>> DISALLOWED_CAUSES = Arrays.asList(
             OptimisticLockingFailureException.class, OptimisticLockException.class, ConstraintViolationException.class,
-            InterruptedException.class, EOFException.class);
+            InterruptedException.class, NoSuchElementException.class);
     //<property name="allowedCauses">
     //    <set>
     //        <!-- on connection problems there should always be retried -->
