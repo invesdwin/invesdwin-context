@@ -44,8 +44,7 @@ public final class Err {
         UNCAUGHT_EXCEPTION_HANDLER = handler;
     }
 
-    private Err() {
-    }
+    private Err() {}
 
     /**
      * Logs an Exception as an error and returns it so that it can be analyzed or rethrown.
@@ -171,6 +170,7 @@ public final class Err {
         private final Duration interval;
         private final Instant instant;
         private IntervalException next;
+        private IntervalException prev;
 
         private IntervalException(final LoggedRuntimeException exception, final Duration interval) {
             this.exception = exception;
@@ -194,6 +194,16 @@ public final class Err {
         @Override
         public void setNext(final IntervalException next) {
             this.next = next;
+        }
+
+        @Override
+        public IntervalException getPrev() {
+            return prev;
+        }
+
+        @Override
+        public void setPrev(final IntervalException prev) {
+            this.prev = prev;
         }
 
     }
