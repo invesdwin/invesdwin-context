@@ -67,22 +67,18 @@ public class AsciiTableTheme {
         this.verticalSeparator = newVerticalSeparator(vertical, space);
     }
 
-    //CHECKSTYLE:OFF
     public AsciiTableTheme(final char intersect, final char horizontal, final char vertical, final char topLeft,
             final char topIntersect, final char topRight, final char leftIntersect, final char rightIntersect,
             final char bottomLeft, final char bottomIntersect, final char bottomRight) {
-        //CHECKSTYLE:ON
         this(intersect, horizontal, vertical, topLeft, topIntersect, topRight, leftIntersect, rightIntersect,
                 bottomLeft, bottomIntersect, bottomRight, true, true, true);
     }
 
-    //CHECKSTYLE:OFF
     public AsciiTableTheme(final char intersect, final char horizontal, final char vertical, final char topLeft,
             final char topIntersect, final char topRight, final char leftIntersect, final char rightIntersect,
             final char bottomLeft, final char bottomIntersect, final char bottomRight,
             final boolean headerRowSeparatorEnabled, final boolean bodyRowSeparatorEnabled,
             final boolean outerBorderEnabled) {
-        //CHECKSTYLE:ON
         this.intersect = intersect;
         this.horizontal = horizontal;
         this.vertical = vertical;

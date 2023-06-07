@@ -82,14 +82,14 @@ public final class DynamicReportTemplates {
         subtotalStyle = stl.style(boldStyle).setTopBorder(stl.pen1Point());
 
         final StyleBuilder crosstabGroupStyle = stl.style(columnTitleStyle);
-        final StyleBuilder crosstabGroupTotalStyle = stl.style(columnTitleStyle).setBackgroundColor(
-                new Color(170, 170, 170));
-        final StyleBuilder crosstabGrandTotalStyle = stl.style(columnTitleStyle).setBackgroundColor(
-                new Color(140, 140, 140));
+        final StyleBuilder crosstabGroupTotalStyle = stl.style(columnTitleStyle)
+                .setBackgroundColor(new Color(170, 170, 170));
+        final StyleBuilder crosstabGrandTotalStyle = stl.style(columnTitleStyle)
+                .setBackgroundColor(new Color(140, 140, 140));
         final StyleBuilder crosstabCellStyle = stl.style(columnStyle).setBorder(stl.pen1Point());
 
-        final TableOfContentsCustomizerBuilder tableOfContentsCustomizer = tableOfContentsCustomizer().setHeadingStyle(
-                0, stl.style(rootStyle).bold());
+        final TableOfContentsCustomizerBuilder tableOfContentsCustomizer = tableOfContentsCustomizer()
+                .setHeadingStyle(0, stl.style(rootStyle).bold());
 
         reportTemplate = template().setLocale(Locale.ENGLISH)
                 .setColumnStyle(columnStyle)
@@ -109,7 +109,8 @@ public final class DynamicReportTemplates {
 
         final HyperLinkBuilder link = hyperLink("http://dynamicreports.sourceforge.net");
         dynamicReportsComponent = cmp.horizontalList(
-                cmp.image(DynamicReportTemplates.class.getResource("images/dynamicreports.png")).setFixedDimension(60, 60),
+                cmp.image(DynamicReportTemplates.class.getResource("images/dynamicreports.png"))
+                        .setFixedDimension(60, 60),
                 cmp.verticalList(
                         cmp.text("DynamicReports")
                                 .setStyle(bold22CenteredStyle)
@@ -156,6 +157,7 @@ public final class DynamicReportTemplates {
             this.label = label;
         }
 
+        @Override
         public String format(final Number value, final ReportParameters reportParameters) {
             return label + currencyType.valueToString(value, reportParameters.getLocale());
         }

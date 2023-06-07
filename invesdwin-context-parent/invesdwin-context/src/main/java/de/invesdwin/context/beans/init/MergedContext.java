@@ -148,11 +148,9 @@ public final class MergedContext extends ADelegateContext {
                         .in(transactionAspectSupport)
                         .get();
                 transactionManagerCache.clear();
-                //CHECKSTYLE:OFF
             } catch (final NoSuchBeanDefinitionException e) {
-                //ignore
+                //end reached
             }
-            //CHECKSTYLE:ON
             if (prevInstance instanceof ADelegateContext) {
                 final ADelegateContext cPrevInstance = prevInstance;
                 if (cPrevInstance.getDelegate() == PreMergedContext.getInstance().getDelegate()) {

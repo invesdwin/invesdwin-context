@@ -42,7 +42,7 @@ public final class PlatformInitializerProperties {
         if (initializationFailed != null) {
             return false;
         }
-        //CHECKSTYLE:OFF single line
+        //CHECKSTYLE:OFF properties
         try {
             final String property = System.getProperty(KEY_ALLOWED);
             if (Strings.isBlank(property)) {
@@ -58,7 +58,7 @@ public final class PlatformInitializerProperties {
     }
 
     public static synchronized void setAllowed(final boolean allowed) {
-        //CHECKSTYLE:OFF single line
+        //CHECKSTYLE:OFF properties
         try {
             System.setProperty(KEY_ALLOWED, String.valueOf(allowed));
         } catch (final Throwable t) {
@@ -69,7 +69,7 @@ public final class PlatformInitializerProperties {
     }
 
     public static synchronized boolean isKeepSystemHomeDuringTests() {
-        //CHECKSTYLE:OFF single line
+        //CHECKSTYLE:OFF properties
         final String property = System.getProperty(KEY_KEEP_SYSTEM_HOME_DURING_TESTS);
         //CHECKSTYLE:ON
         if (Strings.isBlank(property)) {
@@ -80,7 +80,7 @@ public final class PlatformInitializerProperties {
     }
 
     public static synchronized void setKeepSystemHomeDuringTests(final boolean keepSystemHomeDuringTests) {
-        //CHECKSTYLE:OFF single line
+        //CHECKSTYLE:OFF properties
         System.setProperty(KEY_KEEP_SYSTEM_HOME_DURING_TESTS, String.valueOf(keepSystemHomeDuringTests));
         //CHECKSTYLE:ON
     }

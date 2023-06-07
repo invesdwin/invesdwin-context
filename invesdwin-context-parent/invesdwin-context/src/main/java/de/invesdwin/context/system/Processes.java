@@ -25,8 +25,6 @@ public final class Processes {
     private Processes() {}
 
     public static boolean isProcessIdRunning(final String pidStr) {
-        //CHECKSTYLE:OFF
-        //CHECKSTYLE:ON
         String command = null;
         if (WIN) {
             command = "cmd /c tasklist /FI \"PID eq " + pidStr + "\"";
