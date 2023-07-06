@@ -3,7 +3,7 @@ package de.invesdwin.context.integration.retry;
 import javax.annotation.concurrent.NotThreadSafe;
 
 @NotThreadSafe
-public class RetryLaterRuntimeException extends RuntimeException {
+public class RetryLaterRuntimeException extends RuntimeException implements IRetryLaterException {
 
     private static final long serialVersionUID = 1L;
 

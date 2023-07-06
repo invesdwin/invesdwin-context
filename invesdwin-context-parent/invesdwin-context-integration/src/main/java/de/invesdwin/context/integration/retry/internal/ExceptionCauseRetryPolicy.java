@@ -19,10 +19,8 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 
 import de.invesdwin.context.integration.IntegrationProperties;
-import de.invesdwin.context.integration.retry.RetryDisabledException;
-import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
-import de.invesdwin.context.integration.retry.RetryLaterException;
-import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
+import de.invesdwin.context.integration.retry.IRetryDisabledException;
+import de.invesdwin.context.integration.retry.IRetryLaterException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
@@ -103,10 +101,10 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     public static boolean shouldRetry(final Throwable lastThrowable) {
         Throwable cause = lastThrowable;
         while (cause != null) {
-            if (cause instanceof RetryDisabledException || cause instanceof RetryDisabledRuntimeException) {
+            if (cause instanceof IRetryDisabledException) {
                 //always disallowed
                 return false;
-            } else if (cause instanceof RetryLaterException || cause instanceof RetryLaterRuntimeException) {
+            } else if (cause instanceof IRetryLaterException) {
                 //always allowed
                 return true;
             }
