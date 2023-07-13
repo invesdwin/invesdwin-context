@@ -945,6 +945,10 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>${version.maven-assembly-plugin}</version>
+					<configuration>
+						<!-- https://stackoverflow.com/a/56278471 -->
+						<tarLongFileMode>posix</tarLongFileMode>
+					</configuration>		
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
