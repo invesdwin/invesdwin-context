@@ -100,15 +100,19 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
     @Deprecated
     public static boolean shouldRetry(final Throwable lastThrowable) {
         Throwable cause = lastThrowable;
+        boolean retryAllowed = false;
         while (cause != null) {
             if (cause instanceof IRetryDisabledException) {
                 //always disallowed
                 return false;
             } else if (cause instanceof IRetryLaterException) {
                 //always allowed
-                return true;
+                retryAllowed = true;
             }
             cause = cause.getCause();
+        }
+        if (retryAllowed) {
+            return true;
         }
         for (final Class<? extends Throwable> allowedCause : DISALLOWED_CAUSES) {
             if (Throwables.isCausedByType(lastThrowable, allowedCause)) {
