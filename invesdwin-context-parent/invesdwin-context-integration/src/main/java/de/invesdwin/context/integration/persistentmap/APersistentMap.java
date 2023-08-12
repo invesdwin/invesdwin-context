@@ -151,7 +151,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         return tableLock.readLock();
     }
 
-    protected File getTimestampFile() {
+    public File getTimestampFile() {
         if (timestampFile == null) {
             timestampFile = new File(getDirectory(), getName() + "_createdTimestamp");
         }
