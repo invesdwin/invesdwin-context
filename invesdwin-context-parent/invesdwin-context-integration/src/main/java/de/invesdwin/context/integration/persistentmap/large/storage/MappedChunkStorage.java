@@ -137,6 +137,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             }
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(memoryFile)) {
                 out.seek(addressOffset);
+                buffer.ensureCapacity(length);
                 buffer.getBytesTo(0, (DataOutput) out, length);
                 return new ChunkSummary("", addressOffset, length);
             }
