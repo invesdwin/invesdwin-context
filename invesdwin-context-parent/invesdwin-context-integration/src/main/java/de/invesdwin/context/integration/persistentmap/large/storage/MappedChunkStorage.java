@@ -32,8 +32,9 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     @GuardedBy("lock")
     private long position;
     private volatile IMemoryMappedFile reader;
+    private final boolean readOnly;
 
-    public MappedChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde) {
+    public MappedChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly) {
         this.memoryFile = new File(memoryDirectory.getAbsolutePath() + ".bin");
         if (memoryFile.exists()) {
             position = memoryFile.length();
@@ -41,6 +42,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             position = 0;
         }
         this.valueSerde = valueSerde;
+        this.readOnly = readOnly;
     }
 
     private IMemoryMappedFile getReader() {
@@ -56,7 +58,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                     }
                     final long positionCopy = position;
                     try {
-                        reader = IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy, true);
+                        reader = IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy, readOnly);
                     } catch (final IOException e) {
                         throw new RuntimeException("file=" + memoryFile.getAbsolutePath() + " position=" + positionCopy,
                                 e);

@@ -16,13 +16,24 @@ import de.invesdwin.util.marshallers.serde.ISerde;
 public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K, V> {
 
     private final IPersistentMapFactory<K, ChunkSummary> indexFactory;
+    private final boolean readOnly;
 
     public LargePersistentMapFactory(final IPersistentMapFactory<K, ChunkSummary> indexFactory) {
+        this(indexFactory, true);
+    }
+
+    public LargePersistentMapFactory(final IPersistentMapFactory<K, ChunkSummary> indexFactory,
+            final boolean readOnly) {
         this.indexFactory = indexFactory;
+        this.readOnly = readOnly;
     }
 
     public IPersistentMapFactory<K, ChunkSummary> getIndexFactory() {
         return indexFactory;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
     }
 
     @Override
@@ -30,8 +41,9 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
         return indexFactory.isDiskPersistenceSupported();
     }
 
-    protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde) {
-        return ALargePersistentMap.newDefaultChunkStorage(directory, valueSerde);
+    protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde,
+            final boolean readOnly) {
+        return ALargePersistentMap.newDefaultChunkStorage(directory, valueSerde, readOnly);
     }
 
     @Override
@@ -43,8 +55,14 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
             }
 
             @Override
-            protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde) {
-                return LargePersistentMapFactory.this.newChunkStorage(directory, valueSerde);
+            protected boolean isReadOnly() {
+                return readOnly;
+            }
+
+            @Override
+            protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde,
+                    final boolean readOnly) {
+                return LargePersistentMapFactory.this.newChunkStorage(directory, valueSerde, readOnly);
             }
 
             @Override
