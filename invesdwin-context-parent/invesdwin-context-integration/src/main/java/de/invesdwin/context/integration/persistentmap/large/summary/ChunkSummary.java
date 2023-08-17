@@ -51,7 +51,11 @@ public class ChunkSummary implements ISerializableValueObject {
     }
 
     public IByteBuffer newBuffer(final Supplier<IMemoryMappedFile> fileSupplier, final ILock fileLock) {
-        return new ChunkSummaryByteBuffer(this, fileSupplier, fileLock);
+        final ChunkSummaryByteBuffer buffer = new ChunkSummaryByteBuffer(this, fileSupplier, fileLock);
+        if (buffer.getDelegate() == null) {
+            return null;
+        }
+        return buffer;
     }
 
     @Override
