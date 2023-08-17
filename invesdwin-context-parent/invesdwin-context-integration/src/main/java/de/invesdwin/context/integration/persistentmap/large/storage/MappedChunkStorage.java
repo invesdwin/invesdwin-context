@@ -73,11 +73,10 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     public V get(final ChunkSummary summary) {
         lock.readLock().lock();
         try {
-            final IMemoryMappedFile reader = getReader();
-            if (reader == null) {
+            final IByteBuffer buffer = summary.newBuffer(this::getReader, lock.readLock());
+            if (buffer == null) {
                 return null;
             }
-            final IByteBuffer buffer = summary.newBuffer(reader);
             final V value = valueSerde.fromBuffer(buffer);
             return value;
         } finally {
@@ -99,7 +98,10 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     public void clear() {
         lock.writeLock().lock();
         try {
-            reader = null;
+            if (reader != null) {
+                reader.close();
+                reader = null;
+            }
             Files.deleteQuietly(memoryFile);
             position = 0;
         } finally {

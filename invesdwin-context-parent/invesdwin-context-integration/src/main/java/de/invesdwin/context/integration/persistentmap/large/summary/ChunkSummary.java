@@ -1,11 +1,13 @@
 package de.invesdwin.context.integration.persistentmap.large.summary;
 
+import java.util.function.Supplier;
+
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.norva.marker.ISerializableValueObject;
+import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 
@@ -48,9 +50,8 @@ public class ChunkSummary implements ISerializableValueObject {
         return memoryLength;
     }
 
-    public IByteBuffer newBuffer(final IMemoryMappedFile file) {
-        final int length = Integers.checkedCast(getMemoryLength());
-        return file.newByteBuffer(getMemoryOffset(), length);
+    public IByteBuffer newBuffer(final Supplier<IMemoryMappedFile> fileSupplier, final ILock fileLock) {
+        return new ChunkSummaryByteBuffer(this, fileSupplier, fileLock);
     }
 
     @Override
