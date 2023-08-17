@@ -19,7 +19,7 @@ public class HtmlTableWriter implements ITableWriter {
     private final Appendable out;
     private final List<Object> currentLine = new ArrayList<Object>();
     private Integer assertColumnCount;
-    private boolean firstLine = true;
+    private int lineIdx = 0;
     private boolean headerRowEnabled = true;
     private HtmlTableTheme theme = HtmlTableTheme.DEFAULT;
     private boolean closeOut = true;
@@ -84,7 +84,7 @@ public class HtmlTableWriter implements ITableWriter {
     @Override
     public void line(final List<?> columns) throws IOException {
         assertColumnCount(columns.size());
-        if (firstLine) {
+        if (lineIdx == 0) {
             out.append(theme.tableOpenTag());
             out.append(theme.lineFeed());
             out.append(theme.styleOpenCloseTag());
@@ -98,33 +98,33 @@ public class HtmlTableWriter implements ITableWriter {
         }
         out.append(theme.trOpenTag());
         out.append(theme.lineFeed());
-        for (int i = 0; i < columns.size(); i++) {
-            final Object column = columns.get(i);
-            if (firstLine && headerRowEnabled) {
+        for (int colIdx = 0; colIdx < columns.size(); colIdx++) {
+            final Object column = columns.get(colIdx);
+            if (lineIdx == 0 && headerRowEnabled) {
                 out.append(theme.thOpenTag());
             } else {
-                out.append(theme.tdOpenTag());
+                out.append(theme.tdOpenTag(headerRowEnabled, lineIdx, colIdx));
             }
             final String content = Strings.asStringEmptyText(column);
             out.append(content);
-            if (firstLine && headerRowEnabled) {
+            if (lineIdx == 0 && headerRowEnabled) {
                 out.append(theme.thCloseTag());
             } else {
-                out.append(theme.tdCloseTag());
+                out.append(theme.tdCloseTag(headerRowEnabled, lineIdx, colIdx));
             }
             out.append(theme.lineFeed());
         }
         out.append(theme.trCloseTag());
         out.append(theme.lineFeed());
-        if (firstLine) {
+        if (lineIdx == 0) {
             if (headerRowEnabled) {
                 out.append(theme.theadCloseTag());
                 out.append(theme.lineFeed());
                 out.append(theme.tbodyOpenTag());
                 out.append(theme.lineFeed());
             }
-            firstLine = false;
         }
+        lineIdx++;
     }
 
     @Override
@@ -147,7 +147,7 @@ public class HtmlTableWriter implements ITableWriter {
         out.append(theme.lineFeed());
         out.append(theme.tableCloseTag());
         currentLine.clear();
-        firstLine = true;
+        lineIdx = 0;
         if (isCloseOut()) {
             Closeables.closeQuietly(out);
         }
@@ -158,4 +158,7 @@ public class HtmlTableWriter implements ITableWriter {
         //noop
     }
 
+    public void appendCustomLine(final String line) throws IOException {
+        out.append(line);
+    }
 }

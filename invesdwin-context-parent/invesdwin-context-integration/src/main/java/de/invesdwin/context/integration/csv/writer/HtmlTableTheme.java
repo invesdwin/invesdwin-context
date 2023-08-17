@@ -35,8 +35,33 @@ public class HtmlTableTheme {
         }
 
         @Override
-        public String tdOpenTag() {
+        public String tdOpenTag(final boolean headerRowEnabled, final int lineIdx, final int colIdx) {
             return "<td class=\"text-right\">";
+        }
+    };
+
+    public static final HtmlTableTheme POI = new HtmlTableTheme() {
+        @Override
+        public String styleOpenCloseTag() {
+            return "";
+        }
+
+        @Override
+        public String tableOpenTag() {
+            return "<table align=\"left\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;font-size:0.9em\">";
+        }
+
+        @Override
+        public String tableCloseTag() {
+            return "</table>";
+        }
+
+        @Override
+        public String tdOpenTag(final boolean headerRowEnabled, final int lineIdx, final int colIdx) {
+            if (lineIdx == 0 && colIdx == 0) {
+                return "<td style=\"width:10%\">";
+            }
+            return "<td>";
         }
     };
 
@@ -100,11 +125,11 @@ public class HtmlTableTheme {
         return "</th>";
     }
 
-    public String tdOpenTag() {
+    public String tdOpenTag(final boolean headerRowEnabled, final int lineIdx, final int colIdx) {
         return "<td>";
     }
 
-    public String tdCloseTag() {
+    public String tdCloseTag(final boolean headerRowEnabled, final int lineIdx, final int colIdx) {
         return "</td>";
     }
 
