@@ -1,7 +1,5 @@
 package de.invesdwin.context.integration.persistentmap.large.summary;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.function.Supplier;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -64,26 +62,6 @@ public class ChunkSummaryByteBuffer extends ALockedDelegateByteBuffer {
     }
 
     @Override
-    public InputStream asInputStream() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public InputStream asInputStream(final int index, final int length) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public InputStream asInputStreamFrom(final int index) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public InputStream asInputStreamTo(final int length) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public IMemoryBuffer asMemoryBuffer() {
         throw new UnsupportedOperationException();
     }
@@ -120,26 +98,6 @@ public class ChunkSummaryByteBuffer extends ALockedDelegateByteBuffer {
 
     @Override
     public java.nio.ByteBuffer asNioByteBufferTo(final int length) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public OutputStream asOutputStream() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public OutputStream asOutputStream(final int index, final int length) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public OutputStream asOutputStreamFrom(final int index) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public OutputStream asOutputStreamTo(final int length) {
         throw new UnsupportedOperationException();
     }
 
