@@ -6,24 +6,21 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.agrona.MutableDirectBuffer;
 
-import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
-import de.invesdwin.util.streams.buffer.bytes.delegate.ALockedDelegateByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.delegate.ADelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
 
 @ThreadSafe
-public class ChunkSummaryByteBuffer extends ALockedDelegateByteBuffer {
+public class ChunkSummaryByteBuffer extends ADelegateByteBuffer {
 
     private final Supplier<IMemoryMappedFile> fileSupplier;
     private final ChunkSummary summary;
     private IMemoryMappedFile file;
     private IByteBuffer buffer;
 
-    public ChunkSummaryByteBuffer(final ChunkSummary summary, final Supplier<IMemoryMappedFile> fileSupplier,
-            final ILock fileLock) {
-        super(fileLock);
+    public ChunkSummaryByteBuffer(final ChunkSummary summary, final Supplier<IMemoryMappedFile> fileSupplier) {
         this.fileSupplier = fileSupplier;
         this.summary = summary;
     }

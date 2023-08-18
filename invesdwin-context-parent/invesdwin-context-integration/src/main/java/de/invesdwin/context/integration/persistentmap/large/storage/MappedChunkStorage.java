@@ -75,7 +75,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     public V get(final ChunkSummary summary) {
         lock.readLock().lock();
         try {
-            final IByteBuffer buffer = summary.newBuffer(this::getReader, lock.readLock());
+            final IByteBuffer buffer = summary.newBuffer(this::getReader);
             if (buffer == null) {
                 return null;
             }
