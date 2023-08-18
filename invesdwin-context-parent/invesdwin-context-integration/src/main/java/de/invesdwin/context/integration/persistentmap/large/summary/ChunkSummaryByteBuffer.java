@@ -1,41 +1,36 @@
 package de.invesdwin.context.integration.persistentmap.large.summary;
 
-import java.util.function.Supplier;
+import java.io.Closeable;
 
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.agrona.MutableDirectBuffer;
 
 import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.streams.buffer.bytes.ClosedByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.delegate.ADelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
 
 @ThreadSafe
-public class ChunkSummaryByteBuffer extends ADelegateByteBuffer {
+public class ChunkSummaryByteBuffer extends ADelegateByteBuffer implements Closeable {
 
-    private final Supplier<IMemoryMappedFile> fileSupplier;
     private final ChunkSummary summary;
-    private IMemoryMappedFile file;
     private IByteBuffer buffer;
 
-    public ChunkSummaryByteBuffer(final ChunkSummary summary, final Supplier<IMemoryMappedFile> fileSupplier) {
-        this.fileSupplier = fileSupplier;
+    public ChunkSummaryByteBuffer(final ChunkSummary summary) {
         this.summary = summary;
     }
 
     @Override
     public IByteBuffer getDelegate() {
-        if (this.file == null || this.file.isClosed()) {
-            this.file = fileSupplier.get();
-            if (this.file == null) {
-                return null;
-            }
-            final int length = Integers.checkedCast(summary.getMemoryLength());
-            this.buffer = file.newByteBuffer(summary.getMemoryOffset(), length);
-        }
         return this.buffer;
+    }
+
+    public void init(final IMemoryMappedFile file) {
+        final int length = Integers.checkedCast(summary.getMemoryLength());
+        this.buffer = file.newByteBuffer(summary.getMemoryOffset(), length);
     }
 
     @Override
@@ -106,6 +101,11 @@ public class ChunkSummaryByteBuffer extends ADelegateByteBuffer {
     @Override
     public MutableDirectBuffer directBuffer() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void close() {
+        this.buffer = ClosedByteBuffer.INSTANCE;
     }
 
 }
