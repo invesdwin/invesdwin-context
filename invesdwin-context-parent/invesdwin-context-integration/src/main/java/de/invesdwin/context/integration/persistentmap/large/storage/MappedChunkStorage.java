@@ -17,6 +17,7 @@ import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
@@ -39,8 +40,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     private volatile IMemoryMappedFile reader;
     private final boolean readOnly;
 
-    private final Set<ChunkSummaryByteBuffer> readerBuffers = Collections
-            .newSetFromMap(Caffeine.newBuilder().weakKeys().<ChunkSummaryByteBuffer, Boolean> build().asMap());
+    private final Set<ChunkSummaryByteBuffer> readerBuffers;
 
     public MappedChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly) {
         this.memoryFile = new File(memoryDirectory.getAbsolutePath() + ".bin");
@@ -51,6 +51,12 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
         }
         this.valueSerde = valueSerde;
         this.readOnly = readOnly;
+        if (readOnly) {
+            readerBuffers = null;
+        } else {
+            readerBuffers = Collections
+                    .newSetFromMap(Caffeine.newBuilder().weakKeys().<ChunkSummaryByteBuffer, Boolean> build().asMap());
+        }
     }
 
     private IMemoryMappedFile getReader() {
@@ -87,9 +93,16 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             if (reader == null) {
                 return null;
             }
-            final ChunkSummaryByteBuffer buffer = new ChunkSummaryByteBuffer(summary);
-            buffer.init(reader);
-            readerBuffers.add(buffer);
+            final IByteBuffer buffer;
+            if (readerBuffers != null) {
+                final ChunkSummaryByteBuffer chunkBuffer = new ChunkSummaryByteBuffer(summary);
+                chunkBuffer.init(reader);
+                readerBuffers.add(chunkBuffer);
+                buffer = chunkBuffer;
+            } else {
+                final int length = Integers.checkedCast(summary.getMemoryLength());
+                buffer = reader.newByteBuffer(summary.getMemoryOffset(), length);
+            }
             final V value = valueSerde.fromBuffer(buffer);
             return value;
         } finally {
@@ -121,12 +134,12 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private void clearReaderBuffers() {
-        if (!readerBuffers.isEmpty()) {
+        if (readerBuffers != null && !readerBuffers.isEmpty()) {
             for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
                 readerBuffer.close();
             }
+            readerBuffers.clear();
         }
-        readerBuffers.clear();
     }
 
     private void closeReaderWriteLocked() {
@@ -151,12 +164,17 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             //support parallel writes from this instance (we expect exclusive access to the file)
             addressOffset = position;
             position += length;
-            closeReaderWriteLocked();
-            if (!readerBuffers.isEmpty()) {
-                final IMemoryMappedFile newReader = getReader();
-                for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
-                    readerBuffer.init(newReader);
+            if (readerBuffers != null) {
+                //finalize reader asynchronously so that other threads can evict it properly using GC
+                reader = null;
+                if (!readerBuffers.isEmpty()) {
+                    final IMemoryMappedFile newReader = getReader();
+                    for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
+                        readerBuffer.init(newReader);
+                    }
                 }
+            } else {
+                closeReaderWriteLocked();
             }
         } finally {
             lock.writeLock().unlock();

@@ -17,7 +17,10 @@ import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
 public class ChunkSummaryByteBuffer extends ADelegateByteBuffer implements Closeable {
 
     private final ChunkSummary summary;
-    private IByteBuffer buffer;
+    //keep reference to prevent finalizer from running too early
+    @SuppressWarnings("unused")
+    private volatile IMemoryMappedFile file;
+    private volatile IByteBuffer buffer;
 
     public ChunkSummaryByteBuffer(final ChunkSummary summary) {
         this.summary = summary;
@@ -28,9 +31,10 @@ public class ChunkSummaryByteBuffer extends ADelegateByteBuffer implements Close
         return this.buffer;
     }
 
-    public void init(final IMemoryMappedFile file) {
+    public void init(final IMemoryMappedFile reader) {
         final int length = Integers.checkedCast(summary.getMemoryLength());
-        this.buffer = file.newByteBuffer(summary.getMemoryOffset(), length);
+        this.buffer = reader.newByteBuffer(summary.getMemoryOffset(), length);
+        this.file = reader;
     }
 
     @Override
@@ -106,6 +110,7 @@ public class ChunkSummaryByteBuffer extends ADelegateByteBuffer implements Close
     @Override
     public void close() {
         this.buffer = ClosedByteBuffer.INSTANCE;
+        this.file = null;
     }
 
 }
