@@ -137,7 +137,7 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
         if (type.isAssignableFrom(getClass())) {
             return (T) this;
         } else {
-            return null;
+            return delegate.unwrap(type);
         }
     }
 
