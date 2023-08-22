@@ -41,4 +41,6 @@ public interface IPrimitiveArrayAllocator {
 
     IProperties getProperties();
 
+    void clear();
+
 }

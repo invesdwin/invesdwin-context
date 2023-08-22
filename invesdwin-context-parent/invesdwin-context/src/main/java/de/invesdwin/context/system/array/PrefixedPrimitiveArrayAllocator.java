@@ -142,4 +142,14 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
         return properties;
     }
 
+    @Override
+    public void clear() {
+        delegate.clear();
+        final AttributesMap attributesCopy = attributes;
+        if (attributesCopy != null) {
+            attributesCopy.clear();
+            attributes = null;
+        }
+    }
+
 }

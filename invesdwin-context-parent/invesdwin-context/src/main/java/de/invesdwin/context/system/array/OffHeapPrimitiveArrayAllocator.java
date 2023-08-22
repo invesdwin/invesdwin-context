@@ -141,4 +141,14 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
         return properties;
     }
 
+    @Override
+    public void clear() {
+        final AttributesMap attributesCopy = attributes;
+        if (attributesCopy != null) {
+            attributesCopy.clear();
+            attributes = null;
+        }
+        properties = null;
+    }
+
 }

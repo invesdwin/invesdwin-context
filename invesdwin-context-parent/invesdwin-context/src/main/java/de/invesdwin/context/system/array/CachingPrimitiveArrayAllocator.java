@@ -158,4 +158,15 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
         return delegate.getProperties();
     }
 
+    @Override
+    public void clear() {
+        map.clear();
+        delegate.clear();
+        final AttributesMap attributesCopy = attributes;
+        if (attributesCopy != null) {
+            attributesCopy.clear();
+            attributes = null;
+        }
+    }
+
 }
