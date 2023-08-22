@@ -43,4 +43,8 @@ public interface IPrimitiveArrayAllocator {
 
     void clear();
 
+    static IPrimitiveArrayAllocator newInstance() {
+        return new OnHeapPrimitiveArrayAllocator();
+    }
+
 }
