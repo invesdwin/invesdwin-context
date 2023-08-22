@@ -9,6 +9,10 @@ import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
+/**
+ * An instance of a primitive array allocator should only be shared within the same backtesting engine. Otherwise
+ * engines might get confused when accessing and sharing cached time indexes.
+ */
 public interface IPrimitiveArrayAllocator {
 
     IByteBuffer getByteBuffer(String id);
