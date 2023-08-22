@@ -25,11 +25,10 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 @ThreadSafe
 public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
 
-    public static final OffHeapPrimitiveArrayAllocator INSTANCE = new OffHeapPrimitiveArrayAllocator();
     private AttributesMap attributes;
     private MapProperties properties;
 
-    private OffHeapPrimitiveArrayAllocator() {}
+    public OffHeapPrimitiveArrayAllocator() {}
 
     @Override
     public IByteBuffer getByteBuffer(final String id) {
