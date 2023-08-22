@@ -2,27 +2,51 @@ package de.invesdwin.context.system.array.bool;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
 import de.invesdwin.util.collections.array.IGenericArray;
+import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
-public class OnHeapGenericBooleanArray implements IGenericBooleanArray {
+public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
 
+    private final IPrimitiveArrayAllocator arrayAllocator;
+    private final String name;
     private final IGenericArray<Boolean> values;
-    private boolean initialized;
 
-    public OnHeapGenericBooleanArray(final IGenericArray<Boolean> values) {
-        this.values = values;
+    private OnHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
+            final int size) {
+        this.arrayAllocator = arrayAllocator;
+        this.name = name;
+        this.values = IGenericArray.newInstance(Boolean.class, size);
     }
 
     @Override
-    public boolean isInitialized() {
-        return initialized;
+    public IPrimitiveArrayAllocator getArrayAllocator() {
+        return arrayAllocator;
     }
 
     @Override
-    public void setInitialized(final boolean initialized) {
-        this.initialized = initialized;
+    public String getName() {
+        return name;
+    }
+
+    public static OnHeapGenericBooleanArray getInstance(final IPrimitiveArrayAllocator arrayAllocator,
+            final String name) {
+        return (OnHeapGenericBooleanArray) arrayAllocator.getAttributes().get(newKey(name));
+    }
+
+    private static String newKey(final String name) {
+        return OnHeapGenericBooleanArray.class.getSimpleName() + "_" + name;
+    }
+
+    public static OnHeapGenericBooleanArray newInstance(final IPrimitiveArrayAllocator arrayAllocator,
+            final String name, final int size) {
+        final IAttributesMap attributes = arrayAllocator.getAttributes();
+        synchronized (attributes) {
+            final String key = newKey(name);
+            return attributes.getOrCreate(key, () -> new OnHeapGenericBooleanArray(arrayAllocator, key, size));
+        }
     }
 
     @Override

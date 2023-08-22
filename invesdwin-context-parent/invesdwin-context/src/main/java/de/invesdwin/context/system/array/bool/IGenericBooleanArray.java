@@ -4,18 +4,22 @@ import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
 import de.invesdwin.context.system.array.OnHeapPrimitiveArrayAllocator;
 import de.invesdwin.util.collections.array.IGenericArray;
 
-public interface IGenericBooleanArray extends IGenericArray<Boolean> {
+public interface IGenericBooleanArray extends IGenericArray<Boolean>, IPrimitiveArrayInitializable {
 
-    boolean isInitialized();
-
-    void setInitialized(boolean initialized);
+    static IGenericBooleanArray getInstance(final IPrimitiveArrayAllocator arrayAllocator, final String name) {
+        if (arrayAllocator.unwrap(OnHeapPrimitiveArrayAllocator.class) != null) {
+            return OnHeapGenericBooleanArray.getInstance(arrayAllocator, name);
+        } else {
+            return OffHeapGenericBooleanArray.getInstance(arrayAllocator, name);
+        }
+    }
 
     static IGenericBooleanArray newInstance(final IPrimitiveArrayAllocator arrayAllocator, final String name,
             final int size) {
         if (arrayAllocator.unwrap(OnHeapPrimitiveArrayAllocator.class) != null) {
-            return new OnHeapGenericBooleanArray(IGenericArray.newInstance(Boolean.class, size));
+            return OnHeapGenericBooleanArray.newInstance(arrayAllocator, name, size);
         } else {
-            return new OffHeapGenericBooleanArray(arrayAllocator, name, size);
+            return OffHeapGenericBooleanArray.newInstance(arrayAllocator, name, size);
         }
     }
 

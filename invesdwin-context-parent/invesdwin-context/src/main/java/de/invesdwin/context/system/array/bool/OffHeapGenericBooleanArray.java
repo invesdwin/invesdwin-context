@@ -4,25 +4,28 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
 import de.invesdwin.util.collections.array.IGenericArray;
+import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
-public class OffHeapGenericBooleanArray implements IGenericBooleanArray {
+public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
 
+    private final IPrimitiveArrayAllocator arrayAllocator;
+    private final String name;
     private final IBitSet trueValues;
     private final IBitSet falseValues;
-    private boolean initialized;
 
-    public OffHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
+    private OffHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
             final int size) {
-        final String trueValuesId = "trueValues_" + name;
-        final String falseValuesId = "falseValues_" + name;
+        this.arrayAllocator = arrayAllocator;
+        this.name = name;
+        final String trueValuesId = name + "_trueValues";
+        final String falseValuesId = name + "_falseValues";
         final IBitSet trueValuesInitialized = arrayAllocator.getBitSet(trueValuesId);
         if (trueValuesInitialized != null) {
             trueValues = trueValuesInitialized;
             falseValues = arrayAllocator.getBitSet(falseValuesId);
-            initialized = true;
         } else {
             trueValues = arrayAllocator.newBitSet(trueValuesId, size);
             falseValues = arrayAllocator.newBitSet(falseValuesId, size);
@@ -30,13 +33,31 @@ public class OffHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
-    public boolean isInitialized() {
-        return initialized;
+    public IPrimitiveArrayAllocator getArrayAllocator() {
+        return arrayAllocator;
     }
 
     @Override
-    public void setInitialized(final boolean initialized) {
-        this.initialized = initialized;
+    public String getName() {
+        return name;
+    }
+
+    public static OffHeapGenericBooleanArray getInstance(final IPrimitiveArrayAllocator arrayAllocator,
+            final String name) {
+        return (OffHeapGenericBooleanArray) arrayAllocator.getAttributes().get(newKey(name));
+    }
+
+    private static String newKey(final String name) {
+        return OffHeapGenericBooleanArray.class.getSimpleName() + "_" + name;
+    }
+
+    public static OffHeapGenericBooleanArray newInstance(final IPrimitiveArrayAllocator arrayAllocator,
+            final String name, final int size) {
+        final IAttributesMap attributes = arrayAllocator.getAttributes();
+        synchronized (attributes) {
+            final String key = newKey(name);
+            return attributes.getOrCreate(key, () -> new OffHeapGenericBooleanArray(arrayAllocator, key, size));
+        }
     }
 
     @Override

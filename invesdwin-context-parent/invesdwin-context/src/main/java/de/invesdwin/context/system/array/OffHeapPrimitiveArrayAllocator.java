@@ -1,6 +1,6 @@
 package de.invesdwin.context.system.array;
 
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
@@ -22,7 +22,7 @@ import de.invesdwin.util.math.BitSets;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
-@Immutable
+@ThreadSafe
 public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
 
     public static final OffHeapPrimitiveArrayAllocator INSTANCE = new OffHeapPrimitiveArrayAllocator();

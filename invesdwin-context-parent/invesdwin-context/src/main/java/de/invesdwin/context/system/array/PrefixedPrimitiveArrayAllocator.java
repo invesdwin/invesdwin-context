@@ -1,6 +1,6 @@
 package de.invesdwin.context.system.array;
 
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.PrefixedDelegateProperties;
@@ -15,7 +15,7 @@ import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
-@Immutable
+@ThreadSafe
 public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
 
     private final IPrimitiveArrayAllocator delegate;
