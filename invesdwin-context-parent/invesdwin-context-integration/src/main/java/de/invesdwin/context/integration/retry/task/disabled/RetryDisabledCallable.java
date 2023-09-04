@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.concurrent.priority.IPriorityCallable;
 import de.invesdwin.util.concurrent.priority.IPriorityProvider;
 
@@ -22,11 +22,11 @@ public final class RetryDisabledCallable<T> implements IPriorityCallable<T> {
 
     @Override
     public T call() throws Exception {
-        final boolean registerThreadRetryDisabled = IntegrationProperties.registerThreadRetryDisabled();
+        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             return delegate.call();
         } finally {
-            IntegrationProperties.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+            Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
         }
     }
 

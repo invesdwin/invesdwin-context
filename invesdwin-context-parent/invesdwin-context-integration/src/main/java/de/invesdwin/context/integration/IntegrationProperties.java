@@ -7,17 +7,11 @@ import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.apache.commons.lang3.BooleanUtils;
-
-import de.invesdwin.aspects.EventDispatchThreadUtil;
 import de.invesdwin.context.integration.network.NetworkUtil;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.collections.Collections;
-import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
-import de.invesdwin.util.math.Booleans;
-import io.netty.util.concurrent.FastThreadLocal;
 
 @ThreadSafe
 public final class IntegrationProperties {
@@ -27,7 +21,6 @@ public final class IntegrationProperties {
     public static final String HOSTNAME;
     public static final boolean JNI_COMPRESSION_ALLOWED;
     public static final boolean FAST_COMPRESSION_ALWAYS;
-    private static final FastThreadLocal<Boolean> THREAD_RETRY_DISABLED = new FastThreadLocal<>();
     private static volatile boolean webserverTest;
 
     private static final SystemProperties SYSTEM_PROPERTIES;
@@ -42,8 +35,7 @@ public final class IntegrationProperties {
         FAST_COMPRESSION_ALWAYS = readFastCompressionAlways();
     }
 
-    private IntegrationProperties() {
-    }
+    private IntegrationProperties() {}
 
     private static boolean readJniCompressionAllowed() {
         final String key = "JNI_COMPRESSION_ALLOWED";
@@ -123,27 +115,6 @@ public final class IntegrationProperties {
             final String hostname = NetworkUtil.getHostname();
             SYSTEM_PROPERTIES.setString(key, hostname);
             return hostname;
-        }
-    }
-
-    public static boolean isThreadRetryDisabled() {
-        return Booleans.isTrue(THREAD_RETRY_DISABLED.get()) || EventDispatchThreadUtil.isEventDispatchThread()
-                || Threads.isInterrupted();
-    }
-
-    public static boolean registerThreadRetryDisabled() {
-        final boolean retryDisabledBefore = BooleanUtils.isTrue(THREAD_RETRY_DISABLED.get());
-        if (!retryDisabledBefore) {
-            THREAD_RETRY_DISABLED.set(true);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static void unregisterThreadRetryDisabled(final boolean registerThreadRetryDisabled) {
-        if (registerThreadRetryDisabled) {
-            THREAD_RETRY_DISABLED.remove();
         }
     }
 

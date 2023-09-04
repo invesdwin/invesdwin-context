@@ -37,9 +37,9 @@ public class LoggingRetryHook implements IRetryHook {
         final LoggingPreviousCause previousCause = previousCauseHolder.get();
         if (previousCause == null) {
             logRetry(originator, retryCount, cause, LoggingReason.INITIAL, null);
-            previousCauseHolder.set(new LoggingPreviousCause(cause));
+            previousCauseHolder.set(new LoggingPreviousCause(cause, retryCount));
         } else {
-            final LoggingReason reason = previousCause.shouldLog(cause);
+            final LoggingReason reason = previousCause.shouldLog(cause, retryCount);
             if (reason != null) {
                 logRetry(originator, retryCount, cause, reason, previousCause.getStart());
             }
@@ -52,6 +52,19 @@ public class LoggingRetryHook implements IRetryHook {
     @Deprecated
     public static boolean isRetrying() {
         return PREVIOUS_CAUSE_HOLDER.get() != null;
+    }
+
+    /**
+     * WARNING: use Retries.getCurrentRetryCount() instead
+     */
+    @Deprecated
+    public static int getCurrentRetryCount() {
+        final LoggingPreviousCause previousCause = PREVIOUS_CAUSE_HOLDER.get();
+        if (previousCause == null) {
+            return -1;
+        } else {
+            return previousCause.getCurrentRetryCount();
+        }
     }
 
     public static boolean isSkipRetryLog() {

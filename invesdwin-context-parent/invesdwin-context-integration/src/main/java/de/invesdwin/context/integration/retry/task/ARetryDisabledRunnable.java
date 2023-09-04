@@ -2,18 +2,18 @@ package de.invesdwin.context.integration.retry.task;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.util.concurrent.Threads;
 
 @ThreadSafe
 public abstract class ARetryDisabledRunnable implements Runnable {
 
     @Override
     public final void run() {
-        final boolean registerThreadRetryDisabled = IntegrationProperties.registerThreadRetryDisabled();
+        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             runRetryDisabled();
         } finally {
-            IntegrationProperties.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+            Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
         }
     }
 

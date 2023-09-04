@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.retry.internal;
 
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Inject;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.invesdwin.aspects.ProceedingJoinPoints;
 import de.invesdwin.context.beans.init.MergedContext;
-import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.integration.retry.Retry;
 import de.invesdwin.context.integration.retry.RetryDisabled;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
@@ -22,8 +20,10 @@ import de.invesdwin.context.integration.retry.hook.MaxRetriesHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.BackOffPolicies;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
+import de.invesdwin.util.concurrent.Threads;
 import de.invesdwin.util.error.Throwables;
 import io.netty.util.concurrent.FastThreadLocal;
+import jakarta.inject.Inject;
 
 /**
  * Because of throwing LoggedRuntimeExceptions it is impossible to use the ExceptionPolicies of spring because they
@@ -110,11 +110,11 @@ public class RetryAspect implements InitializingBean {
     public Object retryDisabled(final ProceedingJoinPoint pjp) throws Throwable {
         final RetryDisabled annotation = ProceedingJoinPoints.getAnnotation(pjp, RetryDisabled.class);
         if (annotation == null || annotation.value()) {
-            final boolean registerThreadRetryDisabled = IntegrationProperties.registerThreadRetryDisabled();
+            final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
             try {
                 return pjp.proceed();
             } finally {
-                IntegrationProperties.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+                Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
             }
         } else {
             return pjp.proceed();

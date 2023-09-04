@@ -4,18 +4,18 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.util.concurrent.Threads;
 
 @ThreadSafe
 public abstract class ARetryDisabledCallable<E> implements Callable<E> {
 
     @Override
     public final E call() {
-        final boolean registerThreadRetryDisabled = IntegrationProperties.registerThreadRetryDisabled();
+        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             return callRetryDisabled();
         } finally {
-            IntegrationProperties.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+            Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
         }
     }
 

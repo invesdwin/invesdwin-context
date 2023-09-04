@@ -16,6 +16,11 @@ public final class Retries {
     }
 
     @SuppressWarnings("deprecation")
+    public static int getCurrentRetryCount() {
+        return LoggingRetryHook.getCurrentRetryCount();
+    }
+
+    @SuppressWarnings("deprecation")
     public static boolean shouldRetry(final Throwable reason) {
         return ExceptionCauseRetryPolicy.shouldRetry(reason);
     }
