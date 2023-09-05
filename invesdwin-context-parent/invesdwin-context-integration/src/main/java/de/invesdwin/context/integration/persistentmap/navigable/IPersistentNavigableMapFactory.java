@@ -10,7 +10,12 @@ import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
 @Immutable
 public interface IPersistentNavigableMapFactory<K, V> extends IPersistentMapFactory<K, V> {
 
+    @Deprecated
     @Override
-    ConcurrentNavigableMap<K, V> newPersistentMap(IPersistentMapConfig<K, V> config);
+    default ConcurrentNavigableMap<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
+        return newPersistentNavigableMap((IPersistentNavigableMapConfig<K, V>) config);
+    }
+
+    ConcurrentNavigableMap<K, V> newPersistentNavigableMap(IPersistentNavigableMapConfig<K, V> config);
 
 }

@@ -1,5 +1,6 @@
 package de.invesdwin.context.integration.persistentmap.navigable;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
@@ -12,16 +13,23 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.integration.persistentmap.APersistentMap;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedConcurrentNavigableMap;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedNavigableSet;
+import de.invesdwin.util.lang.reflection.Reflections;
 
 @ThreadSafe
 public abstract class APersistentNavigableMap<K, V> extends APersistentMap<K, V>
-        implements ConcurrentNavigableMap<K, V> {
+        implements ConcurrentNavigableMap<K, V>, IPersistentNavigableMap<K, V> {
 
     private ConcurrentNavigableMap<K, V> descendingMap;
     private NavigableSet<K> descendingKeySet;
 
     public APersistentNavigableMap(final String name) {
         super(name);
+    }
+
+    @Override
+    public File getDirectory() {
+        return new File(new File(getBaseDirectory(), APersistentNavigableMap.class.getSimpleName()),
+                Reflections.getClassSimpleNameNonBlank(getFactory().getClass()));
     }
 
     @Override
