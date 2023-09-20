@@ -51,6 +51,12 @@ public interface IFileChannel<FILEINFO> extends Closeable, ISerializableValueObj
 
     void download(File destination);
 
+    /**
+     * Actually moves the file and overwrites if it already exists, though might use a safe rename if target file does
+     * not exist.
+     */
+    void rename(String filename);
+
     byte[] download();
 
     void delete();
