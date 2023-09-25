@@ -15,7 +15,7 @@
 /.springBeans
 /.factorypath
 /.attach_pid*
-/.DS_Store
+/**/.DS_Store
 /.idea
 /**/*.iml
 /.sessions
@@ -30,3 +30,7 @@
 /.temp-*.txt
 /dependency-reduced-pom.xml
 /META-INF
+/.Rproj.user
+/.Rhistory
+/.RData
+/.Ruserdata
