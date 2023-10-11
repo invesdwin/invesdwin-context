@@ -213,4 +213,45 @@ public final class Log extends org.slf4j.ext.XLogger {
                 argArray);
     }
 
+    public void log(final LogLevel level, final String msg) {
+        level.log(this, msg);
+    }
+
+    public void log(final LogLevel level, final String format, final Object arg) {
+        level.log(this, format, arg);
+    }
+
+    public void log(final LogLevel level, final String format, final Object arg1, final Object arg2) {
+        level.log(this, format, arg1, arg2);
+    }
+
+    public void log(final LogLevel level, final String format, final Object... args) {
+        level.log(this, format, args);
+    }
+
+    public void log(final LogLevel level, final String msg, final Throwable t) {
+        level.log(this, msg, t);
+    }
+
+    public void log(final LogLevel level, final Marker marker, final String msg) {
+        level.log(this, marker, msg);
+    }
+
+    public void log(final LogLevel level, final Marker marker, final String format, final Object arg) {
+        level.log(this, marker, format, arg);
+    }
+
+    public void log(final LogLevel level, final Marker marker, final String format, final Object arg1,
+            final Object arg2) {
+        level.log(this, marker, format, arg1, arg2);
+    }
+
+    public void log(final LogLevel level, final Marker marker, final String format, final Object... args) {
+        level.log(this, marker, format, args);
+    }
+
+    public void log(final LogLevel level, final Marker marker, final String msg, final Throwable t) {
+        level.log(this, marker, msg, t);
+    }
+
 }
