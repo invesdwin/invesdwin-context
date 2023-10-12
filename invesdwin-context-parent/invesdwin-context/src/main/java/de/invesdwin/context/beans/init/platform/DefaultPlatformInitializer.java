@@ -158,7 +158,12 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public FileChannelLock initTempDirectoryLock(final File tempDirectory) {
         final FileChannelLock lock = new FileChannelLock(
-                new File(tempDirectory, TempDirectoryLockConfigurerer.TEMP_DIRECTORY_LOCK_FILE_NAME));
+                new File(tempDirectory, TempDirectoryLockConfigurerer.TEMP_DIRECTORY_LOCK_FILE_NAME)) {
+            @Override
+            protected boolean isThreadLockEnabled() {
+                return false;
+            }
+        };
         lock.tryLockThrowing();
         return lock;
     }
