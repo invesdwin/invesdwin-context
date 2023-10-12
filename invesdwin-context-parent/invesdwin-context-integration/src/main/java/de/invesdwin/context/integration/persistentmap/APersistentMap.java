@@ -269,6 +269,12 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                     //at ezdb.leveldb.EzLevelDb.getTable(EzLevelDb.java:69)
                     //at de.invesdwin.context.persistence.leveldb.ADelegateRangeTable.getTableWithReadLock(ADelegateRangeTable.java:144)
                     throw new RetryLaterRuntimeException(e);
+                } else if (Throwables.isCausedByInterrupt(e)) {
+                    //Caused by - ezdb.DbException: java.nio.channels.ClosedByInterruptException
+                    //at ezdb.leveldb.table.range.EzLevelDbRangeTable.<init>(EzLevelDbRangeTable.java:60)
+                    //at ezdb.leveldb.EzLevelDbJava.getRangeTable(EzLevelDbJava.java:98)
+                    //at de.invesdwin.context.persistence.ezdb.db.storage.LevelDBJavaRangeTableDb.getRangeTable(LevelDBJavaRangeTableDb.java:79) *
+                    throw new RetryLaterRuntimeException(e);
                 } else {
                     if (isDeleteTableOnCorruption()) {
                         Err.process(new RuntimeException("Table data for [" + getDirectory() + "/" + getName()
