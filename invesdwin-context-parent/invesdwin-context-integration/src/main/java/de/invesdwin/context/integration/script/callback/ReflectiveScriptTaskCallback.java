@@ -3,7 +3,6 @@ package de.invesdwin.context.integration.script.callback;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -12,7 +11,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.norva.beanpath.impl.clazz.BeanClassType;
 import de.invesdwin.util.collections.loadingcache.ALoadingCache;
-import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.math.Integers;
@@ -95,6 +94,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
 
     private static final class MethodInfo {
 
+        private final Class<?> providerClass;
+        private final String methodName;
+        private final int parameterCount;
         private final Function<IScriptTaskParameters, Object>[] parameterFunctions;
         private final Method method;
         private MethodHandle methodHandle;
@@ -102,6 +104,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
 
         @SuppressWarnings("unchecked")
         private MethodInfo(final Class<?> providerClass, final String methodName, final int parameterCount) {
+            this.providerClass = providerClass;
+            this.methodName = methodName;
+            this.parameterCount = parameterCount;
             this.method = Reflections.findMethodByName(providerClass, methodName, parameterCount);
             if (method == null) {
                 throw new IllegalArgumentException(
@@ -115,15 +120,16 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             try {
                 methodHandle = MethodHandles.lookup().unreflect(method);
             } catch (final IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException("Method not public: " + providerClass.getName() + "." + methodName
+                        + "[" + parameterCount + "]: " + method, e);
             }
         }
 
         public void invoke(final Object provider, final IScriptTaskParameters parameters,
                 final IScriptTaskReturns returns) {
-            final Object[] args = new Object[parameterFunctions.length + 1];
+            final Object[] args = new Object[parameterCount + 1];
             args[0] = provider;
-            for (int i = 0; i < parameterFunctions.length; i++) {
+            for (int i = 0; i < parameterCount; i++) {
                 if (parameters.isNotNull(i)) {
                     args[i + 1] = parameterFunctions[i].apply(parameters);
                 }
@@ -136,7 +142,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                     returnFunction.accept(returns, returnValue);
                 }
             } catch (final Throwable e) {
-                throw new RuntimeException(e);
+                throw Throwables.propagate(e);
             }
         }
 
@@ -183,7 +189,8 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                     return function;
                 }
             }
-            throw UnknownArgumentException.newInstance(Parameter.class, method.getParameters()[index]);
+            throw new IllegalArgumentException("Unsupported method " + index + ". parameter type: "
+                    + providerClass.getName() + "." + methodName + "[" + parameterCount + "]: " + method);
         }
 
         private Function<IScriptTaskParameters, Object> newParameterFunctionMatrix(final int index,
@@ -361,7 +368,8 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                     return function;
                 }
             }
-            throw UnknownArgumentException.newInstance(Class.class, method.getReturnType());
+            throw new IllegalArgumentException("Unsupported method return type: " + providerClass.getName() + "."
+                    + methodName + "[" + parameterCount + "]: " + method);
         }
 
         private BiConsumer<IScriptTaskReturns, Object> newReturnFunctionMatrix(final BeanClassType type) {
