@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker annotation to execute the returned string as an expression in the script task callback result.
+ * Marker annotation to execute the returned string as an expression via the ReflectiveScriptTaskCallback.
  */
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReturnExpression {
 
