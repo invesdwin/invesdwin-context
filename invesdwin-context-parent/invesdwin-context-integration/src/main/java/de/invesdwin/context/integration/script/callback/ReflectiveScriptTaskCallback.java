@@ -476,7 +476,11 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             } else if (type.isInstanceOf(char.class) || type.isInstanceOf(Character.class)) {
                 return (r, o) -> r.returnCharacter((char) o);
             } else if (type.isInstanceOf(CharSequence.class)) {
-                return (r, o) -> r.returnString((String) o);
+                if (Reflections.getAnnotation(ReturnExpression.class) != null) {
+                    return (r, o) -> r.returnExpression(String.valueOf(o));
+                } else {
+                    return (r, o) -> r.returnString(String.valueOf(o));
+                }
             } else if (type.isInstanceOf(float.class) || type.isInstanceOf(Float.class)) {
                 return (r, o) -> r.returnFloat((float) o);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
