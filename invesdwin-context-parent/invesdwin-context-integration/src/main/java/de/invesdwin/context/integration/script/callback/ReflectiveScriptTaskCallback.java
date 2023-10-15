@@ -146,47 +146,54 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
         }
 
         private Function<IScriptTaskParameters, Object> newParameterFunction(final int index) {
-            BeanClassType type = new BeanClassType(method.getParameterTypes()[index],
-                    method.getGenericParameterTypes()[index]);
-            if (type.isArray()) {
-                type = Reflections.determineGenercType(type);
+            try {
+                BeanClassType type = new BeanClassType(method.getParameterTypes()[index],
+                        method.getGenericParameterTypes()[index]);
                 if (type.isArray()) {
-                    //matrix
                     type = Reflections.determineGenercType(type);
-                    final Function<IScriptTaskParameters, Object> function = newParameterFunctionMatrix(index, type);
-                    if (function != null) {
-                        return function;
+                    if (type.isArray()) {
+                        //matrix
+                        type = Reflections.determineGenercType(type);
+                        final Function<IScriptTaskParameters, Object> function = newParameterFunctionMatrix(index,
+                                type);
+                        if (function != null) {
+                            return function;
+                        }
+                    } else {
+                        //vector
+                        final Function<IScriptTaskParameters, Object> function = newParameterFunctionVector(index,
+                                type);
+                        if (function != null) {
+                            return function;
+                        }
+                    }
+                } else if (type.isInstanceOf(List.class)) {
+                    type = Reflections.determineGenercType(type);
+                    if (type.isInstanceOf(List.class)) {
+                        //matrix
+                        type = Reflections.determineGenercType(type);
+                        final Function<IScriptTaskParameters, Object> function = newParameterFunctionMatrixAsList(index,
+                                type);
+                        if (function != null) {
+                            return function;
+                        }
+                    } else {
+                        //vector
+                        final Function<IScriptTaskParameters, Object> function = newParameterFunctionVectorAsList(index,
+                                type);
+                        if (function != null) {
+                            return function;
+                        }
                     }
                 } else {
-                    //vector
-                    final Function<IScriptTaskParameters, Object> function = newParameterFunctionVector(index, type);
+                    final Function<IScriptTaskParameters, Object> function = newParameterFunctionValue(index, type);
                     if (function != null) {
                         return function;
                     }
                 }
-            } else if (type.isInstanceOf(List.class)) {
-                type = Reflections.determineGenercType(type);
-                if (type.isInstanceOf(List.class)) {
-                    //matrix
-                    type = Reflections.determineGenercType(type);
-                    final Function<IScriptTaskParameters, Object> function = newParameterFunctionMatrixAsList(index,
-                            type);
-                    if (function != null) {
-                        return function;
-                    }
-                } else {
-                    //vector
-                    final Function<IScriptTaskParameters, Object> function = newParameterFunctionVectorAsList(index,
-                            type);
-                    if (function != null) {
-                        return function;
-                    }
-                }
-            } else {
-                final Function<IScriptTaskParameters, Object> function = newParameterFunctionValue(index, type);
-                if (function != null) {
-                    return function;
-                }
+            } catch (final Throwable t) {
+                throw new IllegalArgumentException("Unsupported method " + index + ". parameter type: "
+                        + providerClass.getName() + "." + methodName + "[" + parameterCount + "]: " + method, t);
             }
             throw new IllegalArgumentException("Unsupported method " + index + ". parameter type: "
                     + providerClass.getName() + "." + methodName + "[" + parameterCount + "]: " + method);
@@ -346,44 +353,49 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
         }
 
         private BiConsumer<IScriptTaskReturns, Object> newReturnFunction() {
-            BeanClassType type = new BeanClassType(method.getReturnType(), method.getGenericReturnType());
-            if (type.isArray()) {
-                type = Reflections.determineGenercType(type);
+            try {
+                BeanClassType type = new BeanClassType(method.getReturnType(), method.getGenericReturnType());
                 if (type.isArray()) {
-                    //matrix
                     type = Reflections.determineGenercType(type);
-                    final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionMatrix(type);
-                    if (function != null) {
-                        return function;
+                    if (type.isArray()) {
+                        //matrix
+                        type = Reflections.determineGenercType(type);
+                        final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionMatrix(type);
+                        if (function != null) {
+                            return function;
+                        }
+                    } else {
+                        //vector
+                        final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionVector(type);
+                        if (function != null) {
+                            return function;
+                        }
+                    }
+                } else if (type.isInstanceOf(List.class)) {
+                    type = Reflections.determineGenercType(type);
+                    if (type.isInstanceOf(List.class)) {
+                        //matrix
+                        type = Reflections.determineGenercType(type);
+                        final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionMatrixAsList(type);
+                        if (function != null) {
+                            return function;
+                        }
+                    } else {
+                        //vector
+                        final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionVectorAsList(type);
+                        if (function != null) {
+                            return function;
+                        }
                     }
                 } else {
-                    //vector
-                    final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionVector(type);
+                    final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionValue(type);
                     if (function != null) {
                         return function;
                     }
                 }
-            } else if (type.isInstanceOf(List.class)) {
-                type = Reflections.determineGenercType(type);
-                if (type.isInstanceOf(List.class)) {
-                    //matrix
-                    type = Reflections.determineGenercType(type);
-                    final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionMatrixAsList(type);
-                    if (function != null) {
-                        return function;
-                    }
-                } else {
-                    //vector
-                    final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionVectorAsList(type);
-                    if (function != null) {
-                        return function;
-                    }
-                }
-            } else {
-                final BiConsumer<IScriptTaskReturns, Object> function = newReturnFunctionValue(type);
-                if (function != null) {
-                    return function;
-                }
+            } catch (final Throwable t) {
+                throw new IllegalArgumentException("Unsupported method return type: " + providerClass.getName() + "."
+                        + methodName + "[" + parameterCount + "]: " + method, t);
             }
             throw new IllegalArgumentException("Unsupported method return type: " + providerClass.getName() + "."
                     + methodName + "[" + parameterCount + "]: " + method);
