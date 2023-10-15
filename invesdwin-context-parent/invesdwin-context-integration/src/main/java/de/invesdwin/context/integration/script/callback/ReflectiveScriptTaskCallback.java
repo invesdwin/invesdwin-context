@@ -337,7 +337,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             }
         }
 
-        public ADecimal<?> determineDecimalConverter(final BeanClassType type) {
+        private ADecimal<?> determineDecimalConverter(final BeanClassType type) {
             final ADecimal<?> converter = (ADecimal<?>) Reflections.staticField("ZERO")
                     .ofType(type.getType())
                     .in(type.getType())
