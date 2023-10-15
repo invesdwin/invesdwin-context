@@ -16,7 +16,6 @@ import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.ADecimal;
-import de.invesdwin.util.math.decimal.Decimal;
 
 @NotThreadSafe
 public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
@@ -193,6 +192,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                     + providerClass.getName() + "." + methodName + "[" + parameterCount + "]: " + method);
         }
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private Function<IScriptTaskParameters, Object> newParameterFunctionMatrix(final int index,
                 final BeanClassType type) {
             if (type.isInstanceOf(byte.class) || type.isInstanceOf(Byte.class)) {
@@ -205,8 +205,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 return (p) -> p.getFloatMatrix(index);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
                 return (p) -> p.getDoubleMatrix(index);
-            } else if (type.isInstanceOf(Decimal.class)) {
-                return (p) -> p.getDecimalMatrix(index);
+            } else if (type.isInstanceOf(ADecimal.class)) {
+                final ADecimal converter = determineDecimalConverter(type);
+                return (p) -> p.getDecimalMatrix(index, converter);
             } else if (type.isInstanceOf(short.class) || type.isInstanceOf(Short.class)) {
                 return (p) -> p.getShortMatrix(index);
             } else if (type.isInstanceOf(int.class) || type.isInstanceOf(Integer.class)) {
@@ -220,6 +221,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             }
         }
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private Function<IScriptTaskParameters, Object> newParameterFunctionVector(final int index,
                 final BeanClassType type) {
             if (type.isInstanceOf(byte.class) || type.isInstanceOf(Byte.class)) {
@@ -232,8 +234,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 return (p) -> p.getFloatVector(index);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
                 return (p) -> p.getDoubleVector(index);
-            } else if (type.isInstanceOf(Decimal.class)) {
-                return (p) -> p.getDecimalVector(index);
+            } else if (type.isInstanceOf(ADecimal.class)) {
+                final ADecimal converter = determineDecimalConverter(type);
+                return (p) -> p.getDecimalVector(index, converter);
             } else if (type.isInstanceOf(short.class) || type.isInstanceOf(Short.class)) {
                 return (p) -> p.getShortVector(index);
             } else if (type.isInstanceOf(int.class) || type.isInstanceOf(Integer.class)) {
@@ -247,6 +250,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             }
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         private Function<IScriptTaskParameters, Object> newParameterFunctionMatrixAsList(final int index,
                 final BeanClassType type) {
             if (type.isInstanceOf(byte.class) || type.isInstanceOf(Byte.class)) {
@@ -259,8 +263,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 return (p) -> p.getFloatMatrixAsList(index);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
                 return (p) -> p.getDoubleMatrixAsList(index);
-            } else if (type.isInstanceOf(Decimal.class)) {
-                return (p) -> p.getDecimalMatrixAsList(index);
+            } else if (type.isInstanceOf(ADecimal.class)) {
+                final ADecimal converter = determineDecimalConverter(type);
+                return (p) -> p.getDecimalMatrixAsList(index, converter);
             } else if (type.isInstanceOf(short.class) || type.isInstanceOf(Short.class)) {
                 return (p) -> p.getShortMatrixAsList(index);
             } else if (type.isInstanceOf(int.class) || type.isInstanceOf(Integer.class)) {
@@ -274,6 +279,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             }
         }
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private Function<IScriptTaskParameters, Object> newParameterFunctionVectorAsList(final int index,
                 final BeanClassType type) {
             if (type.isInstanceOf(byte.class) || type.isInstanceOf(Byte.class)) {
@@ -286,8 +292,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 return (p) -> p.getFloatVectorAsList(index);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
                 return (p) -> p.getDoubleVectorAsList(index);
-            } else if (type.isInstanceOf(Decimal.class)) {
-                return (p) -> p.getDecimalVectorAsList(index);
+            } else if (type.isInstanceOf(ADecimal.class)) {
+                final ADecimal converter = determineDecimalConverter(type);
+                return (p) -> p.getDecimalVectorAsList(index, converter);
             } else if (type.isInstanceOf(short.class) || type.isInstanceOf(Short.class)) {
                 return (p) -> p.getShortVectorAsList(index);
             } else if (type.isInstanceOf(int.class) || type.isInstanceOf(Integer.class)) {
@@ -301,6 +308,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             }
         }
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         private Function<IScriptTaskParameters, Object> newParameterFunctionValue(final int index,
                 final BeanClassType type) {
             if (type.isInstanceOf(byte.class) || type.isInstanceOf(Byte.class)) {
@@ -313,8 +321,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 return (p) -> p.getFloat(index);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
                 return (p) -> p.getDouble(index);
-            } else if (type.isInstanceOf(Decimal.class)) {
-                return (p) -> p.getDecimal(index);
+            } else if (type.isInstanceOf(ADecimal.class)) {
+                final ADecimal converter = determineDecimalConverter(type);
+                return (p) -> p.getDecimal(index, converter);
             } else if (type.isInstanceOf(short.class) || type.isInstanceOf(Short.class)) {
                 return (p) -> p.getShort(index);
             } else if (type.isInstanceOf(int.class) || type.isInstanceOf(Integer.class)) {
@@ -326,6 +335,14 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             } else {
                 return null;
             }
+        }
+
+        public ADecimal<?> determineDecimalConverter(final BeanClassType type) {
+            final ADecimal<?> converter = (ADecimal<?>) Reflections.staticField("ZERO")
+                    .ofType(type.getType())
+                    .in(type.getType())
+                    .get();
+            return converter;
         }
 
         private BiConsumer<IScriptTaskReturns, Object> newReturnFunction() {
