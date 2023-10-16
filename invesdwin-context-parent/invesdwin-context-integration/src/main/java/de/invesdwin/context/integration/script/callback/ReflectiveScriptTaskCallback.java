@@ -99,6 +99,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
         private final Function<IScriptTaskParameters, Object>[] parameterFunctions;
         private final Method method;
         private MethodHandle methodHandle;
+        private final boolean staticMethod;
         private final BiConsumer<IScriptTaskReturns, Object> returnFunction;
 
         @SuppressWarnings("unchecked")
@@ -116,6 +117,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             for (int i = 0; i < parameterCount; i++) {
                 parameterFunctions[i] = newParameterFunction(i);
             }
+            this.staticMethod = Reflections.isStatic(method);
             try {
                 methodHandle = MethodHandles.lookup().unreflect(method);
             } catch (final IllegalAccessException e) {
@@ -126,13 +128,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
 
         public void invoke(final Object provider, final IScriptTaskParameters parameters,
                 final IScriptTaskReturns returns) {
-            final Object[] args = new Object[parameterCount + 1];
-            args[0] = provider;
-            for (int i = 0; i < parameterCount; i++) {
-                if (parameters.isNotNull(i)) {
-                    args[i + 1] = parameterFunctions[i].apply(parameters);
-                }
-            }
+            final Object[] args = newArgs(provider, parameters);
             try {
                 final Object returnValue = methodHandle.invokeWithArguments(args);
                 if (returnValue == null) {
@@ -142,6 +138,27 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 }
             } catch (final Throwable e) {
                 throw Throwables.propagate(e);
+            }
+        }
+
+        public Object[] newArgs(final Object provider, final IScriptTaskParameters parameters) {
+            if (staticMethod) {
+                final Object[] args = new Object[parameterCount];
+                for (int i = 0; i < parameterCount; i++) {
+                    if (parameters.isNotNull(i)) {
+                        args[i] = parameterFunctions[i].apply(parameters);
+                    }
+                }
+                return args;
+            } else {
+                final Object[] args = new Object[parameterCount + 1];
+                args[0] = provider;
+                for (int i = 0; i < parameterCount; i++) {
+                    if (parameters.isNotNull(i)) {
+                        args[i + 1] = parameterFunctions[i].apply(parameters);
+                    }
+                }
+                return args;
             }
         }
 

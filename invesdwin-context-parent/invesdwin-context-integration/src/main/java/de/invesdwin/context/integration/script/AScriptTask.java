@@ -7,7 +7,7 @@ import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 @NotThreadSafe
 public abstract class AScriptTask<V, R> {
 
-    public IScriptTaskCallback newCallback() {
+    public IScriptTaskCallback getCallback() {
         return null;
     }
 
