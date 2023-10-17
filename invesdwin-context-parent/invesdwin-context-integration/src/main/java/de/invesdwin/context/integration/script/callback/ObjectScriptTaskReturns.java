@@ -18,6 +18,10 @@ public class ObjectScriptTaskReturns implements IScriptTaskReturns, Closeable {
         return returnExpression;
     }
 
+    public ObjectScriptTaskReturnValue newReturn() {
+        return new ObjectScriptTaskReturnValue(returnExpression, returnValue);
+    }
+
     @Override
     public void returnByte(final byte value) {
         assert returnValue == null;
