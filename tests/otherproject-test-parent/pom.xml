@@ -33,6 +33,7 @@
 				<artifactId>invesdwin-context-parent</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<!-- additional projects need to be imported via bom -->
 			<dependency>
