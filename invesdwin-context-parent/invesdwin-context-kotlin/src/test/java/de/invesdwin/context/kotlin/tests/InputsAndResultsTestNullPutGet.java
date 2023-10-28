@@ -85,7 +85,7 @@ public class InputsAndResultsTestNullPutGet {
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
                 engine.eval(new ClassPathResource(InputsAndResultsTestNullPutGet.class.getSimpleName() + ".kts",
-                        InputsAndResultsTestNull.class));
+                        InputsAndResultsTestNullPutGet.class));
             }
 
             @Override

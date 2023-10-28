@@ -152,7 +152,7 @@ public class InputsAndResultsTestEmpty {
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
                 engine.eval(new ClassPathResource(InputsAndResultsTestEmpty.class.getSimpleName() + ".bsh",
-                        InputsAndResultsTestNull.class));
+                        InputsAndResultsTestEmpty.class));
             }
 
             @Override

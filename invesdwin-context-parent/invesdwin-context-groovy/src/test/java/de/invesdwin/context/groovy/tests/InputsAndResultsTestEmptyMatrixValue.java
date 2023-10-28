@@ -142,7 +142,7 @@ public class InputsAndResultsTestEmptyMatrixValue {
             public void executeScript(final IScriptTaskEngine engine) {
                 engine.eval(
                         new ClassPathResource(InputsAndResultsTestEmptyMatrixValue.class.getSimpleName() + ".groovy",
-                                InputsAndResultsTestNull.class));
+                                InputsAndResultsTestEmptyMatrixValue.class));
             }
 
             @Override
