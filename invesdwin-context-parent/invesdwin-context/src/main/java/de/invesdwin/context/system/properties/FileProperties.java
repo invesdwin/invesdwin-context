@@ -1,7 +1,6 @@
 package de.invesdwin.context.system.properties;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -29,12 +28,12 @@ public class FileProperties extends AProperties {
         builder.setAutoSave(true);
         try {
             if (!file.exists()) {
-                Files.touch(file);
+                Files.touchQuietly(file);
             }
             final PropertiesConfiguration conf = builder.configure(new Parameters().properties().setFile(file))
                     .getConfiguration();
             return conf;
-        } catch (final ConfigurationException | IOException e) {
+        } catch (final ConfigurationException e) {
             throw new RuntimeException(e);
         }
     }

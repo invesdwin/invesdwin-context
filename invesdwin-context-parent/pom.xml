@@ -72,7 +72,7 @@
 		<version.commons-compress>1.22</version.commons-compress>
 		<version.jarchivelib>1.2.0</version.jarchivelib>
 
-		<version.logback>1.4.4</version.logback>
+		<version.logback>1.4.11</version.logback>
 
 		<!-- reports -->
 		<version.jfreechart>1.5.3</version.jfreechart>
@@ -84,10 +84,10 @@
 		<version.poi>5.2.0</version.poi>
 
 		<!-- integration -->
-		<version.spring-batch>5.0.0-M8</version.spring-batch>
-		<version.spring-retry>2.0.0</version.spring-retry>
-		<version.spring-integration>6.0.0-M5</version.spring-integration>
-		<version.spring-ws>4.0.0-M3</version.spring-ws>
+		<version.spring-batch>5.0.3</version.spring-batch>
+		<version.spring-retry>2.0.4</version.spring-retry>
+		<version.spring-integration>6.1.4</version.spring-integration>
+		<version.spring-ws>4.0.7</version.spring-ws>
 
 		<version.hsqldb>2.7.1</version.hsqldb>
 		<version.mysql-connector-j>8.0.31</version.mysql-connector-j>

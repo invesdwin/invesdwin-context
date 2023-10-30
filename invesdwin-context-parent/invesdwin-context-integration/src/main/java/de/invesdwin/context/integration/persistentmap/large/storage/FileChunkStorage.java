@@ -103,7 +103,7 @@ public class FileChunkStorage<V> implements IChunkStorage<V> {
                 fileIndex += 1000;
                 continue;
             }
-            Files.touch(file);
+            Files.touchQuietly(file);
             return file;
         }
     }

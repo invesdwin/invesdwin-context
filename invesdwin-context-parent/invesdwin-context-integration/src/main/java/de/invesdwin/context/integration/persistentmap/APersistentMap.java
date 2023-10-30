@@ -236,7 +236,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                     try {
                         final File timestampFile = getTimestampFile();
                         Files.forceMkdir(timestampFile.getParentFile());
-                        Files.touch(timestampFile);
+                        Files.touchQuietly(timestampFile);
                     } catch (final IOException e) {
                         throw Err.process(e);
                     }
