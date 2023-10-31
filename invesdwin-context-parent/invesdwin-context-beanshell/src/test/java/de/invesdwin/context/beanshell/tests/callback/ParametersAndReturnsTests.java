@@ -1,0 +1,64 @@
+package de.invesdwin.context.beanshell.tests.callback;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.concurrent.NotThreadSafe;
+
+import de.invesdwin.context.beanshell.IScriptTaskRunnerBeanshell;
+import de.invesdwin.context.beanshell.tests.hello.HelloWorldScript;
+import de.invesdwin.util.concurrent.Executors;
+import de.invesdwin.util.concurrent.WrappedExecutorService;
+import de.invesdwin.util.concurrent.future.Futures;
+
+@NotThreadSafe
+public class ParametersAndReturnsTests {
+
+    private final IScriptTaskRunnerBeanshell runner;
+
+    public ParametersAndReturnsTests(final IScriptTaskRunnerBeanshell runner) {
+        this.runner = runner;
+    }
+
+    public void test() {
+        new HelloWorldScript(runner).testHelloWorld();
+        new ParametersAndReturnsTestByte(runner).testByte();
+        new ParametersAndReturnsTestFloat(runner).testFloat();
+        new ParametersAndReturnsTestDouble(runner).testDouble();
+        new ParametersAndReturnsTestDecimal(runner).testDecimal();
+        new ParametersAndReturnsTestPercent(runner).testPercent();
+        new ParametersAndReturnsTestShort(runner).testShort();
+        new ParametersAndReturnsTestInteger(runner).testInteger();
+        new ParametersAndReturnsTestLong(runner).testLong();
+        new ParametersAndReturnsTestCharacter(runner).testCharacter();
+        new ParametersAndReturnsTestString(runner).testString();
+        new ParametersAndReturnsTestBoolean(runner).testBoolean();
+        new ParametersAndReturnsTestNullPutGet(runner).testNullPutGet();
+        new ParametersAndReturnsTestEmpty(runner).testEmpty();
+        new ParametersAndReturnsTestEmptyMatrixValue(runner).testEmptyMatrixValue();
+    }
+
+    public void testParallel() {
+        final List<Runnable> tasks = new ArrayList<Runnable>();
+        for (int i = 0; i < 10; i++) {
+            tasks.add(new Runnable() {
+                @Override
+                public void run() {
+                    test();
+                }
+            });
+        }
+        final WrappedExecutorService executor = Executors.newFixedThreadPool(
+                ParametersAndReturnsTests.class.getSimpleName() + "_testParallel",
+                Runtime.getRuntime().availableProcessors());
+        try {
+            Futures.submitAndWait(executor, tasks);
+        } catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+            //let the finalizer do this, somehow otherwise subsequent runs gets interrupted magically
+            //        } finally {
+            //            executor.shutdown();
+        }
+    }
+
+}
