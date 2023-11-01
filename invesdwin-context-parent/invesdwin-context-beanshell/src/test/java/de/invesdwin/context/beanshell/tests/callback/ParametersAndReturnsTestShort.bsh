@@ -40,7 +40,6 @@ System.out.println(getShortMatrixType);
 System.out.println(getShortMatrix);
 if(getShortMatrixType != short.class)
 	throw new Exception("getShortMatrix not Short!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setShortMatrix",new Object[]{getShortMatrix});
 
 System.out.println("getShortMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getShortMatrixAsListType);
 System.out.println(getShortMatrixAsList);
 if(getShortMatrixAsListType != short.class)
 	throw new Exception("getShortMatrixAsList not Short!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setShortMatrixAsList",new Object[]{getShortMatrixAsList});

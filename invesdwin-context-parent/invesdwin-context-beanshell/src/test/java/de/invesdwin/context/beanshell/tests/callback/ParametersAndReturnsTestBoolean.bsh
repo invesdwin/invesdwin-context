@@ -40,7 +40,6 @@ System.out.println(getBooleanMatrixType);
 System.out.println(getBooleanMatrix);
 if(getBooleanMatrixType != boolean.class)
 	throw new Exception("getBooleanMatrix not Boolean!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setBooleanMatrix",new Object[]{getBooleanMatrix});
 
 System.out.println("getBooleanMatrixAsList");

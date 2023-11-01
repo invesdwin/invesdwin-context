@@ -211,12 +211,12 @@ callback("setShortMatrixAsList",new Object[]{getShortMatrixAsList});
 getStringVector = callback("getStringVector");
 if(getStringVector.length != 0)
 	throw new Exception("getStringVector not empty!");
-callback("setStringVector",getStringVector);
+callback("setStringVector",new Object[]{getStringVector});
 
 getStringVectorAsList = callback("getStringVectorAsList");
 if(getStringVectorAsList.length != 0)
 	throw new Exception("getStringVectorAsList not empty!");
-callback("setStringVectorAsList",getStringVectorAsList);
+callback("setStringVectorAsList",new Object[]{getStringVectorAsList});
 
 getStringMatrix = callback("getStringMatrix");
 if(getStringMatrix.length != 0)

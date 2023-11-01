@@ -40,7 +40,6 @@ System.out.println(getCharacterMatrixType);
 System.out.println(getCharacterMatrix);
 if(getCharacterMatrixType != char.class)
 	throw new Exception("getCharacterMatrix not Character!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setCharacterMatrix",new Object[]{getCharacterMatrix});
 
 System.out.println("getCharacterMatrixAsList");
@@ -52,6 +51,5 @@ System.out.println(getCharacterMatrixAsListType);
 System.out.println(getCharacterMatrixAsList);
 if(getCharacterMatrixAsListType != char.class)
 	throw new Exception("getCharacterMatrixAsList not Character!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setCharacterMatrixAsList",new Object[]{getCharacterMatrixAsList});
 	

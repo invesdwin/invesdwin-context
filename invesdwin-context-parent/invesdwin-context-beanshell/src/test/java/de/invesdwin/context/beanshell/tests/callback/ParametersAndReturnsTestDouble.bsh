@@ -40,7 +40,6 @@ System.out.println(getDoubleMatrixType);
 System.out.println(getDoubleMatrix);
 if(getDoubleMatrixType != double.class)
 	throw new Exception("getDoubleMatrix not Double!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setDoubleMatrix",new Object[]{getDoubleMatrix});
 
 System.out.println("getDoubleMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getDoubleMatrixAsListType);
 System.out.println(getDoubleMatrixAsList);
 if(getDoubleMatrixAsListType != double.class)
 	throw new Exception("getDoubleMatrixAsList not Double!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setDoubleMatrixAsList",new Object[]{getDoubleMatrixAsList});

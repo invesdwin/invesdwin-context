@@ -40,7 +40,6 @@ System.out.println(getFloatMatrixType);
 System.out.println(getFloatMatrix);
 if(getFloatMatrixType != float.class)
 	throw new Exception("getFloatMatrix not Float!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setFloatMatrix",new Object[]{getFloatMatrix});
 
 System.out.println("getFloatMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getFloatMatrixAsListType);
 System.out.println(getFloatMatrixAsList);
 if(getFloatMatrixAsListType != float.class)
 	throw new Exception("getFloatMatrixAsList not Float!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setFloatMatrixAsList",new Object[]{getFloatMatrixAsList});

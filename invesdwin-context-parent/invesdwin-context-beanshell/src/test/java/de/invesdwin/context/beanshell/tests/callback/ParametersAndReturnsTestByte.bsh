@@ -40,7 +40,6 @@ System.out.println(getByteMatrixType);
 System.out.println(getByteMatrix);
 if(getByteMatrixType != byte.class)
 	throw new Exception("getByteMatrix not Byte!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setByteMatrix",new Object[]{getByteMatrix});
 
 System.out.println("getByteMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getByteMatrixAsListType);
 System.out.println(getByteMatrixAsList);
 if(getByteMatrixAsListType != byte.class)
 	throw new Exception("getByteMatrixAsList not Byte!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setByteMatrixAsList",new Object[]{getByteMatrixAsList});

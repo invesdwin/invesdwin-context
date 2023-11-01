@@ -40,7 +40,6 @@ System.out.println(getIntegerMatrixType);
 System.out.println(getIntegerMatrix);
 if(getIntegerMatrixType != int.class)
 	throw new Exception("getIntegerMatrix not Integer!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setIntegerMatrix",new Object[]{getIntegerMatrix});
 
 System.out.println("getIntegerMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getIntegerMatrixAsListType);
 System.out.println(getIntegerMatrixAsList);
 if(getIntegerMatrixAsListType != int.class)
 	throw new Exception("getIntegerMatrixAsList not Integer!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setIntegerMatrixAsList",new Object[]{getIntegerMatrixAsList});

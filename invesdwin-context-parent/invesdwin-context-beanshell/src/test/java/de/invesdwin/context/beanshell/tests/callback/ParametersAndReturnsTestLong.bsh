@@ -40,7 +40,6 @@ System.out.println(getLongMatrixType);
 System.out.println(getLongMatrix);
 if(getLongMatrixType != long.class)
 	throw new Exception("getLongMatrix not Long!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setLongMatrix",new Object[]{getLongMatrix});
 
 System.out.println("getLongMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getLongMatrixAsListType);
 System.out.println(getLongMatrixAsList);
 if(getLongMatrixAsListType != long.class)
 	throw new Exception("getLongMatrixAsList not Long!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setLongMatrixAsList",new Object[]{getLongMatrixAsList});

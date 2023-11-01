@@ -40,7 +40,6 @@ System.out.println(getPercentMatrixType);
 System.out.println(getPercentMatrix);
 if(getPercentMatrixType != double.class)
 	throw new Exception("getPercentMatrix not Double!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setPercentMatrix",new Object[]{getPercentMatrix});
 
 System.out.println("getPercentMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getPercentMatrixAsListType);
 System.out.println(getPercentMatrixAsList);
 if(getPercentMatrixAsListType != double.class)
 	throw new Exception("getPercentMatrixAsList not Double!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setPercentMatrixAsList",new Object[]{getPercentMatrixAsList});

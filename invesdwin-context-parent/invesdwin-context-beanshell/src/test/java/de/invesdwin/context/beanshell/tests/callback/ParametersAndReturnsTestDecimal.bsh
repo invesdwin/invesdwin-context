@@ -40,7 +40,6 @@ System.out.println(getDecimalMatrixType);
 System.out.println(getDecimalMatrix);
 if(getDecimalMatrixType != double.class)
 	throw new Exception("getDecimalMatrix not Double!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setDecimalMatrix",new Object[]{getDecimalMatrix});
 
 System.out.println("getDecimalMatrixAsList");
@@ -52,5 +51,4 @@ System.out.println(getDecimalMatrixAsListType);
 System.out.println(getDecimalMatrixAsList);
 if(getDecimalMatrixAsListType != double.class)
 	throw new Exception("getDecimalMatrixAsList not Double!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setDecimalMatrixAsList",new Object[]{getDecimalMatrixAsList});

@@ -27,7 +27,6 @@ System.out.println(getStringVectorType);
 System.out.println(getStringVector);
 if(getStringVectorType != String.class)
 	throw new Exception("getStringVector not String!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringVector",new Object[]{getStringVector});
 
 System.out.println("getStringVectorWithNull");
@@ -41,7 +40,6 @@ if(getStringVectorWithNullType != String.class)
 	throw new Exception("getStringVectorWithNull not String!");
 if(getStringVectorWithNull[1] != null)
 	throw new Exception("getStringVectorWithNull[1] not null!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringVectorWithNull",new Object[]{getStringVectorWithNull});
 
 System.out.println("getStringVectorAsList");
@@ -53,7 +51,6 @@ System.out.println(getStringVectorAsListType);
 System.out.println(getStringVectorAsList);
 if(getStringVectorAsListType != String.class)
 	throw new Exception("getStringVectorAsList not String!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringVectorAsList",new Object[]{getStringVectorAsList});
 
 System.out.println("getStringVectorAsListWithNull");
@@ -67,7 +64,6 @@ if(getStringVectorAsListWithNullType != String.class)
 	throw new Exception("getStringVectorAsListWithNull not String!");
 if(getStringVectorAsListWithNull[1] != null)
 	throw new Exception("getStringVectorAsListWithNull[1] not null!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringVectorAsListWithNull",new Object[]{getStringVectorAsListWithNull});
 
 System.out.println("getStringMatrix");
@@ -79,7 +75,6 @@ System.out.println(getStringMatrixType);
 System.out.println(getStringMatrix);
 if(getStringMatrixType != String.class)
 	throw new Exception("getStringMatrix not String!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringMatrix",new Object[]{getStringMatrix});
 
 System.out.println("getStringMatrixWithNull");
@@ -97,7 +92,6 @@ if(getStringMatrixWithNull[1][1] != null)
 	throw new Exception("getStringMatrixWithNull[1][1] not null!");
 if(getStringMatrixWithNull[2][2] != null)
 	throw new Exception("getStringMatrixWithNull[2][2] not null!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringMatrixWithNull",new Object[]{getStringMatrixWithNull});
 
 System.out.println("getStringMatrixAsList");
@@ -109,7 +103,6 @@ System.out.println(getStringMatrixAsListType);
 System.out.println(getStringMatrixAsList);
 if(getStringMatrixAsListType != String.class)
 	throw new Exception("getStringMatrixAsList not String!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringMatrixAsList",new Object[]{getStringMatrixAsList});
 
 System.out.println("getStringMatrixAsListWithNull");
@@ -127,5 +120,4 @@ if(getStringMatrixAsListWithNull[1][1] != null)
 	throw new Exception("getStringMatrixAsListWithNull[1][1] not null!");
 if(getStringMatrixAsListWithNull[2][2] != null)
 	throw new Exception("getStringMatrixAsListWithNull[2][2] not null!");
-//some magic in beanshell causes this to pick the wrong overload without an explicit array, also varargs is not supported
 callback("setStringMatrixAsListWithNull",new Object[]{getStringMatrixAsListWithNull});

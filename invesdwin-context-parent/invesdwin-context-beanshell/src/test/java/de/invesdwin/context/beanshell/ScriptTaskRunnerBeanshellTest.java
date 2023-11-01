@@ -2,7 +2,6 @@ package de.invesdwin.context.beanshell;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.beanshell.tests.InputsAndResultsTests;
@@ -27,13 +26,11 @@ public class ScriptTaskRunnerBeanshellTest extends ATest {
         new InputsAndResultsTests(runner).testParallel();
     }
 
-    @Disabled
     @Test
     public void testCallback() {
         new ParametersAndReturnsTests(runner).test();
     }
 
-    @Disabled
     @Test
     public void testCallbackParallel() {
         new ParametersAndReturnsTests(runner).testParallel();
