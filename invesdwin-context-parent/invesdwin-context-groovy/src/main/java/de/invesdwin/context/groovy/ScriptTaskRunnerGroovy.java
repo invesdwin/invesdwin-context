@@ -1,13 +1,15 @@
 package de.invesdwin.context.groovy;
 
 import javax.annotation.concurrent.Immutable;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
+import de.invesdwin.context.groovy.callback.GroovyScriptTaskCallbackContext;
 import de.invesdwin.context.groovy.pool.WrappedGroovyShell;
+import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.error.Throwables;
+import jakarta.inject.Named;
 
 @Immutable
 @Named
@@ -18,17 +20,26 @@ public final class ScriptTaskRunnerGroovy implements IScriptTaskRunnerGroovy, Fa
     /**
      * public for ServiceLoader support
      */
-    public ScriptTaskRunnerGroovy() {
-    }
+    public ScriptTaskRunnerGroovy() {}
 
     @Override
     public <T> T run(final AScriptTaskGroovy<T> scriptTask) {
         //get session
         final IObjectPool<WrappedGroovyShell> enginePool = ScriptTaskEngineGroovy.getEnginePool();
         final WrappedGroovyShell groovyEngine = enginePool.borrowObject();
+        final GroovyScriptTaskCallbackContext context;
+        final IScriptTaskCallback callback = scriptTask.getCallback();
+        if (callback != null) {
+            context = new GroovyScriptTaskCallbackContext(callback);
+        } else {
+            context = null;
+        }
         try {
             //inputs
             final ScriptTaskEngineGroovy engine = new ScriptTaskEngineGroovy(groovyEngine);
+            if (context != null) {
+                context.init(engine);
+            }
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -44,6 +55,10 @@ public final class ScriptTaskRunnerGroovy implements IScriptTaskRunnerGroovy, Fa
         } catch (final Throwable t) {
             enginePool.invalidateObject(groovyEngine);
             throw Throwables.propagate(t);
+        } finally {
+            if (context != null) {
+                context.close();
+            }
         }
     }
 

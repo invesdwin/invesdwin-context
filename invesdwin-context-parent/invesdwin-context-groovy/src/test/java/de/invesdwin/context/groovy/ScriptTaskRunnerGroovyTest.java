@@ -1,14 +1,16 @@
 package de.invesdwin.context.groovy;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.groovy.tests.InputsAndResultsTests;
+import de.invesdwin.context.groovy.tests.callback.ParametersAndReturnsTests;
+import de.invesdwin.context.groovy.tests.callback.SimpleCallbackTest;
 import de.invesdwin.context.groovy.tests.hello.FileStrictHelloWorldScript;
 import de.invesdwin.context.groovy.tests.hello.StrictHelloWorldScript;
 import de.invesdwin.context.test.ATest;
+import jakarta.inject.Inject;
 
 @NotThreadSafe
 public class ScriptTaskRunnerGroovyTest extends ATest {
@@ -46,6 +48,21 @@ public class ScriptTaskRunnerGroovyTest extends ATest {
     @Test
     public void testParallel() {
         new InputsAndResultsTests(runner).testParallel();
+    }
+
+    @Test
+    public void testCallback() {
+        new ParametersAndReturnsTests(runner).test();
+    }
+
+    @Test
+    public void testCallbackParallel() {
+        new ParametersAndReturnsTests(runner).testParallel();
+    }
+
+    @Test
+    public void testSimpleCallback() {
+        new SimpleCallbackTest(runner).testSimpleCallback();
     }
 
 }

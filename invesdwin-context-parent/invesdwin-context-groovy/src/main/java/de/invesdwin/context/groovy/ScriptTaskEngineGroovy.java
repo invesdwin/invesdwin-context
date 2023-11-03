@@ -69,8 +69,8 @@ public class ScriptTaskEngineGroovy implements IScriptTaskEngine {
         return newInstance(GroovyProperties.isStrict());
     }
 
-    public static ScriptTaskEngineGroovy newInstance(final boolean optimized) {
-        final IObjectPool<WrappedGroovyShell> pool = getEnginePool(optimized);
+    public static ScriptTaskEngineGroovy newInstance(final boolean strict) {
+        final IObjectPool<WrappedGroovyShell> pool = getEnginePool(strict);
         return new ScriptTaskEngineGroovy(pool.borrowObject()) {
             @Override
             public void close() {

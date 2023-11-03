@@ -1,6 +1,6 @@
 //no varargs in a released version yet: https://github.com/beanshell/beanshell/issues/105
 Object callback(String methodName) {
-    return callback(methodName, new Object[0]);
+    return callback(methodName, de.invesdwin.util.lang.Objects.EMPTY_ARRAY);
 }
 Object callback(String methodName, Object parameter1) {
     return callback(methodName, new Object[]{parameter1});

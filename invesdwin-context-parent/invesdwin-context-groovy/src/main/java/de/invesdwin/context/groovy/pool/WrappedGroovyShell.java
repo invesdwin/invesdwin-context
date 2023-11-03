@@ -37,6 +37,7 @@ public class WrappedGroovyShell implements Closeable {
             config.addCompilationCustomizers(new ASTTransformationCustomizer(CompileStatic.class));
             config.addCompilationCustomizers(new ASTTransformationCustomizer(TypeChecked.class));
         }
+        config.setScriptBaseClass(AGroovyScriptBaseClass.class.getName());
         this.binding = new Binding(new LinkedHashMap<>());
         this.engine = new GroovyShell(binding, config);
         scriptCache = Caffeine.newBuilder()
