@@ -4,6 +4,8 @@ import javax.annotation.concurrent.Immutable;
 
 import org.springframework.beans.factory.FactoryBean;
 
+import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.jshell.callback.JshellScriptTaskCallbackContext;
 import de.invesdwin.context.jshell.pool.JshellScriptEngineObjectPool;
 import de.invesdwin.context.jshell.pool.WrappedJshellScriptEngine;
 import de.invesdwin.util.error.Throwables;
@@ -24,9 +26,19 @@ public final class ScriptTaskRunnerJshell implements IScriptTaskRunnerJshell, Fa
     public <T> T run(final AScriptTaskJshell<T> scriptTask) {
         //get session
         final WrappedJshellScriptEngine scriptEngine = JshellScriptEngineObjectPool.INSTANCE.borrowObject();
+        final JshellScriptTaskCallbackContext context;
+        final IScriptTaskCallback callback = scriptTask.getCallback();
+        if (callback != null) {
+            context = new JshellScriptTaskCallbackContext(callback);
+        } else {
+            context = null;
+        }
         try {
             //inputs
             final ScriptTaskEngineJshell engine = new ScriptTaskEngineJshell(scriptEngine);
+            if (context != null) {
+                context.init(engine);
+            }
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -42,6 +54,10 @@ public final class ScriptTaskRunnerJshell implements IScriptTaskRunnerJshell, Fa
         } catch (final Throwable t) {
             JshellScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
+        } finally {
+            if (context != null) {
+                context.close();
+            }
         }
     }
 
