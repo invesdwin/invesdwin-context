@@ -1,8 +1,8 @@
 System.out.println("getCharacter");
-if(getCharacter != void)
+if(bindings.containsKey("getCharacter"))
 	throw new Exception("getCharacter already defined!");
-getCharacter = callback("getCharacter");
-getCharacterType = getCharacter.getClass();
+var getCharacter = callback("getCharacter");
+var getCharacterType = getCharacter.getClass();
 System.out.println(getCharacterType);
 System.out.println(getCharacter);
 if(getCharacterType != Character.class)
@@ -10,10 +10,10 @@ if(getCharacterType != Character.class)
 callback("setCharacter",getCharacter);
 
 System.out.println("getCharacterVector");
-if(getCharacterVector != void)
+if(bindings.containsKey("getCharacterVector"))
 	throw new Exception("getCharacterVector already defined!");
-getCharacterVector = callback("getCharacterVector");
-getCharacterVectorType = getCharacterVector.getClass().getComponentType();
+var getCharacterVector = callback("getCharacterVector");
+var getCharacterVectorType = getCharacterVector.getClass().getComponentType();
 System.out.println(getCharacterVectorType);
 System.out.println(getCharacterVector);
 if(getCharacterVectorType != char.class)
@@ -21,10 +21,10 @@ if(getCharacterVectorType != char.class)
 callback("setCharacterVector",getCharacterVector);
 
 System.out.println("getCharacterVectorAsList");
-if(getCharacterVectorAsList != void)
+if(bindings.containsKey("getCharacterVectorAsList"))
 	throw new Exception("getCharacterVectorAsList already defined!");
-getCharacterVectorAsList = callback("getCharacterVectorAsList");
-getCharacterVectorAsListType = getCharacterVectorAsList.getClass().getComponentType();
+var getCharacterVectorAsList = callback("getCharacterVectorAsList");
+var getCharacterVectorAsListType = getCharacterVectorAsList.getClass().getComponentType();
 System.out.println(getCharacterVectorAsListType);
 System.out.println(getCharacterVectorAsList);
 if(getCharacterVectorAsListType != char.class)
@@ -32,24 +32,24 @@ if(getCharacterVectorAsListType != char.class)
 callback("setCharacterVectorAsList",getCharacterVectorAsList);
 
 System.out.println("getCharacterMatrix");
-if(getCharacterMatrix != void)
+if(bindings.containsKey("getCharacterMatrix"))
 	throw new Exception("getCharacterMatrix already defined!");
-getCharacterMatrix = callback("getCharacterMatrix");
-getCharacterMatrixType = getCharacterMatrix[0].getClass().getComponentType();
+var getCharacterMatrix = callback("getCharacterMatrix");
+var getCharacterMatrixType = getCharacterMatrix[0].getClass().getComponentType();
 System.out.println(getCharacterMatrixType);
 System.out.println(getCharacterMatrix);
 if(getCharacterMatrixType != char.class)
 	throw new Exception("getCharacterMatrix not Character!");
-callback("setCharacterMatrix",new Object[]{getCharacterMatrix});
+callback("setCharacterMatrix",getCharacterMatrix);
 
 System.out.println("getCharacterMatrixAsList");
-if(getCharacterMatrixAsList != void)
+if(bindings.containsKey("getCharacterMatrixAsList"))
 	throw new Exception("getCharacterMatrixAsList already defined!");
-getCharacterMatrixAsList = callback("getCharacterMatrixAsList");
-getCharacterMatrixAsListType = getCharacterMatrixAsList[0].getClass().getComponentType();
+var getCharacterMatrixAsList = callback("getCharacterMatrixAsList");
+var getCharacterMatrixAsListType = getCharacterMatrixAsList[0].getClass().getComponentType();
 System.out.println(getCharacterMatrixAsListType);
 System.out.println(getCharacterMatrixAsList);
 if(getCharacterMatrixAsListType != char.class)
 	throw new Exception("getCharacterMatrixAsList not Character!");
-callback("setCharacterMatrixAsList",new Object[]{getCharacterMatrixAsList});
+callback("setCharacterMatrixAsList",getCharacterMatrixAsList);
 	

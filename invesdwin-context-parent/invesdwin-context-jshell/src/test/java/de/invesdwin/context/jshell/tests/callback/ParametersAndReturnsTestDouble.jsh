@@ -1,8 +1,8 @@
 System.out.println("getDouble");
-if(getDouble != void)
+if(bindings.containsKey("getDouble"))
 	throw new Exception("getDouble already defined!");
-getDouble = callback("getDouble");
-getDoubleType = getDouble.getClass();
+var getDouble = callback("getDouble");
+var getDoubleType = getDouble.getClass();
 System.out.println(getDoubleType);
 System.out.println(getDouble);
 if(getDoubleType != Double.class)
@@ -10,10 +10,10 @@ if(getDoubleType != Double.class)
 callback("setDouble",getDouble);
 
 System.out.println("getDoubleVector");
-if(getDoubleVector != void)
+if(bindings.containsKey("getDoubleVector"))
 	throw new Exception("getDoubleVector already defined!");
-getDoubleVector = callback("getDoubleVector");
-getDoubleVectorType = getDoubleVector.getClass().getComponentType();
+var getDoubleVector = callback("getDoubleVector");
+var getDoubleVectorType = getDoubleVector.getClass().getComponentType();
 System.out.println(getDoubleVectorType);
 System.out.println(getDoubleVector);
 if(getDoubleVectorType != double.class)
@@ -21,10 +21,10 @@ if(getDoubleVectorType != double.class)
 callback("setDoubleVector",getDoubleVector);
 
 System.out.println("getDoubleVectorAsList");
-if(getDoubleVectorAsList != void)
+if(bindings.containsKey("getDoubleVectorAsList"))
 	throw new Exception("getDoubleVectorAsList already defined!");
-getDoubleVectorAsList = callback("getDoubleVectorAsList");
-getDoubleVectorAsListType = getDoubleVectorAsList.getClass().getComponentType();
+var getDoubleVectorAsList = callback("getDoubleVectorAsList");
+var getDoubleVectorAsListType = getDoubleVectorAsList.getClass().getComponentType();
 System.out.println(getDoubleVectorAsListType);
 System.out.println(getDoubleVectorAsList);
 if(getDoubleVectorAsListType != double.class)
@@ -32,23 +32,23 @@ if(getDoubleVectorAsListType != double.class)
 callback("setDoubleVectorAsList",getDoubleVectorAsList);
 
 System.out.println("getDoubleMatrix");
-if(getDoubleMatrix != void)
+if(bindings.containsKey("getDoubleMatrix"))
 	throw new Exception("getDoubleMatrix already defined!");
-getDoubleMatrix = callback("getDoubleMatrix");
-getDoubleMatrixType = getDoubleMatrix[0].getClass().getComponentType();
+var getDoubleMatrix = callback("getDoubleMatrix");
+var getDoubleMatrixType = getDoubleMatrix[0].getClass().getComponentType();
 System.out.println(getDoubleMatrixType);
 System.out.println(getDoubleMatrix);
 if(getDoubleMatrixType != double.class)
 	throw new Exception("getDoubleMatrix not Double!");
-callback("setDoubleMatrix",new Object[]{getDoubleMatrix});
+callback("setDoubleMatrix",getDoubleMatrix);
 
 System.out.println("getDoubleMatrixAsList");
-if(getDoubleMatrixAsList != void)
+if(bindings.containsKey("getDoubleMatrixAsList"))
 	throw new Exception("getDoubleMatrixAsList already defined!");
-getDoubleMatrixAsList = callback("getDoubleMatrixAsList");
-getDoubleMatrixAsListType = getDoubleMatrixAsList[0].getClass().getComponentType();
+var getDoubleMatrixAsList = callback("getDoubleMatrixAsList");
+var getDoubleMatrixAsListType = getDoubleMatrixAsList[0].getClass().getComponentType();
 System.out.println(getDoubleMatrixAsListType);
 System.out.println(getDoubleMatrixAsList);
 if(getDoubleMatrixAsListType != double.class)
 	throw new Exception("getDoubleMatrixAsList not Double!");
-callback("setDoubleMatrixAsList",new Object[]{getDoubleMatrixAsList});
+callback("setDoubleMatrixAsList",getDoubleMatrixAsList);

@@ -1,8 +1,8 @@
 System.out.println("getShort");
-if(getShort != void)
+if(bindings.containsKey("getShort"))
 	throw new Exception("getShort already defined!");
-getShort = callback("getShort");
-getShortType = getShort.getClass();
+var getShort = callback("getShort");
+var getShortType = getShort.getClass();
 System.out.println(getShortType);
 System.out.println(getShort);
 if(getShortType != Short.class)
@@ -10,10 +10,10 @@ if(getShortType != Short.class)
 callback("setShort",getShort);
 
 System.out.println("getShortVector");
-if(getShortVector != void)
+if(bindings.containsKey("getShortVector"))
 	throw new Exception("getShortVector already defined!");
-getShortVector = callback("getShortVector");
-getShortVectorType = getShortVector.getClass().getComponentType();
+var getShortVector = callback("getShortVector");
+var getShortVectorType = getShortVector.getClass().getComponentType();
 System.out.println(getShortVectorType);
 System.out.println(getShortVector);
 if(getShortVectorType != short.class)
@@ -21,10 +21,10 @@ if(getShortVectorType != short.class)
 callback("setShortVector",getShortVector);
 
 System.out.println("getShortVectorAsList");
-if(getShortVectorAsList != void)
+if(bindings.containsKey("getShortVectorAsList"))
 	throw new Exception("getShortVectorAsList already defined!");
-getShortVectorAsList = callback("getShortVectorAsList");
-getShortVectorAsListType = getShortVectorAsList.getClass().getComponentType();
+var getShortVectorAsList = callback("getShortVectorAsList");
+var getShortVectorAsListType = getShortVectorAsList.getClass().getComponentType();
 System.out.println(getShortVectorAsListType);
 System.out.println(getShortVectorAsList);
 if(getShortVectorAsListType != short.class)
@@ -32,23 +32,23 @@ if(getShortVectorAsListType != short.class)
 callback("setShortVectorAsList",getShortVectorAsList);
 
 System.out.println("getShortMatrix");
-if(getShortMatrix != void)
+if(bindings.containsKey("getShortMatrix"))
 	throw new Exception("getShortMatrix already defined!");
-getShortMatrix = callback("getShortMatrix");
-getShortMatrixType = getShortMatrix[0].getClass().getComponentType();
+var getShortMatrix = callback("getShortMatrix");
+var getShortMatrixType = getShortMatrix[0].getClass().getComponentType();
 System.out.println(getShortMatrixType);
 System.out.println(getShortMatrix);
 if(getShortMatrixType != short.class)
 	throw new Exception("getShortMatrix not Short!");
-callback("setShortMatrix",new Object[]{getShortMatrix});
+callback("setShortMatrix",getShortMatrix);
 
 System.out.println("getShortMatrixAsList");
-if(getShortMatrixAsList != void)
+if(bindings.containsKey("getShortMatrixAsList"))
 	throw new Exception("getShortMatrixAsList already defined!");
-getShortMatrixAsList = callback("getShortMatrixAsList");
-getShortMatrixAsListType = getShortMatrixAsList[0].getClass().getComponentType();
+var getShortMatrixAsList = callback("getShortMatrixAsList");
+var getShortMatrixAsListType = getShortMatrixAsList[0].getClass().getComponentType();
 System.out.println(getShortMatrixAsListType);
 System.out.println(getShortMatrixAsList);
 if(getShortMatrixAsListType != short.class)
 	throw new Exception("getShortMatrixAsList not Short!");
-callback("setShortMatrixAsList",new Object[]{getShortMatrixAsList});
+callback("setShortMatrixAsList",getShortMatrixAsList);

@@ -1,8 +1,8 @@
 System.out.println("getPercent");
-if(getPercent != void)
+if(bindings.containsKey("getPercent"))
 	throw new Exception("getPercent already defined!");
-getPercent = callback("getPercent");
-getPercentType = getPercent.getClass();
+var getPercent = callback("getPercent");
+var getPercentType = getPercent.getClass();
 System.out.println(getPercentType);
 System.out.println(getPercent);
 if(getPercentType != Double.class)
@@ -10,10 +10,10 @@ if(getPercentType != Double.class)
 callback("setPercent",getPercent);
 
 System.out.println("getPercentVector");
-if(getPercentVector != void)
+if(bindings.containsKey("getPercentVector"))
 	throw new Exception("getPercentVector already defined!");
-getPercentVector = callback("getPercentVector");
-getPercentVectorType = getPercentVector.getClass().getComponentType();
+var getPercentVector = callback("getPercentVector");
+var getPercentVectorType = getPercentVector.getClass().getComponentType();
 System.out.println(getPercentVectorType);
 System.out.println(getPercentVector);
 if(getPercentVectorType != double.class)
@@ -21,10 +21,10 @@ if(getPercentVectorType != double.class)
 callback("setPercentVector",getPercentVector);
 
 System.out.println("getPercentVectorAsList");
-if(getPercentVectorAsList != void)
+if(bindings.containsKey("getPercentVectorAsList"))
 	throw new Exception("getPercentVectorAsList already defined!");
-getPercentVectorAsList = callback("getPercentVectorAsList");
-getPercentVectorAsListType = getPercentVectorAsList.getClass().getComponentType();
+var getPercentVectorAsList = callback("getPercentVectorAsList");
+var getPercentVectorAsListType = getPercentVectorAsList.getClass().getComponentType();
 System.out.println(getPercentVectorAsListType);
 System.out.println(getPercentVectorAsList);
 if(getPercentVectorAsListType != double.class)
@@ -32,23 +32,23 @@ if(getPercentVectorAsListType != double.class)
 callback("setPercentVectorAsList",getPercentVectorAsList);
 
 System.out.println("getPercentMatrix");
-if(getPercentMatrix != void)
+if(bindings.containsKey("getPercentMatrix"))
 	throw new Exception("getPercentMatrix already defined!");
-getPercentMatrix = callback("getPercentMatrix");
-getPercentMatrixType = getPercentMatrix[0].getClass().getComponentType();
+var getPercentMatrix = callback("getPercentMatrix");
+var getPercentMatrixType = getPercentMatrix[0].getClass().getComponentType();
 System.out.println(getPercentMatrixType);
 System.out.println(getPercentMatrix);
 if(getPercentMatrixType != double.class)
 	throw new Exception("getPercentMatrix not Double!");
-callback("setPercentMatrix",new Object[]{getPercentMatrix});
+callback("setPercentMatrix",getPercentMatrix);
 
 System.out.println("getPercentMatrixAsList");
-if(getPercentMatrixAsList != void)
+if(bindings.containsKey("getPercentMatrixAsList"))
 	throw new Exception("getPercentMatrixAsList already defined!");
-getPercentMatrixAsList = callback("getPercentMatrixAsList");
-getPercentMatrixAsListType = getPercentMatrixAsList[0].getClass().getComponentType();
+var getPercentMatrixAsList = callback("getPercentMatrixAsList");
+var getPercentMatrixAsListType = getPercentMatrixAsList[0].getClass().getComponentType();
 System.out.println(getPercentMatrixAsListType);
 System.out.println(getPercentMatrixAsList);
 if(getPercentMatrixAsListType != double.class)
 	throw new Exception("getPercentMatrixAsList not Double!");
-callback("setPercentMatrixAsList",new Object[]{getPercentMatrixAsList});
+callback("setPercentMatrixAsList",getPercentMatrixAsList);

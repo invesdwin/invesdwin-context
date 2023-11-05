@@ -1,8 +1,8 @@
 System.out.println("getDecimal");
-if(getDecimal != void)
+if(bindings.containsKey("getDecimal"))
 	throw new Exception("getDecimal already defined!");
-getDecimal = callback("getDecimal");
-getDecimalType = getDecimal.getClass();
+var getDecimal = callback("getDecimal");
+var getDecimalType = getDecimal.getClass();
 System.out.println(getDecimalType);
 System.out.println(getDecimal);
 if(getDecimalType != Double.class)
@@ -10,10 +10,10 @@ if(getDecimalType != Double.class)
 callback("setDecimal",getDecimal);
 
 System.out.println("getDecimalVector");
-if(getDecimalVector != void)
+if(bindings.containsKey("getDecimalVector"))
 	throw new Exception("getDecimalVector already defined!");
-getDecimalVector = callback("getDecimalVector");
-getDecimalVectorType = getDecimalVector.getClass().getComponentType();
+var getDecimalVector = callback("getDecimalVector");
+var getDecimalVectorType = getDecimalVector.getClass().getComponentType();
 System.out.println(getDecimalVectorType);
 System.out.println(getDecimalVector);
 if(getDecimalVectorType != double.class)
@@ -21,10 +21,10 @@ if(getDecimalVectorType != double.class)
 callback("setDecimalVector",getDecimalVector);
 
 System.out.println("getDecimalVectorAsList");
-if(getDecimalVectorAsList != void)
+if(bindings.containsKey("getDecimalVectorAsList"))
 	throw new Exception("getDecimalVectorAsList already defined!");
-getDecimalVectorAsList = callback("getDecimalVectorAsList");
-getDecimalVectorAsListType = getDecimalVectorAsList.getClass().getComponentType();
+var getDecimalVectorAsList = callback("getDecimalVectorAsList");
+var getDecimalVectorAsListType = getDecimalVectorAsList.getClass().getComponentType();
 System.out.println(getDecimalVectorAsListType);
 System.out.println(getDecimalVectorAsList);
 if(getDecimalVectorAsListType != double.class)
@@ -32,23 +32,23 @@ if(getDecimalVectorAsListType != double.class)
 callback("setDecimalVectorAsList",getDecimalVectorAsList);
 
 System.out.println("getDecimalMatrix");
-if(getDecimalMatrix != void)
+if(bindings.containsKey("getDecimalMatrix"))
 	throw new Exception("getDecimalMatrix already defined!");
-getDecimalMatrix = callback("getDecimalMatrix");
-getDecimalMatrixType = getDecimalMatrix[0].getClass().getComponentType();
+var getDecimalMatrix = callback("getDecimalMatrix");
+var getDecimalMatrixType = getDecimalMatrix[0].getClass().getComponentType();
 System.out.println(getDecimalMatrixType);
 System.out.println(getDecimalMatrix);
 if(getDecimalMatrixType != double.class)
 	throw new Exception("getDecimalMatrix not Double!");
-callback("setDecimalMatrix",new Object[]{getDecimalMatrix});
+callback("setDecimalMatrix",getDecimalMatrix);
 
 System.out.println("getDecimalMatrixAsList");
-if(getDecimalMatrixAsList != void)
+if(bindings.containsKey("getDecimalMatrixAsList"))
 	throw new Exception("getDecimalMatrixAsList already defined!");
-getDecimalMatrixAsList = callback("getDecimalMatrixAsList");
-getDecimalMatrixAsListType = getDecimalMatrixAsList[0].getClass().getComponentType();
+var getDecimalMatrixAsList = callback("getDecimalMatrixAsList");
+var getDecimalMatrixAsListType = getDecimalMatrixAsList[0].getClass().getComponentType();
 System.out.println(getDecimalMatrixAsListType);
 System.out.println(getDecimalMatrixAsList);
 if(getDecimalMatrixAsListType != double.class)
 	throw new Exception("getDecimalMatrixAsList not Double!");
-callback("setDecimalMatrixAsList",new Object[]{getDecimalMatrixAsList});
+callback("setDecimalMatrixAsList",getDecimalMatrixAsList);

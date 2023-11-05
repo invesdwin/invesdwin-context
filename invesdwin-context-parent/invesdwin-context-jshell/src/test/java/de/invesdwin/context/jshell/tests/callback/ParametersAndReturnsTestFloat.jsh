@@ -1,8 +1,8 @@
 System.out.println("getFloat");
-if(getFloat != void)
+if(bindings.containsKey("getFloat"))
 	throw new Exception("getFloat already defined!");
-getFloat = callback("getFloat");
-getFloatType = getFloat.getClass();
+var getFloat = callback("getFloat");
+var getFloatType = getFloat.getClass();
 System.out.println(getFloatType);
 System.out.println(getFloat);
 if(getFloatType != Float.class)
@@ -10,10 +10,10 @@ if(getFloatType != Float.class)
 callback("setFloat",getFloat);
 
 System.out.println("getFloatVector");
-if(getFloatVector != void)
+if(bindings.containsKey("getFloatVector"))
 	throw new Exception("getFloatVector already defined!");
-getFloatVector = callback("getFloatVector");
-getFloatVectorType = getFloatVector.getClass().getComponentType();
+var getFloatVector = callback("getFloatVector");
+var getFloatVectorType = getFloatVector.getClass().getComponentType();
 System.out.println(getFloatVectorType);
 System.out.println(getFloatVector);
 if(getFloatVectorType != float.class)
@@ -21,10 +21,10 @@ if(getFloatVectorType != float.class)
 callback("setFloatVector",getFloatVector);
 
 System.out.println("getFloatVectorAsList");
-if(getFloatVectorAsList != void)
+if(bindings.containsKey("getFloatVectorAsList"))
 	throw new Exception("getFloatVectorAsList already defined!");
-getFloatVectorAsList = callback("getFloatVectorAsList");
-getFloatVectorAsListType = getFloatVectorAsList.getClass().getComponentType();
+var getFloatVectorAsList = callback("getFloatVectorAsList");
+var getFloatVectorAsListType = getFloatVectorAsList.getClass().getComponentType();
 System.out.println(getFloatVectorAsListType);
 System.out.println(getFloatVectorAsList);
 if(getFloatVectorAsListType != float.class)
@@ -32,23 +32,23 @@ if(getFloatVectorAsListType != float.class)
 callback("setFloatVectorAsList",getFloatVectorAsList);
 
 System.out.println("getFloatMatrix");
-if(getFloatMatrix != void)
+if(bindings.containsKey("getFloatMatrix"))
 	throw new Exception("getFloatMatrix already defined!");
-getFloatMatrix = callback("getFloatMatrix");
-getFloatMatrixType = getFloatMatrix[0].getClass().getComponentType();
+var getFloatMatrix = callback("getFloatMatrix");
+var getFloatMatrixType = getFloatMatrix[0].getClass().getComponentType();
 System.out.println(getFloatMatrixType);
 System.out.println(getFloatMatrix);
 if(getFloatMatrixType != float.class)
 	throw new Exception("getFloatMatrix not Float!");
-callback("setFloatMatrix",new Object[]{getFloatMatrix});
+callback("setFloatMatrix",getFloatMatrix);
 
 System.out.println("getFloatMatrixAsList");
-if(getFloatMatrixAsList != void)
+if(bindings.containsKey("getFloatMatrixAsList"))
 	throw new Exception("getFloatMatrixAsList already defined!");
-getFloatMatrixAsList = callback("getFloatMatrixAsList");
-getFloatMatrixAsListType = getFloatMatrixAsList[0].getClass().getComponentType();
+var getFloatMatrixAsList = callback("getFloatMatrixAsList");
+var getFloatMatrixAsListType = getFloatMatrixAsList[0].getClass().getComponentType();
 System.out.println(getFloatMatrixAsListType);
 System.out.println(getFloatMatrixAsList);
 if(getFloatMatrixAsListType != float.class)
 	throw new Exception("getFloatMatrixAsList not Float!");
-callback("setFloatMatrixAsList",new Object[]{getFloatMatrixAsList});
+callback("setFloatMatrixAsList",getFloatMatrixAsList);

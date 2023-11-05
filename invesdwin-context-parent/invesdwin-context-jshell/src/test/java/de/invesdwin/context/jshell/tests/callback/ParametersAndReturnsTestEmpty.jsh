@@ -1,229 +1,229 @@
-getBooleanVector = callback("getBooleanVector");
+var getBooleanVector = callback("getBooleanVector");
 if(getBooleanVector.length != 0)
 	throw new Exception("getBooleanVector not empty!");
-callback("setBooleanVector",new Object[]{getBooleanVector});
+callback("setBooleanVector",getBooleanVector);
 
-getBooleanVectorAsList = callback("getBooleanVectorAsList");
+var getBooleanVectorAsList = callback("getBooleanVectorAsList");
 if(getBooleanVectorAsList.length != 0)
 	throw new Exception("getBooleanVectorAsList not empty!");
-callback("setBooleanVectorAsList",new Object[]{getBooleanVectorAsList});
+callback("setBooleanVectorAsList",getBooleanVectorAsList);
 
-getBooleanMatrix = callback("getBooleanMatrix");
+var getBooleanMatrix = callback("getBooleanMatrix");
 if(getBooleanMatrix.length != 0)
 	throw new Exception("getBooleanMatrix not empty!");
-callback("setBooleanMatrix",new Object[]{getBooleanMatrix});
+callback("setBooleanMatrix",getBooleanMatrix);
 
-getBooleanMatrixAsList = callback("getBooleanMatrixAsList");
+var getBooleanMatrixAsList = callback("getBooleanMatrixAsList");
 if(getBooleanMatrixAsList.length != 0)
 	throw new Exception("getBooleanMatrixAsList not empty!");
-callback("setBooleanMatrixAsList",new Object[]{getBooleanMatrixAsList});
+callback("setBooleanMatrixAsList",getBooleanMatrixAsList);
 
 
-getByteVector = callback("getByteVector");
+var getByteVector = callback("getByteVector");
 if(getByteVector.length != 0)
 	throw new Exception("getByteVector not empty!");
 callback("setByteVector",getByteVector);
 
-getByteVectorAsList = callback("getByteVectorAsList");
+var getByteVectorAsList = callback("getByteVectorAsList");
 if(getByteVectorAsList.length != 0)
 	throw new Exception("getByteVectorAsList not empty!");
 callback("setByteVectorAsList",getByteVectorAsList);
 
-getByteMatrix = callback("getByteMatrix");
+var getByteMatrix = callback("getByteMatrix");
 if(getByteMatrix.length != 0)
 	throw new Exception("getByteMatrix not empty!");
-callback("setByteMatrix",new Object[]{getByteMatrix});
+callback("setByteMatrix",getByteMatrix);
 
-getByteMatrixAsList = callback("getByteMatrixAsList");
+var getByteMatrixAsList = callback("getByteMatrixAsList");
 if(getByteMatrixAsList.length != 0)
 	throw new Exception("getByteMatrixAsList not empty!");
-callback("setByteMatrixAsList",new Object[]{getByteMatrixAsList});
+callback("setByteMatrixAsList",getByteMatrixAsList);
 
 
-getCharacterVector = callback("getCharacterVector");
+var getCharacterVector = callback("getCharacterVector");
 if(getCharacterVector.length != 0)
 	throw new Exception("getCharacterVector not empty!");
 callback("setCharacterVector",getCharacterVector);
 
-getCharacterVectorAsList = callback("getCharacterVectorAsList");
+var getCharacterVectorAsList = callback("getCharacterVectorAsList");
 if(getCharacterVectorAsList.length != 0)
 	throw new Exception("getCharacterVectorAsList not empty!");
 callback("setCharacterVectorAsList",getCharacterVectorAsList);
 
-getCharacterMatrix = callback("getCharacterMatrix");
+var getCharacterMatrix = callback("getCharacterMatrix");
 if(getCharacterMatrix.length != 0)
 	throw new Exception("getCharacterMatrix not empty!");
-callback("setCharacterMatrix",new Object[]{getCharacterMatrix});
+callback("setCharacterMatrix",getCharacterMatrix);
 
-getCharacterMatrixAsList = callback("getCharacterMatrixAsList");
+var getCharacterMatrixAsList = callback("getCharacterMatrixAsList");
 if(getCharacterMatrixAsList.length != 0)
 	throw new Exception("getCharacterMatrixAsList not empty!");
-callback("setCharacterMatrixAsList",new Object[]{getCharacterMatrixAsList});
+callback("setCharacterMatrixAsList",getCharacterMatrixAsList);
 
 
-getDecimalVector = callback("getDecimalVector");
+var getDecimalVector = callback("getDecimalVector");
 if(getDecimalVector.length != 0)
 	throw new Exception("getDecimalVector not empty!");
 callback("setDecimalVector",getDecimalVector);
 
-getDecimalVectorAsList = callback("getDecimalVectorAsList");
+var getDecimalVectorAsList = callback("getDecimalVectorAsList");
 if(getDecimalVectorAsList.length != 0)
 	throw new Exception("getDecimalVectorAsList not empty!");
 callback("setDecimalVectorAsList",getDecimalVectorAsList);
 
-getDecimalMatrix = callback("getDecimalMatrix");
+var getDecimalMatrix = callback("getDecimalMatrix");
 if(getDecimalMatrix.length != 0)
 	throw new Exception("getDecimalMatrix not empty!");
-callback("setDecimalMatrix",new Object[]{getDecimalMatrix});
+callback("setDecimalMatrix",getDecimalMatrix);
 
-getDecimalMatrixAsList = callback("getDecimalMatrixAsList");
+var getDecimalMatrixAsList = callback("getDecimalMatrixAsList");
 if(getDecimalMatrixAsList.length != 0)
 	throw new Exception("getDecimalMatrixAsList not empty!");
-callback("setDecimalMatrixAsList",new Object[]{getDecimalMatrixAsList});
+callback("setDecimalMatrixAsList",getDecimalMatrixAsList);
 
 
-getDoubleVector = callback("getDoubleVector");
+var getDoubleVector = callback("getDoubleVector");
 if(getDoubleVector.length != 0)
 	throw new Exception("getDoubleVector not empty!");
 callback("setDoubleVector",getDoubleVector);
 
-getDoubleVectorAsList = callback("getDoubleVectorAsList");
+var getDoubleVectorAsList = callback("getDoubleVectorAsList");
 if(getDoubleVectorAsList.length != 0)
 	throw new Exception("getDoubleVectorAsList not empty!");
 callback("setDoubleVectorAsList",getDoubleVectorAsList);
 
-getDoubleMatrix = callback("getDoubleMatrix");
+var getDoubleMatrix = callback("getDoubleMatrix");
 if(getDoubleMatrix.length != 0)
 	throw new Exception("getDoubleMatrix not empty!");
-callback("setDoubleMatrix",new Object[]{getDoubleMatrix});
+callback("setDoubleMatrix",getDoubleMatrix);
 
-getDoubleMatrixAsList = callback("getDoubleMatrixAsList");
+var getDoubleMatrixAsList = callback("getDoubleMatrixAsList");
 if(getDoubleMatrixAsList.length != 0)
 	throw new Exception("getDoubleMatrixAsList not empty!");
-callback("setDoubleMatrixAsList",new Object[]{getDoubleMatrixAsList});
+callback("setDoubleMatrixAsList",getDoubleMatrixAsList);
 
 
-getFloatVector = callback("getFloatVector");
+var getFloatVector = callback("getFloatVector");
 if(getFloatVector.length != 0)
 	throw new Exception("getFloatVector not empty!");
 callback("setFloatVector",getFloatVector);
 
-getFloatVectorAsList = callback("getFloatVectorAsList");
+var getFloatVectorAsList = callback("getFloatVectorAsList");
 if(getFloatVectorAsList.length != 0)
 	throw new Exception("getFloatVectorAsList not empty!");
 callback("setFloatVectorAsList",getFloatVectorAsList);
 
-getFloatMatrix = callback("getFloatMatrix");
+var getFloatMatrix = callback("getFloatMatrix");
 if(getFloatMatrix.length != 0)
 	throw new Exception("getFloatMatrix not empty!");
-callback("setFloatMatrix",new Object[]{getFloatMatrix});
+callback("setFloatMatrix",getFloatMatrix);
 
-getFloatMatrixAsList = callback("getFloatMatrixAsList");
+var getFloatMatrixAsList = callback("getFloatMatrixAsList");
 if(getFloatMatrixAsList.length != 0)
 	throw new Exception("getFloatMatrixAsList not empty!");
-callback("setFloatMatrixAsList",new Object[]{getFloatMatrixAsList});
+callback("setFloatMatrixAsList",getFloatMatrixAsList);
 
 
-getIntegerVector = callback("getIntegerVector");
+var getIntegerVector = callback("getIntegerVector");
 if(getIntegerVector.length != 0)
 	throw new Exception("getIntegerVector not empty!");
 callback("setIntegerVector",getIntegerVector);
 
-getIntegerVectorAsList = callback("getIntegerVectorAsList");
+var getIntegerVectorAsList = callback("getIntegerVectorAsList");
 if(getIntegerVectorAsList.length != 0)
 	throw new Exception("getIntegerVectorAsList not empty!");
 callback("setIntegerVectorAsList",getIntegerVectorAsList);
 
-getIntegerMatrix = callback("getIntegerMatrix");
+var getIntegerMatrix = callback("getIntegerMatrix");
 if(getIntegerMatrix.length != 0)
 	throw new Exception("getIntegerMatrix not empty!");
-callback("setIntegerMatrix",new Object[]{getIntegerMatrix});
+callback("setIntegerMatrix",getIntegerMatrix);
 
-getIntegerMatrixAsList = callback("getIntegerMatrixAsList");
+var getIntegerMatrixAsList = callback("getIntegerMatrixAsList");
 if(getIntegerMatrixAsList.length != 0)
 	throw new Exception("getIntegerMatrixAsList not empty!");
-callback("setIntegerMatrixAsList",new Object[]{getIntegerMatrixAsList});
+callback("setIntegerMatrixAsList",getIntegerMatrixAsList);
 
 
-getLongVector = callback("getLongVector");
+var getLongVector = callback("getLongVector");
 if(getLongVector.length != 0)
 	throw new Exception("getLongVector not empty!");
 callback("setLongVector",getLongVector);
 
-getLongVectorAsList = callback("getLongVectorAsList");
+var getLongVectorAsList = callback("getLongVectorAsList");
 if(getLongVectorAsList.length != 0)
 	throw new Exception("getLongVectorAsList not empty!");
 callback("setLongVectorAsList",getLongVectorAsList);
 
-getLongMatrix = callback("getLongMatrix");
+var getLongMatrix = callback("getLongMatrix");
 if(getLongMatrix.length != 0)
 	throw new Exception("getLongMatrix not empty!");
-callback("setLongMatrix",new Object[]{getLongMatrix});
+callback("setLongMatrix",getLongMatrix);
 
-getLongMatrixAsList = callback("getLongMatrixAsList");
+var getLongMatrixAsList = callback("getLongMatrixAsList");
 if(getLongMatrixAsList.length != 0)
 	throw new Exception("getLongMatrixAsList not empty!");
-callback("setLongMatrixAsList",new Object[]{getLongMatrixAsList});
+callback("setLongMatrixAsList",getLongMatrixAsList);
 
 
-getPercentVector = callback("getPercentVector");
+var getPercentVector = callback("getPercentVector");
 if(getPercentVector.length != 0)
 	throw new Exception("getPercentVector not empty!");
 callback("setPercentVector",getPercentVector);
 
-getPercentVectorAsList = callback("getPercentVectorAsList");
+var getPercentVectorAsList = callback("getPercentVectorAsList");
 if(getPercentVectorAsList.length != 0)
 	throw new Exception("getPercentVectorAsList not empty!");
 callback("setPercentVectorAsList",getPercentVectorAsList);
 
-getPercentMatrix = callback("getPercentMatrix");
+var getPercentMatrix = callback("getPercentMatrix");
 if(getPercentMatrix.length != 0)
 	throw new Exception("getPercentMatrix not empty!");
-callback("setPercentMatrix",new Object[]{getPercentMatrix});
+callback("setPercentMatrix",getPercentMatrix);
 
-getPercentMatrixAsList = callback("getPercentMatrixAsList");
+var getPercentMatrixAsList = callback("getPercentMatrixAsList");
 if(getPercentMatrixAsList.length != 0)
 	throw new Exception("getPercentMatrixAsList not empty!");
-callback("setPercentMatrixAsList",new Object[]{getPercentMatrixAsList});
+callback("setPercentMatrixAsList",getPercentMatrixAsList);
 
 
-getShortVector = callback("getShortVector");
+var getShortVector = callback("getShortVector");
 if(getShortVector.length != 0)
 	throw new Exception("getShortVector not empty!");
 callback("setShortVector",getShortVector);
 
-getShortVectorAsList = callback("getShortVectorAsList");
+var getShortVectorAsList = callback("getShortVectorAsList");
 if(getShortVectorAsList.length != 0)
 	throw new Exception("getShortVectorAsList not empty!");
 callback("setShortVectorAsList",getShortVectorAsList);
 
-getShortMatrix = callback("getShortMatrix");
+var getShortMatrix = callback("getShortMatrix");
 if(getShortMatrix.length != 0)
 	throw new Exception("getShortMatrix not empty!");
-callback("setShortMatrix",new Object[]{getShortMatrix});
+callback("setShortMatrix",getShortMatrix);
 
-getShortMatrixAsList = callback("getShortMatrixAsList");
+var getShortMatrixAsList = callback("getShortMatrixAsList");
 if(getShortMatrixAsList.length != 0)
 	throw new Exception("getShortMatrixAsList not empty!");
-callback("setShortMatrixAsList",new Object[]{getShortMatrixAsList});
+callback("setShortMatrixAsList",getShortMatrixAsList);
 
 
-getStringVector = callback("getStringVector");
+var getStringVector = callback("getStringVector");
 if(getStringVector.length != 0)
 	throw new Exception("getStringVector not empty!");
-callback("setStringVector",new Object[]{getStringVector});
+callback("setStringVector",getStringVector);
 
-getStringVectorAsList = callback("getStringVectorAsList");
+var getStringVectorAsList = callback("getStringVectorAsList");
 if(getStringVectorAsList.length != 0)
 	throw new Exception("getStringVectorAsList not empty!");
-callback("setStringVectorAsList",new Object[]{getStringVectorAsList});
+callback("setStringVectorAsList",getStringVectorAsList);
 
-getStringMatrix = callback("getStringMatrix");
+var getStringMatrix = callback("getStringMatrix");
 if(getStringMatrix.length != 0)
 	throw new Exception("getStringMatrix not empty!");
-callback("setStringMatrix",new Object[]{getStringMatrix});
+callback("setStringMatrix",getStringMatrix);
 
-getStringMatrixAsList = callback("getStringMatrixAsList");
+var getStringMatrixAsList = callback("getStringMatrixAsList");
 if(getStringMatrixAsList.length != 0)
 	throw new Exception("getStringMatrixAsList not empty!");
-callback("setStringMatrixAsList",new Object[]{getStringMatrixAsList});
+callback("setStringMatrixAsList",getStringMatrixAsList);

@@ -1,8 +1,8 @@
 System.out.println("getBoolean");
-if(getBoolean != void)
+if(bindings.containsKey("getBoolean"))
 	throw new Exception("getBoolean already defined!");
-getBoolean = callback("getBoolean");
-getBooleanType = getBoolean.getClass();
+var getBoolean = callback("getBoolean");
+var getBooleanType = getBoolean.getClass();
 System.out.println(getBooleanType);
 System.out.println(getBoolean);
 if(getBooleanType != Boolean.class)
@@ -10,10 +10,10 @@ if(getBooleanType != Boolean.class)
 callback("setBoolean",getBoolean);
 
 System.out.println("getBooleanVector");
-if(getBooleanVector != void)
+if(bindings.containsKey("getBooleanVector"))
 	throw new Exception("getBooleanVector already defined!");
-getBooleanVector = callback("getBooleanVector");
-getBooleanVectorType = getBooleanVector.getClass().getComponentType();
+var getBooleanVector = callback("getBooleanVector");
+var getBooleanVectorType = getBooleanVector.getClass().getComponentType();
 System.out.println(getBooleanVectorType);
 System.out.println(getBooleanVector);
 if(getBooleanVectorType != boolean.class)
@@ -21,10 +21,10 @@ if(getBooleanVectorType != boolean.class)
 callback("setBooleanVector",getBooleanVector);
 
 System.out.println("getBooleanVectorAsList");
-if(getBooleanVectorAsList != void)
+if(bindings.containsKey("getBooleanVectorAsList"))
 	throw new Exception("getBooleanVectorAsList already defined!");
-getBooleanVectorAsList = callback("getBooleanVectorAsList");
-getBooleanVectorAsListType = getBooleanVectorAsList.getClass().getComponentType();
+var getBooleanVectorAsList = callback("getBooleanVectorAsList");
+var getBooleanVectorAsListType = getBooleanVectorAsList.getClass().getComponentType();
 System.out.println(getBooleanVectorAsListType);
 System.out.println(getBooleanVectorAsList);
 if(getBooleanVectorAsListType != boolean.class)
@@ -32,23 +32,23 @@ if(getBooleanVectorAsListType != boolean.class)
 callback("setBooleanVectorAsList",getBooleanVectorAsList);
 
 System.out.println("getBooleanMatrix");
-if(getBooleanMatrix != void)
+if(bindings.containsKey("getBooleanMatrix"))
 	throw new Exception("getBooleanMatrix already defined!");
-getBooleanMatrix = callback("getBooleanMatrix");
-getBooleanMatrixType = getBooleanMatrix[0].getClass().getComponentType();
+var getBooleanMatrix = callback("getBooleanMatrix");
+var getBooleanMatrixType = getBooleanMatrix[0].getClass().getComponentType();
 System.out.println(getBooleanMatrixType);
 System.out.println(getBooleanMatrix);
 if(getBooleanMatrixType != boolean.class)
 	throw new Exception("getBooleanMatrix not Boolean!");
-callback("setBooleanMatrix",new Object[]{getBooleanMatrix});
+callback("setBooleanMatrix",getBooleanMatrix);
 
 System.out.println("getBooleanMatrixAsList");
-if(getBooleanMatrixAsList != void)
+if(bindings.containsKey("getBooleanMatrixAsList"))
 	throw new Exception("getBooleanMatrixAsList already defined!");
-getBooleanMatrixAsList = callback("getBooleanMatrixAsList");
-getBooleanMatrixAsListType = getBooleanMatrixAsList[0].getClass().getComponentType();
+var getBooleanMatrixAsList = callback("getBooleanMatrixAsList");
+var getBooleanMatrixAsListType = getBooleanMatrixAsList[0].getClass().getComponentType();
 System.out.println(getBooleanMatrixAsListType);
 System.out.println(getBooleanMatrixAsList);
 if(getBooleanMatrixAsListType != boolean.class)
 	throw new Exception("getBooleanMatrixAsList not Boolean!");
-callback("setBooleanMatrixAsList",new Object[]{getBooleanMatrixAsList});
+callback("setBooleanMatrixAsList",getBooleanMatrixAsList);

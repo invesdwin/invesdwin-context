@@ -1,8 +1,8 @@
 System.out.println("getInteger");
-if(getInteger != void)
+if(bindings.containsKey("getInteger"))
 	throw new Exception("getInteger already defined!");
-getInteger = callback("getInteger");
-getIntegerType = getInteger.getClass();
+var getInteger = callback("getInteger");
+var getIntegerType = getInteger.getClass();
 System.out.println(getIntegerType);
 System.out.println(getInteger);
 if(getIntegerType != Integer.class)
@@ -10,10 +10,10 @@ if(getIntegerType != Integer.class)
 callback("setInteger",getInteger);
 
 System.out.println("getIntegerVector");
-if(getIntegerVector != void)
+if(bindings.containsKey("getIntegerVector"))
 	throw new Exception("getIntegerVector already defined!");
-getIntegerVector = callback("getIntegerVector");
-getIntegerVectorType = getIntegerVector.getClass().getComponentType();
+var getIntegerVector = callback("getIntegerVector");
+var getIntegerVectorType = getIntegerVector.getClass().getComponentType();
 System.out.println(getIntegerVectorType);
 System.out.println(getIntegerVector);
 if(getIntegerVectorType != int.class)
@@ -21,10 +21,10 @@ if(getIntegerVectorType != int.class)
 callback("setIntegerVector",getIntegerVector);
 
 System.out.println("getIntegerVectorAsList");
-if(getIntegerVectorAsList != void)
+if(bindings.containsKey("getIntegerVectorAsList"))
 	throw new Exception("getIntegerVectorAsList already defined!");
-getIntegerVectorAsList = callback("getIntegerVectorAsList");
-getIntegerVectorAsListType = getIntegerVectorAsList.getClass().getComponentType();
+var getIntegerVectorAsList = callback("getIntegerVectorAsList");
+var getIntegerVectorAsListType = getIntegerVectorAsList.getClass().getComponentType();
 System.out.println(getIntegerVectorAsListType);
 System.out.println(getIntegerVectorAsList);
 if(getIntegerVectorAsListType != int.class)
@@ -32,23 +32,23 @@ if(getIntegerVectorAsListType != int.class)
 callback("setIntegerVectorAsList",getIntegerVectorAsList);
 
 System.out.println("getIntegerMatrix");
-if(getIntegerMatrix != void)
+if(bindings.containsKey("getIntegerMatrix"))
 	throw new Exception("getIntegerMatrix already defined!");
-getIntegerMatrix = callback("getIntegerMatrix");
-getIntegerMatrixType = getIntegerMatrix[0].getClass().getComponentType();
+var getIntegerMatrix = callback("getIntegerMatrix");
+var getIntegerMatrixType = getIntegerMatrix[0].getClass().getComponentType();
 System.out.println(getIntegerMatrixType);
 System.out.println(getIntegerMatrix);
 if(getIntegerMatrixType != int.class)
 	throw new Exception("getIntegerMatrix not Integer!");
-callback("setIntegerMatrix",new Object[]{getIntegerMatrix});
+callback("setIntegerMatrix",getIntegerMatrix);
 
 System.out.println("getIntegerMatrixAsList");
-if(getIntegerMatrixAsList != void)
+if(bindings.containsKey("getIntegerMatrixAsList"))
 	throw new Exception("getIntegerMatrixAsList already defined!");
-getIntegerMatrixAsList = callback("getIntegerMatrixAsList");
-getIntegerMatrixAsListType = getIntegerMatrixAsList[0].getClass().getComponentType();
+var getIntegerMatrixAsList = callback("getIntegerMatrixAsList");
+var getIntegerMatrixAsListType = getIntegerMatrixAsList[0].getClass().getComponentType();
 System.out.println(getIntegerMatrixAsListType);
 System.out.println(getIntegerMatrixAsList);
 if(getIntegerMatrixAsListType != int.class)
 	throw new Exception("getIntegerMatrixAsList not Integer!");
-callback("setIntegerMatrixAsList",new Object[]{getIntegerMatrixAsList});
+callback("setIntegerMatrixAsList",getIntegerMatrixAsList);
