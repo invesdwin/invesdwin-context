@@ -50,7 +50,6 @@ public class WrappedJavascriptScriptEngine implements Closeable {
         } else {
             invocable = null;
         }
-
     }
 
     public ScriptEngine getEngine() {
