@@ -19,4 +19,4 @@ val getSecretExpressionCallback: String = callback("getSecretExpression", putUui
 println("getSecretExpressionCallback")
 println(getSecretExpressionCallback)
 
-callback<Any>("voidMethod")
+callback<Unit>("voidMethod")
