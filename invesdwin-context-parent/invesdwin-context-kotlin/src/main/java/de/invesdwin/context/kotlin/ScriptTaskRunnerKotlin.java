@@ -1,13 +1,15 @@
 package de.invesdwin.context.kotlin;
 
 import javax.annotation.concurrent.Immutable;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
+import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.kotlin.callback.KotlinScriptTaskCallbackContext;
 import de.invesdwin.context.kotlin.pool.KotlinScriptEngineObjectPool;
 import de.invesdwin.context.kotlin.pool.WrappedKotlinScriptEngine;
 import de.invesdwin.util.error.Throwables;
+import jakarta.inject.Named;
 
 @Immutable
 @Named
@@ -18,16 +20,25 @@ public final class ScriptTaskRunnerKotlin implements IScriptTaskRunnerKotlin, Fa
     /**
      * public for ServiceLoader support
      */
-    public ScriptTaskRunnerKotlin() {
-    }
+    public ScriptTaskRunnerKotlin() {}
 
     @Override
     public <T> T run(final AScriptTaskKotlin<T> scriptTask) {
         //get session
         final WrappedKotlinScriptEngine scriptEngine = KotlinScriptEngineObjectPool.INSTANCE.borrowObject();
+        final KotlinScriptTaskCallbackContext context;
+        final IScriptTaskCallback callback = scriptTask.getCallback();
+        if (callback != null) {
+            context = new KotlinScriptTaskCallbackContext(callback);
+        } else {
+            context = null;
+        }
         try {
             //inputs
             final ScriptTaskEngineKotlin engine = new ScriptTaskEngineKotlin(scriptEngine);
+            if (context != null) {
+                context.init(engine);
+            }
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -43,6 +54,10 @@ public final class ScriptTaskRunnerKotlin implements IScriptTaskRunnerKotlin, Fa
         } catch (final Throwable t) {
             KotlinScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
+        } finally {
+            if (context != null) {
+                context.close();
+            }
         }
     }
 

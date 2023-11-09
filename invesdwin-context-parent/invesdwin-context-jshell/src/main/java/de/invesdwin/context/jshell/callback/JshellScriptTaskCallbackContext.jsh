@@ -10,7 +10,11 @@
     de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturnValue returnValue = context.invoke(methodName, parameters);
     if(returnValue.isReturnExpression()) {
     	de.invesdwin.context.jshell.pool.WrappedJshellScriptEngine engine = de.invesdwin.context.jshell.pool.JshellScriptEngineObjectPool.INSTANCE.borrowObject();
-        return (T) engine.eval((String) returnValue.getReturnValue(), bindings);
+    	try {
+        	return (T) engine.eval((String) returnValue.getReturnValue(), bindings);
+        } finally {
+        	de.invesdwin.context.jshell.pool.JshellScriptEngineObjectPool.INSTANCE.returnObject(engine);
+        }
     } else {
         return (T) returnValue.getReturnValue();
     }

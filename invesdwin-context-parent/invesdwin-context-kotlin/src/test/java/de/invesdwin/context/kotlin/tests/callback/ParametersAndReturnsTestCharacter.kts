@@ -1,0 +1,55 @@
+println("getCharacter")
+if(bindings.containsKey("getCharacter"))
+	throw Exception("getCharacter already defined!")
+val getCharacter = callback("getCharacter")
+val getCharacterType = getCharacter::class
+println(getCharacterType)
+println(getCharacter)
+if(getCharacterType != Character::class)
+	throw Exception("getCharacter not Character!")
+callback("setCharacter",getCharacter)
+
+println("getCharacterVector")
+if(bindings.containsKey("getCharacterVector"))
+	throw Exception("getCharacterVector already defined!")
+val getCharacterVector = callback("getCharacterVector")
+val getCharacterVectorType = getCharacterVector[0]::class
+println(getCharacterVectorType)
+println(getCharacterVector)
+if(getCharacterVectorType != Character::class)
+	throw Exception("getCharacterVector not Character!")
+callback("setCharacterVector",getCharacterVector)
+
+println("getCharacterVectorAsList")
+if(bindings.containsKey("getCharacterVectorAsList"))
+	throw Exception("getCharacterVectorAsList already defined!")
+val getCharacterVectorAsList = callback("getCharacterVectorAsList")
+val getCharacterVectorAsListType = getCharacterVectorAsList[0]::class
+println(getCharacterVectorAsListType)
+println(getCharacterVectorAsList)
+if(getCharacterVectorAsListType != Character::class)
+	throw Exception("getCharacterVectorAsList not Character!")
+callback("setCharacterVectorAsList",getCharacterVectorAsList)
+
+println("getCharacterMatrix")
+if(bindings.containsKey("getCharacterMatrix"))
+	throw Exception("getCharacterMatrix already defined!")
+val getCharacterMatrix = callback("getCharacterMatrix")
+val getCharacterMatrixType = getCharacterMatrix[0][0]::class
+println(getCharacterMatrixType)
+println(getCharacterMatrix)
+if(getCharacterMatrixType != Character::class)
+	throw Exception("getCharacterMatrix not Character!")
+callback("setCharacterMatrix",getCharacterMatrix)
+
+println("getCharacterMatrixAsList")
+if(bindings.containsKey("getCharacterMatrixAsList"))
+	throw Exception("getCharacterMatrixAsList already defined!")
+val getCharacterMatrixAsList = callback("getCharacterMatrixAsList")
+val getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0]::class
+println(getCharacterMatrixAsListType)
+println(getCharacterMatrixAsList)
+if(getCharacterMatrixAsListType != Character::class)
+	throw Exception("getCharacterMatrixAsList not Character!")
+callback("setCharacterMatrixAsList",getCharacterMatrixAsList)
+	

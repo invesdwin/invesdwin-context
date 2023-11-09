@@ -1,4 +1,4 @@
-package de.invesdwin.context.javascript.tests.callback;
+package de.invesdwin.context.kotlin.tests.callback;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,8 +13,8 @@ import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.context.integration.script.callback.ReflectiveScriptTaskCallback;
 import de.invesdwin.context.integration.script.callback.ReturnExpression;
-import de.invesdwin.context.javascript.AScriptTaskJavascript;
-import de.invesdwin.context.javascript.IScriptTaskRunnerJavascript;
+import de.invesdwin.context.kotlin.AScriptTaskKotlin;
+import de.invesdwin.context.kotlin.IScriptTaskRunnerKotlin;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.UUIDs;
 
@@ -23,10 +23,10 @@ public class SimpleCallbackTest {
 
     private static final Map<String, String> UUID_SECRET = new ConcurrentHashMap<>();
 
-    private final IScriptTaskRunnerJavascript runner;
+    private final IScriptTaskRunnerKotlin runner;
     private int voidMethodCalled;
 
-    public SimpleCallbackTest(final IScriptTaskRunnerJavascript runner) {
+    public SimpleCallbackTest(final IScriptTaskRunnerKotlin runner) {
         this.runner = runner;
     }
 
@@ -52,7 +52,7 @@ public class SimpleCallbackTest {
         final String secret = "secret123";
         UUID_SECRET.put(uuid, secret);
         try {
-            new AScriptTaskJavascript<Void>() {
+            new AScriptTaskKotlin<Void>() {
 
                 @Override
                 public IScriptTaskCallback getCallback() {
@@ -66,7 +66,7 @@ public class SimpleCallbackTest {
 
                 @Override
                 public void executeScript(final IScriptTaskEngine engine) {
-                    engine.eval(new ClassPathResource(SimpleCallbackTest.class.getSimpleName() + ".js",
+                    engine.eval(new ClassPathResource(SimpleCallbackTest.class.getSimpleName() + ".kts",
                             SimpleCallbackTest.class));
                 }
 

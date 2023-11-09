@@ -94,6 +94,14 @@ public class WrappedKotlinScriptEngine implements Closeable {
         }
     }
 
+    public Object eval(final String expression, final Bindings bindings) {
+        try {
+            return engine.eval(expression, bindings);
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void reset() {
         binding.clear();
         binding.put("bindings", binding);

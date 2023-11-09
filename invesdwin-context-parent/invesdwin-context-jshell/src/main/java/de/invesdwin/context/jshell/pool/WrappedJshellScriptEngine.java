@@ -2,6 +2,7 @@ package de.invesdwin.context.jshell.pool;
 
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -27,6 +28,7 @@ public class WrappedJshellScriptEngine implements Closeable {
     private final Invocable invocable;
     private final Bindings binding;
     private final Function<String, Object> evalF;
+    private final BiFunction<String, Bindings, Object> evalBindingsF;
 
     public WrappedJshellScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
@@ -41,10 +43,12 @@ public class WrappedJshellScriptEngine implements Closeable {
                     .softValues()
                     .<String, CompiledScript> build((key) -> compilable.compile(key));
             evalF = (expression) -> evalCompiling(expression);
+            evalBindingsF = (expression, bindings) -> evalBindingsCompiling(expression, bindings);
         } else {
             compilable = null;
             scriptCache = null;
             evalF = (expression) -> evalParsing(expression);
+            evalBindingsF = (expression, bindings) -> evalBindingsParsing(expression, bindings);
         }
         if (engine instanceof Invocable) {
             invocable = (Invocable) engine;
@@ -73,12 +77,8 @@ public class WrappedJshellScriptEngine implements Closeable {
         return evalF.apply(expression);
     }
 
-    public Object eval(final String expression, final Bindings binding) {
-        try {
-            return engine.eval(expression, binding);
-        } catch (final ScriptException e) {
-            throw new RuntimeException(e);
-        }
+    public Object eval(final String expression, final Bindings bindings) {
+        return evalBindingsF.apply(expression, bindings);
     }
 
     private Object evalCompiling(final String expression) {
@@ -93,6 +93,23 @@ public class WrappedJshellScriptEngine implements Closeable {
     private Object evalParsing(final String expression) {
         try {
             return engine.eval(expression);
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object evalBindingsCompiling(final String expression, final Bindings bindings) {
+        final CompiledScript parsed = scriptCache.get(expression);
+        try {
+            return parsed.eval(bindings);
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object evalBindingsParsing(final String expression, final Bindings bindings) {
+        try {
+            return engine.eval(expression, bindings);
         } catch (final ScriptException e) {
             throw new RuntimeException(e);
         }
