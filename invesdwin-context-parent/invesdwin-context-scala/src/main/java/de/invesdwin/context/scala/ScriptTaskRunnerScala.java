@@ -1,13 +1,15 @@
 package de.invesdwin.context.scala;
 
 import javax.annotation.concurrent.Immutable;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
+import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.scala.callback.ScalaScriptTaskCallbackContext;
 import de.invesdwin.context.scala.pool.ScalaScriptEngineObjectPool;
 import de.invesdwin.context.scala.pool.WrappedScalaScriptEngine;
 import de.invesdwin.util.error.Throwables;
+import jakarta.inject.Named;
 
 @Immutable
 @Named
@@ -18,16 +20,25 @@ public final class ScriptTaskRunnerScala implements IScriptTaskRunnerScala, Fact
     /**
      * public for ServiceLoader support
      */
-    public ScriptTaskRunnerScala() {
-    }
+    public ScriptTaskRunnerScala() {}
 
     @Override
     public <T> T run(final AScriptTaskScala<T> scriptTask) {
         //get session
         final WrappedScalaScriptEngine scriptEngine = ScalaScriptEngineObjectPool.INSTANCE.borrowObject();
+        final ScalaScriptTaskCallbackContext context;
+        final IScriptTaskCallback callback = scriptTask.getCallback();
+        if (callback != null) {
+            context = new ScalaScriptTaskCallbackContext(callback);
+        } else {
+            context = null;
+        }
         try {
             //inputs
             final ScriptTaskEngineScala engine = new ScriptTaskEngineScala(scriptEngine);
+            if (context != null) {
+                context.init(engine);
+            }
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -43,6 +54,10 @@ public final class ScriptTaskRunnerScala implements IScriptTaskRunnerScala, Fact
         } catch (final Throwable t) {
             ScalaScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
+        } finally {
+            if (context != null) {
+                context.close();
+            }
         }
     }
 

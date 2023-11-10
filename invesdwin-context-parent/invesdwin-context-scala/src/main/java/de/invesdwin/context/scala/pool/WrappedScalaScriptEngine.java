@@ -2,6 +2,7 @@ package de.invesdwin.context.scala.pool;
 
 import java.io.Closeable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -27,6 +28,7 @@ public class WrappedScalaScriptEngine implements Closeable {
     private final Invocable invocable;
     private final Bindings binding;
     private final Function<String, Object> evalF;
+    private final BiFunction<String, Bindings, Object> evalBindingsF;
 
     public WrappedScalaScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
@@ -34,6 +36,7 @@ public class WrappedScalaScriptEngine implements Closeable {
         // scala3 does not support any sort of bindings: https://github.com/lampepfl/dotty/issues/14262
         // so we stick to scala2 for now
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        binding.put("bindings", binding);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
             scriptCache = Caffeine.newBuilder()
@@ -42,10 +45,12 @@ public class WrappedScalaScriptEngine implements Closeable {
                     .softValues()
                     .<String, CompiledScript> build((key) -> compilable.compile(key));
             evalF = (expression) -> evalCompiling(expression);
+            evalBindingsF = (expression, bindings) -> evalBindingsCompiling(expression, bindings);
         } else {
             compilable = null;
             scriptCache = null;
             evalF = (expression) -> evalParsing(expression);
+            evalBindingsF = (expression, bindings) -> evalBindingsParsing(expression, bindings);
         }
         if (engine instanceof Invocable) {
             invocable = (Invocable) engine;
@@ -75,6 +80,10 @@ public class WrappedScalaScriptEngine implements Closeable {
         return evalF.apply(expression);
     }
 
+    public Object eval(final String expression, final Bindings bindings) {
+        return evalBindingsF.apply(expression, bindings);
+    }
+
     private Object evalCompiling(final String expression) {
         final CompiledScript parsed = scriptCache.get(expression);
         try {
@@ -92,8 +101,26 @@ public class WrappedScalaScriptEngine implements Closeable {
         }
     }
 
+    private Object evalBindingsCompiling(final String expression, final Bindings bindings) {
+        final CompiledScript parsed = scriptCache.get(expression);
+        try {
+            return parsed.eval(bindings);
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object evalBindingsParsing(final String expression, final Bindings bindings) {
+        try {
+            return engine.eval(expression, bindings);
+        } catch (final ScriptException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void reset() {
         binding.clear();
+        binding.put("bindings", binding);
         if (scriptCache != null) {
             /*
              * we also need to clear the script cache, otherwise we risk immutable "val"'s to collide between
