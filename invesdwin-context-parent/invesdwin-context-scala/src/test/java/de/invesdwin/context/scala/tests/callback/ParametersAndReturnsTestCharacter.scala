@@ -1,7 +1,7 @@
 System.out.println("getCharacter")
 if(getCharacter != null)
 	throw new Exception("getCharacter already defined!")
-val getCharacter: Char = callback("getCharacter")
+val getCharacter: java.lang.Character = callback("getCharacter")
 val getCharacterType = getCharacter.getClass()
 System.out.println(getCharacterType)
 System.out.println(getCharacter)

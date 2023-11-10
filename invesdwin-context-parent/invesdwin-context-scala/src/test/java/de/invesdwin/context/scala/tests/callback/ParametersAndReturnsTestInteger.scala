@@ -1,7 +1,7 @@
 System.out.println("getInteger")
 if(getInteger != null)
 	throw new Exception("getInteger already defined!")
-val getInteger: Int = callback("getInteger")
+val getInteger: java.lang.Integer = callback("getInteger")
 val getIntegerType = getInteger.getClass()
 System.out.println(getIntegerType)
 System.out.println(getInteger)

@@ -1,7 +1,7 @@
 System.out.println("getLong")
 if(getLong != null)
 	throw new Exception("getLong already defined!")
-val getLong: Long = callback("getLong")
+val getLong: java.lang.Long = callback("getLong")
 val getLongType = getLong.getClass()
 System.out.println(getLongType)
 System.out.println(getLong)

@@ -1,7 +1,7 @@
 System.out.println("getDecimal")
 if(getDecimal != null)
 	throw new Exception("getDecimal already defined!")
-val getDecimal: Double = callback("getDecimal")
+val getDecimal: java.lang.Double = callback("getDecimal")
 val getDecimalType = getDecimal.getClass()
 System.out.println(getDecimalType)
 System.out.println(getDecimal)

@@ -1,7 +1,7 @@
 System.out.println("getByte")
 if(getByte != null)
 	throw new Exception("getByte already defined!")
-val getByte: Byte = callback("getByte")
+val getByte: java.lang.Byte = callback("getByte")
 val getByteType = getByte.getClass()
 System.out.println(getByteType)
 System.out.println(getByte)

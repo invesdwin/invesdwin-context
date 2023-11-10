@@ -1,7 +1,7 @@
 System.out.println("getDouble")
 if(getDouble != null)
 	throw new Exception("getDouble already defined!")
-val getDouble: Double = callback("getDouble")
+val getDouble: java.lang.Double = callback("getDouble")
 val getDoubleType = getDouble.getClass()
 System.out.println(getDoubleType)
 System.out.println(getDouble)

@@ -1,7 +1,7 @@
 System.out.println("getShort")
 if(getShort != null)
 	throw new Exception("getShort already defined!")
-val getShort: Short = callback("getShort")
+val getShort: java.lang.Short = callback("getShort")
 val getShortType = getShort.getClass()
 System.out.println(getShortType)
 System.out.println(getShort)

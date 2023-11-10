@@ -1,7 +1,7 @@
 System.out.println("getBoolean")
 if(getBoolean != null)
 	throw new Exception("getBoolean already defined!")
-val getBoolean: Boolean = callback("getBoolean")
+val getBoolean: java.lang.Boolean = callback("getBoolean")
 val getBooleanType = getBoolean.getClass()
 System.out.println(getBooleanType)
 System.out.println(getBoolean)

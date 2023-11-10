@@ -53,34 +53,34 @@ if(getDoubleMatrixAsList.length != 2)
 callback[Unit]("setDoubleMatrixAsList",getDoubleMatrixAsList)
 
 
-val getFloatMatrix: Array[FloatArray] = callback("getFloatMatrix")
+val getFloatMatrix: Array[Array[Float]] = callback("getFloatMatrix")
 if(getFloatMatrix.length != 2)
 	throw new Exception("getFloatMatrix empty!")
 callback[Unit]("setFloatMatrix",getFloatMatrix)
 
-val getFloatMatrixAsList: Array[FloatArray] = callback("getFloatMatrixAsList")
+val getFloatMatrixAsList: Array[Array[Float]] = callback("getFloatMatrixAsList")
 if(getFloatMatrixAsList.length != 2)
 	throw new Exception("getFloatMatrixAsList empty!")
 callback[Unit]("setFloatMatrixAsList",getFloatMatrixAsList)
 
 
-val getIntegerMatrix: Array[IntArray] = callback("getIntegerMatrix")
+val getIntegerMatrix: Array[Array[Int]] = callback("getIntegerMatrix")
 if(getIntegerMatrix.length != 2)
 	throw new Exception("getIntegerMatrix empty!")
 callback[Unit]("setIntegerMatrix",getIntegerMatrix)
 
-val getIntegerMatrixAsList: Array[IntArray] = callback("getIntegerMatrixAsList")
+val getIntegerMatrixAsList: Array[Array[Int]] = callback("getIntegerMatrixAsList")
 if(getIntegerMatrixAsList.length != 2)
 	throw new Exception("getIntegerMatrixAsList empty!")
 callback[Unit]("setIntegerMatrixAsList",getIntegerMatrixAsList)
 
 
-val getLongMatrix: Array[LongArray] = callback("getLongMatrix")
+val getLongMatrix: Array[Array[Long]] = callback("getLongMatrix")
 if(getLongMatrix.length != 2)
 	throw new Exception("getLongMatrix empty!")
 callback[Unit]("setLongMatrix",getLongMatrix)
 
-val getLongMatrixAsList: Array[LongArray] = callback("getLongMatrixAsList")
+val getLongMatrixAsList: Array[Array[Long]] = callback("getLongMatrixAsList")
 if(getLongMatrixAsList.length != 2)
 	throw new Exception("getLongMatrixAsList empty!")
 callback[Unit]("setLongMatrixAsList",getLongMatrixAsList)

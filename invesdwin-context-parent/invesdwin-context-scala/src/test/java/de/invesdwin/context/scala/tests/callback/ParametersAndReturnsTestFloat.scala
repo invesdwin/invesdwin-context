@@ -1,7 +1,7 @@
 System.out.println("getFloat")
 if(getFloat != null)
 	throw new Exception("getFloat already defined!")
-val getFloat: Float = callback("getFloat")
+val getFloat: java.lang.Float = callback("getFloat")
 val getFloatType = getFloat.getClass()
 System.out.println(getFloatType)
 System.out.println(getFloat)

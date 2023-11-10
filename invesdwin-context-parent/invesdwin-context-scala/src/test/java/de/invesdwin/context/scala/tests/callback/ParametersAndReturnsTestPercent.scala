@@ -1,7 +1,7 @@
 System.out.println("getPercent")
 if(getPercent != null)
 	throw new Exception("getPercent already defined!")
-val getPercent: Double = callback("getPercent")
+val getPercent: java.lang.Double = callback("getPercent")
 val getPercentType = getPercent.getClass()
 System.out.println(getPercentType)
 System.out.println(getPercent)
