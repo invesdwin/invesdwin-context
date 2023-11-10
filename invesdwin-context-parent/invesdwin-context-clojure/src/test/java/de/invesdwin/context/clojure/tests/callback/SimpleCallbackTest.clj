@@ -1,21 +1,20 @@
-import de.invesdwin.context.scala.tests.callback.SimpleCallbackTest
-
 System.out.println("putUuid")
 System.out.println(putUuid)
 
-val getSecretStaticImport = SimpleCallbackTest.getSecretStatic(String.valueOf(putUuid))
+import de.invesdwin.context.beanshell.tests.callback.SimpleCallbackTest
+var getSecretStaticImport = SimpleCallbackTest.getSecretStatic(putUuid)
 System.out.println("getSecretStaticImport")
 System.out.println(getSecretStaticImport)
 
-val getSecretStaticCallback: String = callback("getSecretStatic", putUuid)
+var getSecretStaticCallback = callback("getSecretStatic", putUuid)
 System.out.println("getSecretStaticCallback")
 System.out.println(getSecretStaticCallback)
 
-val getSecretCallback: String = callback("getSecret", putUuid)
+var getSecretCallback = callback("getSecret", putUuid)
 System.out.println("getSecretCallback")
 System.out.println(getSecretCallback)
 
-val getSecretExpressionCallback: String = callback("getSecretExpression", putUuid)
+var getSecretExpressionCallback = callback("getSecretExpression", putUuid)
 System.out.println("getSecretExpressionCallback")
 System.out.println(getSecretExpressionCallback)
 
