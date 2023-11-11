@@ -18,7 +18,7 @@
 (if-not (= getIntegerType Integer)
 	(throw (Exception. "getInteger not Integer!"))
 )
-(callback "set" get)
+(callback "setInteger" getInteger)
 
 (println "getIntegerVector")
 (if (defined 'getIntegerVector)
@@ -31,7 +31,7 @@
 (if-not (= getIntegerVectorType Integer)
 	(throw (Exception. "getIntegerVector not Integer!"))
 )
-(callback "set" get)
+(callback "setIntegerVector" getIntegerVector)
 
 (println "getIntegerVectorAsList")
 (if (defined 'getIntegerVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getIntegerVectorAsListType Integer)
 	(throw (Exception. "getIntegerVectorAsList not Integer!"))
 )
-(callback "set" get)
+(callback "setIntegerVectorAsList" getIntegerVectorAsList)
 
 (println "getIntegerMatrix")
 (if (defined 'getIntegerMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getIntegerMatrixType Integer)
 	(throw (Exception. "getIntegerMatrix not Integer!"))
 )
-(callback "set" get)
+(callback "setIntegerMatrix" getIntegerMatrix)
 
 (println "getIntegerMatrixAsList")
 (if (defined 'getIntegerMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getIntegerMatrixAsListType Integer)
 	(throw (Exception. "getIntegerMatrixAsList not Integer!"))
 )
-(callback "set" get)
+(callback "setIntegerMatrixAsList" getIntegerMatrixAsList)

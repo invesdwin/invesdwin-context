@@ -18,7 +18,7 @@
 (if-not (= getDoubleType Double)
 	(throw (Exception. "getDouble not Double!"))
 )
-(callback "set" get)
+(callback "setDouble" getDouble)
 
 (println "getDoubleVector")
 (if (defined 'getDoubleVector)
@@ -31,7 +31,7 @@
 (if-not (= getDoubleVectorType Double)
 	(throw (Exception. "getDoubleVector not Double!"))
 )
-(callback "set" get)
+(callback "setDoubleVector" getDoubleVector)
 
 (println "getDoubleVectorAsList")
 (if (defined 'getDoubleVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getDoubleVectorAsListType Double)
 	(throw (Exception. "getDoubleVectorAsList not Double!"))
 )
-(callback "set" get)
+(callback "setDoubleVectorAsList" getDoubleVectorAsList)
 
 (println "getDoubleMatrix")
 (if (defined 'getDoubleMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getDoubleMatrixType Double)
 	(throw (Exception. "getDoubleMatrix not Double!"))
 )
-(callback "set" get)
+(callback "setDoubleMatrix" getDoubleMatrix)
 
 (println "getDoubleMatrixAsList")
 (if (defined 'getDoubleMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getDoubleMatrixAsListType Double)
 	(throw (Exception. "getDoubleMatrixAsList not Double!"))
 )
-(callback "set" get)
+(callback "setDoubleMatrixAsList" getDoubleMatrixAsList)

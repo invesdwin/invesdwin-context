@@ -8,11 +8,11 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.springframework.core.io.ClassPathResource;
 
-import de.invesdwin.context.integration.script.IScriptTaskEngine;
+import de.invesdwin.context.clojure.ScriptTaskEngineClojure;
+import de.invesdwin.context.clojure.pool.WrappedClojureEngine;
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskParameters;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskParametersPool;
-import de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturnValue;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturns;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturnsPool;
 import de.invesdwin.util.lang.UUIDs;
@@ -25,6 +25,8 @@ public class ClojureScriptTaskCallbackContext implements Closeable {
     private final String uuid;
     private final IScriptTaskCallback callback;
 
+    private WrappedClojureEngine engine;
+
     public ClojureScriptTaskCallbackContext(final IScriptTaskCallback callback) {
         this.uuid = UUIDs.newPseudoRandomUUID();
         this.callback = callback;
@@ -35,23 +37,28 @@ public class ClojureScriptTaskCallbackContext implements Closeable {
         return UUID_CONTEXT.get(uuid);
     }
 
-    public void init(final IScriptTaskEngine engine) {
+    public void init(final ScriptTaskEngineClojure engine) {
         engine.getInputs().putString("clojureScriptTaskCallbackContextUuid", getUuid());
         engine.eval(new ClassPathResource(ClojureScriptTaskCallbackContext.class.getSimpleName() + ".clj",
                 ClojureScriptTaskCallbackContext.class));
+        this.engine = engine.unwrap();
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    public ObjectScriptTaskReturnValue invoke(final String methodName, final Object... args) {
+    public Object invoke(final String methodName, final Object... args) {
         final ObjectScriptTaskParameters parameters = ObjectScriptTaskParametersPool.INSTANCE.borrowObject();
         final ObjectScriptTaskReturns returns = ObjectScriptTaskReturnsPool.INSTANCE.borrowObject();
         try {
             parameters.setParameters(args);
             callback.invoke(methodName, parameters, returns);
-            return returns.newReturn();
+            if (returns.isReturnExpression()) {
+                return engine.eval((String) returns.getReturnValue());
+            } else {
+                return returns.getReturnValue();
+            }
         } finally {
             ObjectScriptTaskReturnsPool.INSTANCE.returnObject(returns);
             ObjectScriptTaskParametersPool.INSTANCE.returnObject(parameters);

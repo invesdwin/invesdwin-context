@@ -18,7 +18,7 @@
 (if-not (= getPercentType Double)
 	(throw (Exception. "getPercent not Double!"))
 )
-(callback "set" get)
+(callback "setPercent" getPercent)
 
 (println "getPercentVector")
 (if (defined 'getPercentVector)
@@ -31,7 +31,7 @@
 (if-not (= getPercentVectorType Double)
 	(throw (Exception. "getPercentVector not Double!"))
 )
-(callback "set" get)
+(callback "setPercentVector" getPercentVector)
 
 (println "getPercentVectorAsList")
 (if (defined 'getPercentVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getPercentVectorAsListType Double)
 	(throw (Exception. "getPercentVectorAsList not Double!"))
 )
-(callback "set" get)
+(callback "setPercentVectorAsList" getPercentVectorAsList)
 
 (println "getPercentMatrix")
 (if (defined 'getPercentMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getPercentMatrixType Double)
 	(throw (Exception. "getPercentMatrix not Double!"))
 )
-(callback "set" get)
+(callback "setPercentMatrix" getPercentMatrix)
 
 (println "getPercentMatrixAsList")
 (if (defined 'getPercentMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getPercentMatrixAsListType Double)
 	(throw (Exception. "getPercentMatrixAsList not Double!"))
 )
-(callback "set" get)
+(callback "setPercentMatrixAsList" getPercentMatrixAsList)

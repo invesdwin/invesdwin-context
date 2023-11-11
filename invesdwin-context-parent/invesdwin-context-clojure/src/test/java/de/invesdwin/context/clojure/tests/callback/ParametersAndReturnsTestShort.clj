@@ -18,7 +18,7 @@
 (if-not (= getShortType Short)
 	(throw (Exception. "getShort not Short!"))
 )
-(callback "set" get)
+(callback "setShort" getShort)
 
 (println "getShortVector")
 (if (defined 'getShortVector)
@@ -31,7 +31,7 @@
 (if-not (= getShortVectorType Short)
 	(throw (Exception. "getShortVector not Short!"))
 )
-(callback "set" get)
+(callback "setShortVector" getShortVector)
 
 (println "getShortVectorAsList")
 (if (defined 'getShortVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getShortVectorAsListType Short)
 	(throw (Exception. "getShortVectorAsList not Short!"))
 )
-(callback "set" get)
+(callback "setShortVectorAsList" getShortVectorAsList)
 
 (println "getShortMatrix")
 (if (defined 'getShortMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getShortMatrixType Short)
 	(throw (Exception. "getShortMatrix not Short!"))
 )
-(callback "set" get)
+(callback "setShortMatrix" getShortMatrix)
 
 (println "getShortMatrixAsList")
 (if (defined 'getShortMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getShortMatrixAsListType Short)
 	(throw (Exception. "getShortMatrixAsList not Short!"))
 )
-(callback "set" get)
+(callback "setShortMatrixAsList" getShortMatrixAsList)

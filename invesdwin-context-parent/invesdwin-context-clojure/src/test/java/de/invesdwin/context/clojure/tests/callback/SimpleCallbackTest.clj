@@ -1,21 +1,21 @@
-System.out.println("putUuid")
-System.out.println(putUuid)
+(println "putUuid")
+(println putUuid)
 
-import de.invesdwin.context.beanshell.tests.callback.SimpleCallbackTest
-var getSecretStaticImport = SimpleCallbackTest.getSecretStatic(putUuid)
-System.out.println("getSecretStaticImport")
-System.out.println(getSecretStaticImport)
+(import de.invesdwin.context.clojure.tests.callback.SimpleCallbackTest)
+(def getSecretStaticImport (. SimpleCallbackTest getSecretStatic putUuid))
+(println "getSecretStaticImport")
+(println getSecretStaticImport)
 
-var getSecretStaticCallback = callback("getSecretStatic", putUuid)
-System.out.println("getSecretStaticCallback")
-System.out.println(getSecretStaticCallback)
+(def getSecretStaticCallback (callback "getSecretStatic" putUuid))
+(println "getSecretStaticCallback")
+(println getSecretStaticCallback)
 
-var getSecretCallback = callback("getSecret", putUuid)
-System.out.println("getSecretCallback")
-System.out.println(getSecretCallback)
+(def getSecretCallback (callback "getSecret" putUuid))
+(println "getSecretCallback")
+(println getSecretCallback)
 
-var getSecretExpressionCallback = callback("getSecretExpression", putUuid)
-System.out.println("getSecretExpressionCallback")
-System.out.println(getSecretExpressionCallback)
+(def getSecretExpressionCallback (callback "getSecretExpression" putUuid))
+(println "getSecretExpressionCallback")
+(println getSecretExpressionCallback)
 
-callback("voidMethod")
+(callback "voidMethod")

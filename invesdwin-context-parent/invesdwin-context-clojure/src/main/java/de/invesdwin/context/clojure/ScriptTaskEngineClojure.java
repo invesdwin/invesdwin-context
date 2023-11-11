@@ -12,19 +12,19 @@ import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
 @NotThreadSafe
 public class ScriptTaskEngineClojure implements IScriptTaskEngine {
 
-    private WrappedClojureEngine javascriptScriptEngine;
+    private WrappedClojureEngine clojureScriptEngine;
     private final ScriptTaskInputsClojure inputs;
     private final ScriptTaskResultsClojure results;
 
     public ScriptTaskEngineClojure(final WrappedClojureEngine javascriptScriptEngine) {
-        this.javascriptScriptEngine = javascriptScriptEngine;
+        this.clojureScriptEngine = javascriptScriptEngine;
         this.inputs = new ScriptTaskInputsClojure(this);
         this.results = new ScriptTaskResultsClojure(this);
     }
 
     @Override
     public void eval(final String expression) {
-        javascriptScriptEngine.eval(expression);
+        clojureScriptEngine.eval(expression);
     }
 
     @Override
@@ -39,12 +39,12 @@ public class ScriptTaskEngineClojure implements IScriptTaskEngine {
 
     @Override
     public void close() {
-        javascriptScriptEngine = null;
+        clojureScriptEngine = null;
     }
 
     @Override
     public WrappedClojureEngine unwrap() {
-        return javascriptScriptEngine;
+        return clojureScriptEngine;
     }
 
     /**

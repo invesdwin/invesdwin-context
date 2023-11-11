@@ -18,7 +18,7 @@
 (if-not (= getStringType String)
 	(throw (Exception. "getString not String!"))
 )
-(callback "set" get)
+(callback "setString" getString)
 
 (println "getStringWithNull")
 (if (defined 'getStringWithNull)
@@ -31,7 +31,7 @@
 (if-not (nil? getStringWithNull)
 	(throw (Exception. "getStringWithNull not null!"))
 )
-(callback "set" get)
+(callback "setStringWithNull" getStringWithNull)
 
 (println "getStringVector")
 (if (defined 'getStringVector)
@@ -44,7 +44,7 @@
 (if-not (= getStringVectorType String)
 	(throw (Exception. "getStringVector not String!"))
 )
-(callback "set" get)
+(callback "setStringVector" getStringVector)
 
 (println "getStringVectorWithNull")
 (if (defined 'getStringVectorWithNull)
@@ -60,7 +60,7 @@
 (if-not (nil? (get getStringVectorWithNull 1))
 	(throw (Exception. "getStringVectorWithNull[1] not null!"))
 )
-(callback "set" get)
+(callback "setStringVectorWithNull" getStringVectorWithNull)
 
 (println "getStringVectorAsList")
 (if (defined 'getStringVectorAsList)
@@ -73,7 +73,7 @@
 (if-not (= getStringVectorAsListType String)
 	(throw (Exception. "getStringVectorAsList not String!"))
 )
-(callback "set" get)
+(callback "setStringVectorAsList" getStringVectorAsList)
 
 (println "getStringVectorAsListWithNull")
 (if (defined 'getStringVectorAsListWithNull)
@@ -89,7 +89,7 @@
 (if-not (nil? (get getStringVectorAsListWithNull 1))
 	(throw (Exception. "getStringVectorAsListWithNull[1] not null!"))
 )
-(callback "set" get)
+(callback "setStringVectorAsListWithNull" getStringVectorAsListWithNull)
 
 (println "getStringMatrix")
 (if (defined 'getStringMatrix)
@@ -102,7 +102,7 @@
 (if-not (= getStringMatrixType String)
 	(throw (Exception. "getStringMatrix not String!"))
 )
-(callback "set" get)
+(callback "setStringMatrix" getStringMatrix)
 
 (println "getStringMatrixWithNull")
 (if (defined 'getStringMatrixWithNull)
@@ -124,7 +124,7 @@
 (if-not (nil? (get (get getStringMatrixWithNull 2) 2))
 	(throw (Exception. "getStringMatrixWithNull[2][2] not null!"))
 )
-(callback "set" get)
+(callback "setStringMatrixWithNull" getStringMatrixWithNull)
 
 (println "getStringMatrixAsList")
 (if (defined 'getStringMatrixAsList)
@@ -137,7 +137,7 @@
 (if-not (= getStringMatrixAsListType String)
 	(throw (Exception. "getStringMatrixAsList not String!"))
 )
-(callback "set" get)
+(callback "setStringMatrixAsList" getStringMatrixAsList)
 
 (println "getStringMatrixAsListWithNull")
 (if (defined 'getStringMatrixAsListWithNull)
@@ -159,4 +159,4 @@
 (if-not (nil? (get (get getStringMatrixAsListWithNull 2) 2))
 	(throw (Exception. "getStringMatrixAsListWithNull[2][2] not null!"))
 )
-(callback "set" get)
+(callback "setStringMatrixAsListWithNull" getStringMatrixAsListWithNull)

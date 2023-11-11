@@ -18,7 +18,7 @@
 (if-not (= getDecimalType Double)
 	(throw (Exception. "getDecimal not Double!"))
 )
-(callback "set" get)
+(callback "setDecimal" getDecimal)
 
 (println "getDecimalVector")
 (if (defined 'getDecimalVector)
@@ -31,7 +31,7 @@
 (if-not (= getDecimalVectorType Double)
 	(throw (Exception. "getDecimalVector not Double!"))
 )
-(callback "set" get)
+(callback "setDecimalVector" getDecimalVector)
 
 (println "getDecimalVectorAsList")
 (if (defined 'getDecimalVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getDecimalVectorAsListType Double)
 	(throw (Exception. "getDecimalVectorAsList not Double!"))
 )
-(callback "set" get)
+(callback "setDecimalVectorAsList" getDecimalVectorAsList)
 
 (println "getDecimalMatrix")
 (if (defined 'getDecimalMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getDecimalMatrixType Double)
 	(throw (Exception. "getDecimalMatrix not Double!"))
 )
-(callback "set" get)
+(callback "setDecimalMatrix" getDecimalMatrix)
 
 (println "getDecimalMatrixAsList")
 (if (defined 'getDecimalMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getDecimalMatrixAsListType Double)
 	(throw (Exception. "getDecimalMatrixAsList not Double!"))
 )
-(callback "set" get)
+(callback "setDecimalMatrixAsList" getDecimalMatrixAsList)

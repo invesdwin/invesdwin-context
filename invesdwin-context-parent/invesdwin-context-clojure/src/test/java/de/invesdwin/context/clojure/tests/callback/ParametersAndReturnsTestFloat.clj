@@ -18,7 +18,7 @@
 (if-not (= getFloatType Float)
 	(throw (Exception. "getFloat not Float!"))
 )
-(callback "set" get)
+(callback "setFloat" getFloat)
 
 (println "getFloatVector")
 (if (defined 'getFloatVector)
@@ -31,7 +31,7 @@
 (if-not (= getFloatVectorType Float)
 	(throw (Exception. "getFloatVector not Float!"))
 )
-(callback "set" get)
+(callback "setFloatVector" getFloatVector)
 
 (println "getFloatVectorAsList")
 (if (defined 'getFloatVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getFloatVectorAsListType Float)
 	(throw (Exception. "getFloatVectorAsList not Float!"))
 )
-(callback "set" get)
+(callback "setFloatVectorAsList" getFloatVectorAsList)
 
 (println "getFloatMatrix")
 (if (defined 'getFloatMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getFloatMatrixType Float)
 	(throw (Exception. "getFloatMatrix not Float!"))
 )
-(callback "set" get)
+(callback "setFloatMatrix" getFloatMatrix)
 
 (println "getFloatMatrixAsList")
 (if (defined 'getFloatMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getFloatMatrixAsListType Float)
 	(throw (Exception. "getFloatMatrixAsList not Float!"))
 )
-(callback "set" get)
+(callback "setFloatMatrixAsList" getFloatMatrixAsList)

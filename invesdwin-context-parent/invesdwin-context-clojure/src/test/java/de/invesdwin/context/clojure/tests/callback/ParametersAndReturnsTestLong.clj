@@ -18,7 +18,7 @@
 (if-not (= getLongType Long)
 	(throw (Exception. "getLong not Long!"))
 )
-(callback "set" get)
+(callback "setLong" getLong)
 
 (println "getLongVector")
 (if (defined 'getLongVector)
@@ -31,7 +31,7 @@
 (if-not (= getLongVectorType Long)
 	(throw (Exception. "getLongVector not Long!"))
 )
-(callback "set" get)
+(callback "setLongVector" getLongVector)
 
 (println "getLongVectorAsList")
 (if (defined 'getLongVectorAsList)
@@ -44,7 +44,7 @@
 (if-not (= getLongVectorAsListType Long)
 	(throw (Exception. "getLongVectorAsList not Long!"))
 )
-(callback "set" get)
+(callback "setLongVectorAsList" getLongVectorAsList)
 
 (println "getLongMatrix")
 (if (defined 'getLongMatrix)
@@ -57,7 +57,7 @@
 (if-not (= getLongMatrixType Long)
 	(throw (Exception. "getLongMatrix not Long!"))
 )
-(callback "set" get)
+(callback "setLongMatrix" getLongMatrix)
 
 (println "getLongMatrixAsList")
 (if (defined 'getLongMatrixAsList)
@@ -70,4 +70,4 @@
 (if-not (= getLongMatrixAsListType Long)
 	(throw (Exception. "getLongMatrixAsList not Long!"))
 )
-(callback "set" get)
+(callback "setLongMatrixAsList" getLongMatrixAsList)
