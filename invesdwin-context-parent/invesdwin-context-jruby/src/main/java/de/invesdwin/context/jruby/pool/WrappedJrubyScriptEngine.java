@@ -27,11 +27,13 @@ public class WrappedJrubyScriptEngine implements Closeable {
     private final Invocable invocable;
     private final Bindings binding;
     private final Function<String, Object> evalF;
+    private final String origGlobalVariables;
 
     public WrappedJrubyScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("jruby");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        this.binding.put("$bindings", binding);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
             scriptCache = Caffeine.newBuilder()
@@ -50,7 +52,21 @@ public class WrappedJrubyScriptEngine implements Closeable {
         } else {
             invocable = null;
         }
+        this.origGlobalVariables = newOrigGlobalVariables();
+    }
 
+    private String newOrigGlobalVariables() {
+        final StringBuilder sb = new StringBuilder("[");
+        final String[] vars = (String[]) eval("global_variables.to_java(:string)");
+        for (int i = 0; i < vars.length; i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(":");
+            sb.append(vars[i]);
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     public ScriptEngine getEngine() {
@@ -92,10 +108,12 @@ public class WrappedJrubyScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
+        this.binding.put("$bindings", binding);
         if (scriptCache != null) {
             //we have to reset the script cache or ruby throws weird AssertionErrors
             scriptCache.asMap().clear();
         }
+        eval("(local_variables + global_variables - " + origGlobalVariables + ").each { |e| eval(\"#{e} = nil\") }");
     }
 
     @Override

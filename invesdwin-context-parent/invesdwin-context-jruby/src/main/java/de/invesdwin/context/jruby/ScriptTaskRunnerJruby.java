@@ -1,34 +1,44 @@
 package de.invesdwin.context.jruby;
 
 import javax.annotation.concurrent.Immutable;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 
+import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.jruby.callback.JrubyScriptTaskCallbackContext;
 import de.invesdwin.context.jruby.pool.JrubyScriptEngineObjectPool;
 import de.invesdwin.context.jruby.pool.WrappedJrubyScriptEngine;
 import de.invesdwin.util.error.Throwables;
+import jakarta.inject.Named;
 
 @Immutable
 @Named
-public final class ScriptTaskRunnerJruby
-        implements IScriptTaskRunnerJruby, FactoryBean<ScriptTaskRunnerJruby> {
+public final class ScriptTaskRunnerJruby implements IScriptTaskRunnerJruby, FactoryBean<ScriptTaskRunnerJruby> {
 
     public static final ScriptTaskRunnerJruby INSTANCE = new ScriptTaskRunnerJruby();
 
     /**
      * public for ServiceLoader support
      */
-    public ScriptTaskRunnerJruby() {
-    }
+    public ScriptTaskRunnerJruby() {}
 
     @Override
     public <T> T run(final AScriptTaskJruby<T> scriptTask) {
         //get session
         final WrappedJrubyScriptEngine scriptEngine = JrubyScriptEngineObjectPool.INSTANCE.borrowObject();
+        final JrubyScriptTaskCallbackContext context;
+        final IScriptTaskCallback callback = scriptTask.getCallback();
+        if (callback != null) {
+            context = new JrubyScriptTaskCallbackContext(callback);
+        } else {
+            context = null;
+        }
         try {
             //inputs
             final ScriptTaskEngineJruby engine = new ScriptTaskEngineJruby(scriptEngine);
+            if (context != null) {
+                context.init(engine);
+            }
             scriptTask.populateInputs(engine.getInputs());
 
             //execute
@@ -44,6 +54,10 @@ public final class ScriptTaskRunnerJruby
         } catch (final Throwable t) {
             JrubyScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
+        } finally {
+            if (context != null) {
+                context.close();
+            }
         }
     }
 
