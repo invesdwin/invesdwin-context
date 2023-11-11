@@ -1,4 +1,4 @@
-(defn callback ^Object [^String methodName & parameters]
+(defn callback [^String methodName & parameters]
 	(if-not (. bindings containsKey "clojureScriptTaskCallbackContextUuid") 
         (throw (Exception. "IScriptTaskCallback not available"))
     )
