@@ -94,8 +94,8 @@ public class WrappedMvelScriptEngine implements Closeable {
                         //                        at org.mvel2.MVEL.compileExpression(MVEL.java:740)
                         //                        at org.mvel2.jsr223.MvelScriptEngine.compiledScript(MvelScriptEngine.java:72)
                         //                        ... 31 more
+                        //MVEL compiler is not thread safe
                         synchronized (WrappedMvelScriptEngine.class) {
-                            //MVEL compiler is not thread safe
                             return compilable.compile(key);
                         }
                     });
