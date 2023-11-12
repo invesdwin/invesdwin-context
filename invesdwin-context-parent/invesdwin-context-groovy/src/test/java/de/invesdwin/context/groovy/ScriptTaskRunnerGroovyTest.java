@@ -25,8 +25,7 @@ public class ScriptTaskRunnerGroovyTest extends ATest {
 
     @Test
     public void testStrict() {
-        final Boolean strictOverrideBefore = GroovyProperties.getStrictOverride();
-        GroovyProperties.setStrictOverride(true);
+        final Boolean strictOverrideBefore = GroovyProperties.setStrictOverride(true);
         try {
             new StrictHelloWorldScript(runner).testHelloWorld();
         } finally {
@@ -36,8 +35,7 @@ public class ScriptTaskRunnerGroovyTest extends ATest {
 
     @Test
     public void testFileStrict() {
-        final Boolean strictOverrideBefore = GroovyProperties.getStrictOverride();
-        GroovyProperties.setStrictOverride(false);
+        final Boolean strictOverrideBefore = GroovyProperties.setStrictOverride(false);
         try {
             new FileStrictHelloWorldScript(runner).testHelloWorld();
         } finally {

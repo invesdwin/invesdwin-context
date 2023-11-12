@@ -10,8 +10,7 @@ public final class GroovyProperties {
     private static final FastThreadLocal<Boolean> STRICT_OVERRIDE = new FastThreadLocal<>();
     private static volatile boolean defaultStrict = false;
 
-    private GroovyProperties() {
-    }
+    private GroovyProperties() {}
 
     public static boolean isDefaultStrict() {
         return defaultStrict;
@@ -34,12 +33,14 @@ public final class GroovyProperties {
         return STRICT_OVERRIDE.get();
     }
 
-    public static void setStrictOverride(final Boolean strict) {
+    public static Boolean setStrictOverride(final Boolean strict) {
+        final Boolean strictOverrideBefore = getStrictOverride();
         if (strict == null) {
             STRICT_OVERRIDE.remove();
         } else {
             STRICT_OVERRIDE.set(strict);
         }
+        return strictOverrideBefore;
     }
 
 }
