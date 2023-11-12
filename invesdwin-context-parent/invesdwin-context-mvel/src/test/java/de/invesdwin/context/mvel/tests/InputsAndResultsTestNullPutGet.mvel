@@ -1,0 +1,142 @@
+var getBooleanVector = putBooleanVector;
+if(getBooleanVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanVector not null!"));
+var getBooleanVectorAsList = putBooleanVectorAsList;
+if(getBooleanVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanVectorAsList not null!"));
+var getBooleanMatrix = putBooleanMatrix;
+if(getBooleanMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanMatrix not null!"));
+var getBooleanMatrixAsList = putBooleanMatrixAsList;
+if(getBooleanMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanMatrixAsList not null!"));
+
+var getByteVector = putByteVector;
+if(getByteVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getByteVector not null!"));
+var getByteVectorAsList = putByteVectorAsList;
+if(getByteVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getByteVectorAsList not null!"));
+var getByteMatrix = putByteMatrix;
+if(getByteMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getByteMatrix not null!"));
+var getByteMatrixAsList = putByteMatrixAsList;
+if(getByteMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getByteMatrixAsList not null!"));
+
+var getCharacterVector = putCharacterVector;
+if(getCharacterVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getCharacterVector not null!"));
+var getCharacterVectorAsList = putCharacterVectorAsList;
+if(getCharacterVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getCharacterVectorAsList not null!"));
+var getCharacterMatrix = putCharacterMatrix;
+if(getCharacterMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getCharacterMatrix not null!"));
+var getCharacterMatrixAsList = putCharacterMatrixAsList;
+if(getCharacterMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getCharacterMatrixAsList not null!"));
+
+var getDecimalVector = putDecimalVector;
+if(getDecimalVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalVector not null!"));
+var getDecimalVectorAsList = putDecimalVectorAsList;
+if(getDecimalVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalVectorAsList not null!"));
+var getDecimalMatrix = putDecimalMatrix;
+if(getDecimalMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalMatrix not null!"));
+var getDecimalMatrixAsList = putDecimalMatrixAsList;
+if(getDecimalMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalMatrixAsList not null!"));
+
+var getDoubleVector = putDoubleVector;
+if(getDoubleVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleVector not null!"));
+var getDoubleVectorAsList = putDoubleVectorAsList;
+if(getDoubleVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleVectorAsList not null!"));
+var getDoubleMatrix = putDoubleMatrix;
+if(getDoubleMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleMatrix not null!"));
+var getDoubleMatrixAsList = putDoubleMatrixAsList;
+if(getDoubleMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleMatrixAsList not null!"));
+
+var getFloatVector = putFloatVector;
+if(getFloatVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatVector not null!"));
+var getFloatVectorAsList = putFloatVectorAsList;
+if(getFloatVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatVectorAsList not null!"));
+var getFloatMatrix = putFloatMatrix;
+if(getFloatMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatMatrix not null!"));
+var getFloatMatrixAsList = putFloatMatrixAsList;
+if(getFloatMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatMatrixAsList not null!"));
+
+var getIntegerVector = putIntegerVector;
+if(getIntegerVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVector not null!"));
+var getIntegerVectorAsList = putIntegerVectorAsList;
+if(getIntegerVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVectorAsList not null!"));
+var getIntegerMatrix = putIntegerMatrix;
+if(getIntegerMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrix not null!"));
+var getIntegerMatrixAsList = putIntegerMatrixAsList;
+if(getIntegerMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrixAsList not null!"));
+
+var getLongVector = putLongVector;
+if(getLongVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getLongVector not null!"));
+var getLongVectorAsList = putLongVectorAsList;
+if(getLongVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getLongVectorAsList not null!"));
+var getLongMatrix = putLongMatrix;
+if(getLongMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getLongMatrix not null!"));
+var getLongMatrixAsList = putLongMatrixAsList;
+if(getLongMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getLongMatrixAsList not null!"));
+
+var getPercentVector = putPercentVector;
+if(getPercentVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentVector not null!"));
+var getPercentVectorAsList = putPercentVectorAsList;
+if(getPercentVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentVectorAsList not null!"));
+var getPercentMatrix = putPercentMatrix;
+if(getPercentMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentMatrix not null!"));
+var getPercentMatrixAsList = putPercentMatrixAsList;
+if(getPercentMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentMatrixAsList not null!"));
+
+var getShortVector = putShortVector;
+if(getShortVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getShortVector not null!"));
+var getShortVectorAsList = putShortVectorAsList;
+if(getShortVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getShortVectorAsList not null!"));
+var getShortMatrix = putShortMatrix;
+if(getShortMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getShortMatrix not null!"));
+var getShortMatrixAsList = putShortMatrixAsList;
+if(getShortMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getShortMatrixAsList not null!"));
+
+var getStringVector = putStringVector;
+if(getStringVector != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVector not null!"));
+var getStringVectorAsList = putStringVectorAsList;
+if(getStringVectorAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorAsList not null!"));
+var getStringMatrix = putStringMatrix;
+if(getStringMatrix != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrix not null!"));
+var getStringMatrixAsList = putStringMatrixAsList;
+if(getStringMatrixAsList != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsList not null!"));

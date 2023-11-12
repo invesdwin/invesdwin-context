@@ -25,6 +25,7 @@
 		<module>invesdwin-context-javascript</module>
 		<module>invesdwin-context-jshell</module>
 		<module>invesdwin-context-beanshell</module>
+		<module>invesdwin-context-mvel</module>
 	</modules>
 
 	<licenses>
@@ -95,6 +96,7 @@
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
 		<version.bsh>2.1.1</version.bsh>
+		<version.mvel>2.5.0.Final</version.mvel>
 	</properties>
 
 	<dependencyManagement>
@@ -181,6 +183,11 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-beanshell</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-mvel</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 
@@ -614,6 +621,11 @@
 				<artifactId>bsh</artifactId>
 				<version>${version.bsh}</version>
 			</dependency>
+			<dependency>
+          <groupId>org.mvel</groupId>
+          <artifactId>mvel2</artifactId>
+          <version>${version.mvel}</version>
+      </dependency>
 		</dependencies>
 	</dependencyManagement>
 

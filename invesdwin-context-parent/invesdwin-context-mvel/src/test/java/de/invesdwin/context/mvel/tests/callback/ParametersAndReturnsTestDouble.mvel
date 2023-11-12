@@ -1,0 +1,54 @@
+System.out.println("getDouble");
+if(bindings.containsKey("getDouble"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDouble already defined!"));
+var getDouble = callback("getDouble",[]);
+var getDoubleType = getDouble.getClass();
+System.out.println(getDoubleType);
+System.out.println(getDouble);
+if(getDoubleType != Double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDouble not Double!"));
+callback("setDouble",[getDouble]);
+
+System.out.println("getDoubleVector");
+if(bindings.containsKey("getDoubleVector"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleVector already defined!"));
+var getDoubleVector = callback("getDoubleVector",[]);
+var getDoubleVectorType = getDoubleVector.getClass().getComponentType();
+System.out.println(getDoubleVectorType);
+System.out.println(getDoubleVector);
+if(getDoubleVectorType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleVector not Double!"));
+callback("setDoubleVector",[getDoubleVector]);
+
+System.out.println("getDoubleVectorAsList");
+if(bindings.containsKey("getDoubleVectorAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleVectorAsList already defined!"));
+var getDoubleVectorAsList = callback("getDoubleVectorAsList",[]);
+var getDoubleVectorAsListType = getDoubleVectorAsList.getClass().getComponentType();
+System.out.println(getDoubleVectorAsListType);
+System.out.println(getDoubleVectorAsList);
+if(getDoubleVectorAsListType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleVectorAsList not Double!"));
+callback("setDoubleVectorAsList",[getDoubleVectorAsList]);
+
+System.out.println("getDoubleMatrix");
+if(bindings.containsKey("getDoubleMatrix"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleMatrix already defined!"));
+var getDoubleMatrix = callback("getDoubleMatrix",[]);
+var getDoubleMatrixType = getDoubleMatrix[0].getClass().getComponentType();
+System.out.println(getDoubleMatrixType);
+System.out.println(getDoubleMatrix);
+if(getDoubleMatrixType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleMatrix not Double!"));
+callback("setDoubleMatrix",[getDoubleMatrix]);
+
+System.out.println("getDoubleMatrixAsList");
+if(bindings.containsKey("getDoubleMatrixAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleMatrixAsList already defined!"));
+var getDoubleMatrixAsList = callback("getDoubleMatrixAsList",[]);
+var getDoubleMatrixAsListType = getDoubleMatrixAsList[0].getClass().getComponentType();
+System.out.println(getDoubleMatrixAsListType);
+System.out.println(getDoubleMatrixAsList);
+if(getDoubleMatrixAsListType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getDoubleMatrixAsList not Double!"));
+callback("setDoubleMatrixAsList",[getDoubleMatrixAsList]);

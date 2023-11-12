@@ -1,0 +1,123 @@
+System.out.println("getString");
+if(bindings.containsKey("getString"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getString already defined!"));
+var getString = callback("getString",[]);
+var getStringType = getString.getClass();
+System.out.println(getStringType);
+System.out.println(getString);
+if(getStringType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getString not String!"));
+callback("setString",[getString]);
+
+System.out.println("getStringWithNull");
+if(bindings.containsKey("getStringWithNull"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringWithNull already defined!"));
+String getStringWithNull = callback("getStringWithNull",[]);
+System.out.println(getStringWithNull);
+if(getStringWithNull != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringWithNull not null!"));
+callback("setStringWithNull",[getStringWithNull]);
+
+System.out.println("getStringVector");
+if(bindings.containsKey("getStringVector"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVector already defined!"));
+var getStringVector = callback("getStringVector",[]);
+var getStringVectorType = getStringVector.getClass().getComponentType();
+System.out.println(getStringVectorType);
+System.out.println(getStringVector);
+if(getStringVectorType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVector not String!"));
+callback("setStringVector",[getStringVector]);
+
+System.out.println("getStringVectorWithNull");
+if(bindings.containsKey("getStringVectorWithNull"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorWithNull already defined!"));
+var getStringVectorWithNull = callback("getStringVectorWithNull",[]);
+var getStringVectorWithNullType = getStringVectorWithNull.getClass().getComponentType();
+System.out.println(getStringVectorWithNullType);
+System.out.println(getStringVectorWithNull);
+if(getStringVectorWithNullType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorWithNull not String!"));
+if(getStringVectorWithNull[1] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorWithNull[1] not null!"));
+callback("setStringVectorWithNull",[getStringVectorWithNull]);
+
+System.out.println("getStringVectorAsList");
+if(bindings.containsKey("getStringVectorAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorAsList already defined!"));
+var getStringVectorAsList = callback("getStringVectorAsList",[]);
+var getStringVectorAsListType = getStringVectorAsList.getClass().getComponentType();
+System.out.println(getStringVectorAsListType);
+System.out.println(getStringVectorAsList);
+if(getStringVectorAsListType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorAsList not String!"));
+callback("setStringVectorAsList",[getStringVectorAsList]);
+
+System.out.println("getStringVectorAsListWithNull");
+if(bindings.containsKey("getStringVectorAsListWithNull"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorAsListWithNull already defined!"));
+var getStringVectorAsListWithNull = callback("getStringVectorAsListWithNull",[]);
+var getStringVectorAsListWithNullType = getStringVectorAsListWithNull.getClass().getComponentType();
+System.out.println(getStringVectorAsListWithNullType);
+System.out.println(getStringVectorAsListWithNull);
+if(getStringVectorAsListWithNullType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorAsListWithNull not String!"));
+if(getStringVectorAsListWithNull[1] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringVectorAsListWithNull[1] not null!"));
+callback("setStringVectorAsListWithNull",[getStringVectorAsListWithNull]);
+
+System.out.println("getStringMatrix");
+if(bindings.containsKey("getStringMatrix"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrix already defined!"));
+var getStringMatrix = callback("getStringMatrix",[]);
+var getStringMatrixType = getStringMatrix[0].getClass().getComponentType();
+System.out.println(getStringMatrixType);
+System.out.println(getStringMatrix);
+if(getStringMatrixType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrix not String!"));
+callback("setStringMatrix",[getStringMatrix]);
+
+System.out.println("getStringMatrixWithNull");
+if(bindings.containsKey("getStringMatrixWithNull"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixWithNull already defined!"));
+var getStringMatrixWithNull = callback("getStringMatrixWithNull",[]);
+var getStringMatrixWithNullType = getStringMatrixWithNull[0][1].getClass();
+System.out.println(getStringMatrixWithNullType);
+System.out.println(getStringMatrixWithNull);
+if(getStringMatrixWithNullType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixWithNull not String!"));
+if(getStringMatrixWithNull[0][0] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixWithNull[0][0] not null!"));
+if(getStringMatrixWithNull[1][1] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixWithNull[1][1] not null!"));
+if(getStringMatrixWithNull[2][2] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixWithNull[2][2] not null!"));
+callback("setStringMatrixWithNull",[getStringMatrixWithNull]);
+
+System.out.println("getStringMatrixAsList");
+if(bindings.containsKey("getStringMatrixAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsList already defined!"));
+var getStringMatrixAsList = callback("getStringMatrixAsList",[]);
+var getStringMatrixAsListType = getStringMatrixAsList[0].getClass().getComponentType();
+System.out.println(getStringMatrixAsListType);
+System.out.println(getStringMatrixAsList);
+if(getStringMatrixAsListType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsList not String!"));
+callback("setStringMatrixAsList",[getStringMatrixAsList]);
+
+System.out.println("getStringMatrixAsListWithNull");
+if(bindings.containsKey("getStringMatrixAsListWithNull"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsListWithNull already defined!"));
+var getStringMatrixAsListWithNull = callback("getStringMatrixAsListWithNull",[]);
+var getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].getClass();
+System.out.println(getStringMatrixAsListWithNullType);
+System.out.println(getStringMatrixAsListWithNull);
+if(getStringMatrixAsListWithNullType != String)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsListWithNull not String!"));
+if(getStringMatrixAsListWithNull[0][0] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsListWithNull[0][0] not null!"));
+if(getStringMatrixAsListWithNull[1][1] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsListWithNull[1][1] not null!"));
+if(getStringMatrixAsListWithNull[2][2] != null)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getStringMatrixAsListWithNull[2][2] not null!"));
+callback("setStringMatrixAsListWithNull",[getStringMatrixAsListWithNull]);

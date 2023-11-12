@@ -1,0 +1,49 @@
+System.out.println("getPercent");
+if(bindings.containsKey("getPercent"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercent already defined!"));
+var getPercent = putPercent;
+var getPercentType = getPercent.getClass();
+System.out.println(getPercentType);
+System.out.println(getPercent);
+if(getPercentType != Double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercent not Double!"));
+
+System.out.println("getPercentVector");
+if(bindings.containsKey("getPercentVector"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentVector already defined!"));
+var getPercentVector = putPercentVector;
+var getPercentVectorType = getPercentVector.getClass().getComponentType();
+System.out.println(getPercentVectorType);
+System.out.println(getPercentVector);
+if(getPercentVectorType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentVector not Double!"));
+
+System.out.println("getPercentVectorAsList");
+if(bindings.containsKey("getPercentVectorAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentVectorAsList already defined!"));
+var getPercentVectorAsList = putPercentVectorAsList;
+var getPercentVectorAsListType = getPercentVectorAsList.getClass().getComponentType();
+System.out.println(getPercentVectorAsListType);
+System.out.println(getPercentVectorAsList);
+if(getPercentVectorAsListType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentVectorAsList not Double!"));
+
+System.out.println("getPercentMatrix");
+if(bindings.containsKey("getPercentMatrix"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentMatrix already defined!"));
+var getPercentMatrix = putPercentMatrix;
+var getPercentMatrixType = getPercentMatrix[0].getClass().getComponentType();
+System.out.println(getPercentMatrixType);
+System.out.println(getPercentMatrix);
+if(getPercentMatrixType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentMatrix not Double!"));
+
+System.out.println("getPercentMatrixAsList");
+if(bindings.containsKey("getPercentMatrixAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentMatrixAsList already defined!"));
+var getPercentMatrixAsList = putPercentMatrixAsList;
+var getPercentMatrixAsListType = getPercentMatrixAsList[0].getClass().getComponentType();
+System.out.println(getPercentMatrixAsListType);
+System.out.println(getPercentMatrixAsList);
+if(getPercentMatrixAsListType != double)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getPercentMatrixAsList not Double!"));

@@ -1,0 +1,54 @@
+System.out.println("getInteger");
+if(bindings.containsKey("getInteger"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getInteger already defined!"));
+var getInteger = callback("getInteger",[]);
+var getIntegerType = getInteger.getClass();
+System.out.println(getIntegerType);
+System.out.println(getInteger);
+if(getIntegerType != Integer)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getInteger not Integer!"));
+callback("setInteger",[getInteger]);
+
+System.out.println("getIntegerVector");
+if(bindings.containsKey("getIntegerVector"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVector already defined!"));
+var getIntegerVector = callback("getIntegerVector",[]);
+var getIntegerVectorType = getIntegerVector.getClass().getComponentType();
+System.out.println(getIntegerVectorType);
+System.out.println(getIntegerVector);
+if(getIntegerVectorType != int)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVector not Integer!"));
+callback("setIntegerVector",[getIntegerVector]);
+
+System.out.println("getIntegerVectorAsList");
+if(bindings.containsKey("getIntegerVectorAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVectorAsList already defined!"));
+var getIntegerVectorAsList = callback("getIntegerVectorAsList",[]);
+var getIntegerVectorAsListType = getIntegerVectorAsList.getClass().getComponentType();
+System.out.println(getIntegerVectorAsListType);
+System.out.println(getIntegerVectorAsList);
+if(getIntegerVectorAsListType != int)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVectorAsList not Integer!"));
+callback("setIntegerVectorAsList",[getIntegerVectorAsList]);
+
+System.out.println("getIntegerMatrix");
+if(bindings.containsKey("getIntegerMatrix"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrix already defined!"));
+var getIntegerMatrix = callback("getIntegerMatrix",[]);
+var getIntegerMatrixType = getIntegerMatrix[0].getClass().getComponentType();
+System.out.println(getIntegerMatrixType);
+System.out.println(getIntegerMatrix);
+if(getIntegerMatrixType != int)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrix not Integer!"));
+callback("setIntegerMatrix",[getIntegerMatrix]);
+
+System.out.println("getIntegerMatrixAsList");
+if(bindings.containsKey("getIntegerMatrixAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrixAsList already defined!"));
+var getIntegerMatrixAsList = callback("getIntegerMatrixAsList",[]);
+var getIntegerMatrixAsListType = getIntegerMatrixAsList[0].getClass().getComponentType();
+System.out.println(getIntegerMatrixAsListType);
+System.out.println(getIntegerMatrixAsList);
+if(getIntegerMatrixAsListType != int)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrixAsList not Integer!"));
+callback("setIntegerMatrixAsList",[getIntegerMatrixAsList]);

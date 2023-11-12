@@ -1,0 +1,49 @@
+System.out.println("getBoolean");
+if(bindings.containsKey("getBoolean"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBoolean already defined!"));
+var getBoolean = putBoolean;
+var getBooleanType = getBoolean.getClass();
+System.out.println(getBooleanType);
+System.out.println(getBoolean);
+if(getBooleanType != Boolean)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBoolean not Boolean!"));
+
+System.out.println("getBooleanVector");
+if(bindings.containsKey("getBooleanVector"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanVector already defined!"));
+var getBooleanVector = putBooleanVector;
+var getBooleanVectorType = getBooleanVector.getClass().getComponentType();
+System.out.println(getBooleanVectorType);
+System.out.println(getBooleanVector);
+if(getBooleanVectorType != boolean)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanVector not Boolean!"));
+
+System.out.println("getBooleanVectorAsList");
+if(bindings.containsKey("getBooleanVectorAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanVectorAsList already defined!"));
+var getBooleanVectorAsList = putBooleanVectorAsList;
+var getBooleanVectorAsListType = getBooleanVectorAsList.getClass().getComponentType();
+System.out.println(getBooleanVectorAsListType);
+System.out.println(getBooleanVectorAsList);
+if(getBooleanVectorAsListType != boolean)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanVectorAsList not Boolean!"));
+
+System.out.println("getBooleanMatrix");
+if(bindings.containsKey("getBooleanMatrix"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanMatrix already defined!"));
+var getBooleanMatrix = putBooleanMatrix;
+var getBooleanMatrixType = getBooleanMatrix[0].getClass().getComponentType();
+System.out.println(getBooleanMatrixType);
+System.out.println(getBooleanMatrix);
+if(getBooleanMatrixType != boolean)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanMatrix not Boolean!"));
+
+System.out.println("getBooleanMatrixAsList");
+if(bindings.containsKey("getBooleanMatrixAsList"))
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanMatrixAsList already defined!"));
+var getBooleanMatrixAsList = putBooleanMatrixAsList;
+var getBooleanMatrixAsListType = getBooleanMatrixAsList[0].getClass().getComponentType();
+System.out.println(getBooleanMatrixAsListType);
+System.out.println(getBooleanMatrixAsList);
+if(getBooleanMatrixAsListType != boolean)
+	de.invesdwin.util.error.Throwables.propagate(new Exception("getBooleanMatrixAsList not Boolean!"));

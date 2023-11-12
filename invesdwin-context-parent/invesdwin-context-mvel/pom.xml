@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.invesdwin</groupId>
+		<artifactId>invesdwin-context-parent</artifactId>
+		<version>1.0.4-SNAPSHOT</version>
+	</parent>
+	<artifactId>invesdwin-context-mvel</artifactId>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-integration</artifactId>
+		</dependency>
+
+		<dependency>
+			<!-- this is a lot faster than: https://github.com/eobermuhlner/jshell-scriptengine -->
+			<!-- because it isolates the classloader per jshell script engine? at least not reusing engines makes it a lot faster -->
+			<groupId>com.github.rjolly</groupId>
+			<artifactId>jshellscriptengine</artifactId>
+		</dependency>
+		<dependency>
+    <groupId>org.mvel</groupId>
+        <artifactId>mvel2</artifactId>
+    </dependency>
+	</dependencies>
+
+</project>
