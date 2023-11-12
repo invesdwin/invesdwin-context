@@ -140,6 +140,7 @@ This repository contains the following scripting modules for JVM languages:
 - **invesdwin-context-scala**: this is an integration for [Scala](https://www.scala-lang.org/) via JSR-223.
 - **invesdwin-context-jruby**: this is an integration for [JRuby](https://www.jruby.org/) via JSR-223.
 - **invesdwin-context-javascript**: this is an integration for Javascript via JSR-223. It uses [GraalJS](https://github.com/oracle/graaljs) if present on the classpath with a fallback to Nashorn (only available until Java 14).
+- **invesdwin-context-mvel**: this is an integration for [MVEL](https://github.com/mvel/mvel) via JSR-223.
 
 All scripting modules provide unified bidirectional communication between Java and the respective scripting language. See test cases for examples on how to implement your script integrations.
 
