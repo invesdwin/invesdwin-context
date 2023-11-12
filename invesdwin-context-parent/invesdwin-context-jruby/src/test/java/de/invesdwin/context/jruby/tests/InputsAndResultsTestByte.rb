@@ -1,5 +1,5 @@
 puts("getByte")
-unless (defined?(getByte)).nil?
+unless (defined?(getByte)).nil? || getByte.nil?
 	raise "getByte already defined"
 end
 getByte = putByte
@@ -11,7 +11,7 @@ if(getByteType != Integer)
 end
 
 puts("getByteVector")
-unless (defined?(getByteVector)).nil?
+unless (defined?(getByteVector)).nil? || getByteVector.nil?
 	raise "getByteVector already defined"
 end
 getByteVector = putByteVector
@@ -23,7 +23,7 @@ if(getByteVectorType != Integer)
 end
 
 puts("getByteVectorAsList")
-unless (defined?(getByteVectorAsList)).nil?
+unless (defined?(getByteVectorAsList)).nil? || getByteVectorAsList.nil?
 	raise "getByteVectorAsList already defined"
 end
 getByteVectorAsList = putByteVectorAsList
@@ -35,7 +35,7 @@ if(getByteVectorAsListType != Integer)
 end
 
 puts("getByteMatrix")
-unless (defined?(getByteMatrix)).nil?
+unless (defined?(getByteMatrix)).nil? || getByteMatrix.nil?
 	raise "getByteMatrix already defined"
 end
 getByteMatrix = putByteMatrix
@@ -47,7 +47,7 @@ if(getByteMatrixType != Integer)
 end
 
 puts("getByteMatrixAsList")
-unless (defined?(getByteMatrixAsList)).nil?
+unless (defined?(getByteMatrixAsList)).nil? || getByteMatrixAsList.nil?
 	raise "getByteMatrixAsList already defined"
 end
 getByteMatrixAsList = putByteMatrixAsList

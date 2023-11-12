@@ -1,5 +1,5 @@
 puts("getLong")
-unless (defined?(getLong)).nil?
+unless (defined?(getLong)).nil? || getLong.nil?
 	raise "getLong already defined!"
 end
 getLong = callback("getLong")
@@ -12,7 +12,7 @@ end
 callback("setLong", getLong)
 
 puts("getLongVector")
-unless (defined?(getLongVector)).nil?
+unless (defined?(getLongVector)).nil? || getLongVector.nil?
 	raise "getLongVector already defined!"
 end
 getLongVector = callback("getLongVector")
@@ -25,7 +25,7 @@ end
 callback("setLongVector", getLongVector)
 
 puts("getLongVectorAsList")
-unless (defined?(getLongVectorAsList)).nil?
+unless (defined?(getLongVectorAsList)).nil? || getLongVectorAsList.nil?
 	raise "getLongVectorAsList already defined!"
 end
 getLongVectorAsList = callback("getLongVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setLongVectorAsList", getLongVectorAsList)
 
 puts("getLongMatrix")
-unless (defined?(getLongMatrix)).nil?
+unless (defined?(getLongMatrix)).nil? || getLongMatrix.nil?
 	raise "getLongMatrix already defined!"
 end
 getLongMatrix = callback("getLongMatrix")
@@ -51,7 +51,7 @@ end
 callback("setLongMatrix", getLongMatrix)
 
 puts("getLongMatrixAsList")
-unless (defined?(getLongMatrixAsList)).nil?
+unless (defined?(getLongMatrixAsList)).nil? || getLongMatrixAsList.nil?
 	raise "getLongMatrixAsList already defined!"
 end
 getLongMatrixAsList = callback("getLongMatrixAsList")

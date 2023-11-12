@@ -1,5 +1,5 @@
 puts("getDouble")
-unless (defined?(getDouble)).nil?
+unless (defined?(getDouble)).nil? || getDouble.nil?
 	raise "getDouble already defined!"
 end
 getDouble = callback("getDouble")
@@ -12,7 +12,7 @@ end
 callback("setDouble", getDouble)
 
 puts("getDoubleVector")
-unless (defined?(getDoubleVector)).nil?
+unless (defined?(getDoubleVector)).nil? || getDoubleVector.nil?
 	raise "getDoubleVector already defined!"
 end
 getDoubleVector = callback("getDoubleVector")
@@ -25,7 +25,7 @@ end
 callback("setDoubleVector", getDoubleVector)
 
 puts("getDoubleVectorAsList")
-unless (defined?(getDoubleVectorAsList)).nil?
+unless (defined?(getDoubleVectorAsList)).nil? || getDoubleVectorAsList.nil?
 	raise "getDoubleVectorAsList already defined!"
 end
 getDoubleVectorAsList = callback("getDoubleVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setDoubleVectorAsList", getDoubleVectorAsList)
 
 puts("getDoubleMatrix")
-unless (defined?(getDoubleMatrix)).nil?
+unless (defined?(getDoubleMatrix)).nil? || getDoubleMatrix.nil?
 	raise "getDoubleMatrix already defined!"
 end
 getDoubleMatrix = callback("getDoubleMatrix")
@@ -51,7 +51,7 @@ end
 callback("setDoubleMatrix", getDoubleMatrix)
 
 puts("getDoubleMatrixAsList")
-unless (defined?(getDoubleMatrixAsList)).nil?
+unless (defined?(getDoubleMatrixAsList)).nil? || getDoubleMatrixAsList.nil?
 	raise "getDoubleMatrixAsList already defined!"
 end
 getDoubleMatrixAsList = callback("getDoubleMatrixAsList")

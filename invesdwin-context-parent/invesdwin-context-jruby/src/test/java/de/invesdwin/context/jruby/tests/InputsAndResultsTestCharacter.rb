@@ -1,5 +1,5 @@
 puts("getCharacter")
-unless (defined?(getCharacter)).nil?
+unless (defined?(getCharacter)).nil? || getCharacter.nil?
 	raise "getCharacter already defined!"
 end
 getCharacter = putCharacter
@@ -11,7 +11,7 @@ if(getCharacterType != Integer)
 end
 
 puts("getCharacterVector")
-unless (defined?(getCharacterVector)).nil?
+unless (defined?(getCharacterVector)).nil? || getCharacterVector.nil?
 	raise "getCharacterVector already defined!"
 end
 getCharacterVector = putCharacterVector
@@ -23,7 +23,7 @@ if(getCharacterVectorType != Integer)
 end
 
 puts("getCharacterVectorAsList")
-unless (defined?(getCharacterVectorAsList)).nil?
+unless (defined?(getCharacterVectorAsList)).nil? || getCharacterVectorAsList.nil?
 	raise "getCharacterVectorAsList already defined!"
 end
 getCharacterVectorAsList = putCharacterVectorAsList
@@ -35,7 +35,7 @@ if(getCharacterVectorAsListType != Integer)
 end
 
 puts("getCharacterMatrix")
-unless (defined?(getCharacterMatrix)).nil?
+unless (defined?(getCharacterMatrix)).nil? || getCharacterMatrix.nil?
 	raise "getCharacterMatrix already defined!"
 end
 getCharacterMatrix = putCharacterMatrix
@@ -47,7 +47,7 @@ if(getCharacterMatrixType != Integer)
 end
 
 puts("getCharacterMatrixAsList")
-unless (defined?(getCharacterMatrixAsList)).nil?
+unless (defined?(getCharacterMatrixAsList)).nil? || getCharacterMatrixAsList.nil?
 	raise "getCharacterMatrixAsList already defined!"
 end
 getCharacterMatrixAsList = putCharacterMatrixAsList

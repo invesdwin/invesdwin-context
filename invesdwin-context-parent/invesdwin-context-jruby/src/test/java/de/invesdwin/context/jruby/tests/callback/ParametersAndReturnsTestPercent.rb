@@ -1,5 +1,5 @@
 puts("getPercent")
-unless (defined?(getPercent)).nil?
+unless (defined?(getPercent)).nil? || getPercent.nil?
 	raise "getPercent already defined!"
 end
 getPercent = callback("getPercent")
@@ -12,7 +12,7 @@ end
 callback("setPercent", getPercent)
 
 puts("getPercentVector")
-unless (defined?(getPercentVector)).nil?
+unless (defined?(getPercentVector)).nil? || getPercentVector.nil?
 	raise "getPercentVector already defined!"
 end
 getPercentVector = callback("getPercentVector")
@@ -25,7 +25,7 @@ end
 callback("setPercentVector", getPercentVector)
 
 puts("getPercentVectorAsList")
-unless (defined?(getPercentVectorAsList)).nil?
+unless (defined?(getPercentVectorAsList)).nil? || getPercentVectorAsList.nil?
 	raise "getPercentVectorAsList already defined!"
 end
 getPercentVectorAsList = callback("getPercentVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setPercentVectorAsList", getPercentVectorAsList)
 
 puts("getPercentMatrix")
-unless (defined?(getPercentMatrix)).nil?
+unless (defined?(getPercentMatrix)).nil? || getPercentMatrix.nil?
 	raise "getPercentMatrix already defined!"
 end
 getPercentMatrix = callback("getPercentMatrix")
@@ -51,7 +51,7 @@ end
 callback("setPercentMatrix", getPercentMatrix)
 
 puts("getPercentMatrixAsList")
-unless (defined?(getPercentMatrixAsList)).nil?
+unless (defined?(getPercentMatrixAsList)).nil? || getPercentMatrixAsList.nil?
 	raise "getPercentMatrixAsList already defined!"
 end
 getPercentMatrixAsList = callback("getPercentMatrixAsList")

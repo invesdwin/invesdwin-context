@@ -1,5 +1,5 @@
 puts("getString")
-unless (defined?(getString)).nil?
+unless (defined?(getString)).nil? || getString.nil?
 	raise "getString already defined!"
 end
 getString = callback("getString")
@@ -12,7 +12,7 @@ end
 callback("setString", getString)
 
 puts("getStringWithNull")
-unless (defined?(getStringWithNull)).nil?
+unless (defined?(getStringWithNull)).nil? || getStringWithNull.nil?
 	raise "getStringWithNull already defined!"
 end
 getStringWithNull = callback("getStringWithNull")
@@ -25,7 +25,7 @@ end
 callback("setStringWithNull", getStringWithNull)
 
 puts("getStringVector")
-unless (defined?(getStringVector)).nil?
+unless (defined?(getStringVector)).nil? || getStringVector.nil?
 	raise "getStringVector already defined!"
 end
 getStringVector = callback("getStringVector")
@@ -38,7 +38,7 @@ end
 callback("setStringVector", getStringVector)
 
 puts("getStringVectorWithNull")
-unless (defined?(getStringVectorWithNull)).nil?
+unless (defined?(getStringVectorWithNull)).nil? || getStringVectorWithNull.nil?
 	raise "getStringVectorWithNull already defined!"
 end
 getStringVectorWithNull = callback("getStringVectorWithNull")
@@ -54,7 +54,7 @@ end
 callback("setStringVectorWithNull", getStringVectorWithNull)
 
 puts("getStringVectorAsList")
-unless (defined?(getStringVectorAsList)).nil?
+unless (defined?(getStringVectorAsList)).nil? || getStringVectorAsList.nil?
 	raise "getStringVectorAsList already defined!"
 end
 getStringVectorAsList = callback("getStringVectorAsList")
@@ -67,7 +67,7 @@ end
 callback("setStringVectorAsList", getStringVectorAsList)
 
 puts("getStringVectorAsListWithNull")
-unless (defined?(getStringVectorAsListWithNull)).nil?
+unless (defined?(getStringVectorAsListWithNull)).nil? || getStringVectorAsListWithNull.nil?
 	raise "getStringVectorAsListWithNull already defined!"
 end
 getStringVectorAsListWithNull = callback("getStringVectorAsListWithNull")
@@ -83,7 +83,7 @@ end
 callback("setStringVectorAsListWithNull", getStringVectorAsListWithNull)
 
 puts("getStringMatrix")
-unless (defined?(getStringMatrix)).nil?
+unless (defined?(getStringMatrix)).nil? || getStringMatrix.nil?
 	raise "getStringMatrix already defined!"
 end
 getStringMatrix = callback("getStringMatrix")
@@ -96,7 +96,7 @@ end
 callback("setStringMatrix", getStringMatrix)
 
 puts("getStringMatrixWithNull")
-unless (defined?(getStringMatrixWithNull)).nil?
+unless (defined?(getStringMatrixWithNull)).nil? || getStringMatrixWithNull.nil?
 	raise "getStringMatrixWithNull already defined!"
 end
 getStringMatrixWithNull = callback("getStringMatrixWithNull")
@@ -118,7 +118,7 @@ end
 callback("setStringMatrixWithNull", getStringMatrixWithNull)
 
 puts("getStringMatrixAsList")
-unless (defined?(getStringMatrixAsList)).nil?
+unless (defined?(getStringMatrixAsList)).nil? || getStringMatrixAsList.nil?
 	raise "getStringMatrixAsList already defined!"
 end
 getStringMatrixAsList = callback("getStringMatrixAsList")
@@ -131,7 +131,7 @@ end
 callback("setStringMatrixAsList", getStringMatrixAsList)
 
 puts("getStringMatrixAsListWithNull")
-unless (defined?(getStringMatrixAsListWithNull)).nil?
+unless (defined?(getStringMatrixAsListWithNull)).nil? || getStringMatrixAsListWithNull.nil?
 	raise "getStringMatrixAsListWithNull already defined!"
 end
 getStringMatrixAsListWithNull = callback("getStringMatrixAsListWithNull")

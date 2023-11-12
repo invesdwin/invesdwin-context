@@ -1,5 +1,5 @@
 puts("getFloat")
-unless (defined?(getFloat)).nil?
+unless (defined?(getFloat)).nil? || getFloat.nil?
 	raise "getFloat already defined!"
 end
 getFloat = callback("getFloat")
@@ -12,7 +12,7 @@ end
 callback("setFloat", getFloat)
 
 puts("getFloatVector")
-unless (defined?(getFloatVector)).nil?
+unless (defined?(getFloatVector)).nil? || getFloatVector.nil?
 	raise "getFloatVector already defined!"
 end
 getFloatVector = callback("getFloatVector")
@@ -25,7 +25,7 @@ end
 callback("setFloatVector", getFloatVector)
 
 puts("getFloatVectorAsList")
-unless (defined?(getFloatVectorAsList)).nil?
+unless (defined?(getFloatVectorAsList)).nil? || getFloatVectorAsList.nil?
 	raise "getFloatVectorAsList already defined!"
 end
 getFloatVectorAsList = callback("getFloatVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setFloatVectorAsList", getFloatVectorAsList)
 
 puts("getFloatMatrix")
-unless (defined?(getFloatMatrix)).nil?
+unless (defined?(getFloatMatrix)).nil? || getFloatMatrix.nil?
 	raise "getFloatMatrix already defined!"
 end
 getFloatMatrix = callback("getFloatMatrix")
@@ -51,7 +51,7 @@ end
 callback("setFloatMatrix", getFloatMatrix)
 
 puts("getFloatMatrixAsList")
-unless (defined?(getFloatMatrixAsList)).nil?
+unless (defined?(getFloatMatrixAsList)).nil? || getFloatMatrixAsList.nil?
 	raise "getFloatMatrixAsList already defined!"
 end
 getFloatMatrixAsList = callback("getFloatMatrixAsList")

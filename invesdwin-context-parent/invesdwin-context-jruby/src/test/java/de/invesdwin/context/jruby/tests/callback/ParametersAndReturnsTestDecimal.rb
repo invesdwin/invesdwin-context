@@ -1,5 +1,5 @@
 puts("getDecimal")
-unless (defined?(getDecimal)).nil?
+unless (defined?(getDecimal)).nil? || getDecimal.nil?
 	raise "getDecimal already defined!"
 end
 getDecimal = callback("getDecimal")
@@ -12,7 +12,7 @@ end
 callback("setDecimal", getDecimal)
 
 puts("getDecimalVector")
-unless (defined?(getDecimalVector)).nil?
+unless (defined?(getDecimalVector)).nil? || getDecimalVector.nil?
 	raise "getDecimalVector already defined!"
 end
 getDecimalVector = callback("getDecimalVector")
@@ -25,7 +25,7 @@ end
 callback("setDecimalVector", getDecimalVector)
 
 puts("getDecimalVectorAsList")
-unless (defined?(getDecimalVectorAsList)).nil?
+unless (defined?(getDecimalVectorAsList)).nil? || getDecimalVectorAsList.nil?
 	raise "getDecimalVectorAsList already defined!"
 end
 getDecimalVectorAsList = callback("getDecimalVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setDecimalVectorAsList", getDecimalVectorAsList)
 
 puts("getDecimalMatrix")
-unless (defined?(getDecimalMatrix)).nil?
+unless (defined?(getDecimalMatrix)).nil? || getDecimalMatrix.nil?
 	raise "getDecimalMatrix already defined!"
 end
 getDecimalMatrix = callback("getDecimalMatrix")
@@ -51,7 +51,7 @@ end
 callback("setDecimalMatrix", getDecimalMatrix)
 
 puts("getDecimalMatrixAsList")
-unless (defined?(getDecimalMatrixAsList)).nil?
+unless (defined?(getDecimalMatrixAsList)).nil? || getDecimalMatrixAsList.nil?
 	raise "getDecimalMatrixAsList already defined!"
 end
 getDecimalMatrixAsList = callback("getDecimalMatrixAsList")

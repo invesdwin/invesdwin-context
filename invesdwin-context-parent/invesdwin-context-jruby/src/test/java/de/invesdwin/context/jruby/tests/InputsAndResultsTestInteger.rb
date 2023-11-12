@@ -1,5 +1,5 @@
 puts("getInteger")
-unless (defined?(getInteger)).nil?
+unless (defined?(getInteger)).nil? || getInteger.nil?
 	raise "getInteger already defined!"
 end
 getInteger = putInteger
@@ -11,7 +11,7 @@ if(getIntegerType != Integer)
 end
 
 puts("getIntegerVector")
-unless (defined?(getIntegerVector)).nil?
+unless (defined?(getIntegerVector)).nil? || getIntegerVector.nil?
 	raise "getIntegerVector already defined!"
 end
 getIntegerVector = putIntegerVector
@@ -23,7 +23,7 @@ if(getIntegerVectorType != Integer)
 end
 
 puts("getIntegerVectorAsList")
-unless (defined?(getIntegerVectorAsList)).nil?
+unless (defined?(getIntegerVectorAsList)).nil? || getIntegerVectorAsList.nil?
 	raise "getIntegerVectorAsList already defined!"
 end
 getIntegerVectorAsList = putIntegerVectorAsList
@@ -35,7 +35,7 @@ if(getIntegerVectorAsListType != Integer)
 end
 
 puts("getIntegerMatrix")
-unless (defined?(getIntegerMatrix)).nil?
+unless (defined?(getIntegerMatrix)).nil? || getIntegerMatrix.nil?
 	raise "getIntegerMatrix already defined!"
 end
 getIntegerMatrix = putIntegerMatrix
@@ -47,7 +47,7 @@ if(getIntegerMatrixType != Integer)
 end
 
 puts("getIntegerMatrixAsList")
-unless (defined?(getIntegerMatrixAsList)).nil?
+unless (defined?(getIntegerMatrixAsList)).nil? || getIntegerMatrixAsList.nil?
 	raise "getIntegerMatrixAsList already defined!"
 end
 getIntegerMatrixAsList = putIntegerMatrixAsList

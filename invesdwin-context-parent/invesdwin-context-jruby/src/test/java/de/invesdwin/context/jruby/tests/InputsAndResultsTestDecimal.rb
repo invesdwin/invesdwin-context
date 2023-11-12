@@ -1,5 +1,5 @@
 puts("getDecimal")
-unless (defined?(getDecimal)).nil?
+unless (defined?(getDecimal)).nil? || getDecimal.nil?
 	raise "getDecimal already defined!"
 end
 getDecimal = putDecimal
@@ -11,7 +11,7 @@ if(getDecimalType != Float)
 end
 
 puts("getDecimalVector")
-unless (defined?(getDecimalVector)).nil?
+unless (defined?(getDecimalVector)).nil? || getDecimalVector.nil?
 	raise "getDecimalVector already defined!"
 end
 getDecimalVector = putDecimalVector
@@ -23,7 +23,7 @@ if(getDecimalVectorType != Float)
 end
 
 puts("getDecimalVectorAsList")
-unless (defined?(getDecimalVectorAsList)).nil?
+unless (defined?(getDecimalVectorAsList)).nil? || getDecimalVectorAsList.nil?
 	raise "getDecimalVectorAsList already defined!"
 end
 getDecimalVectorAsList = putDecimalVectorAsList
@@ -35,7 +35,7 @@ if(getDecimalVectorAsListType != Float)
 end
 
 puts("getDecimalMatrix")
-unless (defined?(getDecimalMatrix)).nil?
+unless (defined?(getDecimalMatrix)).nil? || getDecimalMatrix.nil?
 	raise "getDecimalMatrix already defined!"
 end
 getDecimalMatrix = putDecimalMatrix
@@ -47,7 +47,7 @@ if(getDecimalMatrixType != Float)
 end
 
 puts("getDecimalMatrixAsList")
-unless (defined?(getDecimalMatrixAsList)).nil?
+unless (defined?(getDecimalMatrixAsList)).nil? || getDecimalMatrixAsList.nil?
 	raise "getDecimalMatrixAsList already defined!"
 end
 getDecimalMatrixAsList = putDecimalMatrixAsList

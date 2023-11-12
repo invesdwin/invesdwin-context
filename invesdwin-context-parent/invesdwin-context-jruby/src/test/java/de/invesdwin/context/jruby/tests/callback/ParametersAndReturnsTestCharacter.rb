@@ -1,5 +1,5 @@
 puts("getCharacter")
-unless (defined?(getCharacter)).nil?
+unless (defined?(getCharacter)).nil? || getCharacter.nil?
 	raise "getCharacter already defined!"
 end
 getCharacter = callback("getCharacter")
@@ -12,7 +12,7 @@ end
 callback("setCharacter", getCharacter)
 
 puts("getCharacterVector")
-unless (defined?(getCharacterVector)).nil?
+unless (defined?(getCharacterVector)).nil? || getCharacterVector.nil?
 	raise "getCharacterVector already defined!"
 end
 getCharacterVector = callback("getCharacterVector")
@@ -25,7 +25,7 @@ end
 callback("setCharacterVector", getCharacterVector)
 
 puts("getCharacterVectorAsList")
-unless (defined?(getCharacterVectorAsList)).nil?
+unless (defined?(getCharacterVectorAsList)).nil? || getCharacterVectorAsList.nil?
 	raise "getCharacterVectorAsList already defined!"
 end
 getCharacterVectorAsList = callback("getCharacterVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setCharacterVectorAsList", getCharacterVectorAsList)
 
 puts("getCharacterMatrix")
-unless (defined?(getCharacterMatrix)).nil?
+unless (defined?(getCharacterMatrix)).nil? || getCharacterMatrix.nil?
 	raise "getCharacterMatrix already defined!"
 end
 getCharacterMatrix = callback("getCharacterMatrix")
@@ -51,7 +51,7 @@ end
 callback("setCharacterMatrix", getCharacterMatrix)
 
 puts("getCharacterMatrixAsList")
-unless (defined?(getCharacterMatrixAsList)).nil?
+unless (defined?(getCharacterMatrixAsList)).nil? || getCharacterMatrixAsList.nil?
 	raise "getCharacterMatrixAsList already defined!"
 end
 getCharacterMatrixAsList = callback("getCharacterMatrixAsList")

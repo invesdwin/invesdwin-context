@@ -22,16 +22,15 @@ public class InputsAndResultsTestNull {
         new AScriptTaskJruby<Void>() {
 
             @Override
-            public void populateInputs(final IScriptTaskInputs inputs) {
-            }
+            public void populateInputs(final IScriptTaskInputs inputs) {}
 
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
                 Assertions.checkTrue(engine.getResults().isNotDefined("testVariable"));
                 Assertions.checkFalse(engine.getResults().isDefined("testVariable"));
                 engine.getInputs().putNull("testVariable");
-                Assertions.checkFalse(engine.getResults().isNotDefined("testVariable"));
-                Assertions.checkTrue(engine.getResults().isDefined("testVariable"));
+                Assertions.checkTrue(engine.getResults().isNotDefined("testVariable"));
+                Assertions.checkFalse(engine.getResults().isDefined("testVariable"));
                 Assertions.checkTrue(engine.getResults().isNull("testVariable"));
                 Assertions.checkFalse(engine.getResults().isNotNull("testVariable"));
                 engine.getInputs().putString("testVariable", "value");

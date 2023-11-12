@@ -113,6 +113,7 @@ public class WrappedJrubyScriptEngine implements Closeable {
             //we have to reset the script cache or ruby throws weird AssertionErrors
             scriptCache.asMap().clear();
         }
+        //https://stackoverflow.com/a/72504691
         eval("(local_variables + global_variables - " + origGlobalVariables + ").each { |e| eval(\"#{e} = nil\") }");
     }
 
@@ -134,7 +135,7 @@ public class WrappedJrubyScriptEngine implements Closeable {
     }
 
     public boolean contains(final String variable) {
-        return binding.containsKey(variable);
+        return binding.get(variable) != null;
     }
 
 }

@@ -1,5 +1,5 @@
 puts("getByte")
-unless (defined?(getByte)).nil?
+unless (defined?(getByte)).nil? || getByte.nil?
 	raise "getByte already defined"
 end
 getByte = callback("getByte")
@@ -12,7 +12,7 @@ end
 callback("setByte", getByte)
 
 puts("getByteVector")
-unless (defined?(getByteVector)).nil?
+unless (defined?(getByteVector)).nil? || getByteVector.nil?
 	raise "getByteVector already defined"
 end
 getByteVector = callback("getByteVector")
@@ -25,7 +25,7 @@ end
 callback("setByteVector", getByteVector)
 
 puts("getByteVectorAsList")
-unless (defined?(getByteVectorAsList)).nil?
+unless (defined?(getByteVectorAsList)).nil? || getByteVectorAsList.nil?
 	raise "getByteVectorAsList already defined"
 end
 getByteVectorAsList = callback("getByteVectorAsList")
@@ -38,7 +38,7 @@ end
 callback("setByteVectorAsList", getByteVectorAsList)
 
 puts("getByteMatrix")
-unless (defined?(getByteMatrix)).nil?
+unless (defined?(getByteMatrix)).nil? || getByteMatrix.nil?
 	raise "getByteMatrix already defined"
 end
 getByteMatrix = callback("getByteMatrix")
@@ -51,7 +51,7 @@ end
 callback("setByteMatrix", getByteMatrix)
 
 puts("getByteMatrixAsList")
-unless (defined?(getByteMatrixAsList)).nil?
+unless (defined?(getByteMatrixAsList)).nil? || getByteMatrixAsList.nil?
 	raise "getByteMatrixAsList already defined"
 end
 getByteMatrixAsList = callback("getByteMatrixAsList")
