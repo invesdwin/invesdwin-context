@@ -1,6 +1,7 @@
 package de.invesdwin.context.mvel.pool;
 
 import java.io.Closeable;
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -14,6 +15,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.jsr223.MvelCompiledScript;
 import org.mvel2.jsr223.MvelScriptEngine;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -24,6 +28,7 @@ public class WrappedMvelScriptEngine implements Closeable {
 
     private final LoadingCache<String, CompiledScript> scriptCache;
 
+    private final boolean strict;
     private final MvelScriptEngine engine;
     private final Compilable compilable;
     private final Invocable invocable;
@@ -31,7 +36,8 @@ public class WrappedMvelScriptEngine implements Closeable {
     private final Function<String, Object> evalF;
     private final BiFunction<String, Bindings, Object> evalBindingsF;
 
-    public WrappedMvelScriptEngine() {
+    public WrappedMvelScriptEngine(final boolean strict) {
+        this.strict = strict;
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = (MvelScriptEngine) manager.getEngineByName("mvel");
         //MvelScriptEngine is a singleton, make sure to separate the bindings
@@ -96,7 +102,14 @@ public class WrappedMvelScriptEngine implements Closeable {
                         //                        ... 31 more
                         //MVEL compiler is not thread safe
                         synchronized (WrappedMvelScriptEngine.class) {
-                            return compilable.compile(key);
+                            if (strict) {
+                                final ParserContext context = new ParserContext();
+                                context.setStrictTypeEnforcement(true);
+                                final Serializable compiled = MVEL.compileExpression(key, context);
+                                return new MvelCompiledScript(engine, compiled);
+                            } else {
+                                return compilable.compile(key);
+                            }
                         }
                     });
             evalF = (expression) -> evalCompiling(expression);
@@ -112,6 +125,10 @@ public class WrappedMvelScriptEngine implements Closeable {
         } else {
             invocable = null;
         }
+    }
+
+    public boolean isStrict() {
+        return strict;
     }
 
     public ScriptEngine getEngine() {

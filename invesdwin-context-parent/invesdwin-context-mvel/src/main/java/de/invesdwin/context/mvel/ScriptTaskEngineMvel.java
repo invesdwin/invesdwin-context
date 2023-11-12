@@ -4,10 +4,12 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.context.mvel.pool.MvelScriptEngineObjectPool;
+import de.invesdwin.context.mvel.pool.StrictMvelScriptEngineObjectPool;
 import de.invesdwin.context.mvel.pool.WrappedMvelScriptEngine;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.disabled.DisabledLock;
+import de.invesdwin.util.concurrent.pool.IObjectPool;
 
 @NotThreadSafe
 public class ScriptTaskEngineMvel implements IScriptTaskEngine {
@@ -61,16 +63,33 @@ public class ScriptTaskEngineMvel implements IScriptTaskEngine {
     }
 
     public static ScriptTaskEngineMvel newInstance() {
-        return new ScriptTaskEngineMvel(MvelScriptEngineObjectPool.INSTANCE.borrowObject()) {
+        return newInstance(MvelProperties.isStrict());
+    }
+
+    public static ScriptTaskEngineMvel newInstance(final boolean strict) {
+        final IObjectPool<WrappedMvelScriptEngine> pool = getEnginePool(strict);
+        return new ScriptTaskEngineMvel(pool.borrowObject()) {
             @Override
             public void close() {
                 final WrappedMvelScriptEngine unwrap = unwrap();
                 if (unwrap != null) {
-                    MvelScriptEngineObjectPool.INSTANCE.returnObject(unwrap);
+                    pool.returnObject(unwrap);
                 }
                 super.close();
             }
         };
+    }
+
+    public static IObjectPool<WrappedMvelScriptEngine> getEnginePool() {
+        return getEnginePool(MvelProperties.isStrict());
+    }
+
+    public static IObjectPool<WrappedMvelScriptEngine> getEnginePool(final boolean strict) {
+        if (strict) {
+            return StrictMvelScriptEngineObjectPool.INSTANCE;
+        } else {
+            return MvelScriptEngineObjectPool.INSTANCE;
+        }
     }
 
 }

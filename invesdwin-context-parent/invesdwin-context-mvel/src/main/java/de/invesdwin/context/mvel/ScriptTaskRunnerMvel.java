@@ -6,8 +6,8 @@ import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext;
-import de.invesdwin.context.mvel.pool.MvelScriptEngineObjectPool;
 import de.invesdwin.context.mvel.pool.WrappedMvelScriptEngine;
+import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.error.Throwables;
 import jakarta.inject.Named;
 
@@ -25,7 +25,8 @@ public final class ScriptTaskRunnerMvel implements IScriptTaskRunnerMvel, Factor
     @Override
     public <T> T run(final AScriptTaskMvel<T> scriptTask) {
         //get session
-        final WrappedMvelScriptEngine scriptEngine = MvelScriptEngineObjectPool.INSTANCE.borrowObject();
+        final IObjectPool<WrappedMvelScriptEngine> enginePool = ScriptTaskEngineMvel.getEnginePool();
+        final WrappedMvelScriptEngine scriptEngine = enginePool.borrowObject();
         final MvelScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
@@ -49,10 +50,10 @@ public final class ScriptTaskRunnerMvel implements IScriptTaskRunnerMvel, Factor
             engine.close();
 
             //return
-            MvelScriptEngineObjectPool.INSTANCE.returnObject(scriptEngine);
+            enginePool.returnObject(scriptEngine);
             return result;
         } catch (final Throwable t) {
-            MvelScriptEngineObjectPool.INSTANCE.invalidateObject(scriptEngine);
+            enginePool.invalidateObject(scriptEngine);
             throw Throwables.propagate(t);
         } finally {
             if (context != null) {

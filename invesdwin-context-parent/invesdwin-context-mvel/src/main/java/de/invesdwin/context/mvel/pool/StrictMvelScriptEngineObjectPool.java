@@ -11,12 +11,12 @@ import jakarta.inject.Named;
 
 @ThreadSafe
 @Named
-public final class MvelScriptEngineObjectPool extends ATimeoutObjectPool<WrappedMvelScriptEngine>
-        implements FactoryBean<MvelScriptEngineObjectPool> {
+public final class StrictMvelScriptEngineObjectPool extends ATimeoutObjectPool<WrappedMvelScriptEngine>
+        implements FactoryBean<StrictMvelScriptEngineObjectPool> {
 
-    public static final MvelScriptEngineObjectPool INSTANCE = new MvelScriptEngineObjectPool();
+    public static final StrictMvelScriptEngineObjectPool INSTANCE = new StrictMvelScriptEngineObjectPool();
 
-    private MvelScriptEngineObjectPool() {
+    private StrictMvelScriptEngineObjectPool() {
         super(Duration.ONE_MINUTE, new Duration(10, FTimeUnit.SECONDS));
     }
 
@@ -33,17 +33,17 @@ public final class MvelScriptEngineObjectPool extends ATimeoutObjectPool<Wrapped
 
     @Override
     protected WrappedMvelScriptEngine newObject() {
-        return new WrappedMvelScriptEngine(false);
+        return new WrappedMvelScriptEngine(true);
     }
 
     @Override
-    public MvelScriptEngineObjectPool getObject() {
+    public StrictMvelScriptEngineObjectPool getObject() {
         return INSTANCE;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return MvelScriptEngineObjectPool.class;
+        return StrictMvelScriptEngineObjectPool.class;
     }
 
     @Override
