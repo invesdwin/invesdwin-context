@@ -7,7 +7,6 @@ import org.springframework.core.io.ClassPathResource;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.context.integration.script.IScriptTaskInputs;
 import de.invesdwin.context.integration.script.IScriptTaskResults;
-import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.context.mvel.AScriptTaskMvel;
 import de.invesdwin.context.mvel.IScriptTaskRunnerMvel;
 import de.invesdwin.util.assertions.Assertions;
@@ -23,11 +22,6 @@ public class StrictHelloWorldScript {
 
     public void testHelloWorld() {
         final AScriptTaskMvel<String> script = new AScriptTaskMvel<String>() {
-
-            @Override
-            public IScriptTaskCallback getCallback() {
-                return super.getCallback();
-            }
 
             @Override
             public void populateInputs(final IScriptTaskInputs inputs) {

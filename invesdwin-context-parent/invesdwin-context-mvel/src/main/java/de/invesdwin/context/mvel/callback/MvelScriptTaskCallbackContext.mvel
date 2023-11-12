@@ -9,10 +9,5 @@ def callback(methodName, parameters) {
         }
     }
     de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext context = bindings.get("mvelScriptTaskCallbackContext");
-    de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturnValue returnValue = context.invoke(methodName, parameters);
-    if(returnValue.isReturnExpression()) {
-        return org.mvel2.MVEL.eval(returnValue.getReturnValue(), bindings);
-    } else {
-        return returnValue.getReturnValue();
-    }
+    return context.invoke(methodName, parameters);
 }
