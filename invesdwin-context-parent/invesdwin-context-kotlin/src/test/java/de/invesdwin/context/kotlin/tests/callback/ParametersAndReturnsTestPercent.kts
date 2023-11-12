@@ -1,5 +1,5 @@
 println("getPercent")
-if(bindings.containsKey("getPercent"))
+if(binding.containsKey("getPercent"))
 	throw Exception("getPercent already defined!")
 val getPercent: Double = callback("getPercent")
 val getPercentType = getPercent::class
@@ -10,7 +10,7 @@ if(getPercentType != Double::class)
 callback<Unit>("setPercent",getPercent)
 
 println("getPercentVector")
-if(bindings.containsKey("getPercentVector"))
+if(binding.containsKey("getPercentVector"))
 	throw Exception("getPercentVector already defined!")
 val getPercentVector: DoubleArray = callback("getPercentVector")
 val getPercentVectorType = getPercentVector[0]::class
@@ -21,7 +21,7 @@ if(getPercentVectorType != Double::class)
 callback<Unit>("setPercentVector",getPercentVector)
 
 println("getPercentVectorAsList")
-if(bindings.containsKey("getPercentVectorAsList"))
+if(binding.containsKey("getPercentVectorAsList"))
 	throw Exception("getPercentVectorAsList already defined!")
 val getPercentVectorAsList: DoubleArray = callback("getPercentVectorAsList")
 val getPercentVectorAsListType = getPercentVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getPercentVectorAsListType != Double::class)
 callback<Unit>("setPercentVectorAsList",getPercentVectorAsList)
 
 println("getPercentMatrix")
-if(bindings.containsKey("getPercentMatrix"))
+if(binding.containsKey("getPercentMatrix"))
 	throw Exception("getPercentMatrix already defined!")
 val getPercentMatrix: Array<DoubleArray> = callback("getPercentMatrix")
 val getPercentMatrixType = getPercentMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getPercentMatrixType != Double::class)
 callback<Unit>("setPercentMatrix",getPercentMatrix)
 
 println("getPercentMatrixAsList")
-if(bindings.containsKey("getPercentMatrixAsList"))
+if(binding.containsKey("getPercentMatrixAsList"))
 	throw Exception("getPercentMatrixAsList already defined!")
 val getPercentMatrixAsList: Array<DoubleArray> = callback("getPercentMatrixAsList")
 val getPercentMatrixAsListType = getPercentMatrixAsList[0][0]::class

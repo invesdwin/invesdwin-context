@@ -34,7 +34,7 @@ public class WrappedJshellScriptEngine implements Closeable {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("jshell");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        this.binding.put("bindings", binding);
+        this.binding.put("binding", binding);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
             scriptCache = Caffeine.newBuilder()
@@ -117,7 +117,7 @@ public class WrappedJshellScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
     }
 
     @Override

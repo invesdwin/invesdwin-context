@@ -1,5 +1,5 @@
 System.out.println("getString");
-if(bindings.containsKey("getString"))
+if(binding.containsKey("getString"))
 	throw new Exception("getString already defined!");
 var getString = putString;
 var getStringType = getString.getClass();
@@ -9,7 +9,7 @@ if(getStringType != String.class)
 	throw new Exception("getString not String!");
 
 System.out.println("getStringWithNull");
-if(bindings.containsKey("getStringWithNull"))
+if(binding.containsKey("getStringWithNull"))
 	throw new Exception("getStringWithNull already defined!");
 var getStringWithNull = putStringWithNull;
 System.out.println(getStringWithNull);
@@ -17,7 +17,7 @@ if(getStringWithNull != null)
 	throw new Exception("getStringWithNull not null!");
 
 System.out.println("getStringVector");
-if(bindings.containsKey("getStringVector"))
+if(binding.containsKey("getStringVector"))
 	throw new Exception("getStringVector already defined!");
 var getStringVector = putStringVector;
 var getStringVectorType = getStringVector.getClass().getComponentType();
@@ -27,7 +27,7 @@ if(getStringVectorType != String.class)
 	throw new Exception("getStringVector not String!");
 
 System.out.println("getStringVectorWithNull");
-if(bindings.containsKey("getStringVectorWithNull"))
+if(binding.containsKey("getStringVectorWithNull"))
 	throw new Exception("getStringVectorWithNull already defined!");
 var getStringVectorWithNull = putStringVectorWithNull;
 var getStringVectorWithNullType = getStringVectorWithNull.getClass().getComponentType();
@@ -39,7 +39,7 @@ if(getStringVectorWithNull[1] != null)
 	throw new Exception("getStringVectorWithNull[1] not null!");
 
 System.out.println("getStringVectorAsList");
-if(bindings.containsKey("getStringVectorAsList"))
+if(binding.containsKey("getStringVectorAsList"))
 	throw new Exception("getStringVectorAsList already defined!");
 var getStringVectorAsList = putStringVectorAsList;
 var getStringVectorAsListType = getStringVectorAsList.getClass().getComponentType();
@@ -49,7 +49,7 @@ if(getStringVectorAsListType != String.class)
 	throw new Exception("getStringVectorAsList not String!");
 
 System.out.println("getStringVectorAsListWithNull");
-if(bindings.containsKey("getStringVectorAsListWithNull"))
+if(binding.containsKey("getStringVectorAsListWithNull"))
 	throw new Exception("getStringVectorAsListWithNull already defined!");
 var getStringVectorAsListWithNull = putStringVectorAsListWithNull;
 var getStringVectorAsListWithNullType = getStringVectorAsListWithNull.getClass().getComponentType();
@@ -61,7 +61,7 @@ if(getStringVectorAsListWithNull[1] != null)
 	throw new Exception("getStringVectorAsListWithNull[1] not null!");
 
 System.out.println("getStringMatrix");
-if(bindings.containsKey("getStringMatrix"))
+if(binding.containsKey("getStringMatrix"))
 	throw new Exception("getStringMatrix already defined!");
 var getStringMatrix = putStringMatrix;
 var getStringMatrixType = getStringMatrix[0].getClass().getComponentType();
@@ -71,7 +71,7 @@ if(getStringMatrixType != String.class)
 	throw new Exception("getStringMatrix not String!");
 
 System.out.println("getStringMatrixWithNull");
-if(bindings.containsKey("getStringMatrixWithNull"))
+if(binding.containsKey("getStringMatrixWithNull"))
 	throw new Exception("getStringMatrixWithNull already defined!");
 var getStringMatrixWithNull = putStringMatrixWithNull;
 var getStringMatrixWithNullType = getStringMatrixWithNull[0][1].getClass();
@@ -87,7 +87,7 @@ if(getStringMatrixWithNull[2][2] != null)
 	throw new Exception("getStringMatrixWithNull[2][2] not null!");
 
 System.out.println("getStringMatrixAsList");
-if(bindings.containsKey("getStringMatrixAsList"))
+if(binding.containsKey("getStringMatrixAsList"))
 	throw new Exception("getStringMatrixAsList already defined!");
 var getStringMatrixAsList = putStringMatrixAsList;
 var getStringMatrixAsListType = getStringMatrixAsList[0].getClass().getComponentType();
@@ -97,7 +97,7 @@ if(getStringMatrixAsListType != String.class)
 	throw new Exception("getStringMatrixAsList not String!");
 
 System.out.println("getStringMatrixAsListWithNull");
-if(bindings.containsKey("getStringMatrixAsListWithNull"))
+if(binding.containsKey("getStringMatrixAsListWithNull"))
 	throw new Exception("getStringMatrixAsListWithNull already defined!");
 var getStringMatrixAsListWithNull = putStringMatrixAsListWithNull;
 var getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1].getClass();

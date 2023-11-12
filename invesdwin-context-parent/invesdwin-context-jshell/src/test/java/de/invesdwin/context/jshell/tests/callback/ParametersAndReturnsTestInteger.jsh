@@ -1,5 +1,5 @@
 System.out.println("getInteger");
-if(bindings.containsKey("getInteger"))
+if(binding.containsKey("getInteger"))
 	throw new Exception("getInteger already defined!");
 var getInteger = callback("getInteger");
 var getIntegerType = getInteger.getClass();
@@ -10,7 +10,7 @@ if(getIntegerType != Integer.class)
 callback("setInteger",getInteger);
 
 System.out.println("getIntegerVector");
-if(bindings.containsKey("getIntegerVector"))
+if(binding.containsKey("getIntegerVector"))
 	throw new Exception("getIntegerVector already defined!");
 var getIntegerVector = callback("getIntegerVector");
 var getIntegerVectorType = getIntegerVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getIntegerVectorType != int.class)
 callback("setIntegerVector",getIntegerVector);
 
 System.out.println("getIntegerVectorAsList");
-if(bindings.containsKey("getIntegerVectorAsList"))
+if(binding.containsKey("getIntegerVectorAsList"))
 	throw new Exception("getIntegerVectorAsList already defined!");
 var getIntegerVectorAsList = callback("getIntegerVectorAsList");
 var getIntegerVectorAsListType = getIntegerVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getIntegerVectorAsListType != int.class)
 callback("setIntegerVectorAsList",getIntegerVectorAsList);
 
 System.out.println("getIntegerMatrix");
-if(bindings.containsKey("getIntegerMatrix"))
+if(binding.containsKey("getIntegerMatrix"))
 	throw new Exception("getIntegerMatrix already defined!");
 var getIntegerMatrix = callback("getIntegerMatrix");
 var getIntegerMatrixType = getIntegerMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getIntegerMatrixType != int.class)
 callback("setIntegerMatrix",getIntegerMatrix);
 
 System.out.println("getIntegerMatrixAsList");
-if(bindings.containsKey("getIntegerMatrixAsList"))
+if(binding.containsKey("getIntegerMatrixAsList"))
 	throw new Exception("getIntegerMatrixAsList already defined!");
 var getIntegerMatrixAsList = callback("getIntegerMatrixAsList");
 var getIntegerMatrixAsListType = getIntegerMatrixAsList[0].getClass().getComponentType();

@@ -28,14 +28,14 @@ public final class ClojureScriptEngine extends AbstractScriptEngine implements C
         }
     };
 
-    private final ClojureBindings engineScopeBindings;
+    private final ClojureBindings engineScopeBinding;
     private final String defaultFileName;
 
     private ClojureScriptEngine() {
         final ClojureScriptContext context = new ClojureScriptContext();
         setContext(context);
-        this.engineScopeBindings = (ClojureBindings) context.getBindings(ScriptContext.ENGINE_SCOPE);
-        this.defaultFileName = "/" + engineScopeBindings.getNamespace();
+        this.engineScopeBinding = (ClojureBindings) context.getBindings(ScriptContext.ENGINE_SCOPE);
+        this.defaultFileName = "/" + engineScopeBinding.getNamespace();
     }
 
     @Override
@@ -90,21 +90,21 @@ public final class ClojureScriptEngine extends AbstractScriptEngine implements C
     protected void setup(final ScriptContext context) {
         final Reader reader = context.getReader();
         if (reader != null) {
-            engineScopeBindings.put("clojure.core.*in*", reader);
+            engineScopeBinding.put("clojure.core.*in*", reader);
         }
         final Writer writer = context.getWriter();
         if (writer != null) {
-            engineScopeBindings.put("clojure.core.*out*", writer);
+            engineScopeBinding.put("clojure.core.*out*", writer);
         }
         final Writer errorWriter = context.getErrorWriter();
         if (errorWriter != null) {
-            engineScopeBindings.put("clojure.core.*err*", errorWriter);
+            engineScopeBinding.put("clojure.core.*err*", errorWriter);
         }
     }
 
     @Override
     public Bindings createBindings() {
-        return engineScopeBindings;
+        return engineScopeBinding;
     }
 
     @Override

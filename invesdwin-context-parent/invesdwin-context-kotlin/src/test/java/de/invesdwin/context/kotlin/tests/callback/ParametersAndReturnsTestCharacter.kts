@@ -1,5 +1,5 @@
 println("getCharacter")
-if(bindings.containsKey("getCharacter"))
+if(binding.containsKey("getCharacter"))
 	throw Exception("getCharacter already defined!")
 val getCharacter: Char = callback("getCharacter")
 val getCharacterType = getCharacter::class
@@ -10,7 +10,7 @@ if(getCharacterType != Character::class)
 callback<Unit>("setCharacter",getCharacter)
 
 println("getCharacterVector")
-if(bindings.containsKey("getCharacterVector"))
+if(binding.containsKey("getCharacterVector"))
 	throw Exception("getCharacterVector already defined!")
 val getCharacterVector: CharArray = callback("getCharacterVector")
 val getCharacterVectorType = getCharacterVector[0]::class
@@ -21,7 +21,7 @@ if(getCharacterVectorType != Character::class)
 callback<Unit>("setCharacterVector",getCharacterVector)
 
 println("getCharacterVectorAsList")
-if(bindings.containsKey("getCharacterVectorAsList"))
+if(binding.containsKey("getCharacterVectorAsList"))
 	throw Exception("getCharacterVectorAsList already defined!")
 val getCharacterVectorAsList: CharArray = callback("getCharacterVectorAsList")
 val getCharacterVectorAsListType = getCharacterVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getCharacterVectorAsListType != Character::class)
 callback<Unit>("setCharacterVectorAsList",getCharacterVectorAsList)
 
 println("getCharacterMatrix")
-if(bindings.containsKey("getCharacterMatrix"))
+if(binding.containsKey("getCharacterMatrix"))
 	throw Exception("getCharacterMatrix already defined!")
 val getCharacterMatrix: Array<CharArray> = callback("getCharacterMatrix")
 val getCharacterMatrixType = getCharacterMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getCharacterMatrixType != Character::class)
 callback<Unit>("setCharacterMatrix",getCharacterMatrix)
 
 println("getCharacterMatrixAsList")
-if(bindings.containsKey("getCharacterMatrixAsList"))
+if(binding.containsKey("getCharacterMatrixAsList"))
 	throw Exception("getCharacterMatrixAsList already defined!")
 val getCharacterMatrixAsList: Array<CharArray> = callback("getCharacterMatrixAsList")
 val getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0]::class

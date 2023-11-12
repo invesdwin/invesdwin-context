@@ -1,5 +1,5 @@
 System.out.println("getPercent");
-if(bindings.containsKey("getPercent"))
+if(binding.containsKey("getPercent"))
 	throw new Exception("getPercent already defined!");
 var getPercent = callback("getPercent");
 var getPercentType = getPercent.getClass();
@@ -10,7 +10,7 @@ if(getPercentType != Double.class)
 callback("setPercent",getPercent);
 
 System.out.println("getPercentVector");
-if(bindings.containsKey("getPercentVector"))
+if(binding.containsKey("getPercentVector"))
 	throw new Exception("getPercentVector already defined!");
 var getPercentVector = callback("getPercentVector");
 var getPercentVectorType = getPercentVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getPercentVectorType != double.class)
 callback("setPercentVector",getPercentVector);
 
 System.out.println("getPercentVectorAsList");
-if(bindings.containsKey("getPercentVectorAsList"))
+if(binding.containsKey("getPercentVectorAsList"))
 	throw new Exception("getPercentVectorAsList already defined!");
 var getPercentVectorAsList = callback("getPercentVectorAsList");
 var getPercentVectorAsListType = getPercentVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getPercentVectorAsListType != double.class)
 callback("setPercentVectorAsList",getPercentVectorAsList);
 
 System.out.println("getPercentMatrix");
-if(bindings.containsKey("getPercentMatrix"))
+if(binding.containsKey("getPercentMatrix"))
 	throw new Exception("getPercentMatrix already defined!");
 var getPercentMatrix = callback("getPercentMatrix");
 var getPercentMatrixType = getPercentMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getPercentMatrixType != double.class)
 callback("setPercentMatrix",getPercentMatrix);
 
 System.out.println("getPercentMatrixAsList");
-if(bindings.containsKey("getPercentMatrixAsList"))
+if(binding.containsKey("getPercentMatrixAsList"))
 	throw new Exception("getPercentMatrixAsList already defined!");
 var getPercentMatrixAsList = callback("getPercentMatrixAsList");
 var getPercentMatrixAsListType = getPercentMatrixAsList[0].getClass().getComponentType();

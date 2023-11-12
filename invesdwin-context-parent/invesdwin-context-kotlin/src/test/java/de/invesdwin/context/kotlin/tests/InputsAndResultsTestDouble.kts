@@ -1,5 +1,5 @@
 println("getDouble")
-if(bindings.containsKey("getDouble"))
+if(binding.containsKey("getDouble"))
 	throw Exception("getDouble already defined!")
 val getDouble = putDouble
 val getDoubleType = getDouble::class
@@ -9,7 +9,7 @@ if(getDoubleType != Double::class)
 	throw Exception("getDouble not Double!")
 
 println("getDoubleVector")
-if(bindings.containsKey("getDoubleVector"))
+if(binding.containsKey("getDoubleVector"))
 	throw Exception("getDoubleVector already defined!")
 val getDoubleVector = putDoubleVector
 val getDoubleVectorType = getDoubleVector[0]::class
@@ -19,7 +19,7 @@ if(getDoubleVectorType != Double::class)
 	throw Exception("getDoubleVector not Double!")
 
 println("getDoubleVectorAsList")
-if(bindings.containsKey("getDoubleVectorAsList"))
+if(binding.containsKey("getDoubleVectorAsList"))
 	throw Exception("getDoubleVectorAsList already defined!")
 val getDoubleVectorAsList = putDoubleVectorAsList
 val getDoubleVectorAsListType = getDoubleVectorAsList[0]::class
@@ -29,7 +29,7 @@ if(getDoubleVectorAsListType != Double::class)
 	throw Exception("getDoubleVectorAsList not Double!")
 
 println("getDoubleMatrix")
-if(bindings.containsKey("getDoubleMatrix"))
+if(binding.containsKey("getDoubleMatrix"))
 	throw Exception("getDoubleMatrix already defined!")
 val getDoubleMatrix = putDoubleMatrix as Array<DoubleArray>
 val getDoubleMatrixType = getDoubleMatrix[0][0]::class
@@ -39,7 +39,7 @@ if(getDoubleMatrixType != Double::class)
 	throw Exception("getDoubleMatrix not Double!")
 
 println("getDoubleMatrixAsList")
-if(bindings.containsKey("getDoubleMatrixAsList"))
+if(binding.containsKey("getDoubleMatrixAsList"))
 	throw Exception("getDoubleMatrixAsList already defined!")
 val getDoubleMatrixAsList = putDoubleMatrixAsList as Array<DoubleArray>
 val getDoubleMatrixAsListType = getDoubleMatrixAsList[0][0]::class

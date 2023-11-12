@@ -1,5 +1,5 @@
 System.out.println("getFloat");
-if(bindings.containsKey("getFloat"))
+if(binding.containsKey("getFloat"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloat already defined!"));
 var getFloat = callback("getFloat",[]);
 var getFloatType = getFloat.getClass();
@@ -10,7 +10,7 @@ if(getFloatType != Float)
 callback("setFloat",[getFloat]);
 
 System.out.println("getFloatVector");
-if(bindings.containsKey("getFloatVector"))
+if(binding.containsKey("getFloatVector"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatVector already defined!"));
 var getFloatVector = callback("getFloatVector",[]);
 var getFloatVectorType = getFloatVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getFloatVectorType != float)
 callback("setFloatVector",[getFloatVector]);
 
 System.out.println("getFloatVectorAsList");
-if(bindings.containsKey("getFloatVectorAsList"))
+if(binding.containsKey("getFloatVectorAsList"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatVectorAsList already defined!"));
 var getFloatVectorAsList = callback("getFloatVectorAsList",[]);
 var getFloatVectorAsListType = getFloatVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getFloatVectorAsListType != float)
 callback("setFloatVectorAsList",[getFloatVectorAsList]);
 
 System.out.println("getFloatMatrix");
-if(bindings.containsKey("getFloatMatrix"))
+if(binding.containsKey("getFloatMatrix"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatMatrix already defined!"));
 var getFloatMatrix = callback("getFloatMatrix",[]);
 var getFloatMatrixType = getFloatMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getFloatMatrixType != float)
 callback("setFloatMatrix",[getFloatMatrix]);
 
 System.out.println("getFloatMatrixAsList");
-if(bindings.containsKey("getFloatMatrixAsList"))
+if(binding.containsKey("getFloatMatrixAsList"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getFloatMatrixAsList already defined!"));
 var getFloatMatrixAsList = callback("getFloatMatrixAsList",[]);
 var getFloatMatrixAsListType = getFloatMatrixAsList[0].getClass().getComponentType();

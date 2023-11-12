@@ -1,5 +1,5 @@
 println("getInteger")
-if(bindings.containsKey("getInteger"))
+if(binding.containsKey("getInteger"))
 	throw Exception("getInteger already defined!")
 val getInteger: Int = callback("getInteger")
 val getIntegerType = getInteger::class
@@ -10,7 +10,7 @@ if(getIntegerType != Integer::class)
 callback<Unit>("setInteger",getInteger)
 
 println("getIntegerVector")
-if(bindings.containsKey("getIntegerVector"))
+if(binding.containsKey("getIntegerVector"))
 	throw Exception("getIntegerVector already defined!")
 val getIntegerVector: IntArray = callback("getIntegerVector")
 val getIntegerVectorType = getIntegerVector[0]::class
@@ -21,7 +21,7 @@ if(getIntegerVectorType != Integer::class)
 callback<Unit>("setIntegerVector",getIntegerVector)
 
 println("getIntegerVectorAsList")
-if(bindings.containsKey("getIntegerVectorAsList"))
+if(binding.containsKey("getIntegerVectorAsList"))
 	throw Exception("getIntegerVectorAsList already defined!")
 val getIntegerVectorAsList: IntArray = callback("getIntegerVectorAsList")
 val getIntegerVectorAsListType = getIntegerVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getIntegerVectorAsListType != Integer::class)
 callback<Unit>("setIntegerVectorAsList",getIntegerVectorAsList)
 
 println("getIntegerMatrix")
-if(bindings.containsKey("getIntegerMatrix"))
+if(binding.containsKey("getIntegerMatrix"))
 	throw Exception("getIntegerMatrix already defined!")
 val getIntegerMatrix: Array<IntArray> = callback("getIntegerMatrix")
 val getIntegerMatrixType = getIntegerMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getIntegerMatrixType != Integer::class)
 callback<Unit>("setIntegerMatrix",getIntegerMatrix)
 
 println("getIntegerMatrixAsList")
-if(bindings.containsKey("getIntegerMatrixAsList"))
+if(binding.containsKey("getIntegerMatrixAsList"))
 	throw Exception("getIntegerMatrixAsList already defined!")
 val getIntegerMatrixAsList: Array<IntArray> = callback("getIntegerMatrixAsList")
 val getIntegerMatrixAsListType = getIntegerMatrixAsList[0][0]::class

@@ -1,5 +1,5 @@
 System.out.println("getByte");
-if(bindings.containsKey("getByte"))
+if(binding.containsKey("getByte"))
 	throw new Exception("getByte already defined!");
 var getByte = putByte;
 var getByteType = getByte.getClass();
@@ -9,7 +9,7 @@ if(getByteType != Byte.class)
 	throw new Exception("getByte not Byte!");
 
 System.out.println("getByteVector");
-if(bindings.containsKey("getByteVector"))
+if(binding.containsKey("getByteVector"))
 	throw new Exception("getByteVector already defined!");
 var getByteVector = putByteVector;
 var getByteVectorType = getByteVector.getClass().getComponentType();
@@ -19,7 +19,7 @@ if(getByteVectorType != byte.class)
 	throw new Exception("getByteVector not Byte!");
 
 System.out.println("getByteVectorAsList");
-if(bindings.containsKey("getByteVectorAsList"))
+if(binding.containsKey("getByteVectorAsList"))
 	throw new Exception("getByteVectorAsList already defined!");
 var getByteVectorAsList = putByteVectorAsList;
 var getByteVectorAsListType = getByteVectorAsList.getClass().getComponentType();
@@ -29,7 +29,7 @@ if(getByteVectorAsListType != byte.class)
 	throw new Exception("getByteVectorAsList not Byte!");
 
 System.out.println("getByteMatrix");
-if(bindings.containsKey("getByteMatrix"))
+if(binding.containsKey("getByteMatrix"))
 	throw new Exception("getByteMatrix already defined!");
 var getByteMatrix = putByteMatrix;
 var getByteMatrixType = getByteMatrix[0].getClass().getComponentType();
@@ -39,7 +39,7 @@ if(getByteMatrixType != byte.class)
 	throw new Exception("getByteMatrix not Byte!");
 
 System.out.println("getByteMatrixAsList");
-if(bindings.containsKey("getByteMatrixAsList"))
+if(binding.containsKey("getByteMatrixAsList"))
 	throw new Exception("getByteMatrixAsList already defined!");
 var getByteMatrixAsList = putByteMatrixAsList;
 var getByteMatrixAsListType = getByteMatrixAsList[0].getClass().getComponentType();

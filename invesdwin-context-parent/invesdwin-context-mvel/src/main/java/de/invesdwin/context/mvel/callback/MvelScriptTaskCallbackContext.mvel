@@ -1,13 +1,13 @@
 //mvel does not support overloaded methods and it does not support varargs in function definitions
 def callback(methodName, parameters) {
-    if(!bindings.containsKey("mvelScriptTaskCallbackContext")) {
-        if(bindings.containsKey("mvelScriptTaskCallbackContextUuid")) {
-            bindings.put("mvelScriptTaskCallbackContext", de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext.getContext(mvelScriptTaskCallbackContextUuid));
+    if(!binding.containsKey("mvelScriptTaskCallbackContext")) {
+        if(binding.containsKey("mvelScriptTaskCallbackContextUuid")) {
+            binding.put("mvelScriptTaskCallbackContext", de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext.getContext(mvelScriptTaskCallbackContextUuid));
         } else {
         	//mvel does not understand the "throw" keyword
             de.invesdwin.util.error.Throwables.propagate(new RuntimeException("IScriptTaskCallback not available"));
         }
     }
-    de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext context = bindings.get("mvelScriptTaskCallbackContext");
+    de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext context = binding.get("mvelScriptTaskCallbackContext");
     return context.invoke(methodName, parameters);
 }

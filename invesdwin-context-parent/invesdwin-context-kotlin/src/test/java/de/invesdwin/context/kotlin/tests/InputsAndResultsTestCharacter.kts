@@ -1,5 +1,5 @@
 println("getCharacter")
-if(bindings.containsKey("getCharacter"))
+if(binding.containsKey("getCharacter"))
 	throw Exception("getCharacter already defined!")
 val getCharacter = putCharacter
 val getCharacterType = getCharacter::class
@@ -9,7 +9,7 @@ if(getCharacterType != Character::class)
 	throw Exception("getCharacter not Character!")
 
 println("getCharacterVector")
-if(bindings.containsKey("getCharacterVector"))
+if(binding.containsKey("getCharacterVector"))
 	throw Exception("getCharacterVector already defined!")
 val getCharacterVector = putCharacterVector
 val getCharacterVectorType = getCharacterVector[0]::class
@@ -19,7 +19,7 @@ if(getCharacterVectorType != Character::class)
 	throw Exception("getCharacterVector not Character!")
 
 println("getCharacterVectorAsList")
-if(bindings.containsKey("getCharacterVectorAsList"))
+if(binding.containsKey("getCharacterVectorAsList"))
 	throw Exception("getCharacterVectorAsList already defined!")
 val getCharacterVectorAsList = putCharacterVectorAsList
 val getCharacterVectorAsListType = getCharacterVectorAsList[0]::class
@@ -29,7 +29,7 @@ if(getCharacterVectorAsListType != Character::class)
 	throw Exception("getCharacterVectorAsList not Character!")
 
 println("getCharacterMatrix")
-if(bindings.containsKey("getCharacterMatrix"))
+if(binding.containsKey("getCharacterMatrix"))
 	throw Exception("getCharacterMatrix already defined!")
 val getCharacterMatrix = putCharacterMatrix as Array<CharArray>
 val getCharacterMatrixType = getCharacterMatrix[0][0]::class
@@ -39,7 +39,7 @@ if(getCharacterMatrixType != Character::class)
 	throw Exception("getCharacterMatrix not Character!")
 
 println("getCharacterMatrixAsList")
-if(bindings.containsKey("getCharacterMatrixAsList"))
+if(binding.containsKey("getCharacterMatrixAsList"))
 	throw Exception("getCharacterMatrixAsList already defined!")
 val getCharacterMatrixAsList = putCharacterMatrixAsList as Array<CharArray>
 val getCharacterMatrixAsListType = getCharacterMatrixAsList[0][0]::class

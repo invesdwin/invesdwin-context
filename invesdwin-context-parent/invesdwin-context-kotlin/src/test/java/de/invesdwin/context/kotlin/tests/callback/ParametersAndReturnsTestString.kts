@@ -1,5 +1,5 @@
 println("getString")
-if(bindings.containsKey("getString"))
+if(binding.containsKey("getString"))
 	throw Exception("getString already defined!")
 val getString: String = callback("getString")
 val getStringType = getString::class
@@ -10,7 +10,7 @@ if(getStringType != String::class)
 callback<Unit>("setString",getString)
 
 println("getStringWithNull")
-if(bindings.containsKey("getStringWithNull"))
+if(binding.containsKey("getStringWithNull"))
 	throw Exception("getStringWithNull already defined!")
 val getStringWithNull: String? = callback("getStringWithNull")
 println(getStringWithNull)
@@ -19,7 +19,7 @@ if(getStringWithNull != null)
 callback<Unit>("setStringWithNull",getStringWithNull)
 
 println("getStringVector")
-if(bindings.containsKey("getStringVector"))
+if(binding.containsKey("getStringVector"))
 	throw Exception("getStringVector already defined!")
 val getStringVector: Array<String> = callback("getStringVector")
 val getStringVectorType = getStringVector[0]!!::class
@@ -30,7 +30,7 @@ if(getStringVectorType != String::class)
 callback<Unit>("setStringVector",getStringVector)
 
 println("getStringVectorWithNull")
-if(bindings.containsKey("getStringVectorWithNull"))
+if(binding.containsKey("getStringVectorWithNull"))
 	throw Exception("getStringVectorWithNull already defined!")
 val getStringVectorWithNull: Array<String?> = callback("getStringVectorWithNull")
 val getStringVectorWithNullType = getStringVectorWithNull[0]!!::class
@@ -43,7 +43,7 @@ if(getStringVectorWithNull[1] != null)
 callback<Unit>("setStringVectorWithNull",getStringVectorWithNull)
 
 println("getStringVectorAsList")
-if(bindings.containsKey("getStringVectorAsList"))
+if(binding.containsKey("getStringVectorAsList"))
 	throw Exception("getStringVectorAsList already defined!")
 val getStringVectorAsList: Array<String> = callback("getStringVectorAsList")
 val getStringVectorAsListType = getStringVectorAsList[0]!!::class
@@ -54,7 +54,7 @@ if(getStringVectorAsListType != String::class)
 callback<Unit>("setStringVectorAsList",getStringVectorAsList)
 
 println("getStringVectorAsListWithNull")
-if(bindings.containsKey("getStringVectorAsListWithNull"))
+if(binding.containsKey("getStringVectorAsListWithNull"))
 	throw Exception("getStringVectorAsListWithNull already defined!")
 val getStringVectorAsListWithNull: Array<String?> = callback("getStringVectorAsListWithNull")
 val getStringVectorAsListWithNullType = getStringVectorAsListWithNull[0]!!::class
@@ -67,7 +67,7 @@ if(getStringVectorAsListWithNull[1] != null)
 callback<Unit>("setStringVectorAsListWithNull",getStringVectorAsListWithNull)
 
 println("getStringMatrix")
-if(bindings.containsKey("getStringMatrix"))
+if(binding.containsKey("getStringMatrix"))
 	throw Exception("getStringMatrix already defined!")
 val getStringMatrix: Array<Array<String>> = callback("getStringMatrix")
 val getStringMatrixType = getStringMatrix[0][0]!!::class
@@ -78,7 +78,7 @@ if(getStringMatrixType != String::class)
 callback<Unit>("setStringMatrix",getStringMatrix)
 
 println("getStringMatrixWithNull")
-if(bindings.containsKey("getStringMatrixWithNull"))
+if(binding.containsKey("getStringMatrixWithNull"))
 	throw Exception("getStringMatrixWithNull already defined!")
 val getStringMatrixWithNull: Array<Array<String?>> = callback("getStringMatrixWithNull")
 val getStringMatrixWithNullType = getStringMatrixWithNull[0][1]!!::class
@@ -95,7 +95,7 @@ if(getStringMatrixWithNull[2][2] != null)
 callback<Unit>("setStringMatrixWithNull",getStringMatrixWithNull)
 
 println("getStringMatrixAsList")
-if(bindings.containsKey("getStringMatrixAsList"))
+if(binding.containsKey("getStringMatrixAsList"))
 	throw Exception("getStringMatrixAsList already defined!")
 val getStringMatrixAsList: Array<Array<String>> = callback("getStringMatrixAsList")
 val getStringMatrixAsListType = getStringMatrixAsList[0][0]!!::class
@@ -106,7 +106,7 @@ if(getStringMatrixAsListType != String::class)
 callback<Unit>("setStringMatrixAsList",getStringMatrixAsList)
 
 println("getStringMatrixAsListWithNull")
-if(bindings.containsKey("getStringMatrixAsListWithNull"))
+if(binding.containsKey("getStringMatrixAsListWithNull"))
 	throw Exception("getStringMatrixAsListWithNull already defined!")
 val getStringMatrixAsListWithNull: Array<Array<String?>> = callback("getStringMatrixAsListWithNull")
 val getStringMatrixAsListWithNullType = getStringMatrixAsListWithNull[0][1]!!::class

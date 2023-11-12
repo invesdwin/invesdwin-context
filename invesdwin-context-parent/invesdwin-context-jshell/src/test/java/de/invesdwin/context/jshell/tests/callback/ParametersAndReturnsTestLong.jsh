@@ -1,5 +1,5 @@
 System.out.println("getLong");
-if(bindings.containsKey("getLong"))
+if(binding.containsKey("getLong"))
 	throw new Exception("getLong already defined!");
 var getLong = callback("getLong");
 var getLongType = getLong.getClass();
@@ -10,7 +10,7 @@ if(getLongType != Long.class)
 callback("setLong",getLong);
 
 System.out.println("getLongVector");
-if(bindings.containsKey("getLongVector"))
+if(binding.containsKey("getLongVector"))
 	throw new Exception("getLongVector already defined!");
 var getLongVector = callback("getLongVector");
 var getLongVectorType = getLongVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getLongVectorType != long.class)
 callback("setLongVector",getLongVector);
 
 System.out.println("getLongVectorAsList");
-if(bindings.containsKey("getLongVectorAsList"))
+if(binding.containsKey("getLongVectorAsList"))
 	throw new Exception("getLongVectorAsList already defined!");
 var getLongVectorAsList = callback("getLongVectorAsList");
 var getLongVectorAsListType = getLongVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getLongVectorAsListType != long.class)
 callback("setLongVectorAsList",getLongVectorAsList);
 
 System.out.println("getLongMatrix");
-if(bindings.containsKey("getLongMatrix"))
+if(binding.containsKey("getLongMatrix"))
 	throw new Exception("getLongMatrix already defined!");
 var getLongMatrix = callback("getLongMatrix");
 var getLongMatrixType = getLongMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getLongMatrixType != long.class)
 callback("setLongMatrix",getLongMatrix);
 
 System.out.println("getLongMatrixAsList");
-if(bindings.containsKey("getLongMatrixAsList"))
+if(binding.containsKey("getLongMatrixAsList"))
 	throw new Exception("getLongMatrixAsList already defined!");
 var getLongMatrixAsList = callback("getLongMatrixAsList");
 var getLongMatrixAsListType = getLongMatrixAsList[0].getClass().getComponentType();

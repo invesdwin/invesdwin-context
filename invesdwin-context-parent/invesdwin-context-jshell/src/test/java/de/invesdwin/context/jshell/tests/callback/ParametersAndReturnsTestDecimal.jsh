@@ -1,5 +1,5 @@
 System.out.println("getDecimal");
-if(bindings.containsKey("getDecimal"))
+if(binding.containsKey("getDecimal"))
 	throw new Exception("getDecimal already defined!");
 var getDecimal = callback("getDecimal");
 var getDecimalType = getDecimal.getClass();
@@ -10,7 +10,7 @@ if(getDecimalType != Double.class)
 callback("setDecimal",getDecimal);
 
 System.out.println("getDecimalVector");
-if(bindings.containsKey("getDecimalVector"))
+if(binding.containsKey("getDecimalVector"))
 	throw new Exception("getDecimalVector already defined!");
 var getDecimalVector = callback("getDecimalVector");
 var getDecimalVectorType = getDecimalVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getDecimalVectorType != double.class)
 callback("setDecimalVector",getDecimalVector);
 
 System.out.println("getDecimalVectorAsList");
-if(bindings.containsKey("getDecimalVectorAsList"))
+if(binding.containsKey("getDecimalVectorAsList"))
 	throw new Exception("getDecimalVectorAsList already defined!");
 var getDecimalVectorAsList = callback("getDecimalVectorAsList");
 var getDecimalVectorAsListType = getDecimalVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getDecimalVectorAsListType != double.class)
 callback("setDecimalVectorAsList",getDecimalVectorAsList);
 
 System.out.println("getDecimalMatrix");
-if(bindings.containsKey("getDecimalMatrix"))
+if(binding.containsKey("getDecimalMatrix"))
 	throw new Exception("getDecimalMatrix already defined!");
 var getDecimalMatrix = callback("getDecimalMatrix");
 var getDecimalMatrixType = getDecimalMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getDecimalMatrixType != double.class)
 callback("setDecimalMatrix",getDecimalMatrix);
 
 System.out.println("getDecimalMatrixAsList");
-if(bindings.containsKey("getDecimalMatrixAsList"))
+if(binding.containsKey("getDecimalMatrixAsList"))
 	throw new Exception("getDecimalMatrixAsList already defined!");
 var getDecimalMatrixAsList = callback("getDecimalMatrixAsList");
 var getDecimalMatrixAsListType = getDecimalMatrixAsList[0].getClass().getComponentType();

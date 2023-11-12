@@ -1,5 +1,5 @@
 println("getByte")
-if(bindings.containsKey("getByte"))
+if(binding.containsKey("getByte"))
 	throw Exception("getByte already defined!")
 val getByte: Byte = callback("getByte")
 val getByteType = getByte::class
@@ -10,7 +10,7 @@ if(getByteType != Byte::class)
 callback<Unit>("setByte",getByte)
 
 println("getByteVector")
-if(bindings.containsKey("getByteVector"))
+if(binding.containsKey("getByteVector"))
 	throw Exception("getByteVector already defined!")
 val getByteVector: ByteArray = callback("getByteVector")
 val getByteVectorType = getByteVector[0]::class
@@ -21,7 +21,7 @@ if(getByteVectorType != Byte::class)
 callback<Unit>("setByteVector",getByteVector)
 
 println("getByteVectorAsList")
-if(bindings.containsKey("getByteVectorAsList"))
+if(binding.containsKey("getByteVectorAsList"))
 	throw Exception("getByteVectorAsList already defined!")
 val getByteVectorAsList: ByteArray = callback("getByteVectorAsList")
 val getByteVectorAsListType = getByteVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getByteVectorAsListType != Byte::class)
 callback<Unit>("setByteVectorAsList",getByteVectorAsList)
 
 println("getByteMatrix")
-if(bindings.containsKey("getByteMatrix"))
+if(binding.containsKey("getByteMatrix"))
 	throw Exception("getByteMatrix already defined!")
 val getByteMatrix: Array<ByteArray> = callback("getByteMatrix")
 val getByteMatrixType = getByteMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getByteMatrixType != Byte::class)
 callback<Unit>("setByteMatrix",getByteMatrix)
 
 println("getByteMatrixAsList")
-if(bindings.containsKey("getByteMatrixAsList"))
+if(binding.containsKey("getByteMatrixAsList"))
 	throw Exception("getByteMatrixAsList already defined!")
 val getByteMatrixAsList: Array<ByteArray> = callback("getByteMatrixAsList")
 val getByteMatrixAsListType = getByteMatrixAsList[0][0]::class

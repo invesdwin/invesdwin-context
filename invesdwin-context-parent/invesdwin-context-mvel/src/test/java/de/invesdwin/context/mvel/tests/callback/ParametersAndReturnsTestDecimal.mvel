@@ -1,5 +1,5 @@
 System.out.println("getDecimal");
-if(bindings.containsKey("getDecimal"))
+if(binding.containsKey("getDecimal"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimal already defined!"));
 var getDecimal = callback("getDecimal",[]);
 var getDecimalType = getDecimal.getClass();
@@ -10,7 +10,7 @@ if(getDecimalType != Double)
 callback("setDecimal",[getDecimal]);
 
 System.out.println("getDecimalVector");
-if(bindings.containsKey("getDecimalVector"))
+if(binding.containsKey("getDecimalVector"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalVector already defined!"));
 var getDecimalVector = callback("getDecimalVector",[]);
 var getDecimalVectorType = getDecimalVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getDecimalVectorType != double)
 callback("setDecimalVector",[getDecimalVector]);
 
 System.out.println("getDecimalVectorAsList");
-if(bindings.containsKey("getDecimalVectorAsList"))
+if(binding.containsKey("getDecimalVectorAsList"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalVectorAsList already defined!"));
 var getDecimalVectorAsList = callback("getDecimalVectorAsList",[]);
 var getDecimalVectorAsListType = getDecimalVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getDecimalVectorAsListType != double)
 callback("setDecimalVectorAsList",[getDecimalVectorAsList]);
 
 System.out.println("getDecimalMatrix");
-if(bindings.containsKey("getDecimalMatrix"))
+if(binding.containsKey("getDecimalMatrix"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalMatrix already defined!"));
 var getDecimalMatrix = callback("getDecimalMatrix",[]);
 var getDecimalMatrixType = getDecimalMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getDecimalMatrixType != double)
 callback("setDecimalMatrix",[getDecimalMatrix]);
 
 System.out.println("getDecimalMatrixAsList");
-if(bindings.containsKey("getDecimalMatrixAsList"))
+if(binding.containsKey("getDecimalMatrixAsList"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getDecimalMatrixAsList already defined!"));
 var getDecimalMatrixAsList = callback("getDecimalMatrixAsList",[]);
 var getDecimalMatrixAsListType = getDecimalMatrixAsList[0].getClass().getComponentType();

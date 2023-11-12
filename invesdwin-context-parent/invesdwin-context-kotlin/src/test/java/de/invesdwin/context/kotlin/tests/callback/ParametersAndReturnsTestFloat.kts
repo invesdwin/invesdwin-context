@@ -1,5 +1,5 @@
 println("getFloat")
-if(bindings.containsKey("getFloat"))
+if(binding.containsKey("getFloat"))
 	throw Exception("getFloat already defined!")
 val getFloat: Float = callback("getFloat")
 val getFloatType = getFloat::class
@@ -10,7 +10,7 @@ if(getFloatType != Float::class)
 callback<Unit>("setFloat",getFloat)
 
 println("getFloatVector")
-if(bindings.containsKey("getFloatVector"))
+if(binding.containsKey("getFloatVector"))
 	throw Exception("getFloatVector already defined!")
 val getFloatVector: FloatArray = callback("getFloatVector")
 val getFloatVectorType = getFloatVector[0]::class
@@ -21,7 +21,7 @@ if(getFloatVectorType != Float::class)
 callback<Unit>("setFloatVector",getFloatVector)
 
 println("getFloatVectorAsList")
-if(bindings.containsKey("getFloatVectorAsList"))
+if(binding.containsKey("getFloatVectorAsList"))
 	throw Exception("getFloatVectorAsList already defined!")
 val getFloatVectorAsList: FloatArray = callback("getFloatVectorAsList")
 val getFloatVectorAsListType = getFloatVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getFloatVectorAsListType != Float::class)
 callback<Unit>("setFloatVectorAsList",getFloatVectorAsList)
 
 println("getFloatMatrix")
-if(bindings.containsKey("getFloatMatrix"))
+if(binding.containsKey("getFloatMatrix"))
 	throw Exception("getFloatMatrix already defined!")
 val getFloatMatrix: Array<FloatArray> = callback("getFloatMatrix")
 val getFloatMatrixType = getFloatMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getFloatMatrixType != Float::class)
 callback<Unit>("setFloatMatrix",getFloatMatrix)
 
 println("getFloatMatrixAsList")
-if(bindings.containsKey("getFloatMatrixAsList"))
+if(binding.containsKey("getFloatMatrixAsList"))
 	throw Exception("getFloatMatrixAsList already defined!")
 val getFloatMatrixAsList: Array<FloatArray> = callback("getFloatMatrixAsList")
 val getFloatMatrixAsListType = getFloatMatrixAsList[0][0]::class

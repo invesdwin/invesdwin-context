@@ -1,5 +1,5 @@
 println("getDecimal")
-if(bindings.containsKey("getDecimal"))
+if(binding.containsKey("getDecimal"))
 	throw Exception("getDecimal already defined!")
 val getDecimal: Double = callback("getDecimal")
 val getDecimalType = getDecimal::class
@@ -10,7 +10,7 @@ if(getDecimalType != Double::class)
 callback<Unit>("setDecimal",getDecimal)
 
 println("getDecimalVector")
-if(bindings.containsKey("getDecimalVector"))
+if(binding.containsKey("getDecimalVector"))
 	throw Exception("getDecimalVector already defined!")
 val getDecimalVector: DoubleArray = callback("getDecimalVector")
 val getDecimalVectorType = getDecimalVector[0]::class
@@ -21,7 +21,7 @@ if(getDecimalVectorType != Double::class)
 callback<Unit>("setDecimalVector",getDecimalVector)
 
 println("getDecimalVectorAsList")
-if(bindings.containsKey("getDecimalVectorAsList"))
+if(binding.containsKey("getDecimalVectorAsList"))
 	throw Exception("getDecimalVectorAsList already defined!")
 val getDecimalVectorAsList: DoubleArray = callback("getDecimalVectorAsList")
 val getDecimalVectorAsListType = getDecimalVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getDecimalVectorAsListType != Double::class)
 callback<Unit>("setDecimalVectorAsList",getDecimalVectorAsList)
 
 println("getDecimalMatrix")
-if(bindings.containsKey("getDecimalMatrix"))
+if(binding.containsKey("getDecimalMatrix"))
 	throw Exception("getDecimalMatrix already defined!")
 val getDecimalMatrix: Array<DoubleArray> = callback("getDecimalMatrix")
 val getDecimalMatrixType = getDecimalMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getDecimalMatrixType != Double::class)
 callback<Unit>("setDecimalMatrix",getDecimalMatrix)
 
 println("getDecimalMatrixAsList")
-if(bindings.containsKey("getDecimalMatrixAsList"))
+if(binding.containsKey("getDecimalMatrixAsList"))
 	throw Exception("getDecimalMatrixAsList already defined!")
 val getDecimalMatrixAsList: Array<DoubleArray> = callback("getDecimalMatrixAsList")
 val getDecimalMatrixAsListType = getDecimalMatrixAsList[0][0]::class

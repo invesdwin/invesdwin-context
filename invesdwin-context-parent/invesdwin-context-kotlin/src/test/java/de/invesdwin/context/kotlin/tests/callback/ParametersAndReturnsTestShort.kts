@@ -1,5 +1,5 @@
 println("getShort")
-if(bindings.containsKey("getShort"))
+if(binding.containsKey("getShort"))
 	throw Exception("getShort already defined!")
 val getShort: Short = callback("getShort")
 val getShortType = getShort::class
@@ -10,7 +10,7 @@ if(getShortType != Short::class)
 callback<Unit>("setShort",getShort)
 
 println("getShortVector")
-if(bindings.containsKey("getShortVector"))
+if(binding.containsKey("getShortVector"))
 	throw Exception("getShortVector already defined!")
 val getShortVector: ShortArray = callback("getShortVector")
 val getShortVectorType = getShortVector[0]::class
@@ -21,7 +21,7 @@ if(getShortVectorType != Short::class)
 callback<Unit>("setShortVector",getShortVector)
 
 println("getShortVectorAsList")
-if(bindings.containsKey("getShortVectorAsList"))
+if(binding.containsKey("getShortVectorAsList"))
 	throw Exception("getShortVectorAsList already defined!")
 val getShortVectorAsList: ShortArray = callback("getShortVectorAsList")
 val getShortVectorAsListType = getShortVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getShortVectorAsListType != Short::class)
 callback<Unit>("setShortVectorAsList",getShortVectorAsList)
 
 println("getShortMatrix")
-if(bindings.containsKey("getShortMatrix"))
+if(binding.containsKey("getShortMatrix"))
 	throw Exception("getShortMatrix already defined!")
 val getShortMatrix: Array<ShortArray> = callback("getShortMatrix")
 val getShortMatrixType = getShortMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getShortMatrixType != Short::class)
 callback<Unit>("setShortMatrix",getShortMatrix)
 
 println("getShortMatrixAsList")
-if(bindings.containsKey("getShortMatrixAsList"))
+if(binding.containsKey("getShortMatrixAsList"))
 	throw Exception("getShortMatrixAsList already defined!")
 val getShortMatrixAsList: Array<ShortArray> = callback("getShortMatrixAsList")
 val getShortMatrixAsListType = getShortMatrixAsList[0][0]::class

@@ -33,7 +33,7 @@ public class WrappedJrubyScriptEngine implements Closeable {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("jruby");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        this.binding.put("$bindings", binding);
+        this.binding.put("$binding", binding);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
             scriptCache = Caffeine.newBuilder()
@@ -108,7 +108,7 @@ public class WrappedJrubyScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        this.binding.put("$bindings", binding);
+        this.binding.put("$binding", binding);
         if (scriptCache != null) {
             //we have to reset the script cache or ruby throws weird AssertionErrors
             scriptCache.asMap().clear();

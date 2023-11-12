@@ -1,5 +1,5 @@
 System.out.println("getDecimal");
-if(bindings.containsKey("getDecimal"))
+if(binding.containsKey("getDecimal"))
 	throw new Exception("getDecimal already defined!");
 var getDecimal = putDecimal;
 var getDecimalType = getDecimal.getClass();
@@ -9,7 +9,7 @@ if(getDecimalType != Double.class)
 	throw new Exception("getDecimal not Double!");
 
 System.out.println("getDecimalVector");
-if(bindings.containsKey("getDecimalVector"))
+if(binding.containsKey("getDecimalVector"))
 	throw new Exception("getDecimalVector already defined!");
 var getDecimalVector = putDecimalVector;
 var getDecimalVectorType = getDecimalVector.getClass().getComponentType();
@@ -19,7 +19,7 @@ if(getDecimalVectorType != double.class)
 	throw new Exception("getDecimalVector not Double!");
 
 System.out.println("getDecimalVectorAsList");
-if(bindings.containsKey("getDecimalVectorAsList"))
+if(binding.containsKey("getDecimalVectorAsList"))
 	throw new Exception("getDecimalVectorAsList already defined!");
 var getDecimalVectorAsList = putDecimalVectorAsList;
 var getDecimalVectorAsListType = getDecimalVectorAsList.getClass().getComponentType();
@@ -29,7 +29,7 @@ if(getDecimalVectorAsListType != double.class)
 	throw new Exception("getDecimalVectorAsList not Double!");
 
 System.out.println("getDecimalMatrix");
-if(bindings.containsKey("getDecimalMatrix"))
+if(binding.containsKey("getDecimalMatrix"))
 	throw new Exception("getDecimalMatrix already defined!");
 var getDecimalMatrix = putDecimalMatrix;
 var getDecimalMatrixType = getDecimalMatrix[0].getClass().getComponentType();
@@ -39,7 +39,7 @@ if(getDecimalMatrixType != double.class)
 	throw new Exception("getDecimalMatrix not Double!");
 
 System.out.println("getDecimalMatrixAsList");
-if(bindings.containsKey("getDecimalMatrixAsList"))
+if(binding.containsKey("getDecimalMatrixAsList"))
 	throw new Exception("getDecimalMatrixAsList already defined!");
 var getDecimalMatrixAsList = putDecimalMatrixAsList;
 var getDecimalMatrixAsListType = getDecimalMatrixAsList[0].getClass().getComponentType();

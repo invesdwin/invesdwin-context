@@ -2,8 +2,8 @@ require 'java'
 $jrubyScriptTaskCallbackContext = nil
 def callback(methodName, *parameters)
     if($jrubyScriptTaskCallbackContext.nil?)
-        if($bindings.containsKey("jrubyScriptTaskCallbackContextUuid"))
-        	$jrubyScriptTaskCallbackContext = Java::DeInvesdwinContextJrubyCallback::JrubyScriptTaskCallbackContext.getContext($bindings.get("jrubyScriptTaskCallbackContextUuid"))
+        if($binding.containsKey("jrubyScriptTaskCallbackContextUuid"))
+        	$jrubyScriptTaskCallbackContext = Java::DeInvesdwinContextJrubyCallback::JrubyScriptTaskCallbackContext.getContext($binding.get("jrubyScriptTaskCallbackContextUuid"))
         else
 			raise "IScriptTaskCallback not available"
         end

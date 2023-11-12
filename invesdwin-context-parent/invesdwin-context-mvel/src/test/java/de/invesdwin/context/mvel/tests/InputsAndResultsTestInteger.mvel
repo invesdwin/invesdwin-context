@@ -1,5 +1,5 @@
 System.out.println("getInteger");
-if(bindings.containsKey("getInteger"))
+if(binding.containsKey("getInteger"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getInteger already defined!"));
 var getInteger = putInteger;
 var getIntegerType = getInteger.getClass();
@@ -9,7 +9,7 @@ if(getIntegerType != Integer)
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getInteger not Integer!"));
 
 System.out.println("getIntegerVector");
-if(bindings.containsKey("getIntegerVector"))
+if(binding.containsKey("getIntegerVector"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVector already defined!"));
 var getIntegerVector = putIntegerVector;
 var getIntegerVectorType = getIntegerVector.getClass().getComponentType();
@@ -19,7 +19,7 @@ if(getIntegerVectorType != int)
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVector not Integer!"));
 
 System.out.println("getIntegerVectorAsList");
-if(bindings.containsKey("getIntegerVectorAsList"))
+if(binding.containsKey("getIntegerVectorAsList"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVectorAsList already defined!"));
 var getIntegerVectorAsList = putIntegerVectorAsList;
 var getIntegerVectorAsListType = getIntegerVectorAsList.getClass().getComponentType();
@@ -29,7 +29,7 @@ if(getIntegerVectorAsListType != int)
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerVectorAsList not Integer!"));
 
 System.out.println("getIntegerMatrix");
-if(bindings.containsKey("getIntegerMatrix"))
+if(binding.containsKey("getIntegerMatrix"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrix already defined!"));
 var getIntegerMatrix = putIntegerMatrix;
 var getIntegerMatrixType = getIntegerMatrix[0].getClass().getComponentType();
@@ -39,7 +39,7 @@ if(getIntegerMatrixType != int)
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrix not Integer!"));
 
 System.out.println("getIntegerMatrixAsList");
-if(bindings.containsKey("getIntegerMatrixAsList"))
+if(binding.containsKey("getIntegerMatrixAsList"))
 	de.invesdwin.util.error.Throwables.propagate(new Exception("getIntegerMatrixAsList already defined!"));
 var getIntegerMatrixAsList = putIntegerMatrixAsList;
 var getIntegerMatrixAsListType = getIntegerMatrixAsList[0].getClass().getComponentType();

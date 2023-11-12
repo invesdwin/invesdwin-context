@@ -1,5 +1,5 @@
 println("getBoolean")
-if(bindings.containsKey("getBoolean"))
+if(binding.containsKey("getBoolean"))
 	throw Exception("getBoolean already defined!")
 val getBoolean: Boolean = callback("getBoolean")
 val getBooleanType = getBoolean::class
@@ -10,7 +10,7 @@ if(getBooleanType != Boolean::class)
 callback<Unit>("setBoolean",getBoolean)
 
 println("getBooleanVector")
-if(bindings.containsKey("getBooleanVector"))
+if(binding.containsKey("getBooleanVector"))
 	throw Exception("getBooleanVector already defined!")
 val getBooleanVector: BooleanArray = callback("getBooleanVector")
 val getBooleanVectorType = getBooleanVector[0]::class
@@ -21,7 +21,7 @@ if(getBooleanVectorType != Boolean::class)
 callback<Unit>("setBooleanVector",getBooleanVector)
 
 println("getBooleanVectorAsList")
-if(bindings.containsKey("getBooleanVectorAsList"))
+if(binding.containsKey("getBooleanVectorAsList"))
 	throw Exception("getBooleanVectorAsList already defined!")
 val getBooleanVectorAsList: BooleanArray = callback("getBooleanVectorAsList")
 val getBooleanVectorAsListType = getBooleanVectorAsList[0]::class
@@ -32,7 +32,7 @@ if(getBooleanVectorAsListType != Boolean::class)
 callback<Unit>("setBooleanVectorAsList",getBooleanVectorAsList)
 
 println("getBooleanMatrix")
-if(bindings.containsKey("getBooleanMatrix"))
+if(binding.containsKey("getBooleanMatrix"))
 	throw Exception("getBooleanMatrix already defined!")
 val getBooleanMatrix: Array<BooleanArray> = callback("getBooleanMatrix")
 val getBooleanMatrixType = getBooleanMatrix[0][0]::class
@@ -43,7 +43,7 @@ if(getBooleanMatrixType != Boolean::class)
 callback<Unit>("setBooleanMatrix",getBooleanMatrix)
 
 println("getBooleanMatrixAsList")
-if(bindings.containsKey("getBooleanMatrixAsList"))
+if(binding.containsKey("getBooleanMatrixAsList"))
 	throw Exception("getBooleanMatrixAsList already defined!")
 val getBooleanMatrixAsList: Array<BooleanArray> = callback("getBooleanMatrixAsList")
 val getBooleanMatrixAsListType = getBooleanMatrixAsList[0][0]::class

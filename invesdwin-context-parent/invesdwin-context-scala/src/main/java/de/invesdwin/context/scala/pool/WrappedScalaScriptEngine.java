@@ -36,7 +36,7 @@ public class WrappedScalaScriptEngine implements Closeable {
         // scala3 does not support any sort of bindings: https://github.com/lampepfl/dotty/issues/14262
         // so we stick to scala2 for now
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
             scriptCache = Caffeine.newBuilder()
@@ -120,7 +120,7 @@ public class WrappedScalaScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
         if (scriptCache != null) {
             /*
              * we also need to clear the script cache, otherwise we risk immutable "val"'s to collide between

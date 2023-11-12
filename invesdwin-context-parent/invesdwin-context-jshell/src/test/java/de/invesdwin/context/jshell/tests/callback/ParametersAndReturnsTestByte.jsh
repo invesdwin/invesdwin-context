@@ -1,5 +1,5 @@
 System.out.println("getByte");
-if(bindings.containsKey("getByte"))
+if(binding.containsKey("getByte"))
 	throw new Exception("getByte already defined!");
 var getByte = callback("getByte");
 var getByteType = getByte.getClass();
@@ -10,7 +10,7 @@ if(getByteType != Byte.class)
 callback("setByte",getByte);
 
 System.out.println("getByteVector");
-if(bindings.containsKey("getByteVector"))
+if(binding.containsKey("getByteVector"))
 	throw new Exception("getByteVector already defined!");
 var getByteVector = callback("getByteVector");
 var getByteVectorType = getByteVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getByteVectorType != byte.class)
 callback("setByteVector",getByteVector);
 
 System.out.println("getByteVectorAsList");
-if(bindings.containsKey("getByteVectorAsList"))
+if(binding.containsKey("getByteVectorAsList"))
 	throw new Exception("getByteVectorAsList already defined!");
 var getByteVectorAsList = callback("getByteVectorAsList");
 var getByteVectorAsListType = getByteVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getByteVectorAsListType != byte.class)
 callback("setByteVectorAsList",getByteVectorAsList);
 
 System.out.println("getByteMatrix");
-if(bindings.containsKey("getByteMatrix"))
+if(binding.containsKey("getByteMatrix"))
 	throw new Exception("getByteMatrix already defined!");
 var getByteMatrix = callback("getByteMatrix");
 var getByteMatrixType = getByteMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getByteMatrixType != byte.class)
 callback("setByteMatrix",getByteMatrix);
 
 System.out.println("getByteMatrixAsList");
-if(bindings.containsKey("getByteMatrixAsList"))
+if(binding.containsKey("getByteMatrixAsList"))
 	throw new Exception("getByteMatrixAsList already defined!");
 var getByteMatrixAsList = callback("getByteMatrixAsList");
 var getByteMatrixAsListType = getByteMatrixAsList[0].getClass().getComponentType();

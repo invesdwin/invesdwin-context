@@ -1,5 +1,5 @@
 System.out.println("getPercent");
-if(bindings.containsKey("getPercent"))
+if(binding.containsKey("getPercent"))
 	throw new Exception("getPercent already defined!");
 var getPercent = putPercent;
 var getPercentType = getPercent.getClass();
@@ -9,7 +9,7 @@ if(getPercentType != Double.class)
 	throw new Exception("getPercent not Double!");
 
 System.out.println("getPercentVector");
-if(bindings.containsKey("getPercentVector"))
+if(binding.containsKey("getPercentVector"))
 	throw new Exception("getPercentVector already defined!");
 var getPercentVector = putPercentVector;
 var getPercentVectorType = getPercentVector.getClass().getComponentType();
@@ -19,7 +19,7 @@ if(getPercentVectorType != double.class)
 	throw new Exception("getPercentVector not Double!");
 
 System.out.println("getPercentVectorAsList");
-if(bindings.containsKey("getPercentVectorAsList"))
+if(binding.containsKey("getPercentVectorAsList"))
 	throw new Exception("getPercentVectorAsList already defined!");
 var getPercentVectorAsList = putPercentVectorAsList;
 var getPercentVectorAsListType = getPercentVectorAsList.getClass().getComponentType();
@@ -29,7 +29,7 @@ if(getPercentVectorAsListType != double.class)
 	throw new Exception("getPercentVectorAsList not Double!");
 
 System.out.println("getPercentMatrix");
-if(bindings.containsKey("getPercentMatrix"))
+if(binding.containsKey("getPercentMatrix"))
 	throw new Exception("getPercentMatrix already defined!");
 var getPercentMatrix = putPercentMatrix;
 var getPercentMatrixType = getPercentMatrix[0].getClass().getComponentType();
@@ -39,7 +39,7 @@ if(getPercentMatrixType != double.class)
 	throw new Exception("getPercentMatrix not Double!");
 
 System.out.println("getPercentMatrixAsList");
-if(bindings.containsKey("getPercentMatrixAsList"))
+if(binding.containsKey("getPercentMatrixAsList"))
 	throw new Exception("getPercentMatrixAsList already defined!");
 var getPercentMatrixAsList = putPercentMatrixAsList;
 var getPercentMatrixAsListType = getPercentMatrixAsList[0].getClass().getComponentType();

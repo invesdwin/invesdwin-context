@@ -42,7 +42,7 @@ public class WrappedMvelScriptEngine implements Closeable {
         this.engine = (MvelScriptEngine) manager.getEngineByName("mvel");
         //MvelScriptEngine is a singleton, make sure to separate the bindings
         this.binding = engine.createBindings();
-        this.binding.put("bindings", binding);
+        this.binding.put("binding", binding);
         if (engine instanceof Compilable) {
             compilable = engine;
             scriptCache = Caffeine.newBuilder()
@@ -197,7 +197,7 @@ public class WrappedMvelScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
     }
 
     @Override

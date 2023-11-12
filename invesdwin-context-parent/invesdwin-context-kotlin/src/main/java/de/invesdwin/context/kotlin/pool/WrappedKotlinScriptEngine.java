@@ -27,6 +27,7 @@ public class WrappedKotlinScriptEngine implements Closeable {
     public WrappedKotlinScriptEngine() {
         this.engine = newScriptEngine();
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+        this.binding.put("binding", binding);
         if (engine instanceof Compilable) {
             compilable = (Compilable) engine;
         } else {
@@ -37,7 +38,6 @@ public class WrappedKotlinScriptEngine implements Closeable {
         } else {
             invocable = null;
         }
-        reset();
     }
 
     private ScriptEngine newScriptEngine() {
@@ -104,7 +104,7 @@ public class WrappedKotlinScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
     }
 
     @Override

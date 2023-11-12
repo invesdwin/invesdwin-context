@@ -1,5 +1,5 @@
 System.out.println("getDouble");
-if(bindings.containsKey("getDouble"))
+if(binding.containsKey("getDouble"))
 	throw new Exception("getDouble already defined!");
 var getDouble = callback("getDouble");
 var getDoubleType = getDouble.getClass();
@@ -10,7 +10,7 @@ if(getDoubleType != Double.class)
 callback("setDouble",getDouble);
 
 System.out.println("getDoubleVector");
-if(bindings.containsKey("getDoubleVector"))
+if(binding.containsKey("getDoubleVector"))
 	throw new Exception("getDoubleVector already defined!");
 var getDoubleVector = callback("getDoubleVector");
 var getDoubleVectorType = getDoubleVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getDoubleVectorType != double.class)
 callback("setDoubleVector",getDoubleVector);
 
 System.out.println("getDoubleVectorAsList");
-if(bindings.containsKey("getDoubleVectorAsList"))
+if(binding.containsKey("getDoubleVectorAsList"))
 	throw new Exception("getDoubleVectorAsList already defined!");
 var getDoubleVectorAsList = callback("getDoubleVectorAsList");
 var getDoubleVectorAsListType = getDoubleVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getDoubleVectorAsListType != double.class)
 callback("setDoubleVectorAsList",getDoubleVectorAsList);
 
 System.out.println("getDoubleMatrix");
-if(bindings.containsKey("getDoubleMatrix"))
+if(binding.containsKey("getDoubleMatrix"))
 	throw new Exception("getDoubleMatrix already defined!");
 var getDoubleMatrix = callback("getDoubleMatrix");
 var getDoubleMatrixType = getDoubleMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getDoubleMatrixType != double.class)
 callback("setDoubleMatrix",getDoubleMatrix);
 
 System.out.println("getDoubleMatrixAsList");
-if(bindings.containsKey("getDoubleMatrixAsList"))
+if(binding.containsKey("getDoubleMatrixAsList"))
 	throw new Exception("getDoubleMatrixAsList already defined!");
 var getDoubleMatrixAsList = callback("getDoubleMatrixAsList");
 var getDoubleMatrixAsListType = getDoubleMatrixAsList[0].getClass().getComponentType();

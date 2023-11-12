@@ -1,5 +1,5 @@
 System.out.println("getShort");
-if(bindings.containsKey("getShort"))
+if(binding.containsKey("getShort"))
 	throw new Exception("getShort already defined!");
 var getShort = callback("getShort");
 var getShortType = getShort.getClass();
@@ -10,7 +10,7 @@ if(getShortType != Short.class)
 callback("setShort",getShort);
 
 System.out.println("getShortVector");
-if(bindings.containsKey("getShortVector"))
+if(binding.containsKey("getShortVector"))
 	throw new Exception("getShortVector already defined!");
 var getShortVector = callback("getShortVector");
 var getShortVectorType = getShortVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getShortVectorType != short.class)
 callback("setShortVector",getShortVector);
 
 System.out.println("getShortVectorAsList");
-if(bindings.containsKey("getShortVectorAsList"))
+if(binding.containsKey("getShortVectorAsList"))
 	throw new Exception("getShortVectorAsList already defined!");
 var getShortVectorAsList = callback("getShortVectorAsList");
 var getShortVectorAsListType = getShortVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getShortVectorAsListType != short.class)
 callback("setShortVectorAsList",getShortVectorAsList);
 
 System.out.println("getShortMatrix");
-if(bindings.containsKey("getShortMatrix"))
+if(binding.containsKey("getShortMatrix"))
 	throw new Exception("getShortMatrix already defined!");
 var getShortMatrix = callback("getShortMatrix");
 var getShortMatrixType = getShortMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getShortMatrixType != short.class)
 callback("setShortMatrix",getShortMatrix);
 
 System.out.println("getShortMatrixAsList");
-if(bindings.containsKey("getShortMatrixAsList"))
+if(binding.containsKey("getShortMatrixAsList"))
 	throw new Exception("getShortMatrixAsList already defined!");
 var getShortMatrixAsList = callback("getShortMatrixAsList");
 var getShortMatrixAsListType = getShortMatrixAsList[0].getClass().getComponentType();

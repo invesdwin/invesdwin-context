@@ -1,5 +1,5 @@
 System.out.println("getBoolean");
-if(bindings.containsKey("getBoolean"))
+if(binding.containsKey("getBoolean"))
 	throw new Exception("getBoolean already defined!");
 var getBoolean = callback("getBoolean");
 var getBooleanType = getBoolean.getClass();
@@ -10,7 +10,7 @@ if(getBooleanType != Boolean.class)
 callback("setBoolean",getBoolean);
 
 System.out.println("getBooleanVector");
-if(bindings.containsKey("getBooleanVector"))
+if(binding.containsKey("getBooleanVector"))
 	throw new Exception("getBooleanVector already defined!");
 var getBooleanVector = callback("getBooleanVector");
 var getBooleanVectorType = getBooleanVector.getClass().getComponentType();
@@ -21,7 +21,7 @@ if(getBooleanVectorType != boolean.class)
 callback("setBooleanVector",getBooleanVector);
 
 System.out.println("getBooleanVectorAsList");
-if(bindings.containsKey("getBooleanVectorAsList"))
+if(binding.containsKey("getBooleanVectorAsList"))
 	throw new Exception("getBooleanVectorAsList already defined!");
 var getBooleanVectorAsList = callback("getBooleanVectorAsList");
 var getBooleanVectorAsListType = getBooleanVectorAsList.getClass().getComponentType();
@@ -32,7 +32,7 @@ if(getBooleanVectorAsListType != boolean.class)
 callback("setBooleanVectorAsList",getBooleanVectorAsList);
 
 System.out.println("getBooleanMatrix");
-if(bindings.containsKey("getBooleanMatrix"))
+if(binding.containsKey("getBooleanMatrix"))
 	throw new Exception("getBooleanMatrix already defined!");
 var getBooleanMatrix = callback("getBooleanMatrix");
 var getBooleanMatrixType = getBooleanMatrix[0].getClass().getComponentType();
@@ -43,7 +43,7 @@ if(getBooleanMatrixType != boolean.class)
 callback("setBooleanMatrix",getBooleanMatrix);
 
 System.out.println("getBooleanMatrixAsList");
-if(bindings.containsKey("getBooleanMatrixAsList"))
+if(binding.containsKey("getBooleanMatrixAsList"))
 	throw new Exception("getBooleanMatrixAsList already defined!");
 var getBooleanMatrixAsList = callback("getBooleanMatrixAsList");
 var getBooleanMatrixAsListType = getBooleanMatrixAsList[0].getClass().getComponentType();

@@ -40,7 +40,7 @@ public final class WrappedClojureEngine implements Closeable {
                 .<String, List<Object>> build((key) -> compile(new StringReader(key)));
         binding = new ClojureBindings();
         binding.put("clojure.core.*file*", "/" + binding.getNamespace());
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
     }
 
     public ClojureBindings getBinding() {
@@ -100,7 +100,7 @@ public final class WrappedClojureEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("bindings", binding);
+        binding.put("binding", binding);
     }
 
     @Override
