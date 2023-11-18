@@ -14,6 +14,7 @@ import de.invesdwin.util.collections.loadingcache.ALoadingCache;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.decimal.ADecimal;
 
@@ -131,11 +132,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             final Object[] args = newArgs(provider, parameters);
             try {
                 final Object returnValue = methodHandle.invokeWithArguments(args);
-                if (returnValue == null) {
-                    returns.returnNull();
-                } else {
-                    returnFunction.accept(returns, returnValue);
-                }
+                returnFunction.accept(returns, returnValue);
             } catch (final Throwable e) {
                 throw Throwables.propagate(e);
             }
@@ -525,16 +522,35 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
         }
 
         private BiConsumer<IScriptTaskReturns, Object> newReturnFunctionValue(final BeanClassType type) {
+            if (type.isInstanceOf(CharSequence.class)) {
+                if (Reflections.getAnnotation(method, ReturnExpression.class) != null) {
+                    return (r, o) -> r.returnExpression(String.valueOf(o));
+                } else {
+                    return (r, o) -> r.returnString(Strings.asString(o));
+                }
+            } else if (type.isInstanceOf(void.class) || type.isInstanceOf(Void.class)) {
+                return (r, o) -> r.returnNull();
+            } else {
+                final BiConsumer<IScriptTaskReturns, Object> f = newReturnFunctionValueNotNullSafe(type);
+                if (f != null) {
+                    return (r, o) -> {
+                        if (o == null) {
+                            r.returnNull();
+                        } else {
+                            f.accept(r, o);
+                        }
+                    };
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        private BiConsumer<IScriptTaskReturns, Object> newReturnFunctionValueNotNullSafe(final BeanClassType type) {
             if (type.isInstanceOf(byte.class) || type.isInstanceOf(Byte.class)) {
                 return (r, o) -> r.returnByte((byte) o);
             } else if (type.isInstanceOf(char.class) || type.isInstanceOf(Character.class)) {
                 return (r, o) -> r.returnCharacter((char) o);
-            } else if (type.isInstanceOf(CharSequence.class)) {
-                if (Reflections.getAnnotation(method, ReturnExpression.class) != null) {
-                    return (r, o) -> r.returnExpression(String.valueOf(o));
-                } else {
-                    return (r, o) -> r.returnString(String.valueOf(o));
-                }
             } else if (type.isInstanceOf(float.class) || type.isInstanceOf(Float.class)) {
                 return (r, o) -> r.returnFloat((float) o);
             } else if (type.isInstanceOf(double.class) || type.isInstanceOf(Double.class)) {
@@ -549,12 +565,11 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 return (r, o) -> r.returnLong((long) o);
             } else if (type.isInstanceOf(boolean.class) || type.isInstanceOf(Boolean.class)) {
                 return (r, o) -> r.returnBoolean((boolean) o);
-            } else if (type.isInstanceOf(void.class) || type.isInstanceOf(Void.class)) {
-                return (r, o) -> r.returnNull();
             } else {
                 return null;
             }
         }
+
     }
 
 }

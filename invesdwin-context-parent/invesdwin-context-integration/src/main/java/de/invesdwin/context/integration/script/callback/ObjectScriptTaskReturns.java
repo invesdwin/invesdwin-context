@@ -22,130 +22,114 @@ public class ObjectScriptTaskReturns implements IScriptTaskReturns, Closeable {
         return new ObjectScriptTaskReturnValue(returnExpression, returnValue);
     }
 
-    @Override
-    public void returnByte(final byte value) {
+    protected void returnValue(final Object value) {
         assert returnValue == null;
         this.returnValue = value;
+    }
+
+    @Override
+    public void returnByte(final byte value) {
+        returnValue(value);
     }
 
     @Override
     public void returnByteVector(final byte[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnByteMatrix(final byte[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnCharacter(final char value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnCharacterVector(final char[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnCharacterMatrix(final char[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnString(final String value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnStringVector(final String[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnStringMatrix(final String[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnFloat(final float value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnFloatVector(final float[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnFloatMatrix(final float[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnDouble(final double value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnDoubleVector(final double[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnDoubleMatrix(final double[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnShort(final short value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnShortVector(final short[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnShortMatrix(final short[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnInteger(final int value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnIntegerVector(final int[] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
     public void returnIntegerMatrix(final int[][] value) {
-        assert returnValue == null;
-        this.returnValue = value;
+        returnValue(value);
     }
 
     @Override
