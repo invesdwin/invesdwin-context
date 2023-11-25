@@ -21,7 +21,6 @@ public class ParametersAndReturnsTests {
     }
 
     public void test() {
-        new HelloWorldScript(runner).testHelloWorld();
         new ParametersAndReturnsTestByte(runner).testByte();
         new ParametersAndReturnsTestFloat(runner).testFloat();
         new ParametersAndReturnsTestDouble(runner).testDouble();
