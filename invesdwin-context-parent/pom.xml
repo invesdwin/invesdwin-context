@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>de.invesdwin</groupId>
@@ -622,15 +624,16 @@
 				<version>${version.bsh}</version>
 			</dependency>
 			<dependency>
-          <groupId>org.mvel</groupId>
-          <artifactId>mvel2</artifactId>
-          <version>${version.mvel}</version>
-      </dependency>
+				<groupId>org.mvel</groupId>
+				<artifactId>mvel2</artifactId>
+				<version>${version.mvel}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- test infrastructure classes (abstract tests and mocks) are in src/main/java 
+		<!-- test infrastructure classes (abstract tests and mocks) are in
+		src/main/java 
 			to prevent the need of -test module hell. These dependencies are in scope 
 			provided for all submodules, so that compilation works with them, but running 
 			a deployed application with those will fail -->
@@ -660,7 +663,8 @@
 			all submodules per default. The distribution will choose which driver to 
 			actually deploy with a seperate dependency. -->
 		<dependency>
-			<!-- hsqldb seems to be the fastest in-memory database, also H2 version 
+			<!-- hsqldb seems to be the fastest in-memory database, also H2
+			version 
 				2 broke compatibility in lots of places -->
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -754,10 +758,13 @@
 							</goals>
 							<phase>generate-sources</phase>
 							<configuration>
-								<outputDirectory>${project.build.directory}/generated-sources/apt</outputDirectory>
+								<outputDirectory>
+									${project.build.directory}/generated-sources/apt</outputDirectory>
 								<failOnError>false</failOnError>
-								<!-- disables @javax.annotation.Generated in jpamodelgen -->
-								<compilerArguments>-AaddGeneratedAnnotation=false</compilerArguments>
+								<!-- disables @javax.annotation.Generated in
+								jpamodelgen -->
+								<compilerArguments>
+									-AaddGeneratedAnnotation=false</compilerArguments>
 							</configuration>
 						</execution>
 						<execution>
@@ -767,10 +774,13 @@
 							</goals>
 							<phase>generate-test-sources</phase>
 							<configuration>
-								<outputDirectory>${project.build.directory}/generated-test-sources/apt</outputDirectory>
+								<outputDirectory>
+									${project.build.directory}/generated-test-sources/apt</outputDirectory>
 								<failOnError>false</failOnError>
-								<!-- disables @javax.annotation.Generated in jpamodelgen -->
-								<compilerArguments>-AaddGeneratedAnnotation=false</compilerArguments>
+								<!-- disables @javax.annotation.Generated in
+								jpamodelgen -->
+								<compilerArguments>
+									-AaddGeneratedAnnotation=false</compilerArguments>
 							</configuration>
 						</execution>
 					</executions>
@@ -810,7 +820,8 @@
 					<configuration>
 						<archive>
 							<index>true</index>
-							<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+							<manifestFile>
+								${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
 							<forced>true</forced>
 						</archive>
 					</configuration>
@@ -848,14 +859,16 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<!-- distributions can use this plugin in profiles to customize properties 
+					<!-- distributions can use this plugin in profiles to
+					customize properties 
 						for different environments -->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>${version.maven-resources-plugin}</version>
 				</plugin>
 				<plugin>
-					<!-- distributions need to add this plugin manually to build a uber-jar -->
+					<!-- distributions need to add this plugin manually to build
+					a uber-jar -->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-shade-plugin</artifactId>
 					<executions>
@@ -877,40 +890,154 @@
 						<shadedArtifactAttached>true</shadedArtifactAttached>
 						<shadedClassifierName>standalone</shadedClassifierName>
 						<transformers>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
-							<transformer implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
-							<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.PluginXmlResourceTransformer" />
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.handlers</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.schemas</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.tooling</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/spring.factories</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/cxf/bus-extensions.txt</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>META-INF/mime.types</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>jasperreports_extension.properties</resource>
 							</transformer>
-							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_ar.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_cs.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_da.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_de.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_en.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_es.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_fa.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_fr.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_hu.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_it.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_ja.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_ko.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_mn_MN.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_nl.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_pl.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_pt_BR.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_ro.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_ru.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_sk.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_tr.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_uk.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_zh_CN.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_zh_TW.properties</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>ValidationMessages_zh.properties</resource>
+							</transformer>
+							<transformer
+								implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web-fragment.xml</resource>
 							</transformer>
-							<transformer implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
+							<transformer
+								implementation="de.invesdwin.maven.plugin.shade.WebFragmentTransformer">
 								<resource>META-INF/web/web-fragment.xml</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/aop.xml</resource>
 							</transformer>
-							<transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/wsdl.plugin.xml</resource>
 							</transformer>
 						</transformers>
@@ -936,15 +1063,18 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>${version.maven-checkstyle-plugin}</version>
 					<configuration>
-						<configLocation>${basedir}/.settings/checkstyle.config.xml</configLocation>
-						<propertiesLocation>${basedir}/.settings/checkstyle.config.properties</propertiesLocation>
+						<configLocation>
+							${basedir}/.settings/checkstyle.config.xml</configLocation>
+						<propertiesLocation>
+							${basedir}/.settings/checkstyle.config.properties</propertiesLocation>
 					</configuration>
 					<dependencies>
 						<dependency>
 							<!-- needs custom checks -->
 							<groupId>de.invesdwin</groupId>
 							<artifactId>invesdwin-checkstyle-plugin</artifactId>
-							<version>${project.version.invesdwin-checkstyle-plugin}</version>
+							<version>
+								${project.version.invesdwin-checkstyle-plugin}</version>
 						</dependency>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
@@ -960,7 +1090,7 @@
 					<configuration>
 						<!-- https://stackoverflow.com/a/56278471 -->
 						<tarLongFileMode>posix</tarLongFileMode>
-					</configuration>		
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -991,7 +1121,8 @@
 					</dependencies>
 					<executions>
 						<execution>
-							<!-- create manifest if maven-bundle-plugin is not used, so that maven-jar-plugin 
+							<!-- create manifest if maven-bundle-plugin is not
+							used, so that maven-jar-plugin 
 								does not crash with an exception because of missing manifest file -->
 							<id>create-manifest-if-missing</id>
 							<phase>prepare-package</phase>
@@ -1002,18 +1133,30 @@
 								<target>
 									<ac:if xmlns:ac="antlib:net.sf.antcontrib">
 										<and>
-											<available file="${project.build.outputDirectory}" type="dir" />
+											<available
+												file="${project.build.outputDirectory}"
+												type="dir" />
 											<not>
-												<available file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
+												<available
+													file="${project.build.outputDirectory}/META-INF/MANIFEST.MF" />
 											</not>
 										</and>
 										<then>
-											<mkdir dir="${project.build.outputDirectory}/META-INF/" />
-											<manifest file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
-												<attribute name="Built-By" value="${user.name}" />
-												<attribute name="Specification-Title" value="${project.name}" />
-												<attribute name="Specification-Version" value="${project.version}" />
-												<attribute name="Specification-Vendor-Id" value="${project.groupId}" />
+											<mkdir
+												dir="${project.build.outputDirectory}/META-INF/" />
+											<manifest
+												file="${project.build.outputDirectory}/META-INF/MANIFEST.MF">
+												<attribute name="Built-By"
+													value="${user.name}" />
+												<attribute
+													name="Specification-Title"
+													value="${project.name}" />
+												<attribute
+													name="Specification-Version"
+													value="${project.version}" />
+												<attribute
+													name="Specification-Vendor-Id"
+													value="${project.groupId}" />
 											</manifest>
 										</then>
 									</ac:if>
@@ -1113,7 +1256,8 @@
 					<artifactId>jsonschema2pojo-maven-plugin</artifactId>
 					<version>${version.jsonschema2pojo-maven-plugin}</version>
 					<configuration>
-						<sourceDirectory>${project.basedir}/src/main/java/META-INF/jsonschema</sourceDirectory>
+						<sourceDirectory>
+							${project.basedir}/src/main/java/META-INF/jsonschema</sourceDirectory>
 						<targetPackage>de.invesdwin.jsonschema</targetPackage>
 						<useCommonsLang3>true</useCommonsLang3>
 						<useDoubleNumbers>true</useDoubleNumbers>
@@ -1124,7 +1268,8 @@
 						<includeJsr303Annotations>true</includeJsr303Annotations>
 						<includeJsr305Annotations>true</includeJsr305Annotations>
 						<useJakartaValidation>true</useJakartaValidation>
-						<outputDirectory>${project.build.directory}/generated-sources/invesdwin</outputDirectory>
+						<outputDirectory>
+							${project.build.directory}/generated-sources/invesdwin</outputDirectory>
 					</configuration>
 					<executions>
 						<execution>
@@ -1146,8 +1291,10 @@
 							</goals>
 							<configuration>
 								<sources>
-									<source>${project.build.directory}/generated-sources/apt</source>
-									<source>${project.build.directory}/generated-sources/invesdwin</source>
+									<source>
+										${project.build.directory}/generated-sources/apt</source>
+									<source>
+										${project.build.directory}/generated-sources/invesdwin</source>
 								</sources>
 							</configuration>
 						</execution>
@@ -1199,7 +1346,8 @@
 				<version>${version.maven-checkstyle-plugin}</version>
 				<configuration>
 					<configLocation>${basedir}/.settings/checkstyle.config.xml</configLocation>
-					<propertiesLocation>${basedir}/.settings/checkstyle.config.properties</propertiesLocation>
+					<propertiesLocation>
+						${basedir}/.settings/checkstyle.config.properties</propertiesLocation>
 				</configuration>
 			</plugin>
 		</plugins>
