@@ -23,7 +23,7 @@ import jakarta.validation.Payload;
 @Retention(RUNTIME)
 @Repeatable(Nan.List.class)
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = { NanValidator.class })
 public @interface Nan {
 
     String message() default "{de.invesdwin.context.beans.validator.doubl.Nan.message}";

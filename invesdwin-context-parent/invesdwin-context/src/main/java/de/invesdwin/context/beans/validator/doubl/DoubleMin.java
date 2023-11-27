@@ -18,13 +18,13 @@ import jakarta.validation.Payload;
 
 /**
  * The annotated element has to be in the appropriate range. Apply on numeric values or string representation of the
- * numeric value. NaN is valid.
+ * numeric value. NaN is valid (use @NotNan to disallow).
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Repeatable(DoubleMin.List.class)
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = { DoubleMinValidator.class })
 public @interface DoubleMin {
 
     String message() default "{jakarta.validation.constraints.DecimalMin.message}";

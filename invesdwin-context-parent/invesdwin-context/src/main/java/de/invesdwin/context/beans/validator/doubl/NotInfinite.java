@@ -17,13 +17,13 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /**
- * The annotated element must not be infinite.
+ * The annotated element must not be infinite. NaN is valid (use @NotNan to disallow).
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Repeatable(NotInfinite.List.class)
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = { NotInfiniteValidator.class })
 public @interface NotInfinite {
 
     String message() default "{de.invesdwin.context.beans.validator.doubl.NotInfinite.message}";

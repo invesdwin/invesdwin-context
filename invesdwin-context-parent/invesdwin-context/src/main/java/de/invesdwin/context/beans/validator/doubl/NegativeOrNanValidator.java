@@ -7,14 +7,15 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @Immutable
-public class InfiniteConstraintValidator implements ConstraintValidator<Infinite, Double> {
+public class NegativeOrNanValidator implements ConstraintValidator<NegativeOrNan, Number> {
 
     @Override
-    public boolean isValid(final Double value, final ConstraintValidatorContext context) {
-        if (Doubles.isNaN(value)) {
+    public boolean isValid(final Number value, final ConstraintValidatorContext context) {
+        if (value == null) {
             return true;
         }
-        return Doubles.isInfinite(value);
+        final double doubleValue = value.doubleValue();
+        return Doubles.isNaN(doubleValue);
     }
 
 }

@@ -17,13 +17,13 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /**
- * The annotated element must be finite.
+ * The annotated element must be finite. NaN is valid (use @NotNan to disallow).
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Repeatable(Finite.List.class)
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = { FiniteValidator.class })
 public @interface Finite {
 
     String message() default "{de.invesdwin.context.beans.validator.doubl.Finite.message}";

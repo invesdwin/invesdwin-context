@@ -23,7 +23,7 @@ import jakarta.validation.Payload;
 @Retention(RUNTIME)
 @Repeatable(PositiveOrZeroOrNan.List.class)
 @Documented
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = { PositiveOrZeroOrNanValidator.class })
 public @interface PositiveOrZeroOrNan {
 
     String message() default "{de.invesdwin.context.beans.validator.doubl.PositiveOrZeroOrNan.message}";

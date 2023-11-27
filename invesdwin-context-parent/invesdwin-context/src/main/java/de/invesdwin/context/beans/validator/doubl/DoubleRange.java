@@ -34,7 +34,7 @@ import jakarta.validation.constraintvalidation.ValidationTarget;
 
 /**
  * The annotated element has to be in the appropriate range. Apply on numeric values or string representation of the
- * numeric value. NaN is valid.
+ * numeric value. NaN is valid (use @NotNan to disallow).
  */
 @Documented
 @Constraint(validatedBy = {})
