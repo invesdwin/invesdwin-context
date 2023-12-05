@@ -87,14 +87,14 @@
 		<version.poi>5.2.0</version.poi>
 
 		<!-- integration -->
-		<version.spring-batch>5.0.3</version.spring-batch>
+		<version.spring-batch>5.1.0</version.spring-batch>
 		<version.spring-retry>2.0.4</version.spring-retry>
-		<version.spring-integration>6.1.4</version.spring-integration>
-		<version.spring-ws>4.0.7</version.spring-ws>
+		<version.spring-integration>6.2.0</version.spring-integration>
+		<version.spring-ws>4.0.8</version.spring-ws>
 
-		<version.hsqldb>2.7.1</version.hsqldb>
-		<version.mysql-connector-j>8.0.31</version.mysql-connector-j>
-		<version.postgresql>42.4.1</version.postgresql>
+		<version.hsqldb>2.7.2</version.hsqldb>
+		<version.mysql-connector-j>8.2.0</version.mysql-connector-j>
+		<version.postgresql>42.7.0</version.postgresql>
 
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
 		<version.bsh>2.1.1</version.bsh>
