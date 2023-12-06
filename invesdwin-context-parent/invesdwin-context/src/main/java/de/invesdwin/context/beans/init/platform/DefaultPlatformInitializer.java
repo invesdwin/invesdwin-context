@@ -30,6 +30,7 @@ import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConf
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
 import de.invesdwin.context.jcache.CacheBuilder;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.context.log.error.handler.ErrUncaughtExecutorExceptionHandler;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
@@ -63,6 +64,14 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public void initDefaultUncaughtExceptionHandler(final UncaughtExceptionHandler handler) {
         Thread.setDefaultUncaughtExceptionHandler(handler);
+    }
+
+    @Override
+    public void initDefaultExecutorExceptionHandler() {
+        if (Throwables.getDefaultExecutorExceptionHandler() == Throwables
+                .newDefaultExecutorUncaughtExceptionHandler()) {
+            Throwables.setDefaultExecutorExceptionHandler(ErrUncaughtExecutorExceptionHandler.INSTANCE);
+        }
     }
 
     @Override

@@ -7,7 +7,9 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.PlatformInitializerProperties;
+import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.log.Log;
+import de.invesdwin.context.log.error.handler.ErrUncaughtExceptionHandler;
 import de.invesdwin.context.log.error.hook.ErrHookManager;
 import de.invesdwin.util.collections.iterable.ICloseableIterator;
 import de.invesdwin.util.collections.iterable.buffer.NodeBufferingIterator;
@@ -39,7 +41,9 @@ public final class Err {
     static {
         final UncaughtExceptionHandler handler = new ErrUncaughtExceptionHandler();
         if (PlatformInitializerProperties.isAllowed()) {
-            PlatformInitializerProperties.getInitializer().initDefaultUncaughtExceptionHandler(handler);
+            final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
+            initializer.initDefaultUncaughtExceptionHandler(handler);
+            initializer.initDefaultExecutorExceptionHandler();
         }
         UNCAUGHT_EXCEPTION_HANDLER = handler;
     }
@@ -53,7 +57,11 @@ public final class Err {
         return process(e, false);
     }
 
-    static LoggedRuntimeException process(final Throwable e, final boolean uncaughtException) {
+    /**
+     * WARNING: for internal use only
+     */
+    @Deprecated
+    public static LoggedRuntimeException process(final Throwable e, final boolean uncaughtException) {
         try {
             if (e == null) {
                 return null;

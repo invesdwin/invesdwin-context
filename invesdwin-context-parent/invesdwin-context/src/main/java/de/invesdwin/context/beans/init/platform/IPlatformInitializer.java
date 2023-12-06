@@ -13,6 +13,8 @@ public interface IPlatformInitializer {
 
     void initDefaultUncaughtExceptionHandler(UncaughtExceptionHandler handler);
 
+    void initDefaultExecutorExceptionHandler();
+
     void initFileEncodingChecker();
 
     void initDefaultTimezoneConfigurer();

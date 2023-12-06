@@ -29,6 +29,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initDefaultExecutorExceptionHandler() {
+        delegate.initDefaultExecutorExceptionHandler();
+    }
+
+    @Override
     public void initFileEncodingChecker() {
         delegate.initFileEncodingChecker();
     }

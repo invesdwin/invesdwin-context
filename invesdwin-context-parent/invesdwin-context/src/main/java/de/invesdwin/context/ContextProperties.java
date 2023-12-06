@@ -10,7 +10,9 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.util.internal.BasePackagesConfigurer;
+import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
@@ -53,6 +55,7 @@ public final class ContextProperties {
         IS_TEST_ENVIRONMENT = initializer.initIsTestEnvironment();
         if (PlatformInitializerProperties.isAllowed()) {
             try {
+                Assertions.checkNotNull(Err.class);
                 initializer.initXmlTransformerConfigurer();
                 initializer.initLogbackConfigurationLoader();
                 initializer.initSystemPropertiesLoader();
