@@ -75,7 +75,7 @@
 		<version.commons-compress>1.25.0</version.commons-compress>
 		<version.jarchivelib>1.2.0</version.jarchivelib>
 
-		<version.logback>1.4.11</version.logback>
+		<version.logback>1.4.14</version.logback>
 
 		<!-- reports -->
 		<version.jfreechart>1.5.3</version.jfreechart>
