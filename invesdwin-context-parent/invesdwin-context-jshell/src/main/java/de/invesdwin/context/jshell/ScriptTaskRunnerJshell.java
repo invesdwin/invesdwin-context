@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.context.jshell.callback.JshellScriptTaskCallbackContext;
 import de.invesdwin.context.jshell.pool.JshellScriptEngineObjectPool;
 import de.invesdwin.context.jshell.pool.WrappedJshellScriptEngine;
@@ -29,7 +30,7 @@ public final class ScriptTaskRunnerJshell implements IScriptTaskRunnerJshell, Fa
         final JshellScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new JshellScriptTaskCallbackContext(callback);
+            context = new JshellScriptTaskCallbackContext(LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

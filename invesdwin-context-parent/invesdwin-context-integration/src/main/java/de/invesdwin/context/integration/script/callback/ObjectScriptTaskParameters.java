@@ -177,4 +177,9 @@ public class ObjectScriptTaskParameters implements IScriptTaskParameters, Closea
         parameters = null;
     }
 
+    @Override
+    public String toString() {
+        return Strings.asString(parameters);
+    }
+
 }

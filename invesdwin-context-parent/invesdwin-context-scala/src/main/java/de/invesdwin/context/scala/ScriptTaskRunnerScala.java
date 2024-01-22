@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.context.scala.callback.ScalaScriptTaskCallbackContext;
 import de.invesdwin.context.scala.pool.ScalaScriptEngineObjectPool;
 import de.invesdwin.context.scala.pool.WrappedScalaScriptEngine;
@@ -29,7 +30,7 @@ public final class ScriptTaskRunnerScala implements IScriptTaskRunnerScala, Fact
         final ScalaScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new ScalaScriptTaskCallbackContext(callback);
+            context = new ScalaScriptTaskCallbackContext(LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

@@ -8,6 +8,7 @@ import de.invesdwin.context.beanshell.callback.BeanshellScriptTaskCallbackContex
 import de.invesdwin.context.beanshell.pool.BeanshellScriptEngineObjectPool;
 import de.invesdwin.context.beanshell.pool.IBeanshellEngine;
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.error.Throwables;
 import jakarta.inject.Named;
@@ -33,7 +34,8 @@ public final class ScriptTaskRunnerBeanshell
         final BeanshellScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new BeanshellScriptTaskCallbackContext(callback);
+            context = new BeanshellScriptTaskCallbackContext(
+                    LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

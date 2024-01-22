@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.context.javascript.callback.JavascriptScriptTaskCallbackContext;
 import de.invesdwin.context.javascript.pool.JavascriptScriptEngineObjectPool;
 import de.invesdwin.context.javascript.pool.WrappedJavascriptScriptEngine;
@@ -30,7 +31,8 @@ public final class ScriptTaskRunnerJavascript
         final JavascriptScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new JavascriptScriptTaskCallbackContext(callback);
+            context = new JavascriptScriptTaskCallbackContext(
+                    LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

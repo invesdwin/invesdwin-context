@@ -7,6 +7,7 @@ import org.springframework.beans.factory.FactoryBean;
 import de.invesdwin.context.groovy.callback.GroovyScriptTaskCallbackContext;
 import de.invesdwin.context.groovy.pool.WrappedGroovyShell;
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.util.concurrent.pool.IObjectPool;
 import de.invesdwin.util.error.Throwables;
 import jakarta.inject.Named;
@@ -30,7 +31,7 @@ public final class ScriptTaskRunnerGroovy implements IScriptTaskRunnerGroovy, Fa
         final GroovyScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new GroovyScriptTaskCallbackContext(callback);
+            context = new GroovyScriptTaskCallbackContext(LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

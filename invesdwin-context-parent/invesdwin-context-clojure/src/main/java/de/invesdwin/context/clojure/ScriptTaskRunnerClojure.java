@@ -8,6 +8,7 @@ import de.invesdwin.context.clojure.callback.ClojureScriptTaskCallbackContext;
 import de.invesdwin.context.clojure.pool.ClojureEngineObjectPool;
 import de.invesdwin.context.clojure.pool.WrappedClojureEngine;
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.util.error.Throwables;
 import jakarta.inject.Named;
 
@@ -29,7 +30,7 @@ public final class ScriptTaskRunnerClojure implements IScriptTaskRunnerClojure, 
         final ClojureScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new ClojureScriptTaskCallbackContext(callback);
+            context = new ClojureScriptTaskCallbackContext(LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import org.springframework.beans.factory.FactoryBean;
 
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
+import de.invesdwin.context.integration.script.callback.LoggingDelegateScriptTaskCallback;
 import de.invesdwin.context.jruby.callback.JrubyScriptTaskCallbackContext;
 import de.invesdwin.context.jruby.pool.JrubyScriptEngineObjectPool;
 import de.invesdwin.context.jruby.pool.WrappedJrubyScriptEngine;
@@ -29,7 +30,7 @@ public final class ScriptTaskRunnerJruby implements IScriptTaskRunnerJruby, Fact
         final JrubyScriptTaskCallbackContext context;
         final IScriptTaskCallback callback = scriptTask.getCallback();
         if (callback != null) {
-            context = new JrubyScriptTaskCallbackContext(callback);
+            context = new JrubyScriptTaskCallbackContext(LoggingDelegateScriptTaskCallback.maybeWrap(LOG, callback));
         } else {
             context = null;
         }

@@ -4,6 +4,8 @@ import java.io.Closeable;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.lang.string.Strings;
+
 @NotThreadSafe
 public class ObjectScriptTaskReturns implements IScriptTaskReturns, Closeable {
 
@@ -185,6 +187,11 @@ public class ObjectScriptTaskReturns implements IScriptTaskReturns, Closeable {
     public void close() {
         returnValue = null;
         returnExpression = false;
+    }
+
+    @Override
+    public String toString() {
+        return Strings.asString(returnValue);
     }
 
 }
