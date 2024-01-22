@@ -9,9 +9,9 @@ import de.invesdwin.context.log.Log;
 @Immutable
 public class LoggingDelegateScriptTaskCallback implements IScriptTaskCallback {
 
+    private static final AtomicLong SEQUENCE = new AtomicLong();
     private final Log log;
     private final IScriptTaskCallback delegate;
-    private final AtomicLong sequence = new AtomicLong();
 
     public LoggingDelegateScriptTaskCallback(final Log log, final IScriptTaskCallback delegate) {
         this.log = log;
@@ -21,7 +21,7 @@ public class LoggingDelegateScriptTaskCallback implements IScriptTaskCallback {
     @Override
     public void invoke(final String methodName, final IScriptTaskParameters parameters,
             final IScriptTaskReturns returns) {
-        final long seq = sequence.incrementAndGet();
+        final long seq = SEQUENCE.incrementAndGet();
         log.debug("< callback(%s) < %s: %s", seq, methodName, parameters);
         delegate.invoke(methodName, parameters, returns);
         log.debug("> callback(%s) > %s", seq, returns);
