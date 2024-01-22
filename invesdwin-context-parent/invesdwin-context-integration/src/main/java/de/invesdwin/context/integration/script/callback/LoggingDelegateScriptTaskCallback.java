@@ -25,9 +25,9 @@ public class LoggingDelegateScriptTaskCallback implements IScriptTaskCallback {
     public void invoke(final String methodName, final IScriptTaskParameters parameters,
             final IScriptTaskReturns returns) {
         final long request = requests.incrementAndGet();
-        log.debug("< callback(%s:%s) < %s: %s", instance, request, methodName, parameters);
+        log.debug("< callback(%s-%s) < %s: %s", instance, request, methodName, parameters);
         delegate.invoke(methodName, parameters, returns);
-        log.debug("> callback(%s:%s) > %s", instance, request, returns);
+        log.debug("> callback(%s-%s) > %s", instance, request, returns);
     }
 
     public static IScriptTaskCallback maybeWrap(final Log log, final IScriptTaskCallback delegate) {
