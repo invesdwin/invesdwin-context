@@ -21,12 +21,12 @@ public class AsyncAnnotationEnabler implements InitializingBean {
 
     @Named("asyncTaskExecutor")
     @Inject
-    private AsyncTaskExecutor asyncExecutor;
+    private AsyncTaskExecutor asyncTaskExecutor;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         final AnnotationAsyncExecutionAspect aspect = AnnotationAsyncExecutionAspect.aspectOf();
-        aspect.setExecutor(asyncExecutor);
+        aspect.setExecutor(asyncTaskExecutor);
     }
 
 }

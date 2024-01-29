@@ -16,12 +16,13 @@
 	<context:spring-configured />
 
 	<!-- activate @Scheduled and @Async -->
-	<bean id="asyncTaskExecutor"
+	<bean id="asyncTaskExecutor" 
 		class="org.springframework.core.task.support.TaskExecutorAdapter">
 		<constructor-arg>
 			<bean class="de.invesdwin.util.concurrent.Executors"
 				factory-method="newCachedThreadPool">
 				<constructor-arg value="@Async" />
+				<property name="finalizerEnabled" value="false" />
 			</bean>
 		</constructor-arg>
 	</bean>
@@ -30,6 +31,7 @@
 		class="de.invesdwin.util.concurrent.Executors"
 		factory-method="newScheduledThreadPool">
 		<constructor-arg value="@Scheduled" />
+		<property name="finalizerEnabled" value="false" />
 	</bean>
 	<task:annotation-driven mode="aspectj"
 		executor="asyncTaskExecutor" scheduler="scheduledExecutorService" />
