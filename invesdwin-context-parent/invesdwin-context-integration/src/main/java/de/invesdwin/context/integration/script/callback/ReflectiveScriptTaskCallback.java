@@ -572,4 +572,9 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
 
     }
 
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(provider).toString();
+    }
+
 }

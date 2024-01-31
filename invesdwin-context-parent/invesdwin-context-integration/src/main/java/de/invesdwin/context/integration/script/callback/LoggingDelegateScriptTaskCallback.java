@@ -19,6 +19,7 @@ public class LoggingDelegateScriptTaskCallback implements IScriptTaskCallback {
         this.log = log;
         this.delegate = delegate;
         this.instance = INSTANCES.incrementAndGet();
+        log.debug("callback(%s-%s) <= %s", instance, requests.get(), delegate);
     }
 
     @Override
