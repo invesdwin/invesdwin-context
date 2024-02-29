@@ -12,7 +12,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import de.invesdwin.util.error.UnknownArgumentException;
-import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class WrappedFregeScriptEngine implements Closeable {
@@ -24,8 +23,9 @@ public class WrappedFregeScriptEngine implements Closeable {
     public WrappedFregeScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("frege");
+        eval("import Data.HashMap public()");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        //        this.binding.put("binding", binding);
+        //        this.binding.put("binding :: HashMap", binding);
         if (engine instanceof Invocable) {
             invocable = (Invocable) engine;
         } else {
@@ -63,7 +63,7 @@ public class WrappedFregeScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        //        binding.put("binding", binding);
+        binding.put("binding :: HashMap", binding);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class WrappedFregeScriptEngine implements Closeable {
 
     public void put(final String variable, final Object value) {
         if (value == null) {
-            binding.put(variable + " :: String", Strings.NULL_TEXT);
+            eval(variable + " = Nothing");
         } else {
             final String type = getFregeType(value.getClass());
             binding.put(variable + " :: " + type, value);

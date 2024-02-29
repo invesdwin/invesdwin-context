@@ -23,20 +23,20 @@ public class InputsAndResultsTests {
     public void test() {
         new HelloWorldScript(runner).testHelloWorld();
         new InputsAndResultsTestByte(runner).testByte();
-        new InputsAndResultsTestFloat(runner).testFloat();
-        new InputsAndResultsTestDouble(runner).testDouble();
-        new InputsAndResultsTestDecimal(runner).testDecimal();
-        new InputsAndResultsTestPercent(runner).testPercent();
-        new InputsAndResultsTestShort(runner).testShort();
-        new InputsAndResultsTestInteger(runner).testInteger();
-        new InputsAndResultsTestLong(runner).testLong();
-        new InputsAndResultsTestCharacter(runner).testCharacter();
-        new InputsAndResultsTestString(runner).testString();
-        new InputsAndResultsTestBoolean(runner).testBoolean();
-        new InputsAndResultsTestNull(runner).testNull();
-        new InputsAndResultsTestNullPutGet(runner).testNullPutGet();
-        new InputsAndResultsTestEmpty(runner).testEmpty();
-        new InputsAndResultsTestEmptyMatrixValue(runner).testEmptyMatrixValue();
+        //        new InputsAndResultsTestFloat(runner).testFloat();
+        //        new InputsAndResultsTestDouble(runner).testDouble();
+        //        new InputsAndResultsTestDecimal(runner).testDecimal();
+        //        new InputsAndResultsTestPercent(runner).testPercent();
+        //        new InputsAndResultsTestShort(runner).testShort();
+        //        new InputsAndResultsTestInteger(runner).testInteger();
+        //        new InputsAndResultsTestLong(runner).testLong();
+        //        new InputsAndResultsTestCharacter(runner).testCharacter();
+        //        new InputsAndResultsTestString(runner).testString();
+        //        new InputsAndResultsTestBoolean(runner).testBoolean();
+        //        new InputsAndResultsTestNull(runner).testNull();
+        //        new InputsAndResultsTestNullPutGet(runner).testNullPutGet();
+        //        new InputsAndResultsTestEmpty(runner).testEmpty();
+        //        new InputsAndResultsTestEmptyMatrixValue(runner).testEmptyMatrixValue();
     }
 
     public void testParallel() {

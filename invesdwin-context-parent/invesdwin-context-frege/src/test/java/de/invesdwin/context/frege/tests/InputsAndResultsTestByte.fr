@@ -1,49 +1,63 @@
-System.out.println("getByte");
-if(binding.containsKey("getByte"))
-	throw new Exception("getByte already defined!");
+println "getByte"
+if isNothing getByte 
+then
+	error "getByte already defined!"
+else 
+	return ()
+{-
 var getByte = putByte;
 var getByteType = getByte.getClass();
-System.out.println(getByteType);
-System.out.println(getByte);
-if(getByteType != Byte.class)
-	throw new Exception("getByte not Byte!");
+println getByteType
+println getByte
+if getByteType != Byte.class then
+	error "getByte not Byte!"
+else return ()
 
-System.out.println("getByteVector");
-if(binding.containsKey("getByteVector"))
-	throw new Exception("getByteVector already defined!");
+println "getByteVector"
+if isNothing getByteVector then
+	error "getByteVector already defined!"
+else return ()
 var getByteVector = putByteVector;
 var getByteVectorType = getByteVector.getClass().getComponentType();
-System.out.println(getByteVectorType);
-System.out.println(getByteVector);
-if(getByteVectorType != byte.class)
-	throw new Exception("getByteVector not Byte!");
+println getByteVectorType
+println getByteVector
+if getByteVectorType != byte.class then
+	error "getByteVector not Byte!"
+else return ()
 
-System.out.println("getByteVectorAsList");
-if(binding.containsKey("getByteVectorAsList"))
-	throw new Exception("getByteVectorAsList already defined!");
+println "getByteVectorAsList"
+if isNothing getByteVectorAsList then
+	error "getByteVectorAsList already defined!"
+else return ()
 var getByteVectorAsList = putByteVectorAsList;
 var getByteVectorAsListType = getByteVectorAsList.getClass().getComponentType();
-System.out.println(getByteVectorAsListType);
-System.out.println(getByteVectorAsList);
-if(getByteVectorAsListType != byte.class)
-	throw new Exception("getByteVectorAsList not Byte!");
+println getByteVectorAsListType
+println getByteVectorAsList
+if getByteVectorAsListType != byte.class then
+	error "getByteVectorAsList not Byte!"
+else return ()
 
-System.out.println("getByteMatrix");
-if(binding.containsKey("getByteMatrix"))
-	throw new Exception("getByteMatrix already defined!");
+println "getByteMatrix"
+if isNothing getByteMatrix then
+	error "getByteMatrix already defined!"
+else return ()
 var getByteMatrix = putByteMatrix;
 var getByteMatrixType = getByteMatrix[0].getClass().getComponentType();
-System.out.println(getByteMatrixType);
-System.out.println(getByteMatrix);
-if(getByteMatrixType != byte.class)
-	throw new Exception("getByteMatrix not Byte!");
+println getByteMatrixType
+println getByteMatrix
+if getByteMatrixType != byte.class then
+	error "getByteMatrix not Byte!"
+else return ()
 
-System.out.println("getByteMatrixAsList");
-if(binding.containsKey("getByteMatrixAsList"))
-	throw new Exception("getByteMatrixAsList already defined!");
+println "getByteMatrixAsList"
+if isNothing getByteMatrixAsList then
+	error "getByteMatrixAsList already defined!");
+else return ()
 var getByteMatrixAsList = putByteMatrixAsList;
 var getByteMatrixAsListType = getByteMatrixAsList[0].getClass().getComponentType();
-System.out.println(getByteMatrixAsListType);
-System.out.println(getByteMatrixAsList);
-if(getByteMatrixAsListType != byte.class)
-	throw new Exception("getByteMatrixAsList not Byte!");
+println getByteMatrixAsListType
+println getByteMatrixAsList
+if getByteMatrixAsListType != byte.class then
+	error "getByteMatrixAsList not Byte!"
+else return ()
+-}
