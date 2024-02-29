@@ -1,0 +1,119 @@
+var getBooleanMatrix = callback("getBooleanMatrix");
+if(getBooleanMatrix.length != 2)
+	throw new Exception("getBooleanMatrix empty!");
+callback("setBooleanMatrix",getBooleanMatrix);
+
+var getBooleanMatrixAsList = callback("getBooleanMatrixAsList");
+if(getBooleanMatrixAsList.length != 2)
+	throw new Exception("getBooleanMatrixAsList empty!");
+callback("setBooleanMatrixAsList",getBooleanMatrixAsList);
+
+
+var getByteMatrix = callback("getByteMatrix");
+if(getByteMatrix.length != 2)
+	throw new Exception("getByteMatrix empty!");
+callback("setByteMatrix",getByteMatrix);
+
+var getByteMatrixAsList = callback("getByteMatrixAsList");
+if(getByteMatrixAsList.length != 2)
+	throw new Exception("getByteMatrixAsList empty!");
+callback("setByteMatrixAsList",getByteMatrixAsList);
+
+
+var getCharacterMatrix = callback("getCharacterMatrix");
+if(getCharacterMatrix.length != 2)
+	throw new Exception("getCharacterMatrix empty!");
+callback("setCharacterMatrix",getCharacterMatrix);
+
+var getCharacterMatrixAsList = callback("getCharacterMatrixAsList");
+if(getCharacterMatrixAsList.length != 2)
+	throw new Exception("getCharacterMatrixAsList empty!");
+callback("setCharacterMatrixAsList",getCharacterMatrixAsList);
+
+
+var getDecimalMatrix = callback("getDecimalMatrix");
+if(getDecimalMatrix.length != 2)
+	throw new Exception("getDecimalMatrix empty!");
+callback("setDecimalMatrix",getDecimalMatrix);
+
+var getDecimalMatrixAsList = callback("getDecimalMatrixAsList");
+if(getDecimalMatrixAsList.length != 2)
+	throw new Exception("getDecimalMatrixAsList empty!");
+callback("setDecimalMatrixAsList",getDecimalMatrixAsList);
+
+
+var getDoubleMatrix = callback("getDoubleMatrix");
+if(getDoubleMatrix.length != 2)
+	throw new Exception("getDoubleMatrix empty!");
+callback("setDoubleMatrix",getDoubleMatrix);
+
+var getDoubleMatrixAsList = callback("getDoubleMatrixAsList");
+if(getDoubleMatrixAsList.length != 2)
+	throw new Exception("getDoubleMatrixAsList empty!");
+callback("setDoubleMatrixAsList",getDoubleMatrixAsList);
+
+
+var getFloatMatrix = callback("getFloatMatrix");
+if(getFloatMatrix.length != 2)
+	throw new Exception("getFloatMatrix empty!");
+callback("setFloatMatrix",getFloatMatrix);
+
+var getFloatMatrixAsList = callback("getFloatMatrixAsList");
+if(getFloatMatrixAsList.length != 2)
+	throw new Exception("getFloatMatrixAsList empty!");
+callback("setFloatMatrixAsList",getFloatMatrixAsList);
+
+
+var getIntegerMatrix = callback("getIntegerMatrix");
+if(getIntegerMatrix.length != 2)
+	throw new Exception("getIntegerMatrix empty!");
+callback("setIntegerMatrix",getIntegerMatrix);
+
+var getIntegerMatrixAsList = callback("getIntegerMatrixAsList");
+if(getIntegerMatrixAsList.length != 2)
+	throw new Exception("getIntegerMatrixAsList empty!");
+callback("setIntegerMatrixAsList",getIntegerMatrixAsList);
+
+
+var getLongMatrix = callback("getLongMatrix");
+if(getLongMatrix.length != 2)
+	throw new Exception("getLongMatrix empty!");
+callback("setLongMatrix",getLongMatrix);
+
+var getLongMatrixAsList = callback("getLongMatrixAsList");
+if(getLongMatrixAsList.length != 2)
+	throw new Exception("getLongMatrixAsList empty!");
+callback("setLongMatrixAsList",getLongMatrixAsList);
+
+
+var getPercentMatrix = callback("getPercentMatrix");
+if(getPercentMatrix.length != 2)
+	throw new Exception("getPercentMatrix empty!");
+callback("setPercentMatrix",getPercentMatrix);
+
+var getPercentMatrixAsList = callback("getPercentMatrixAsList");
+if(getPercentMatrixAsList.length != 2)
+	throw new Exception("getPercentMatrixAsList empty!");
+callback("setPercentMatrixAsList",getPercentMatrixAsList);
+
+
+var getShortMatrix = callback("getShortMatrix");
+if(getShortMatrix.length != 2)
+	throw new Exception("getShortMatrix empty!");
+callback("setShortMatrix",getShortMatrix);
+
+var getShortMatrixAsList = callback("getShortMatrixAsList");
+if(getShortMatrixAsList.length != 2)
+	throw new Exception("getShortMatrixAsList empty!");
+callback("setShortMatrixAsList",getShortMatrixAsList);
+
+
+var getStringMatrix = callback("getStringMatrix");
+if(getStringMatrix.length != 2)
+	throw new Exception("getStringMatrix empty!");
+callback("setStringMatrix",getStringMatrix);
+
+var getStringMatrixAsList = callback("getStringMatrixAsList");
+if(getStringMatrixAsList.length != 2)
+	throw new Exception("getStringMatrixAsList empty!");
+callback("setStringMatrixAsList",getStringMatrixAsList);
