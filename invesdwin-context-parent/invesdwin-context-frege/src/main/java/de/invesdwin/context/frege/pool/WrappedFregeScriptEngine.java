@@ -32,7 +32,7 @@ public class WrappedFregeScriptEngine implements Closeable {
 
     public WrappedFregeScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
-        this.engine = manager.getEngineByName("jshell");
+        this.engine = manager.getEngineByName("frege");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
         this.binding.put("binding", binding);
         if (engine instanceof Compilable) {

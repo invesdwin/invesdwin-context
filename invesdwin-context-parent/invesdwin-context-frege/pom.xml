@@ -18,12 +18,15 @@
 
 		<dependency>
 			<groupId>org.frege-lang</groupId>
+			<artifactId>frege</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.frege-lang</groupId>
 			<artifactId>frege-interpreter-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.frege-lang</groupId>
-			<artifactId>frege</artifactId>
-			<classifier>jdk8</classifier>
+			<artifactId>frege-interpreter-java-support</artifactId>
 		</dependency>
 	</dependencies>
 

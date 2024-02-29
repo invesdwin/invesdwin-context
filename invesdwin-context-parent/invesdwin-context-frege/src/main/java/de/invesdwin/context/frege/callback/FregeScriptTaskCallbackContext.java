@@ -37,7 +37,7 @@ public class FregeScriptTaskCallbackContext implements Closeable {
 
     public void init(final IScriptTaskEngine engine) {
         engine.getInputs().putString("jshellScriptTaskCallbackContextUuid", getUuid());
-        engine.eval(new ClassPathResource(FregeScriptTaskCallbackContext.class.getSimpleName() + ".jsh",
+        engine.eval(new ClassPathResource(FregeScriptTaskCallbackContext.class.getSimpleName() + ".fr",
                 FregeScriptTaskCallbackContext.class));
     }
 

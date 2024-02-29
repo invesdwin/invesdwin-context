@@ -1,1 +1,1 @@
-var world = "Hello " + hello + "!";
+let world = "Hello " + hello + "!"

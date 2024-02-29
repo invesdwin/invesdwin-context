@@ -100,8 +100,8 @@
 		<version.jshellscriptengine>1.0</version.jshellscriptengine>
 		<version.bsh>2.1.1</version.bsh>
 		<version.mvel>2.5.0.Final</version.mvel>
-		<version.frege>3.24.100.1</version.frege>
-		<version.frege-interpreter>1.2</version.frege-interpreter>
+		<version.frege>3.25.115-inv</version.frege>
+		<version.frege-interpreter>1.3-inv</version.frege-interpreter>
 	</properties>
 
 	<dependencyManagement>
@@ -633,14 +633,18 @@
 			</dependency>
 			<dependency>
 				<groupId>org.frege-lang</groupId>
+				<artifactId>frege</artifactId>
+				<version>${version.frege}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.frege-lang</groupId>
 				<artifactId>frege-interpreter-core</artifactId>
 				<version>${version.frege-interpreter}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.frege-lang</groupId>
-				<artifactId>frege</artifactId>
-				<version>${version.frege}</version>
-				<classifier>jdk8</classifier>
+				<artifactId>frege-interpreter-java-support</artifactId>
+				<version>${version.frege-interpreter}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
