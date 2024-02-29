@@ -1,6 +1,7 @@
 package de.invesdwin.context.frege.pool;
 
 import java.io.Closeable;
+import java.math.BigInteger;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.Bindings;
@@ -11,6 +12,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
 public class WrappedFregeScriptEngine implements Closeable {
@@ -71,17 +73,37 @@ public class WrappedFregeScriptEngine implements Closeable {
 
     public void put(final String variable, final Object value) {
         if (value == null) {
-            remove(variable);
+            binding.put(variable + " :: String", Strings.NULL_TEXT);
         } else {
-            binding.put(variable + " :: " + getFregeType(value), value);
+            final String type = getFregeType(value.getClass());
+            binding.put(variable + " :: " + type, value);
         }
     }
 
-    private String getFregeType(final Object value) {
-        if (value instanceof String) {
+    private String getFregeType(final Class<?> type) {
+        if (type.isArray()) {
+            final Class<?> componentType = type.getComponentType();
+            if (componentType.isArray()) {
+                final String fregeType = getFregeType(componentType.getComponentType());
+                return "JArray (" + fregeType + ", " + fregeType + ")";
+            } else {
+                return "JArray " + getFregeType(componentType);
+            }
+        }
+        if (CharSequence.class.isAssignableFrom(type)) {
             return "String";
+        } else if (Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
+            return "Bool";
+        } else if (Character.class.isAssignableFrom(type) || char.class.isAssignableFrom(type)) {
+            return "Char";
+        } else if (Byte.class.isAssignableFrom(type) || byte.class.isAssignableFrom(type)) {
+            return "Byte";
+        } else if (Integer.class.isAssignableFrom(type) || int.class.isAssignableFrom(type)) {
+            return "Int";
+        } else if (BigInteger.class.isAssignableFrom(type)) {
+            return "Integer";
         } else {
-            throw UnknownArgumentException.newInstance(Class.class, value.getClass());
+            throw UnknownArgumentException.newInstance(Class.class, type);
         }
     }
 
