@@ -1,1 +1,3 @@
+native printStrLn2 java.lang.System.out.println :: String -> IO ()
+printStrLn2 "asdf"
 world = "Hello " ++ hello ++ "!"

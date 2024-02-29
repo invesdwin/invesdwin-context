@@ -1,9 +1,7 @@
 println "getByte"
 if isNothing getByte 
-then
-	error "getByte already defined!"
-else 
-	return ()
+then error "getByte already defined!"
+else return ()
 {-
 var getByte = putByte;
 var getByteType = getByte.getClass();

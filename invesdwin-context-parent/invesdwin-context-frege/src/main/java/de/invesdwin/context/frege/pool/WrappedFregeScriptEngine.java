@@ -23,9 +23,8 @@ public class WrappedFregeScriptEngine implements Closeable {
     public WrappedFregeScriptEngine() {
         final ScriptEngineManager manager = new ScriptEngineManager();
         this.engine = manager.getEngineByName("frege");
-        eval("import Data.HashMap public()");
         this.binding = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-        //        this.binding.put("binding :: HashMap", binding);
+        this.binding.put("pBinding :: Object", binding);
         if (engine instanceof Invocable) {
             invocable = (Invocable) engine;
         } else {
@@ -63,7 +62,7 @@ public class WrappedFregeScriptEngine implements Closeable {
 
     public void reset() {
         binding.clear();
-        binding.put("binding :: HashMap", binding);
+        binding.put("binding :: Object", binding);
     }
 
     @Override
@@ -90,16 +89,20 @@ public class WrappedFregeScriptEngine implements Closeable {
                 return "JArray " + getFregeType(componentType);
             }
         }
-        if (CharSequence.class.isAssignableFrom(type)) {
-            return "String";
-        } else if (Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
-            return "Bool";
-        } else if (Character.class.isAssignableFrom(type) || char.class.isAssignableFrom(type)) {
-            return "Char";
-        } else if (Byte.class.isAssignableFrom(type) || byte.class.isAssignableFrom(type)) {
-            return "Byte";
+        if (Double.class.isAssignableFrom(type) || double.class.isAssignableFrom(type)) {
+            return "Double";
         } else if (Integer.class.isAssignableFrom(type) || int.class.isAssignableFrom(type)) {
             return "Int";
+        } else if (Float.class.isAssignableFrom(type) || float.class.isAssignableFrom(type)) {
+            return "Float";
+        } else if (Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
+            return "Bool";
+        } else if (Byte.class.isAssignableFrom(type) || byte.class.isAssignableFrom(type)) {
+            return "Byte";
+        } else if (CharSequence.class.isAssignableFrom(type)) {
+            return "String";
+        } else if (Character.class.isAssignableFrom(type) || char.class.isAssignableFrom(type)) {
+            return "Char";
         } else if (BigInteger.class.isAssignableFrom(type)) {
             return "Integer";
         } else {

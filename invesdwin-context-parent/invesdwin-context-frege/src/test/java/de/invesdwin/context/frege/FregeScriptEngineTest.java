@@ -186,6 +186,7 @@ public class FregeScriptEngineTest {
     @Test
     public void testHelloWorld() throws ScriptException {
         frege.put("hello :: String", "world");
+        frege.eval("println(hello)");
         frege.eval("world = \"Hello \" ++ hello ++ \"!\"");
         final Object world = frege.eval("world");
         Assertions.checkEquals("Hello world!", world);

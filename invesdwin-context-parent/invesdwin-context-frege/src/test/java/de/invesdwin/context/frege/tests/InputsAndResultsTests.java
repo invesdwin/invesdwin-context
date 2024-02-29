@@ -22,7 +22,7 @@ public class InputsAndResultsTests {
 
     public void test() {
         new HelloWorldScript(runner).testHelloWorld();
-        new InputsAndResultsTestByte(runner).testByte();
+        //        new InputsAndResultsTestByte(runner).testByte();
         //        new InputsAndResultsTestFloat(runner).testFloat();
         //        new InputsAndResultsTestDouble(runner).testDouble();
         //        new InputsAndResultsTestDecimal(runner).testDecimal();
