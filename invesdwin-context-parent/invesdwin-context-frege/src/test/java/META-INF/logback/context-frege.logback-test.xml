@@ -1,7 +1,0 @@
-<configuration>
-
-	<logger name="de.invesdwin.context.frege.IScriptTaskRunnerFrege" additivity="true" level="DEBUG">
-	</logger>
-
-
-</configuration>
