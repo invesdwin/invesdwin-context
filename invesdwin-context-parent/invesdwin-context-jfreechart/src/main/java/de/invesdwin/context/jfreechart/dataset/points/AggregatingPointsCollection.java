@@ -183,7 +183,7 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
         inProgressSquareAggregationCount = 0;
     }
 
-    private class Square {
+    private final class Square {
         private E start;
         private E end;
         private E high;

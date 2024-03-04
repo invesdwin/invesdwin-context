@@ -1,13 +1,13 @@
 package de.invesdwin.context.beans.validator;
 
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.bean.AValueObject;
+import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -51,7 +51,7 @@ public class BeanValidatorTest extends ATest {
     }
 
     @SuppressWarnings("unused")
-    private static class ToBeVaditatedClass extends AValueObject {
+    private static final class ToBeVaditatedClass extends AValueObject {
 
         @NotNull
         private String someValue;
