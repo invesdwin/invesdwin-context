@@ -177,6 +177,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                         readerBuffer.init(newReader);
                     }
                 }
+                System.out.println("TODO: implement workaround");
             } else {
                 closeReaderWriteLocked();
             }
