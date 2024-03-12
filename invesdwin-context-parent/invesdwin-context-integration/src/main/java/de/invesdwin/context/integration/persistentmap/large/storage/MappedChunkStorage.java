@@ -214,7 +214,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
         final long addressOffset;
         lock.writeLock().lock();
         try {
-            if (OperatingSystem.isWindows() && position > 0
+            if (memoryFiles.isEmpty() || OperatingSystem.isWindows() && position > 0
                     && position + length > SegmentedMemoryMappedFile.WINDOWS_MAX_LENGTH_PER_SEGMENT_DISK) {
                 precedingPosition += position;
                 position = 0;
