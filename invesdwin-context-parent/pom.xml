@@ -78,7 +78,7 @@
 		<version.logback>1.5.3</version.logback>
 
 		<!-- reports -->
-		<version.jfreechart>1.5.3</version.jfreechart>
+		<version.jfreechart>1.5.4</version.jfreechart>
 		<version.dynamicreports>6.12.1-inv</version.dynamicreports>
 		<version.jasperreports>6.20.0</version.jasperreports>
 		<version.batik>1.17</version.batik>
