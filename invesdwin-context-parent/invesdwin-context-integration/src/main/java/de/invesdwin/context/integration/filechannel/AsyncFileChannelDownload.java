@@ -25,9 +25,9 @@ import de.invesdwin.util.time.duration.Duration;
 @NotThreadSafe
 public class AsyncFileChannelDownload implements Callable<InputStream> {
 
-    private static final int MAX_PARALLEL_DOWNLOADS = 50;
+    public static final int MAX_PARALLEL_DOWNLOADS = 50;
 
-    private static final WrappedExecutorService EXECUTOR = Executors
+    public static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelDownload.class.getSimpleName(), MAX_PARALLEL_DOWNLOADS);
 
     private final IFileChannel<?> channel;
