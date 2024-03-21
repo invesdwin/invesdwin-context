@@ -71,7 +71,7 @@
 		<version.jsonschema2pojo-maven-plugin>1.1.2</version.jsonschema2pojo-maven-plugin>
 
 		<version.commons-configuration>1.10</version.commons-configuration>
-		<version.commons-configuration2>2.8.0</version.commons-configuration2>
+		<version.commons-configuration2>2.10.1</version.commons-configuration2>
 		<version.commons-compress>1.26.0</version.commons-compress>
 		<version.jarchivelib>1.2.0</version.jarchivelib>
 
