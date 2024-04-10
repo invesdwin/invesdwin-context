@@ -96,8 +96,7 @@ public final class LZ4Streams {
         }
     }
 
-    private LZ4Streams() {
-    }
+    private LZ4Streams() {}
 
     public static APooledOutputStream newDefaultLZ4OutputStream(final OutputStream out) {
         return newHighLZ4OutputStream(out);
