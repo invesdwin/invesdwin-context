@@ -8,6 +8,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
+import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
 import de.invesdwin.util.error.FastNoSuchElementException;
 
 /**
@@ -66,7 +67,7 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     public Iterator<E> iterator() {
         return new Iterator<E>() {
 
-            private final Iterator<Square> delegateSquares = squares.iterator();
+            private final Iterator<Square> delegateSquares = WrapperCloseableIterable.maybeWrap(squares).iterator();
             private Square delegateInProgressSquare = inProgressSquare;
             private Iterator<E> curPointsIterator;
 
@@ -108,7 +109,8 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     @Override
     public Object[] toArray() {
         final List<IPoint> allPoints = new ArrayList<IPoint>();
-        for (final Square c : squares) {
+        for (int i = 0; i < squares.size(); i++) {
+            final Square c = squares.get(i);
             allPoints.addAll(c.getPoints());
         }
         if (inProgressSquare != null) {
@@ -120,7 +122,8 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     @Override
     public <T> T[] toArray(final T[] a) {
         final List<IPoint> allPoints = new ArrayList<IPoint>();
-        for (final Square c : squares) {
+        for (int i = 0; i < squares.size(); i++) {
+            final Square c = squares.get(i);
             allPoints.addAll(c.getPoints());
         }
         if (inProgressSquare != null) {
