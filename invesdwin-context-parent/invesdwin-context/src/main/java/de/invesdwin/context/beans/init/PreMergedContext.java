@@ -45,6 +45,9 @@ public final class PreMergedContext extends ADelegateContext {
                 //reload initializer after instrumentation was done, since a hook might have changed the initializer
                 final IPlatformInitializer initializer = PlatformInitializerProperties.getInitializer();
                 //needs to happen after properties have been loaded
+                if (!ContextProperties.KEEP_JDK_DEEP_CLONE_PROVIDER) {
+                    initializer.initFstDeepCloneProvider();
+                }
                 initializer.initAgronaBoundsChecks();
                 initializer.initNettyBoundsChecks();
                 initializer.initClassPathScanner();

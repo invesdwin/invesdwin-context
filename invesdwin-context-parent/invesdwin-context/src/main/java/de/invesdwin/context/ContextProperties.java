@@ -40,6 +40,7 @@ public final class ContextProperties {
     public static final int DEFAULT_NETWORK_TIMEOUT_MILLIS;
     public static final int CPU_THREAD_POOL_COUNT;
     public static final String USER_NAME;
+    public static final boolean KEEP_JDK_DEEP_CLONE_PROVIDER;
 
     @GuardedBy("ContextProperties.class")
     private static File cacheDirectory;
@@ -111,6 +112,7 @@ public final class ContextProperties {
         initDebugStacktraces();
 
         USER_NAME = new SystemProperties().getString("user.name");
+        KEEP_JDK_DEEP_CLONE_PROVIDER = readKeepJdkDeepCloneProvider();
     }
 
     private ContextProperties() {}
@@ -228,6 +230,12 @@ public final class ContextProperties {
             }
         }
         return duration;
+    }
+
+    private static boolean readKeepJdkDeepCloneProvider() {
+        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+        final String key = "KEEP_JDK_DEEP_CLONE_PROVIDER";
+        return systemProperties.getBooleanOptional(key, false);
     }
 
     private static boolean readConscryptSecurityProviderEnabled() {

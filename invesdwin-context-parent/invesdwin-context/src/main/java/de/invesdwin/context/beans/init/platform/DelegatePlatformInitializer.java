@@ -24,6 +24,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initFstDeepCloneProvider() {
+        delegate.initFstDeepCloneProvider();
+    }
+
+    @Override
     public void initDefaultUncaughtExceptionHandler(final UncaughtExceptionHandler handler) {
         delegate.initDefaultUncaughtExceptionHandler(handler);
     }

@@ -9,6 +9,7 @@ import java.net.URI;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.agrona.concurrent.UnsafeBuffer;
+import org.nustaq.serialization.FSTConfiguration;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
@@ -35,11 +36,13 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
+import de.invesdwin.norva.beanpath.BeanPathObjects;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.marshallers.serde.LocalFastSerializingSerde;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
@@ -59,6 +62,17 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         DynamicInstrumentationLoader.waitForInitialized();
         Assertions.assertThat(DynamicInstrumentationLoader.initLoadTimeWeavingContext()).isNotNull();
         InstrumentationHookLoader.runInstrumentationHooks();
+    }
+
+    @Override
+    public void initFstDeepCloneProvider() {
+        try {
+            //use FST in BeanPathObjects as deepClone fallback instead of java serialization
+            FSTConfiguration.getDefaultConfiguration(); //might throw an exception here
+            BeanPathObjects.setDeepCloneProvider(LocalFastSerializingSerde.get());
+        } catch (final Throwable t) {
+            // we might be in a restricted environment where FST is not allowed, stay with java serialization then
+        }
     }
 
     @Override
