@@ -61,4 +61,8 @@ public final class Processes {
         return DynamicInstrumentationProperties.getProcessId();
     }
 
+    public static String getProcessName() {
+        return DynamicInstrumentationProperties.getProcessName();
+    }
+
 }
