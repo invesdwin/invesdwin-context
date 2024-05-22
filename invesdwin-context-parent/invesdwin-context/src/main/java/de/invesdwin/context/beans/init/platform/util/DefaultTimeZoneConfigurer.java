@@ -1,6 +1,5 @@
 package de.invesdwin.context.beans.init.platform.util;
 
-import java.util.NoSuchElementException;
 import java.util.TimeZone;
 
 import javax.annotation.concurrent.Immutable;
@@ -37,8 +36,7 @@ public final class DefaultTimeZoneConfigurer {
         ORIGINAL_TIMEZONE = originalTimeZone;
     }
 
-    private DefaultTimeZoneConfigurer() {
-    }
+    private DefaultTimeZoneConfigurer() {}
 
     public static void configure() {
         final SystemProperties systemProperties = new SystemProperties();
@@ -100,11 +98,7 @@ public final class DefaultTimeZoneConfigurer {
     }
 
     private static boolean getKeepDefaultTimezone() {
-        try {
-            return new SystemProperties().getBoolean(KEEP_USER_TIMEZONE_PARAM);
-        } catch (final NoSuchElementException e) {
-            return false;
-        }
+        return new SystemProperties().getBooleanOptional(KEEP_USER_TIMEZONE_PARAM, false);
     }
 
     public static TimeZone getOriginalTimezone() {
