@@ -10,10 +10,18 @@ import javax.annotation.concurrent.NotThreadSafe;
 public abstract class ABeanTableWriter<E> implements IBeanTableWriter<E> {
 
     private final ITableWriter csvWriter;
-    private boolean headerWritten = false;
+    private boolean writeHeader = true;
 
     public ABeanTableWriter(final OutputStream out) {
         this.csvWriter = newTableWriter(out);
+    }
+
+    public void setWriteHeader(final boolean writeHeader) {
+        this.writeHeader = writeHeader;
+    }
+
+    public boolean isWriteHeader() {
+        return !writeHeader;
     }
 
     protected ITableWriter newTableWriter(final OutputStream out) {
@@ -29,9 +37,9 @@ public abstract class ABeanTableWriter<E> implements IBeanTableWriter<E> {
 
     @Override
     public void write(final E e) throws IOException {
-        if (!headerWritten) {
+        if (writeHeader) {
             writeHeaderLine();
-            headerWritten = true;
+            writeHeader = false;
         }
         final List<?> element = getElement(e);
         csvWriter.line(element);
