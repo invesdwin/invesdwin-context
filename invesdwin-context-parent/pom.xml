@@ -922,6 +922,10 @@
 							</transformer>
 							<transformer
 								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<resource>META-INF/mailcap</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 								<resource>jasperreports_extension.properties</resource>
 							</transformer>
 							<transformer
