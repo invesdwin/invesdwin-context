@@ -16,8 +16,9 @@ public abstract class ABeanTableWriter<E> implements IBeanTableWriter<E> {
         this.csvWriter = newTableWriter(out);
     }
 
-    public void setWriteHeader(final boolean writeHeader) {
+    public ABeanTableWriter<E> setWriteHeader(final boolean writeHeader) {
         this.writeHeader = writeHeader;
+        return this;
     }
 
     public boolean isWriteHeader() {
