@@ -23,7 +23,7 @@ public class CsvVerificationTest extends ATest {
         Assertions.checkTrue(csvVeri.isCsv(";two"));
         Assertions.checkFalse(csvVeri.isCsv("two"));
 
-        Assertions.checkFalse(csvVeri.isCsv(null));
+        Assertions.checkFalse(csvVeri.isCsv((String) null));
         Assertions.checkFalse(csvVeri.isCsv("  "));
     }
 

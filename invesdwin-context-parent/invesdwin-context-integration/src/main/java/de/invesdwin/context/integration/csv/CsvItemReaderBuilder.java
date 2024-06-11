@@ -33,12 +33,20 @@ public class CsvItemReaderBuilder<T> {
     private RecordSeparatorPolicy recordSeparatorPolicy;
 
     public CsvItemReaderBuilder<T> setNames(final List<String> names) {
-        this.names = names.toArray(Strings.EMPTY_ARRAY);
+        if (names == null) {
+            this.names = null;
+        } else {
+            this.names = names.toArray(Strings.EMPTY_ARRAY);
+        }
         return this;
     }
 
     public CsvItemReaderBuilder<T> setNames(final String[] names) {
-        this.names = names.clone();
+        if (names == null) {
+            this.names = null;
+        } else {
+            this.names = names.clone();
+        }
         return this;
     }
 
@@ -53,7 +61,11 @@ public class CsvItemReaderBuilder<T> {
     }
 
     public CsvItemReaderBuilder<T> setEncoding(final Charset encoding) {
-        this.encoding = encoding.name();
+        if (encoding == null) {
+            this.encoding = null;
+        } else {
+            this.encoding = encoding.name();
+        }
         return this;
     }
 
@@ -106,10 +118,10 @@ public class CsvItemReaderBuilder<T> {
                 Assertions.assertThat(delimiter).isNull();
             }
             if (lineMapper != null) {
-                Assertions.assertThat(names).isNull();
-                Assertions.assertThat(fieldSetFactory).isNull();
-                Assertions.assertThat(fieldSetMapper).isNull();
-                Assertions.assertThat(strict).isNull();
+                Assertions.checkNull(names);
+                Assertions.checkNull(fieldSetFactory);
+                Assertions.checkNull(fieldSetMapper);
+                Assertions.checkNull(strict);
                 items.setLineMapper(lineMapper);
             } else {
                 final DefaultLineMapper<T> lineMapper = newDefaultLineMapper();
