@@ -18,7 +18,6 @@ import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.lang.OperatingSystem;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
@@ -214,8 +213,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
         final long addressOffset;
         lock.writeLock().lock();
         try {
-            if (memoryFiles.isEmpty() || OperatingSystem.isWindows() && position > 0
-                    && position + length > SegmentedMemoryMappedFile.WINDOWS_MAX_LENGTH_PER_SEGMENT_DISK) {
+            if (memoryFiles.isEmpty() || position > 0 && IMemoryMappedFile.isSegmentSizeExceeded(position + length)) {
                 precedingPosition += position;
                 position = 0;
                 memoryFiles.add(nextMemoryFile());
