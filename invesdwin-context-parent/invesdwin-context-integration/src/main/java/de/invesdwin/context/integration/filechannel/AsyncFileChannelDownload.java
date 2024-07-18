@@ -7,6 +7,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.task.ARetryCallable;
@@ -25,7 +26,7 @@ import de.invesdwin.util.time.duration.Duration;
 @NotThreadSafe
 public class AsyncFileChannelDownload implements Callable<InputStream> {
 
-    public static final int MAX_PARALLEL_DOWNLOADS = 50;
+    public static final int MAX_PARALLEL_DOWNLOADS = IntegrationProperties.MAX_PARALLEL_DOWNLOADS;
 
     public static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelDownload.class.getSimpleName(), MAX_PARALLEL_DOWNLOADS);

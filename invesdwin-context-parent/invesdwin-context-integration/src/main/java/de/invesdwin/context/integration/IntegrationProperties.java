@@ -21,6 +21,7 @@ public final class IntegrationProperties {
     public static final String HOSTNAME;
     public static final boolean JNI_COMPRESSION_ALLOWED;
     public static final boolean FAST_COMPRESSION_ALWAYS;
+    public static final int MAX_PARALLEL_DOWNLOADS;
     private static volatile boolean webserverTest;
 
     private static final SystemProperties SYSTEM_PROPERTIES;
@@ -33,6 +34,7 @@ public final class IntegrationProperties {
         WEBSERVER_BIND_URI = readWebserverBindUri();
         JNI_COMPRESSION_ALLOWED = readJniCompressionAllowed();
         FAST_COMPRESSION_ALWAYS = readFastCompressionAlways();
+        MAX_PARALLEL_DOWNLOADS = readMaxParallelDownloads();
     }
 
     private IntegrationProperties() {}
@@ -69,6 +71,16 @@ public final class IntegrationProperties {
             return Collections.unmodifiableList(uriList);
         } else {
             return Collections.emptyList();
+        }
+    }
+
+    private static int readMaxParallelDownloads() {
+        final String key = "MAX_PARALLEL_DOWNLOADS";
+        if (SYSTEM_PROPERTIES.containsValue(key)) {
+            final int maxParallelDownloads = SYSTEM_PROPERTIES.getInteger(key);
+            return maxParallelDownloads;
+        } else {
+            return 50;
         }
     }
 
