@@ -21,8 +21,10 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
 
     public static final Paint DEFAULT_BACKGROUND_PAINT = Plot.DEFAULT_BACKGROUND_PAINT;
     public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("F2F2F2");
-    public static final BasicStroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
+    public static final Stroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
             BasicStroke.JOIN_BEVEL);
+    public static final Paint DEFAULT_OUTLINE_PAINT = Colors.fromHex("CECECE");
+    public static final Stroke DEFAULT_OUTLINE_STROKE = DEFAULT_GRIDLINE_STROKE;
     public static final boolean DEFAULT_OUTLINE_VISIBLE = true;
 
     @Override
@@ -68,11 +70,11 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     }
 
     protected Paint getOutlinePaint() {
-        return getGridlinePaint();
+        return DEFAULT_OUTLINE_PAINT;
     }
 
     protected Stroke getOutlineStroke() {
-        return getGridlineStroke();
+        return DEFAULT_GRIDLINE_STROKE;
     }
 
     protected Paint getBackgroundPaint() {
