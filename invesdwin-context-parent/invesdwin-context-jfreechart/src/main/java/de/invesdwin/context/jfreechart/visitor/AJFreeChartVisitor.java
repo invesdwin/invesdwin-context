@@ -40,11 +40,11 @@ public abstract class AJFreeChartVisitor {
         processPlotRecursive(chart.getPlot(), new HashSet<Integer>());
     }
 
-    protected Font processFont(final Font font) {
+    public Font processFont(final Font font) {
         return font;
     }
 
-    protected void processTitle(final Title title) {
+    public void processTitle(final Title title) {
         if (title instanceof TextTitle) {
             final TextTitle cTitle = (TextTitle) title;
             cTitle.setFont(processFont(cTitle.getFont()));
@@ -54,6 +54,10 @@ public abstract class AJFreeChartVisitor {
         } else if (title != null) {
             throw new IllegalArgumentException("Unknown " + Title.class + " type: " + title.getClass());
         }
+    }
+
+    public final void processPlot(final Plot plot) {
+        processPlotRecursive(plot, new HashSet<Integer>());
     }
 
     protected void processPlotRecursive(final Plot plot, final Set<Integer> duplicateAxisFilter) {
@@ -132,15 +136,15 @@ public abstract class AJFreeChartVisitor {
         }
     }
 
-    protected void processDomainAxis(final Axis axis) {
+    public void processDomainAxis(final Axis axis) {
         processAxis(axis);
     }
 
-    protected void processRangeAxis(final Axis axis) {
+    public void processRangeAxis(final Axis axis) {
         processAxis(axis);
     }
 
-    protected void processAxis(final Axis axis) {
+    public void processAxis(final Axis axis) {
         axis.setLabelFont(processFont(axis.getLabelFont()));
         axis.setTickLabelFont(processFont(axis.getTickLabelFont()));
     }

@@ -28,15 +28,20 @@ public class JFreeChartLocaleChanger extends AJFreeChartVisitor {
     }
 
     @Override
-    protected void processAxis(final Axis axis) {
+    public void processAxis(final Axis axis) {
         super.processAxis(axis);
+        changeLocale(axis, locale);
+    }
+
+    public static void changeLocale(final Axis axis, final Locale locale) {
         if (axis instanceof DateAxis) {
             final DateAxis dateAxis = (DateAxis) axis;
             dateAxis.setLocale(locale);
         } else if (axis instanceof NumberAxis && !(axis instanceof SymbolAxis)) {
             final NumberAxis numberAxis = (NumberAxis) axis;
             if (numberAxis.getNumberFormatOverride() == null) {
-                final DecimalFormat formatter = Decimal.newDecimalFormatInstance(Decimal.DEFAULT_DECIMAL_FORMAT, locale);
+                final DecimalFormat formatter = Decimal.newDecimalFormatInstance(Decimal.DEFAULT_DECIMAL_FORMAT,
+                        locale);
                 numberAxis.setNumberFormatOverride(formatter);
             }
         }

@@ -1,6 +1,5 @@
 package de.invesdwin.context.jasperreports;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
@@ -25,15 +24,13 @@ import org.apache.commons.io.input.ClosedInputStream;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.Axis;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.SymbolAxis;
-import org.jfree.chart.axis.TickUnitSource;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.context.jfreechart.visitor.AJFreeChartVisitor;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartFontSizeMultiplier;
+import de.invesdwin.context.jfreechart.visitor.JFreeChartThemeChanger;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
@@ -135,12 +132,12 @@ public enum JFreeChartExporter {
                     throw new IllegalArgumentException(
                             "Please provide an ID via chart.getTitle().setID(...) with which you can identify the chart when an exception occurs. This is very helpful during parallel rendering with jasper reports.");
                 }
-                chart.setBackgroundPaint(Color.WHITE);
+                chart.setBackgroundPaint(JFreeChartThemeChanger.DEFAULT_PAINT_BACKGROUND);
                 super.processChart(chart);
             }
 
             @Override
-            protected Font processFont(final Font font) {
+            public Font processFont(final Font font) {
                 if (settings == null || settings.getFontMultiplier() == null) {
                     return font;
                 } else {
@@ -149,14 +146,8 @@ public enum JFreeChartExporter {
             }
 
             @Override
-            protected void processAxis(final Axis axis) {
-                if (axis instanceof NumberAxis && !(axis instanceof SymbolAxis)) {
-                    final NumberAxis cAxis = (NumberAxis) axis;
-                    final TickUnitSource standardTickUnits = cAxis.getStandardTickUnits();
-                    if (standardTickUnits != null) {
-                        cAxis.setStandardTickUnits(FiniteTickUnitSource.maybeWrap(standardTickUnits));
-                    }
-                }
+            public void processAxis(final Axis axis) {
+                FiniteTickUnitSource.maybeWrap(axis);
                 super.processAxis(axis);
             }
         }.process(chart);

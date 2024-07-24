@@ -3,7 +3,10 @@ package de.invesdwin.context.jfreechart;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.fest.reflect.field.Invoker;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.TickUnit;
 import org.jfree.chart.axis.TickUnitSource;
 
@@ -72,6 +75,16 @@ public final class FiniteTickUnitSource implements TickUnitSource {
             return (FiniteTickUnitSource) delegate;
         } else {
             return new FiniteTickUnitSource(delegate);
+        }
+    }
+
+    public static void maybeWrap(final Axis axis) {
+        if (axis instanceof NumberAxis && !(axis instanceof SymbolAxis)) {
+            final NumberAxis cAxis = (NumberAxis) axis;
+            final TickUnitSource standardTickUnits = cAxis.getStandardTickUnits();
+            if (standardTickUnits != null) {
+                cAxis.setStandardTickUnits(FiniteTickUnitSource.maybeWrap(standardTickUnits));
+            }
         }
     }
 

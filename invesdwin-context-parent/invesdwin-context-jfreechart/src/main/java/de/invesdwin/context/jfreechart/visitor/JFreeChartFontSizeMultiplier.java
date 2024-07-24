@@ -14,7 +14,7 @@ public class JFreeChartFontSizeMultiplier extends AJFreeChartVisitor {
     }
 
     @Override
-    protected Font processFont(final Font font) {
+    public Font processFont(final Font font) {
         return multiplyFont(font, fontMultiplier);
     }
 
