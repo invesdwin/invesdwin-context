@@ -19,7 +19,7 @@ import de.invesdwin.util.lang.color.Colors;
 public class JFreeChartThemeChanger extends AJFreeChartVisitor {
 
     public static final Paint DEFAULT_BACKGROUND_PAINT = Plot.DEFAULT_BACKGROUND_PAINT;
-    public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("F2F2F2");
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("ECECEC");
     public static final BasicStroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
             BasicStroke.JOIN_BEVEL);
 
@@ -31,7 +31,12 @@ public class JFreeChartThemeChanger extends AJFreeChartVisitor {
         cPlot.setDomainGridlineStroke(getGridlineStroke());
         cPlot.setRangeGridlinePaint(getGridlinePaint());
         cPlot.setRangeGridlineStroke(getGridlineStroke());
-        cPlot.setOutlineVisible(false);
+        final Paint outlinePaint = getOutlinePaint();
+        if (outlinePaint != null) {
+            cPlot.setOutlinePaint(outlinePaint);
+        } else {
+            cPlot.setOutlineVisible(false);
+        }
     }
 
     @Override
@@ -61,6 +66,10 @@ public class JFreeChartThemeChanger extends AJFreeChartVisitor {
 
     protected Paint getGridlinePaint() {
         return DEFAULT_GRIDLINE_PAINT;
+    }
+
+    protected Paint getOutlinePaint() {
+        return getGridlinePaint();
     }
 
     protected Paint getBackgroundPaint() {
