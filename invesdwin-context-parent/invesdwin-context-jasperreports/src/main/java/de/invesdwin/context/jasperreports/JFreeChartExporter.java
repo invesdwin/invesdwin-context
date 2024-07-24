@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.context.jfreechart.visitor.AJFreeChartVisitor;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartFontSizeMultiplier;
-import de.invesdwin.context.jfreechart.visitor.JFreeChartThemeChanger;
+import de.invesdwin.context.jfreechart.visitor.JFreeChartThemeSwing;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
@@ -132,7 +132,7 @@ public enum JFreeChartExporter {
                     throw new IllegalArgumentException(
                             "Please provide an ID via chart.getTitle().setID(...) with which you can identify the chart when an exception occurs. This is very helpful during parallel rendering with jasper reports.");
                 }
-                chart.setBackgroundPaint(JFreeChartThemeChanger.DEFAULT_BACKGROUND_PAINT);
+                chart.setBackgroundPaint(JFreeChartThemeSwing.DEFAULT_BACKGROUND_PAINT);
                 super.processChart(chart);
             }
 

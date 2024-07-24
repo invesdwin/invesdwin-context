@@ -2,6 +2,7 @@ package de.invesdwin.context.jfreechart.visitor;
 
 import java.awt.BasicStroke;
 import java.awt.Paint;
+import java.awt.Stroke;
 import java.util.Locale;
 import java.util.Set;
 
@@ -16,12 +17,13 @@ import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.util.lang.color.Colors;
 
 @Immutable
-public class JFreeChartThemeChanger extends AJFreeChartVisitor {
+public class JFreeChartThemeSwing extends AJFreeChartVisitor {
 
     public static final Paint DEFAULT_BACKGROUND_PAINT = Plot.DEFAULT_BACKGROUND_PAINT;
-    public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("ECECEC");
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("F2F2F2");
     public static final BasicStroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
             BasicStroke.JOIN_BEVEL);
+    public static final boolean DEFAULT_OUTLINE_VISIBLE = true;
 
     @Override
     protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot cPlot) {
@@ -31,12 +33,9 @@ public class JFreeChartThemeChanger extends AJFreeChartVisitor {
         cPlot.setDomainGridlineStroke(getGridlineStroke());
         cPlot.setRangeGridlinePaint(getGridlinePaint());
         cPlot.setRangeGridlineStroke(getGridlineStroke());
-        final Paint outlinePaint = getOutlinePaint();
-        if (outlinePaint != null) {
-            cPlot.setOutlinePaint(outlinePaint);
-        } else {
-            cPlot.setOutlineVisible(false);
-        }
+        cPlot.setOutlinePaint(getOutlinePaint());
+        cPlot.setOutlineStroke(getOutlineStroke());
+        cPlot.setOutlineVisible(isOutlineVisible());
     }
 
     @Override
@@ -60,7 +59,7 @@ public class JFreeChartThemeChanger extends AJFreeChartVisitor {
         FiniteTickUnitSource.maybeWrap(axis);
     }
 
-    protected BasicStroke getGridlineStroke() {
+    protected Stroke getGridlineStroke() {
         return DEFAULT_GRIDLINE_STROKE;
     }
 
@@ -72,8 +71,16 @@ public class JFreeChartThemeChanger extends AJFreeChartVisitor {
         return getGridlinePaint();
     }
 
+    protected Stroke getOutlineStroke() {
+        return getGridlineStroke();
+    }
+
     protected Paint getBackgroundPaint() {
         return DEFAULT_BACKGROUND_PAINT;
+    }
+
+    protected boolean isOutlineVisible() {
+        return DEFAULT_OUTLINE_VISIBLE;
     }
 
     protected Locale getLocale() {

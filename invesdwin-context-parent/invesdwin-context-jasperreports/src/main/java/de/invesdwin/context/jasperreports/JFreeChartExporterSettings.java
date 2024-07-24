@@ -5,19 +5,12 @@ import java.awt.Dimension;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.jfreechart.visitor.AJFreeChartVisitor;
-import de.invesdwin.context.jfreechart.visitor.JFreeChartThemeChanger;
 import de.invesdwin.util.bean.AValueObject;
 
 @NotThreadSafe
 public class JFreeChartExporterSettings extends AValueObject {
 
-    public static final JFreeChartThemeChanger DEFAULT_THEME = new JFreeChartThemeChanger() {
-        @Override
-        protected java.awt.Paint getOutlinePaint() {
-            //remove plot outline paint in pdf
-            return null;
-        }
-    };
+    public static final AJFreeChartVisitor DEFAULT_THEME = new JFreeChartThemeDocument();
 
     private final Dimension bounds;
     private Double fontMultiplier;
