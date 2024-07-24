@@ -132,7 +132,7 @@ public enum JFreeChartExporter {
                     throw new IllegalArgumentException(
                             "Please provide an ID via chart.getTitle().setID(...) with which you can identify the chart when an exception occurs. This is very helpful during parallel rendering with jasper reports.");
                 }
-                chart.setBackgroundPaint(JFreeChartThemeChanger.DEFAULT_PAINT_BACKGROUND);
+                chart.setBackgroundPaint(JFreeChartThemeChanger.DEFAULT_BACKGROUND_PAINT);
                 super.processChart(chart);
             }
 

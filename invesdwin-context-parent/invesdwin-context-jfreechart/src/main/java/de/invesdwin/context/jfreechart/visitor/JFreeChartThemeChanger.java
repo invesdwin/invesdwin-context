@@ -18,9 +18,9 @@ import de.invesdwin.util.lang.color.Colors;
 @Immutable
 public class JFreeChartThemeChanger extends AJFreeChartVisitor {
 
-    public static final Paint DEFAULT_PAINT_BACKGROUND = Plot.DEFAULT_BACKGROUND_PAINT;
-    public static final Paint DEFAULT_PAINT_GRIDLINE = Colors.fromHex("F2F2F2");
-    public static final BasicStroke DEFAULT_STROKE_GRIDLINE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
+    public static final Paint DEFAULT_BACKGROUND_PAINT = Plot.DEFAULT_BACKGROUND_PAINT;
+    public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("F2F2F2");
+    public static final BasicStroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
             BasicStroke.JOIN_BEVEL);
 
     @Override
@@ -56,15 +56,15 @@ public class JFreeChartThemeChanger extends AJFreeChartVisitor {
     }
 
     protected BasicStroke getGridlineStroke() {
-        return DEFAULT_STROKE_GRIDLINE;
+        return DEFAULT_GRIDLINE_STROKE;
     }
 
     protected Paint getGridlinePaint() {
-        return DEFAULT_PAINT_GRIDLINE;
+        return DEFAULT_GRIDLINE_PAINT;
     }
 
     protected Paint getBackgroundPaint() {
-        return DEFAULT_PAINT_BACKGROUND;
+        return DEFAULT_BACKGROUND_PAINT;
     }
 
     protected Locale getLocale() {
