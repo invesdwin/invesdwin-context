@@ -1,6 +1,8 @@
 package de.invesdwin.context.jasperreports;
 
+import java.awt.BasicStroke;
 import java.awt.Paint;
+import java.awt.Stroke;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -13,6 +15,8 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
 
     public static final boolean DEFAULT_OUTLINE_VISIBLE = false;
     public static final Paint DEFAULT_GRID_PAINT = JFreeChartThemeSwing.DEFAULT_OUTLINE_PAINT;
+    public static final Stroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
+            BasicStroke.JOIN_BEVEL);
 
     @Override
     protected void processChart(final JFreeChart chart) {
@@ -23,6 +27,11 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     @Override
     protected Paint getGridlinePaint() {
         return DEFAULT_GRID_PAINT;
+    }
+
+    @Override
+    protected Stroke getGridlineStroke() {
+        return DEFAULT_GRIDLINE_STROKE;
     }
 
     @Override

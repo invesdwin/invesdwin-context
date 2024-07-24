@@ -15,13 +15,14 @@ import org.jfree.chart.plot.XYPlot;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.util.lang.color.Colors;
+import de.invesdwin.util.swing.HiDPI;
 
 @Immutable
 public class JFreeChartThemeSwing extends AJFreeChartVisitor {
 
     public static final Paint DEFAULT_BACKGROUND_PAINT = Plot.DEFAULT_BACKGROUND_PAINT;
     public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("F2F2F2");
-    public static final Stroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(2f, BasicStroke.CAP_SQUARE,
+    public static final Stroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(HiDPI.scale(1f), BasicStroke.CAP_SQUARE,
             BasicStroke.JOIN_BEVEL);
     public static final Paint DEFAULT_OUTLINE_PAINT = Colors.fromHex("CECECE");
     public static final Stroke DEFAULT_OUTLINE_STROKE = DEFAULT_GRIDLINE_STROKE;
