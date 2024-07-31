@@ -1,6 +1,7 @@
 package de.invesdwin.context.jfreechart.visitor;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.util.Locale;
@@ -20,7 +21,7 @@ import de.invesdwin.util.swing.HiDPI;
 @Immutable
 public class JFreeChartThemeSwing extends AJFreeChartVisitor {
 
-    public static final Paint DEFAULT_BACKGROUND_PAINT = Plot.DEFAULT_BACKGROUND_PAINT;
+    public static final Color DEFAULT_BACKGROUND_PAINT = (Color) Plot.DEFAULT_BACKGROUND_PAINT;
     public static final Paint DEFAULT_GRIDLINE_PAINT = Colors.fromHex("F2F2F2");
     public static final Stroke DEFAULT_GRIDLINE_STROKE = new BasicStroke(HiDPI.scale(1f), BasicStroke.CAP_SQUARE,
             BasicStroke.JOIN_BEVEL);
@@ -39,18 +40,6 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
         cPlot.setOutlinePaint(getOutlinePaint());
         cPlot.setOutlineStroke(getOutlineStroke());
         cPlot.setOutlineVisible(isOutlineVisible());
-    }
-
-    @Override
-    public void processDomainAxis(final Axis axis) {
-        super.processDomainAxis(axis);
-        axis.setLabelLocation(AxisLabelLocation.LOW_END);
-    }
-
-    @Override
-    public void processRangeAxis(final Axis axis) {
-        super.processRangeAxis(axis);
-        axis.setLabelLocation(AxisLabelLocation.HIGH_END);
     }
 
     @Override
