@@ -7,7 +7,7 @@ System.out.println(getDoubleType);
 System.out.println(getDouble);
 if(getDoubleType != Double.class)
 	throw new Exception("getDouble not Double!");
-if(!Double.isNaN(getDoubleType))
+if(!Double.isNaN(getDouble))
 	throw new Exception("getDouble not NaN!");
 
 System.out.println("getDoubleVector");

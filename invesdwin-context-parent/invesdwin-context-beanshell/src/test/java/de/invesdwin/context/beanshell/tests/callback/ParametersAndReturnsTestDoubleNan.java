@@ -1,4 +1,4 @@
-package de.invesdwin.context.jshell.tests.callback;
+package de.invesdwin.context.beanshell.tests.callback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,27 +7,27 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import org.springframework.core.io.ClassPathResource;
 
+import de.invesdwin.context.beanshell.AScriptTaskBeanshell;
+import de.invesdwin.context.beanshell.IScriptTaskRunnerBeanshell;
 import de.invesdwin.context.integration.script.IScriptTaskEngine;
 import de.invesdwin.context.integration.script.IScriptTaskInputs;
 import de.invesdwin.context.integration.script.IScriptTaskResults;
 import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.context.integration.script.callback.ReflectiveScriptTaskCallback;
-import de.invesdwin.context.jshell.AScriptTaskJshell;
-import de.invesdwin.context.jshell.IScriptTaskRunnerJshell;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 
 @NotThreadSafe
 public class ParametersAndReturnsTestDoubleNan {
 
-    private final IScriptTaskRunnerJshell runner;
+    private final IScriptTaskRunnerBeanshell runner;
 
-    public ParametersAndReturnsTestDoubleNan(final IScriptTaskRunnerJshell runner) {
+    public ParametersAndReturnsTestDoubleNan(final IScriptTaskRunnerBeanshell runner) {
         this.runner = runner;
     }
 
     public void testDoubleNan() {
-        new AScriptTaskJshell<Void>() {
+        new AScriptTaskBeanshell<Void>() {
 
             @Override
             public IScriptTaskCallback getCallback() {
@@ -40,7 +40,7 @@ public class ParametersAndReturnsTestDoubleNan {
 
             @Override
             public void executeScript(final IScriptTaskEngine engine) {
-                engine.eval(new ClassPathResource(ParametersAndReturnsTestDoubleNan.class.getSimpleName() + ".jsh",
+                engine.eval(new ClassPathResource(ParametersAndReturnsTestDoubleNan.class.getSimpleName() + ".bsh",
                         ParametersAndReturnsTestDoubleNan.class));
             }
 
