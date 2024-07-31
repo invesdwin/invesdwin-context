@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.axis.Axis;
-import org.jfree.chart.axis.AxisLabelLocation;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
 
