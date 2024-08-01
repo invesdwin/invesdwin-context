@@ -31,7 +31,7 @@ System.out.println(getDoubleVectorAsListType);
 System.out.println(getDoubleVectorAsList);
 if(getDoubleVectorAsListType != double.class)
 	throw new Exception("getDoubleVectorAsList not Double!");
-if(!Double.isNaN(getDoubleVectorAsList.get(1)))
+if(!Double.isNaN(getDoubleVectorAsList[1]))
 	throw new Exception("getDoubleVectorAsList[1] not NaN!");
 
 System.out.println("getDoubleMatrix");
