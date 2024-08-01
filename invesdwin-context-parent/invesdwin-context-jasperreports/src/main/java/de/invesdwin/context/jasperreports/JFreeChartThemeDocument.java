@@ -16,6 +16,8 @@ import javax.annotation.concurrent.Immutable;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
 
 import de.invesdwin.context.jfreechart.util.LegendItems;
@@ -38,8 +40,25 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     }
 
     @Override
+    protected void processPlotRecursive(final Plot plot, final Set<Integer> duplicateAxisFilter) {
+        super.processPlotRecursive(plot, duplicateAxisFilter);
+    }
+
+    @Override
+    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final CategoryPlot plot) {
+        super.processCategoryPlot(duplicateAxisFilter, plot);
+        final LegendItemCollection legendItems = processLegendItems(plot);
+        plot.setFixedLegendItems(legendItems);
+    }
+
+    @Override
     protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot plot) {
         super.processXYPlot(duplicateAxisFilter, plot);
+        final LegendItemCollection legendItems = processLegendItems(plot);
+        plot.setFixedLegendItems(legendItems);
+    }
+
+    private LegendItemCollection processLegendItems(final Plot plot) {
         final LegendItemCollection legendItems = plot.getLegendItems();
         for (int i = 0; i < legendItems.getItemCount(); i++) {
             final LegendItem legendItem = legendItems.get(i);
@@ -78,7 +97,7 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
                 }
             }
         }
-        plot.setFixedLegendItems(legendItems);
+        return legendItems;
     }
 
     @Override

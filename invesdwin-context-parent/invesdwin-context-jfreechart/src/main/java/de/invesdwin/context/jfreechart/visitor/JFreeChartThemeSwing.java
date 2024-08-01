@@ -11,6 +11,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.AxisLabelLocation;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.Title;
@@ -44,6 +45,19 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
         } else if (title.getPosition() == RectangleEdge.BOTTOM) {
             title.setPadding(padding.getTop() + 10, padding.getLeft(), padding.getBottom(), padding.getRight());
         }
+    }
+
+    @Override
+    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final CategoryPlot plot) {
+        super.processCategoryPlot(duplicateAxisFilter, plot);
+        plot.setBackgroundPaint(getBackgroundPaint());
+        plot.setDomainGridlinePaint(getGridlinePaint());
+        plot.setDomainGridlineStroke(getGridlineStroke());
+        plot.setRangeGridlinePaint(getGridlinePaint());
+        plot.setRangeGridlineStroke(getGridlineStroke());
+        plot.setOutlinePaint(getOutlinePaint());
+        plot.setOutlineStroke(getOutlineStroke());
+        plot.setOutlineVisible(isOutlineVisible());
     }
 
     @Override
