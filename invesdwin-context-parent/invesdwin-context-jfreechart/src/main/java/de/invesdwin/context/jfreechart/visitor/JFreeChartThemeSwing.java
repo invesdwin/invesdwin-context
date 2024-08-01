@@ -9,9 +9,13 @@ import java.util.Set;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisLabelLocation;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.ui.HorizontalAlignment;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.util.lang.color.Colors;
@@ -29,16 +33,37 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     public static final boolean DEFAULT_OUTLINE_VISIBLE = true;
 
     @Override
-    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot cPlot) {
-        super.processXYPlot(duplicateAxisFilter, cPlot);
-        cPlot.setBackgroundPaint(getBackgroundPaint());
-        cPlot.setDomainGridlinePaint(getGridlinePaint());
-        cPlot.setDomainGridlineStroke(getGridlineStroke());
-        cPlot.setRangeGridlinePaint(getGridlinePaint());
-        cPlot.setRangeGridlineStroke(getGridlineStroke());
-        cPlot.setOutlinePaint(getOutlinePaint());
-        cPlot.setOutlineStroke(getOutlineStroke());
-        cPlot.setOutlineVisible(isOutlineVisible());
+    protected void processChart(final JFreeChart chart) {
+        super.processChart(chart);
+        final LegendTitle legend = chart.getLegend();
+        if (legend != null) {
+            legend.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        }
+    }
+
+    @Override
+    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot plot) {
+        super.processXYPlot(duplicateAxisFilter, plot);
+        plot.setBackgroundPaint(getBackgroundPaint());
+        plot.setDomainGridlinePaint(getGridlinePaint());
+        plot.setDomainGridlineStroke(getGridlineStroke());
+        plot.setRangeGridlinePaint(getGridlinePaint());
+        plot.setRangeGridlineStroke(getGridlineStroke());
+        plot.setOutlinePaint(getOutlinePaint());
+        plot.setOutlineStroke(getOutlineStroke());
+        plot.setOutlineVisible(isOutlineVisible());
+    }
+
+    @Override
+    public void processDomainAxis(final Axis axis) {
+        super.processDomainAxis(axis);
+        axis.setLabelLocation(AxisLabelLocation.LOW_END);
+    }
+
+    @Override
+    public void processRangeAxis(final Axis axis) {
+        super.processRangeAxis(axis);
+        axis.setLabelLocation(AxisLabelLocation.HIGH_END);
     }
 
     @Override

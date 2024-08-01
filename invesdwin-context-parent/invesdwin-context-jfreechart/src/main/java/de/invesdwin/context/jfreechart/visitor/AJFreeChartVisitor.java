@@ -18,6 +18,8 @@ import org.jfree.chart.plot.CombinedRangeCategoryPlot;
 import org.jfree.chart.plot.CombinedRangeXYPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.title.Title;
@@ -106,35 +108,47 @@ public abstract class AJFreeChartVisitor {
         }
     }
 
-    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final CategoryPlot cPlot) {
-        for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
-            final ValueAxis axis = cPlot.getRangeAxis(i);
+    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final CategoryPlot plot) {
+        for (int i = 0; i < plot.getRangeAxisCount(); i++) {
+            final ValueAxis axis = plot.getRangeAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
                 processRangeAxis(axis);
             }
         }
-        for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
-            final CategoryAxis axis = cPlot.getDomainAxis(i);
+        for (int i = 0; i < plot.getDomainAxisCount(); i++) {
+            final CategoryAxis axis = plot.getDomainAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
                 processDomainAxis(axis);
             }
+        }
+        for (int i = 0; i < plot.getRendererCount(); i++) {
+            final CategoryItemRenderer renderer = plot.getRenderer(i);
+            processCategoryItemRenderer(renderer);
         }
     }
 
-    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot cPlot) {
-        for (int i = 0; i < cPlot.getRangeAxisCount(); i++) {
-            final ValueAxis axis = cPlot.getRangeAxis(i);
+    public void processCategoryItemRenderer(final CategoryItemRenderer renderer) {}
+
+    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot plot) {
+        for (int i = 0; i < plot.getRangeAxisCount(); i++) {
+            final ValueAxis axis = plot.getRangeAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
                 processRangeAxis(axis);
             }
         }
-        for (int i = 0; i < cPlot.getDomainAxisCount(); i++) {
-            final ValueAxis axis = cPlot.getDomainAxis(i);
+        for (int i = 0; i < plot.getDomainAxisCount(); i++) {
+            final ValueAxis axis = plot.getDomainAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
                 processDomainAxis(axis);
             }
         }
+        for (int i = 0; i < plot.getRendererCount(); i++) {
+            final XYItemRenderer renderer = plot.getRenderer(i);
+            processXYItemRenderer(renderer);
+        }
     }
+
+    public void processXYItemRenderer(final XYItemRenderer renderer) {}
 
     public void processDomainAxis(final Axis axis) {
         processAxis(axis);
