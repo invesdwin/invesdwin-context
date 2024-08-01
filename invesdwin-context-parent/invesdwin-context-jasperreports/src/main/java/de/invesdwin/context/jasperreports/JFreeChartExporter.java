@@ -284,7 +284,7 @@ public enum JFreeChartExporter {
                         future.cancel(true);
                         Err.process(wrapException(new RuntimeException("Rendering timeout of [" + renderTimeout
                                 + "] exceeded, aborting and returning an empty input stream. This might be due to an endless loop in the chart rendering...")));
-                        return ClosedInputStream.CLOSED_INPUT_STREAM;
+                        return ClosedInputStream.INSTANCE;
                     }
                     try {
                         return super.getDelegate();

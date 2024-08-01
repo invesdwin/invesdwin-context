@@ -5,6 +5,7 @@ import java.awt.Paint;
 import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
@@ -20,6 +21,7 @@ import org.jfree.chart.plot.XYPlot;
 import de.invesdwin.context.jfreechart.util.LegendItems;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartThemeSwing;
 import de.invesdwin.util.error.UnknownArgumentException;
+import de.invesdwin.util.lang.Objects;
 
 @Immutable
 public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
@@ -59,14 +61,18 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
                     final Rectangle2D.Double cShape = (Rectangle2D.Double) shape;
                     legendItem
                             .setShape(new Rectangle2D.Double(cShape.x, cShape.y, cShape.width * 2, cShape.height * 2));
-                    //CHECKSTYLE:OFF
                 } else if (shape instanceof Ellipse2D.Double) {
-                    //ignore
+                    final Ellipse2D.Double cShape = (Ellipse2D.Double) shape;
+                    legendItem.setShape(
+                            new Ellipse2D.Double(cShape.x, cShape.y, cShape.width * 1.5, cShape.height * 1.5));
                 } else if (shape instanceof GeneralPath) {
-                    //ignore
+                    final GeneralPath cShape = Objects.clone((GeneralPath) shape);
+                    cShape.transform(AffineTransform.getScaleInstance(1.5, 1.5));
+                    legendItem.setShape(cShape);
                 } else if (shape instanceof Polygon) {
-                    //ignore
-                    //CHECKSTYLE:ON
+                    final GeneralPath cShape = Objects.clone((GeneralPath) shape);
+                    cShape.transform(AffineTransform.getScaleInstance(1.5, 1.5));
+                    legendItem.setShape(cShape);
                 } else {
                     throw UnknownArgumentException.newInstance(Class.class, shape.getClass());
                 }

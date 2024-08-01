@@ -9,13 +9,14 @@ import java.util.Set;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.AxisLabelLocation;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.Title;
 import org.jfree.chart.ui.HorizontalAlignment;
+import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.ui.RectangleInsets;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.util.lang.color.Colors;
@@ -33,11 +34,15 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     public static final boolean DEFAULT_OUTLINE_VISIBLE = true;
 
     @Override
-    protected void processChart(final JFreeChart chart) {
-        super.processChart(chart);
-        final LegendTitle legend = chart.getLegend();
-        if (legend != null) {
-            legend.setHorizontalAlignment(HorizontalAlignment.LEFT);
+    public void processTitle(final Title title) {
+        super.processTitle(title);
+        title.setHorizontalAlignment(HorizontalAlignment.LEFT);
+
+        final RectangleInsets padding = title.getPadding();
+        if (title.getPosition() == RectangleEdge.TOP) {
+            title.setPadding(padding.getTop(), padding.getLeft(), padding.getBottom() + 15, padding.getRight());
+        } else if (title.getPosition() == RectangleEdge.BOTTOM) {
+            title.setPadding(padding.getTop() + 10, padding.getLeft(), padding.getBottom(), padding.getRight());
         }
     }
 
@@ -55,22 +60,11 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     }
 
     @Override
-    public void processDomainAxis(final Axis axis) {
-        super.processDomainAxis(axis);
-        axis.setLabelLocation(AxisLabelLocation.LOW_END);
-    }
-
-    @Override
-    public void processRangeAxis(final Axis axis) {
-        super.processRangeAxis(axis);
-        axis.setLabelLocation(AxisLabelLocation.HIGH_END);
-    }
-
-    @Override
     public void processAxis(final Axis axis) {
         super.processAxis(axis);
         axis.setTickMarksVisible(false);
         axis.setAxisLineVisible(false);
+        axis.setLabelLocation(AxisLabelLocation.MIDDLE);
         JFreeChartLocaleChanger.changeLocale(axis, getLocale());
         FiniteTickUnitSource.maybeWrap(axis);
     }
