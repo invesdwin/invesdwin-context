@@ -28,6 +28,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
+import de.invesdwin.context.jfreechart.axis.AxisType;
 import de.invesdwin.context.jfreechart.visitor.AJFreeChartVisitor;
 import de.invesdwin.context.jfreechart.visitor.JFreeChartFontSizeMultiplier;
 import de.invesdwin.context.log.error.Err;
@@ -144,9 +145,9 @@ public enum JFreeChartExporter {
             }
 
             @Override
-            public void processAxis(final Axis axis) {
+            public void processAxis(final Axis axis, final AxisType axisType) {
                 FiniteTickUnitSource.maybeWrap(axis);
-                super.processAxis(axis);
+                super.processAxis(axis, axisType);
             }
         }.process(chart);
         final AJFreeChartVisitor theme = settings.getTheme();

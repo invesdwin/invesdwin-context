@@ -10,6 +10,7 @@ import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.TickUnit;
 import org.jfree.chart.axis.TickUnitSource;
 
+import de.invesdwin.context.jfreechart.axis.attached.IAttachedAxis;
 import de.invesdwin.util.lang.reflection.Reflections;
 
 @NotThreadSafe
@@ -76,6 +77,10 @@ public final class FiniteTickUnitSource implements TickUnitSource {
         } else {
             return new FiniteTickUnitSource(delegate);
         }
+    }
+
+    public static void maybeWrap(final IAttachedAxis axis) {
+        maybeWrap(axis.getAxis());
     }
 
     public static void maybeWrap(final Axis axis) {

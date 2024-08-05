@@ -8,6 +8,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.springframework.batch.item.file.transform.FieldSet;
 
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.string.Strings;
 
 @Immutable
@@ -34,7 +35,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public String readString(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -44,7 +45,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public String readRawString(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -54,7 +55,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public boolean readBoolean(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -64,7 +65,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public boolean readBoolean(final int index, final String trueValue) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -74,7 +75,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public char readChar(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -84,7 +85,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public byte readByte(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -94,7 +95,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public short readShort(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -104,7 +105,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public int readInt(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -114,7 +115,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public int readInt(final int index, final int defaultValue) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -124,7 +125,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public long readLong(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -134,7 +135,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public long readLong(final int index, final long defaultValue) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -144,7 +145,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public float readFloat(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -154,7 +155,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public double readDouble(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -164,7 +165,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public BigDecimal readBigDecimal(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -174,7 +175,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public BigDecimal readBigDecimal(final int index, final BigDecimal defaultValue) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -184,7 +185,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public Date readDate(final int index) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -194,7 +195,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public Date readDate(final int index, final Date defaultValue) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -204,7 +205,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public Date readDate(final int index, final String pattern) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override
@@ -214,7 +215,7 @@ public final class EmptyFieldSet implements FieldSet {
 
     @Override
     public Date readDate(final int index, final String pattern, final Date defaultValue) {
-        throw new IndexOutOfBoundsException(index);
+        throw Throwables.newIndexOutOfBoundsException(index);
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItemSource;
 import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
@@ -27,6 +28,19 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.title.Title;
 import org.jfree.chart.ui.Layer;
 
+import de.invesdwin.context.jfreechart.axis.AxisType;
+import de.invesdwin.context.jfreechart.axis.attached.AttachedDomainCategoryAxis;
+import de.invesdwin.context.jfreechart.axis.attached.AttachedDomainValueAxis;
+import de.invesdwin.context.jfreechart.axis.attached.AttachedRangeValueAxis;
+import de.invesdwin.context.jfreechart.axis.attached.IAttachedAxis;
+import de.invesdwin.context.jfreechart.plot.IAxisPlot;
+import de.invesdwin.context.jfreechart.plot.WrappedCategoryPlot;
+import de.invesdwin.context.jfreechart.plot.WrappedXYPlot;
+import de.invesdwin.context.jfreechart.plot.combined.ICombinedPlot;
+import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedDomainCategoryPlot;
+import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedDomainXYPlot;
+import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedRangeCategoryPlot;
+import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedRangeXYPlot;
 import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
@@ -82,88 +96,80 @@ public abstract class AJFreeChartVisitor {
     protected void processPlotRecursive(final Plot plot, final Set<Integer> duplicateAxisFilter) {
         if (plot instanceof XYPlot) {
             final XYPlot cPlot = (XYPlot) plot;
-            processXYPlot(duplicateAxisFilter, cPlot);
-        }
-        if (plot instanceof CategoryPlot) {
+            processXYPlot(duplicateAxisFilter, new WrappedXYPlot(cPlot));
+        } else if (plot instanceof CategoryPlot) {
             final CategoryPlot cPlot = (CategoryPlot) plot;
-            processCategoryPlot(duplicateAxisFilter, cPlot);
+            processCategoryPlot(duplicateAxisFilter, new WrappedCategoryPlot(cPlot));
         }
 
         //recurse
         if (plot instanceof CombinedDomainCategoryPlot) {
             final CombinedDomainCategoryPlot cPlot = (CombinedDomainCategoryPlot) plot;
-            final List<?> plots = cPlot.getSubplots();
-            for (int i = 0; i < plots.size(); i++) {
-                final Object subPlotObj = plots.get(i);
-                final Plot subPlot = (Plot) subPlotObj;
-                processPlotRecursive(subPlot, duplicateAxisFilter);
-            }
+            processCombinedPlot(duplicateAxisFilter, new WrappedCombinedDomainCategoryPlot(cPlot));
         } else if (plot instanceof CombinedDomainXYPlot) {
             final CombinedDomainXYPlot cPlot = (CombinedDomainXYPlot) plot;
-            final List<?> plots = cPlot.getSubplots();
-            for (int i = 0; i < plots.size(); i++) {
-                final Object subPlotObj = plots.get(i);
-                final Plot subPlot = (Plot) subPlotObj;
-                processPlotRecursive(subPlot, duplicateAxisFilter);
-            }
+            processCombinedPlot(duplicateAxisFilter, new WrappedCombinedDomainXYPlot(cPlot));
         } else if (plot instanceof CombinedRangeCategoryPlot) {
             final CombinedRangeCategoryPlot cPlot = (CombinedRangeCategoryPlot) plot;
-            final List<?> plots = cPlot.getSubplots();
-            for (int i = 0; i < plots.size(); i++) {
-                final Object subPlotObj = plots.get(i);
-                final Plot subPlot = (Plot) subPlotObj;
-                processPlotRecursive(subPlot, duplicateAxisFilter);
-            }
+            processCombinedPlot(duplicateAxisFilter, new WrappedCombinedRangeCategoryPlot(cPlot));
         } else if (plot instanceof CombinedRangeXYPlot) {
             final CombinedRangeXYPlot cPlot = (CombinedRangeXYPlot) plot;
-            final List<?> plots = cPlot.getSubplots();
-            for (int i = 0; i < plots.size(); i++) {
-                final Object subPlotObj = plots.get(i);
-                final Plot subPlot = (Plot) subPlotObj;
-                processPlotRecursive(subPlot, duplicateAxisFilter);
-            }
+            processCombinedPlot(duplicateAxisFilter, new WrappedCombinedRangeXYPlot(cPlot));
         }
     }
 
-    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final CategoryPlot plot) {
+    protected void processCombinedPlot(final Set<Integer> duplicateAxisFilter, final ICombinedPlot plot) {
+        final List<?> plots = plot.getSubplots();
+        for (int i = 0; i < plots.size(); i++) {
+            final Object subPlotObj = plots.get(i);
+            final Plot subPlot = (Plot) subPlotObj;
+            processPlotRecursive(subPlot, duplicateAxisFilter);
+        }
+    }
+
+    protected void processCategoryPlot(final Set<Integer> duplicateAxisFilter, final WrappedCategoryPlot plot) {
+        processAxisPlot(plot);
         for (int i = 0; i < plot.getRangeAxisCount(); i++) {
-            final ValueAxis axis = plot.getRangeAxis(i);
+            final ValueAxis axis = plot.getPlot().getRangeAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processRangeAxis(axis);
+                processAttachedAxis(new AttachedRangeValueAxis(plot, i, axis));
             }
         }
         for (int i = 0; i < plot.getDomainAxisCount(); i++) {
-            final CategoryAxis axis = plot.getDomainAxis(i);
+            final CategoryAxis axis = plot.getPlot().getDomainAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processDomainAxis(axis);
+                processAttachedAxis(new AttachedDomainCategoryAxis(plot, i, axis));
             }
         }
         for (int i = 0; i < plot.getRendererCount(); i++) {
-            final CategoryItemRenderer renderer = plot.getRenderer(i);
+            final CategoryItemRenderer renderer = plot.getPlot().getRenderer(i);
             processCategoryItemRenderer(renderer);
         }
     }
 
     public void processCategoryItemRenderer(final CategoryItemRenderer renderer) {}
 
-    @SuppressWarnings("unchecked")
-    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final XYPlot plot) {
+    protected void processXYPlot(final Set<Integer> duplicateAxisFilter, final WrappedXYPlot plot) {
+        processAxisPlot(plot);
         for (int i = 0; i < plot.getRangeAxisCount(); i++) {
-            final ValueAxis axis = plot.getRangeAxis(i);
+            final ValueAxis axis = plot.getPlot().getRangeAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processRangeAxis(axis);
+                processAttachedAxis(new AttachedRangeValueAxis(plot, i, axis));
             }
         }
         for (int i = 0; i < plot.getDomainAxisCount(); i++) {
-            final ValueAxis axis = plot.getDomainAxis(i);
+            final ValueAxis axis = plot.getPlot().getDomainAxis(i);
             if (axis != null && duplicateAxisFilter.add(System.identityHashCode(axis))) {
-                processDomainAxis(axis);
+                processAttachedAxis(new AttachedDomainValueAxis(plot, i, axis));
             }
         }
         for (int i = 0; i < plot.getRendererCount(); i++) {
-            final XYItemRenderer renderer = plot.getRenderer(i);
+            final XYItemRenderer renderer = plot.getPlot().getRenderer(i);
             processXYItemRenderer(renderer);
         }
+    }
+
+    protected void processAxisPlot(final IAxisPlot plot) {
         final Collection<Marker> foregroundDomainMarkers = plot.getDomainMarkers(Layer.FOREGROUND);
         processMarkers(foregroundDomainMarkers);
         final Collection<Marker> backgroundDomainMarkers = plot.getDomainMarkers(Layer.BACKGROUND);
@@ -186,17 +192,13 @@ public abstract class AJFreeChartVisitor {
         marker.setLabelFont(processFont(marker.getLabelFont()));
     }
 
-    public void processXYItemRenderer(final XYItemRenderer renderer) {}
+    public void processXYItemRenderer(final LegendItemSource renderer) {}
 
-    public void processDomainAxis(final Axis axis) {
-        processAxis(axis);
+    protected void processAttachedAxis(final IAttachedAxis axis) {
+        processAxis(axis.getAxis(), axis.getAxisType());
     }
 
-    public void processRangeAxis(final Axis axis) {
-        processAxis(axis);
-    }
-
-    public void processAxis(final Axis axis) {
+    public void processAxis(final Axis axis, final AxisType axisType) {
         axis.setLabelFont(processFont(axis.getLabelFont()));
         axis.setTickLabelFont(processFont(axis.getTickLabelFont()));
     }

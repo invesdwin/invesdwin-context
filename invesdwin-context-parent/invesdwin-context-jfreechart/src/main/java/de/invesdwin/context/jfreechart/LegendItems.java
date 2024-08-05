@@ -1,4 +1,4 @@
-package de.invesdwin.context.jfreechart.util;
+package de.invesdwin.context.jfreechart;
 
 import java.lang.reflect.Field;
 
