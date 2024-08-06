@@ -34,7 +34,7 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     public static final double DEFAULT_SCALE_LEGEND_RECTANGLE_MULTIPLIER = 2D;
     public static final double DEFAULT_SCALE_LEGEND_SHAPE_MULTIPLIER = 1.5D;
     public static final RectangleInsets DEFAULT_CHART_PADDING = RectangleInsets.ZERO_INSETS;
-    public static final int DEFAULT_COMBINED_PLOT_GAP = 30;
+    public static final int DEFAULT_COMBINED_PLOT_GAP = 24;
 
     public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = 12;
     public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = 8;
