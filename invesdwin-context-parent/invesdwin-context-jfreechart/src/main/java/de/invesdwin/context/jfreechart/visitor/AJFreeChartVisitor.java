@@ -194,7 +194,7 @@ public abstract class AJFreeChartVisitor {
 
     public void processXYItemRenderer(final LegendItemSource renderer) {}
 
-    protected void processAttachedAxis(final IAttachedAxis axis) {
+    public void processAttachedAxis(final IAttachedAxis axis) {
         processAxis(axis.getAxis(), axis.getAxisType());
     }
 

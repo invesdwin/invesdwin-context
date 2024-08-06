@@ -158,7 +158,7 @@ public class WrappedXYPlot extends APlot implements IAxisPlot {
 
     @Override
     public RectangleEdge getDomainAxisEdge(final int index) {
-        return getPlot().getDomainAxisEdge();
+        return getPlot().getDomainAxisEdge(index);
     }
 
     @Override
@@ -245,12 +245,12 @@ public class WrappedXYPlot extends APlot implements IAxisPlot {
 
     @Override
     public void setRangeAxisLocation(final int index, final AxisLocation location, final boolean notify) {
-        getPlot().setRangeAxisLocation(location);
+        getPlot().setRangeAxisLocation(index, location);
     }
 
     @Override
     public RectangleEdge getRangeAxisEdge(final int index) {
-        return getPlot().getRangeAxisEdge();
+        return getPlot().getRangeAxisEdge(index);
     }
 
     @Override

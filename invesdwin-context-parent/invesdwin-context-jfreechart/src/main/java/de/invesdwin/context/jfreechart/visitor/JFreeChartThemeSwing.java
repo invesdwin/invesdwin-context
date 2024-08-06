@@ -12,16 +12,18 @@ import javax.annotation.concurrent.Immutable;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.AxisLabelLocation;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.title.Title;
 import org.jfree.chart.ui.HorizontalAlignment;
+import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
 import de.invesdwin.context.jfreechart.axis.AxisType;
+import de.invesdwin.context.jfreechart.axis.attached.IAttachedAxis;
 import de.invesdwin.context.jfreechart.plot.IAxisPlot;
 import de.invesdwin.context.jfreechart.plot.combined.ICombinedPlot;
+import de.invesdwin.util.error.UnknownArgumentException;
 import de.invesdwin.util.lang.color.Colors;
 import de.invesdwin.util.swing.HiDPI;
 
@@ -37,6 +39,21 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     public static final boolean DEFAULT_OUTLINE_VISIBLE = true;
     public static final RectangleInsets DEFAULT_CHART_PADDING = new RectangleInsets(5, 0, 0, 0);
     public static final int DEFAULT_COMBINED_PLOT_GAP = 0;
+    public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = 4.0;
+    public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = 8.0;
+    public static final double DEFAULT_TICK_LABEL_INSET_BETWEEN = 2.0;
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_BOTTOM = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_TOP = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_RIGHT = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_LEFT = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
 
     @Override
     protected void processChart(final JFreeChart chart) {
@@ -70,19 +87,30 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     }
 
     @Override
+    public void processAttachedAxis(final IAttachedAxis axis) {
+        super.processAttachedAxis(axis);
+        final RectangleEdge axisEdge = axis.getAxisEdge();
+        if (axisEdge == RectangleEdge.LEFT) {
+            axis.setTickLabelInsets(getTickLabelInsetsLeft());
+        } else if (axisEdge == RectangleEdge.RIGHT) {
+            axis.setTickLabelInsets(getTickLabelInsetsRight());
+        } else if (axisEdge == RectangleEdge.TOP) {
+            axis.setTickLabelInsets(getTickLabelInsetsTop());
+        } else if (axisEdge == RectangleEdge.BOTTOM) {
+            axis.setTickLabelInsets(getTickLabelInsetsBottom());
+        } else {
+            throw UnknownArgumentException.newInstance(RectangleEdge.class, axisEdge);
+        }
+    }
+
+    @Override
     public void processAxis(final Axis axis, final AxisType axisType) {
         super.processAxis(axis, axisType);
         axis.setTickMarksVisible(false);
         axis.setAxisLineVisible(false);
         axis.setLabelLocation(AxisLabelLocation.MIDDLE);
-        axis.setTickLabelInsets(new RectangleInsets(2.0, 8.0, 2.0, 8.0));
         JFreeChartLocaleChanger.changeLocale(axis, getLocale());
         FiniteTickUnitSource.maybeWrap(axis);
-        if (axis instanceof ValueAxis) {
-            final ValueAxis cAxis = (ValueAxis) axis;
-            cAxis.setLowerMargin(ValueAxis.DEFAULT_LOWER_MARGIN * 2);
-            cAxis.setUpperMargin(ValueAxis.DEFAULT_UPPER_MARGIN * 2);
-        }
     }
 
     protected Stroke getGridlineStroke() {
@@ -119,6 +147,22 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
 
     protected RectangleInsets getChartPadding() {
         return DEFAULT_CHART_PADDING;
+    }
+
+    protected RectangleInsets getTickLabelInsetsBottom() {
+        return DEFAULT_TICK_LABEL_INSETS_BOTTOM;
+    }
+
+    protected RectangleInsets getTickLabelInsetsTop() {
+        return DEFAULT_TICK_LABEL_INSETS_TOP;
+    }
+
+    protected RectangleInsets getTickLabelInsetsRight() {
+        return DEFAULT_TICK_LABEL_INSETS_RIGHT;
+    }
+
+    protected RectangleInsets getTickLabelInsetsLeft() {
+        return DEFAULT_TICK_LABEL_INSETS_LEFT;
     }
 
 }
