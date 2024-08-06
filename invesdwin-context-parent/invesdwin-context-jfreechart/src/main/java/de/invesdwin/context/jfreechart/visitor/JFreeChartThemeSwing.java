@@ -37,11 +37,11 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     public static final Paint DEFAULT_OUTLINE_PAINT = Colors.fromHex("CECECE");
     public static final Stroke DEFAULT_OUTLINE_STROKE = DEFAULT_GRIDLINE_STROKE;
     public static final boolean DEFAULT_OUTLINE_VISIBLE = true;
-    public static final RectangleInsets DEFAULT_CHART_PADDING = new RectangleInsets(5, 0, 0, 0);
+    public static final RectangleInsets DEFAULT_CHART_PADDING = new RectangleInsets(HiDPI.scale(3), 0, 0, 0);
     public static final int DEFAULT_COMBINED_PLOT_GAP = 0;
-    public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = 4.0;
-    public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = 8.0;
-    public static final double DEFAULT_TICK_LABEL_INSET_BETWEEN = 2.0;
+    public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = HiDPI.scale(2.0);
+    public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = HiDPI.scale(4.0);
+    public static final double DEFAULT_TICK_LABEL_INSET_BETWEEN = HiDPI.scale(1.0);
     public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_BOTTOM = new RectangleInsets(
             DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM,
             DEFAULT_TICK_LABEL_INSET_BETWEEN);

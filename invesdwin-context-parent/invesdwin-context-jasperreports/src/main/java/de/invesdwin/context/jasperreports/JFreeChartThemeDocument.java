@@ -37,8 +37,23 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     public static final double DEFAULT_SCALE_LEGEND_SHAPE_MULTIPLIER = 1.5D;
     public static final RectangleInsets DEFAULT_CHART_PADDING = RectangleInsets.ZERO_INSETS;
     public static final int DEFAULT_COMBINED_PLOT_GAP = 30;
-    private static final RectangleInsets DEFAULT_TITLE_TOP_PADDING = new RectangleInsets(1, 1, 15, 1);
-    private static final RectangleInsets DEFAULT_TITLE_BOTTOM_PADDING = new RectangleInsets(10, 1, 1, 1);
+    public static final RectangleInsets DEFAULT_TITLE_TOP_PADDING = new RectangleInsets(1, 1, 15, 1);
+    public static final RectangleInsets DEFAULT_TITLE_BOTTOM_PADDING = new RectangleInsets(10, 1, 1, 1);
+    public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = 4;
+    public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = 8;
+    public static final double DEFAULT_TICK_LABEL_INSET_BETWEEN = 2;
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_BOTTOM = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_TOP = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_RIGHT = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_LEFT = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
 
     @Override
     protected void processChart(final JFreeChart chart) {
@@ -165,6 +180,26 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
 
     protected RectangleInsets getTitleTopPadding() {
         return DEFAULT_TITLE_TOP_PADDING;
+    }
+
+    @Override
+    protected RectangleInsets getTickLabelInsetsBottom() {
+        return DEFAULT_TICK_LABEL_INSETS_BOTTOM;
+    }
+
+    @Override
+    protected RectangleInsets getTickLabelInsetsTop() {
+        return DEFAULT_TICK_LABEL_INSETS_TOP;
+    }
+
+    @Override
+    protected RectangleInsets getTickLabelInsetsRight() {
+        return DEFAULT_TICK_LABEL_INSETS_RIGHT;
+    }
+
+    @Override
+    protected RectangleInsets getTickLabelInsetsLeft() {
+        return DEFAULT_TICK_LABEL_INSETS_LEFT;
     }
 
 }
