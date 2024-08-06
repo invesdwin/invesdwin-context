@@ -15,8 +15,6 @@ import javax.annotation.concurrent.Immutable;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.LegendItemCollection;
-import org.jfree.chart.title.Title;
-import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 
 import de.invesdwin.context.jfreechart.LegendItems;
@@ -37,38 +35,55 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     public static final double DEFAULT_SCALE_LEGEND_SHAPE_MULTIPLIER = 1.5D;
     public static final RectangleInsets DEFAULT_CHART_PADDING = RectangleInsets.ZERO_INSETS;
     public static final int DEFAULT_COMBINED_PLOT_GAP = 30;
-    public static final RectangleInsets DEFAULT_TITLE_TOP_PADDING = new RectangleInsets(1, 1, 15, 1);
-    public static final RectangleInsets DEFAULT_TITLE_BOTTOM_PADDING = new RectangleInsets(10, 1, 1, 1);
-    public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = 4;
-    public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = 8;
+
+    public static final double DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT = 12;
+    public static final double DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM = 8;
     public static final double DEFAULT_TICK_LABEL_INSET_BETWEEN = 2;
-    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_BOTTOM = new RectangleInsets(
-            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM,
-            DEFAULT_TICK_LABEL_INSET_BETWEEN);
-    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_TOP = new RectangleInsets(
-            DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
-            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final double DEFAULT_AXIS_LABEL_INSET_LEFT_OR_RIGHT = 16;
+    public static final double DEFAULT_AXIS_LABEL_INSET_TOP_OR_BOTTOM = 12;
+    public static final double DEFAULT_AXIS_LABEL_INSET_BETWEEN = DEFAULT_TICK_LABEL_INSET_BETWEEN;
+
+    public static final RectangleInsets DEFAULT_TITLE_PADDING_TOP = new RectangleInsets(
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM,
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TITLE_PADDING_BOTTOM = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM, DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_BETWEEN,
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN);
+
+    /*
+     * somehow JFreeChart mixes up top/bottom, left, right insets, so one has to always test which value in the inset is
+     * actually used
+     */
     public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_RIGHT = new RectangleInsets(
             DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
             DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT);
     public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_LEFT = new RectangleInsets(
             DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_LEFT_OR_RIGHT, DEFAULT_TICK_LABEL_INSET_BETWEEN,
             DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_TOP = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_TICK_LABEL_INSETS_BOTTOM = new RectangleInsets(
+            DEFAULT_TICK_LABEL_INSET_TOP_OR_BOTTOM, DEFAULT_TICK_LABEL_INSET_BETWEEN, DEFAULT_TICK_LABEL_INSET_BETWEEN,
+            DEFAULT_TICK_LABEL_INSET_BETWEEN);
+
+    public static final RectangleInsets DEFAULT_AXIS_LABEL_INSETS_RIGHT = new RectangleInsets(
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_LEFT_OR_RIGHT, DEFAULT_AXIS_LABEL_INSET_BETWEEN,
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_AXIS_LABEL_INSETS_LEFT = new RectangleInsets(
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_BETWEEN,
+            DEFAULT_AXIS_LABEL_INSET_LEFT_OR_RIGHT);
+    public static final RectangleInsets DEFAULT_AXIS_LABEL_INSETS_TOP = new RectangleInsets(
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_TOP_OR_BOTTOM,
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN);
+    public static final RectangleInsets DEFAULT_AXIS_LABEL_INSETS_BOTTOM = new RectangleInsets(
+            DEFAULT_AXIS_LABEL_INSET_TOP_OR_BOTTOM, DEFAULT_AXIS_LABEL_INSET_BETWEEN, DEFAULT_AXIS_LABEL_INSET_BETWEEN,
+            DEFAULT_AXIS_LABEL_INSET_BETWEEN);
 
     @Override
     protected void processChart(final JFreeChart chart) {
         super.processChart(chart);
         chart.setBackgroundPaint(getBackgroundPaint());
-    }
-
-    @Override
-    public void processTitle(final Title title) {
-        super.processTitle(title);
-        if (title.getPosition() == RectangleEdge.TOP) {
-            title.setPadding(getTitleTopPadding());
-        } else if (title.getPosition() == RectangleEdge.BOTTOM) {
-            title.setPadding(getTitleBottomPadding());
-        }
     }
 
     @Override
@@ -174,22 +189,19 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
         return DEFAULT_CHART_PADDING;
     }
 
-    protected RectangleInsets getTitleBottomPadding() {
-        return DEFAULT_TITLE_BOTTOM_PADDING;
-    }
-
-    protected RectangleInsets getTitleTopPadding() {
-        return DEFAULT_TITLE_TOP_PADDING;
+    @Override
+    protected RectangleInsets getTitlePaddingTop() {
+        return DEFAULT_TITLE_PADDING_TOP;
     }
 
     @Override
-    protected RectangleInsets getTickLabelInsetsBottom() {
-        return DEFAULT_TICK_LABEL_INSETS_BOTTOM;
+    protected RectangleInsets getTitlePaddingBottom() {
+        return DEFAULT_TITLE_PADDING_BOTTOM;
     }
 
     @Override
-    protected RectangleInsets getTickLabelInsetsTop() {
-        return DEFAULT_TICK_LABEL_INSETS_TOP;
+    protected RectangleInsets getTickLabelInsetsLeft() {
+        return DEFAULT_TICK_LABEL_INSETS_LEFT;
     }
 
     @Override
@@ -198,8 +210,33 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     }
 
     @Override
-    protected RectangleInsets getTickLabelInsetsLeft() {
-        return DEFAULT_TICK_LABEL_INSETS_LEFT;
+    protected RectangleInsets getTickLabelInsetsTop() {
+        return DEFAULT_TICK_LABEL_INSETS_TOP;
+    }
+
+    @Override
+    protected RectangleInsets getTickLabelInsetsBottom() {
+        return DEFAULT_TICK_LABEL_INSETS_BOTTOM;
+    }
+
+    @Override
+    protected RectangleInsets getAxisLabelInsetsLeft() {
+        return DEFAULT_AXIS_LABEL_INSETS_LEFT;
+    }
+
+    @Override
+    protected RectangleInsets getAxisLabelInsetsRight() {
+        return DEFAULT_AXIS_LABEL_INSETS_RIGHT;
+    }
+
+    @Override
+    protected RectangleInsets getAxisLabelInsetsTop() {
+        return DEFAULT_AXIS_LABEL_INSETS_TOP;
+    }
+
+    @Override
+    protected RectangleInsets getAxisLabelInsetsBottom() {
+        return DEFAULT_AXIS_LABEL_INSETS_BOTTOM;
     }
 
 }
