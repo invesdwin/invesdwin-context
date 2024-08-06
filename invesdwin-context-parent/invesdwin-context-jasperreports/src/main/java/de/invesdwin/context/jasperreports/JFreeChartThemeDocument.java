@@ -15,6 +15,9 @@ import javax.annotation.concurrent.Immutable;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.title.Title;
+import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.ui.RectangleInsets;
 
 import de.invesdwin.context.jfreechart.LegendItems;
 import de.invesdwin.context.jfreechart.plot.IAxisPlot;
@@ -32,11 +35,25 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     public static final int DEFAULT_SCALE_LEGEND_LINE_WIDTH_ADDEND = 5;
     public static final double DEFAULT_SCALE_LEGEND_RECTANGLE_MULTIPLIER = 2D;
     public static final double DEFAULT_SCALE_LEGEND_SHAPE_MULTIPLIER = 1.5D;
+    public static final RectangleInsets DEFAULT_CHART_PADDING = RectangleInsets.ZERO_INSETS;
+    public static final int DEFAULT_COMBINED_PLOT_GAP = 30;
+    private static final RectangleInsets DEFAULT_TITLE_TOP_PADDING = new RectangleInsets(1, 1, 15, 1);
+    private static final RectangleInsets DEFAULT_TITLE_BOTTOM_PADDING = new RectangleInsets(10, 1, 1, 1);
 
     @Override
     protected void processChart(final JFreeChart chart) {
         super.processChart(chart);
         chart.setBackgroundPaint(getBackgroundPaint());
+    }
+
+    @Override
+    public void processTitle(final Title title) {
+        super.processTitle(title);
+        if (title.getPosition() == RectangleEdge.TOP) {
+            title.setPadding(getTitleTopPadding());
+        } else if (title.getPosition() == RectangleEdge.BOTTOM) {
+            title.setPadding(getTitleBottomPadding());
+        }
     }
 
     @Override
@@ -130,6 +147,24 @@ public class JFreeChartThemeDocument extends JFreeChartThemeSwing {
     @Override
     protected boolean isOutlineVisible() {
         return DEFAULT_OUTLINE_VISIBLE;
+    }
+
+    @Override
+    protected double getCombinedPlotGap() {
+        return DEFAULT_COMBINED_PLOT_GAP;
+    }
+
+    @Override
+    protected RectangleInsets getChartPadding() {
+        return DEFAULT_CHART_PADDING;
+    }
+
+    protected RectangleInsets getTitleBottomPadding() {
+        return DEFAULT_TITLE_BOTTOM_PADDING;
+    }
+
+    protected RectangleInsets getTitleTopPadding() {
+        return DEFAULT_TITLE_TOP_PADDING;
     }
 
 }

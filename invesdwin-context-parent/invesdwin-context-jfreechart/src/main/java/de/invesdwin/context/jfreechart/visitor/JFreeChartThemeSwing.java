@@ -16,7 +16,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.title.Title;
 import org.jfree.chart.ui.HorizontalAlignment;
-import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 
 import de.invesdwin.context.jfreechart.FiniteTickUnitSource;
@@ -42,29 +41,19 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
     @Override
     protected void processChart(final JFreeChart chart) {
         super.processChart(chart);
-        //        chart.setBackgroundPaint(DEFAULT_BACKGROUND_PAINT);
-        //TODO: gaps
-        //        chart.setPadding(DEFAULT_CHART_PADDING);
+        chart.setPadding(getChartPadding());
     }
 
     @Override
     protected void processCombinedPlot(final Set<Integer> duplicateAxisFilter, final ICombinedPlot plot) {
         super.processCombinedPlot(duplicateAxisFilter, plot);
-        //TODO: gaps
-        //        plot.setGap(getCombinedPlotGap());
+        plot.setGap(getCombinedPlotGap());
     }
 
     @Override
     public void processTitle(final Title title) {
         super.processTitle(title);
         title.setHorizontalAlignment(HorizontalAlignment.LEFT);
-
-        final RectangleInsets padding = title.getPadding();
-        if (title.getPosition() == RectangleEdge.TOP) {
-            title.setPadding(padding.getTop(), padding.getLeft(), padding.getBottom() + 15, padding.getRight());
-        } else if (title.getPosition() == RectangleEdge.BOTTOM) {
-            title.setPadding(padding.getTop() + 10, padding.getLeft(), padding.getBottom(), padding.getRight());
-        }
     }
 
     @Override
@@ -126,6 +115,10 @@ public class JFreeChartThemeSwing extends AJFreeChartVisitor {
 
     protected double getCombinedPlotGap() {
         return DEFAULT_COMBINED_PLOT_GAP;
+    }
+
+    protected RectangleInsets getChartPadding() {
+        return DEFAULT_CHART_PADDING;
     }
 
 }
