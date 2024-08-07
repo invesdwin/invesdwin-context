@@ -98,6 +98,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
         private final String methodName;
         private final int parameterCount;
         private final Function<IScriptTaskParameters, Object>[] parameterFunctions;
+        private final boolean[] nullChecks;
         private final Method method;
         private MethodHandle methodHandle;
         private final boolean staticMethod;
@@ -115,9 +116,12 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             }
             this.returnFunction = newReturnFunction();
             this.parameterFunctions = new Function[parameterCount];
+            this.nullChecks = new boolean[parameterCount];
             for (int i = 0; i < parameterCount; i++) {
                 parameterFunctions[i] = newParameterFunction(i);
+                nullChecks[i] = newNullCheck(i);
             }
+
             this.staticMethod = Reflections.isStatic(method);
             try {
                 methodHandle = MethodHandles.lookup().unreflect(method);
@@ -142,7 +146,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             if (staticMethod) {
                 final Object[] args = new Object[parameterCount];
                 for (int i = 0; i < parameterCount; i++) {
-                    if (parameters.isNotNull(i)) {
+                    if (!nullChecks[i] || parameters.isNotNull(i)) {
                         args[i] = parameterFunctions[i].apply(parameters);
                     }
                 }
@@ -151,7 +155,7 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
                 final Object[] args = new Object[parameterCount + 1];
                 args[0] = provider;
                 for (int i = 0; i < parameterCount; i++) {
-                    if (parameters.isNotNull(i)) {
+                    if (!nullChecks[i] || parameters.isNotNull(i)) {
                         args[i + 1] = parameterFunctions[i].apply(parameters);
                     }
                 }
@@ -356,6 +360,13 @@ public class ReflectiveScriptTaskCallback implements IScriptTaskCallback {
             } else {
                 return null;
             }
+        }
+
+        private boolean newNullCheck(final int index) {
+            final BeanClassType type = new BeanClassType(method.getParameterTypes()[index],
+                    method.getGenericParameterTypes()[index]);
+            //retun nan for null double
+            return !type.isInstanceOf(double.class);
         }
 
         private ADecimal<?> determineDecimalConverter(final BeanClassType type) {
