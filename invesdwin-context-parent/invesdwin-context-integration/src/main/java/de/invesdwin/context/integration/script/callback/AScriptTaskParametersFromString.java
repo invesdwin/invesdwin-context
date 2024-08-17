@@ -372,11 +372,7 @@ public abstract class AScriptTaskParametersFromString implements IScriptTaskPara
     @Override
     public double getDouble(final int index) {
         final String str = getString(index);
-        if (str == null) {
-            return Double.NaN;
-        } else {
-            return Double.parseDouble(str);
-        }
+        return parseDouble(str);
     }
 
     @Override
@@ -388,11 +384,7 @@ public abstract class AScriptTaskParametersFromString implements IScriptTaskPara
         final double[] values = new double[strs.length];
         for (int i = 0; i < strs.length; i++) {
             final String str = strs[i];
-            if (str == null) {
-                values[i] = Double.NaN;
-            } else {
-                values[i] = Double.parseDouble(str);
-            }
+            values[i] = parseDouble(str);
         }
         return values;
     }
@@ -410,14 +402,20 @@ public abstract class AScriptTaskParametersFromString implements IScriptTaskPara
             valuesMatrix[i] = values;
             for (int j = 0; j < strs.length; j++) {
                 final String str = strs[j];
-                if (str == null) {
-                    values[j] = Double.NaN;
-                } else {
-                    values[j] = Double.parseDouble(str);
-                }
+                values[j] = parseDouble(str);
             }
         }
         return valuesMatrix;
+    }
+
+    protected double parseDouble(final String str) {
+        if (str == null) {
+            return Double.NaN;
+        } else if ("nan".equalsIgnoreCase(str)) {
+            return Double.NaN;
+        } else {
+            return Double.parseDouble(str);
+        }
     }
 
 }

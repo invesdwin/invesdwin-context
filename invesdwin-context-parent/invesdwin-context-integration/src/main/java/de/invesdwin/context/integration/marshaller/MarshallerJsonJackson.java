@@ -11,6 +11,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.MapperBuilder;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper.Builder;
 
 @ThreadSafe
 public final class MarshallerJsonJackson {
@@ -26,13 +29,13 @@ public final class MarshallerJsonJackson {
     }
 
     private ObjectMapper newObjectMapper(final boolean multiline) {
-        final ObjectMapper mapper = new ObjectMapper();
+        final Builder mapper = JsonMapper.builder();
         configureObjectMapper(mapper, multiline);
-        return mapper;
+        return mapper.build();
     }
 
-    public static void configureObjectMapper(final ObjectMapper mapper, final boolean multiline) {
-        mapper.findAndRegisterModules();
+    public static void configureObjectMapper(final MapperBuilder<?, ?> mapper, final boolean multiline) {
+        mapper.findAndAddModules();
         if (multiline) {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         }
@@ -42,7 +45,7 @@ public final class MarshallerJsonJackson {
         mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
         //don't require quotes for field names
         mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        //allow nan without quotes
+        //allow NaN without quotes
         mapper.configure(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS.mappedFeature(), true);
     }
 

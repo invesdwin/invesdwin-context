@@ -11,6 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+/**
+ * YAML parser can also parse JSON and it does not complain about nan lowercase value tokens like JSON parser:
+ * https://stackoverflow.com/a/29858634/67492
+ */
 @ThreadSafe
 public final class MarshallerYamlJackson {
 

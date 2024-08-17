@@ -7,6 +7,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper.Builder;
 
 @ThreadSafe
 public final class MarshallerXmlJackson {
@@ -22,9 +23,9 @@ public final class MarshallerXmlJackson {
     }
 
     private XmlMapper newXmlMapper(final boolean multiline) {
-        final XmlMapper mapper = new XmlMapper();
+        final Builder mapper = XmlMapper.builder();
         MarshallerJsonJackson.configureObjectMapper(mapper, multiline);
-        return mapper;
+        return mapper.build();
     }
 
     public static String toXml(final Object object, final boolean multiline) {
