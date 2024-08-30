@@ -25,9 +25,11 @@ public class ConfiguredFileAppender extends RollingFileAppender<ILoggingEvent> {
     public void start() {
         //  <appender name="file_invesdwin" class="ch.qos.logback.core.rolling.RollingFileAppender">
         //      <File>${file.prefix}invesdwin${file.postfix}</File>
-        final String logFile = ContextProperties.getLogDirectory() + "/" + getName() + ".log";
+        final String fileBase = ContextProperties.getLogDirectory() + "/" + getName();
+        final String file = fileBase + ".log";
+        final String fileNamePattern = fileBase + "_%i.log";
 
-        setFile(logFile);
+        setFile(file);
 
         //      <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
         //          <fileNamePattern>${file.prefix}invesdwin${file.postfix.archive}</fileNamePattern>
@@ -35,7 +37,7 @@ public class ConfiguredFileAppender extends RollingFileAppender<ILoggingEvent> {
         //          <maxIndex>${file.maxhistory}</maxIndex>
         //      </rollingPolicy>
         final FixedWindowRollingPolicy rollingPolicy = new FixedWindowRollingPolicy();
-        rollingPolicy.setFileNamePattern(logFile + ".%i.gz");
+        rollingPolicy.setFileNamePattern(fileNamePattern);
         rollingPolicy.setMinIndex(1);
         rollingPolicy.setMaxIndex(9);
         rollingPolicy.setParent(this);
