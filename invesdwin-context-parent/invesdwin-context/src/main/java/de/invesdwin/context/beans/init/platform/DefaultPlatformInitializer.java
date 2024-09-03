@@ -20,6 +20,7 @@ import de.invesdwin.context.beans.init.platform.util.ClassPathScannerConfigurer;
 import de.invesdwin.context.beans.init.platform.util.ConscryptSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.CryptoPolicyConfigurer;
 import de.invesdwin.context.beans.init.platform.util.DefaultTimeZoneConfigurer;
+import de.invesdwin.context.beans.init.platform.util.JavaIoTmpdirConfigurer;
 import de.invesdwin.context.beans.init.platform.util.RegisterTypesForSerializationConfigurer;
 import de.invesdwin.context.beans.init.platform.util.TempDirectoryLockConfigurerer;
 import de.invesdwin.context.beans.init.platform.util.WildflyOpenSslSecurityProviderConfigurer;
@@ -184,6 +185,11 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
                 new File(tempDirectory, TempDirectoryLockConfigurerer.TEMP_DIRECTORY_LOCK_FILE_NAME));
         lock.tryLockThrowing();
         return lock;
+    }
+
+    @Override
+    public File initJavaIoTmpdirRedirect(final File tempDirectory) {
+        return JavaIoTmpdirConfigurer.configure(tempDirectory);
     }
 
     @Override

@@ -41,6 +41,8 @@ public interface IPlatformInitializer {
 
     FileChannelLock initTempDirectoryLock(File tempDirectory);
 
+    File initJavaIoTmpdirRedirect(File tempDirectory);
+
     void initDeleteTempDirectoryRunner(File tempDirectory, FileChannelLock tempDirectoryLock);
 
     File initTempClasspathDirectory(File tempDirectory);

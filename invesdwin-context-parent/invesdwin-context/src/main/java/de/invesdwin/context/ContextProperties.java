@@ -34,6 +34,10 @@ public final class ContextProperties {
      * Process specific temp dir that gets cleaned on exit.
      */
     public static final File TEMP_DIRECTORY;
+    /**
+     * Where java.io.tmpdir is located.
+     */
+    public static final File TEMP_DIRECTORY_JAVA;
     public static final FileChannelLock TEMP_DIRECTORY_LOCK;
     public static final File TEMP_CLASSPATH_DIRECTORY;
     public static final Duration DEFAULT_NETWORK_TIMEOUT;
@@ -67,11 +71,13 @@ public final class ContextProperties {
 
         File tempDirectory = null;
         FileChannelLock tempDirectoryLock = null;
+        File tempDirectoryJava = null;
         File tempClasspathDirectory = null;
         if (PlatformInitializerProperties.isAllowed()) {
             try {
                 tempDirectory = initializer.initTempDirectory();
                 tempDirectoryLock = initializer.initTempDirectoryLock(tempDirectory);
+                tempDirectoryJava = initializer.initJavaIoTmpdirRedirect(tempDirectory);
                 tempClasspathDirectory = initializer.initTempClasspathDirectory(tempDirectory);
                 initializer.initDeleteTempDirectoryRunner(tempDirectory, tempDirectoryLock);
             } catch (final Throwable t) {
@@ -84,6 +90,7 @@ public final class ContextProperties {
         }
         TEMP_DIRECTORY = tempDirectory;
         TEMP_DIRECTORY_LOCK = tempDirectoryLock;
+        TEMP_DIRECTORY_JAVA = tempDirectoryJava;
         TEMP_CLASSPATH_DIRECTORY = tempClasspathDirectory;
 
         if (PlatformInitializerProperties.isAllowed()) {

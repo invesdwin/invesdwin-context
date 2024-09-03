@@ -104,6 +104,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public File initJavaIoTmpdirRedirect(final File tempDirectory) {
+        return delegate.initJavaIoTmpdirRedirect(tempDirectory);
+    }
+
+    @Override
     public File initTempClasspathDirectory(final File tempDirectory) {
         return delegate.initTempClasspathDirectory(tempDirectory);
     }
