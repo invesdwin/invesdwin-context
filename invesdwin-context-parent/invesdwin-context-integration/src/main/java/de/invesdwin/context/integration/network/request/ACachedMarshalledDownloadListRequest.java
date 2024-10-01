@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import de.invesdwin.context.integration.marshaller.MarshallerJsonJackson;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.collections.Collections;
+import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -31,16 +32,26 @@ public abstract class ACachedMarshalledDownloadListRequest<E> implements Callabl
         try {
             final File file = newFile();
             if (!file.exists() || isExpired(file)) {
-                final List<E> downloaded = download();
                 Files.forceMkdirParent(file);
-                if (downloaded.isEmpty()) {
-                    Files.touch(file);
-                } else {
-                    final String json = toMarshalled(downloaded);
-                    Files.writeStringToFile(file, json, Charsets.DEFAULT);
+                try (FileChannelLock lock = new FileChannelLock(new File(file.getAbsolutePath() + ".lock")) {
+                    @Override
+                    protected boolean isThreadLockEnabled() {
+                        return true;
+                    }
+                }) {
+                    if (!file.exists() || isExpired(file)) {
+                        final List<E> downloaded = download();
+                        if (downloaded.isEmpty()) {
+                            Files.touch(file);
+                        } else {
+                            final String json = toMarshalled(downloaded);
+                            Files.writeStringToFile(file, json, Charsets.DEFAULT);
+                        }
+                        return downloaded;
+                    }
                 }
-                return downloaded;
-            } else if (file.length() == 0) {
+            }
+            if (file.length() == 0) {
                 return Collections.emptyList();
             } else {
                 try {
