@@ -75,6 +75,7 @@ public final class ContextProperties {
         File tempClasspathDirectory = null;
         if (PlatformInitializerProperties.isAllowed()) {
             try {
+                initializer.initDisableJavaModuleSystemRestrictions();
                 tempDirectory = initializer.initTempDirectory();
                 tempDirectoryLock = initializer.initTempDirectoryLock(tempDirectory);
                 tempDirectoryJava = initializer.initJavaIoTmpdirRedirect(tempDirectory);
