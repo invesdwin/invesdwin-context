@@ -83,7 +83,7 @@ public class SimpleCallbackTest {
     @ReturnExpression
     public String callManyParamsExpressionMultiline(final boolean p1, final byte p2, final short p3, final char p4,
             final int p5, final long p6, final float p7, final double p8, final String p9, final Decimal p10) {
-        final StringBuilder expression = new StringBuilder("double value = ");
+        final StringBuilder expression = new StringBuilder("value = ");
         expression.append(p1 ? 1 : 0);
         expression.append(";\n value += ");
         expression.append(p2);
