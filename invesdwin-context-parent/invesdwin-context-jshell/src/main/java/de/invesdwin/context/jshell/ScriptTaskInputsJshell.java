@@ -155,7 +155,7 @@ public class ScriptTaskInputsJshell implements IScriptTaskInputs {
 
     @Override
     public void putExpression(final String variable, final String expression) {
-        engine.unwrap().eval(variable + " = " + expression);
+        engine.unwrap().eval("var " + variable + " = " + expression);
     }
 
     @Override
