@@ -30,7 +30,7 @@ if(callManyParamsExpression != 55){
 }
 var callManyParamsExpressionMultiline = callback("callManyParamsExpressionMultiline", true, 2, 3, '4', 5, 6, 7.0, 8.0, "123456789", 10.0);
 if(callManyParamsExpressionMultiline != 55){
-	throw new Exception("callManyParams unexpected result: "+callManyParamsExpressionMultiline);
+	throw new Exception("callManyParamsExpressionMultiline unexpected result: "+callManyParamsExpressionMultiline);
 }
 
 var getManyParamsExpression = putManyParamsExpression;

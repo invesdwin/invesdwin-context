@@ -30,7 +30,7 @@ if(callManyParamsExpression !== 55){
 }
 callManyParamsExpressionMultiline = callback("callManyParamsExpressionMultiline", true, 2, 3, '4', 5, 6, 7.0, 8.0, "123456789", 10.0)
 if(callManyParamsExpressionMultiline !== 55){
-	throw "callManyParams unexpected result: "+callManyParamsExpressionMultiline
+	throw "callManyParamsExpressionMultiline unexpected result: "+callManyParamsExpressionMultiline
 }
 
 getManyParamsExpression = putManyParamsExpression

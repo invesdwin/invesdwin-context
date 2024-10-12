@@ -31,7 +31,7 @@ if(callManyParamsExpression != 55.0){
 }
 val callManyParamsExpressionMultiline: Double = callback("callManyParamsExpressionMultiline", true, 2, 3, '4', 5, 6, 7.0, 8.0, "123456789", 10.0)
 if(callManyParamsExpressionMultiline != 55.0){
-	throw Exception("callManyParams unexpected result: "+callManyParamsExpressionMultiline)
+	throw Exception("callManyParamsExpressionMultiline unexpected result: "+callManyParamsExpressionMultiline)
 }
 
 val getManyParamsExpression: Double = putManyParamsExpression
