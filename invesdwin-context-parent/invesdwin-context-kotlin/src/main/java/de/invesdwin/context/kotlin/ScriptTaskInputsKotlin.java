@@ -158,7 +158,7 @@ public class ScriptTaskInputsKotlin implements IScriptTaskInputs {
         if (expression == null) {
             putNull(variable);
         } else {
-            engine.unwrap().eval("val " + variable + " = " + expression);
+            engine.unwrap().eval("var " + variable + " = " + expression);
         }
     }
 
