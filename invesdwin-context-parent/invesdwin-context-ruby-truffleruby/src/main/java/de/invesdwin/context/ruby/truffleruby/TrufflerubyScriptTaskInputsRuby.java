@@ -173,7 +173,11 @@ public class TrufflerubyScriptTaskInputsRuby implements IScriptTaskInputsRuby {
 
     @Override
     public void remove(final String variable) {
-        engine.unwrap().remove(variable);
+        try {
+            engine.unwrap().remove(variable);
+        } catch (final UnsupportedOperationException e) {
+            //ignore
+        }
     }
 
 }
