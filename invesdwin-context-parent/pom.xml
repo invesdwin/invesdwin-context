@@ -23,7 +23,9 @@
 		<module>invesdwin-context-groovy</module>
 		<module>invesdwin-context-kotlin</module>
 		<module>invesdwin-context-scala</module>
-		<module>invesdwin-context-jruby</module>
+		<module>invesdwin-context-ruby-contract</module>
+		<module>invesdwin-context-ruby-jruby</module>
+		<module>invesdwin-context-ruby-truffleruby</module>
 		<module>invesdwin-context-javascript</module>
 		<module>invesdwin-context-jshell</module>
 		<module>invesdwin-context-beanshell</module>
@@ -170,7 +172,23 @@
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-jruby</artifactId>
+				<artifactId>invesdwin-context-ruby-contract</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-ruby-contract</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-ruby-jruby</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-ruby-truffleruby</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 			<dependency>

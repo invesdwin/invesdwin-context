@@ -101,7 +101,7 @@ public class PolyglotScriptEngineFactory implements ScriptEngineFactory {
     }
 
     @Override
-    public ScriptEngine getScriptEngine() {
+    public PolyglotScriptEngine getScriptEngine() {
         return new PolyglotScriptEngine(this);
     }
 

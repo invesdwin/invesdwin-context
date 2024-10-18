@@ -7,32 +7,28 @@
 		<artifactId>invesdwin-context-parent</artifactId>
 		<version>1.0.4-SNAPSHOT</version>
 	</parent>
-	<artifactId>invesdwin-context-graalvm</artifactId>
+	<artifactId>invesdwin-context-ruby-jruby</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-integration</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>polyglot</artifactId>
+			<artifactId>invesdwin-context-ruby-contract</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>java</artifactId>
-			<type>pom</type>
-			<!-- non-transitive test dependency -->
-			<scope>provided</scope>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-ruby-contract</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jruby</groupId>
+			<artifactId>jruby-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>llvm</artifactId>
-			<type>pom</type>
-			<!-- non-transitive test dependency -->
-			<scope>provided</scope>
+			<groupId>org.jruby</groupId>
+			<artifactId>jruby-stdlib</artifactId>
 		</dependency>
 	</dependencies>
 

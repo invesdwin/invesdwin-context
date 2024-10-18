@@ -7,32 +7,30 @@
 		<artifactId>invesdwin-context-parent</artifactId>
 		<version>1.0.4-SNAPSHOT</version>
 	</parent>
-	<artifactId>invesdwin-context-graalvm</artifactId>
+	<artifactId>invesdwin-context-ruby-truffleruby</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-integration</artifactId>
+			<artifactId>invesdwin-context-ruby-contract</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-ruby-contract</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.invesdwin</groupId>
+			<artifactId>invesdwin-context-graalvm</artifactId>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>polyglot</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>java</artifactId>
+			<artifactId>ruby</artifactId>
 			<type>pom</type>
-			<!-- non-transitive test dependency -->
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>llvm</artifactId>
-			<type>pom</type>
-			<!-- non-transitive test dependency -->
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
