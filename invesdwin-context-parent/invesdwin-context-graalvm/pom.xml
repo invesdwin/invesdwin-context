@@ -7,23 +7,18 @@
 		<artifactId>invesdwin-context-parent</artifactId>
 		<version>1.0.4-SNAPSHOT</version>
 	</parent>
-	<artifactId>invesdwin-context-javascript</artifactId>
+	<artifactId>invesdwin-context-graalvm</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-graalvm</artifactId>
+			<artifactId>invesdwin-context-integration</artifactId>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.graalvm.polyglot</groupId>
-			<artifactId>js</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.graalvm.js</groupId>
-			<artifactId>js-scriptengine</artifactId>
+			<artifactId>polyglot</artifactId>
 		</dependency>
 	</dependencies>
 

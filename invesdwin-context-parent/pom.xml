@@ -28,6 +28,7 @@
 		<module>invesdwin-context-jshell</module>
 		<module>invesdwin-context-beanshell</module>
 		<module>invesdwin-context-mvel</module>
+		<module>invesdwin-context-graalvm</module>
 	</modules>
 
 	<licenses>
@@ -190,6 +191,11 @@
 			<dependency>
 				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-mvel</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-graalvm</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
 
