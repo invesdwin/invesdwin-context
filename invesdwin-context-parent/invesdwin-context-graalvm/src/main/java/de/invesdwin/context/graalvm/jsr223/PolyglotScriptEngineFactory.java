@@ -16,13 +16,13 @@ import org.graalvm.polyglot.Language;
  * Source: https://www.graalvm.org/latest/reference-manual/embed-languages/#compatibility-with-jsr-223-scriptengine
  */
 @Immutable
-public abstract class APolyglotScriptEngineFactory implements ScriptEngineFactory {
+public class PolyglotScriptEngineFactory implements ScriptEngineFactory {
 
     private final String languageId;
     private final Engine polyglotEngine;
     private final Language language;
 
-    public APolyglotScriptEngineFactory(final String languageId) {
+    public PolyglotScriptEngineFactory(final String languageId) {
         this.languageId = languageId;
         this.polyglotEngine = Engine.newBuilder().build();
         this.language = polyglotEngine.getLanguages().get(languageId);

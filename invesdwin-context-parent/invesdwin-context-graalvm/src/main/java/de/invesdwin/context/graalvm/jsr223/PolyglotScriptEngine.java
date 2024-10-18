@@ -19,10 +19,10 @@ import org.graalvm.polyglot.Value;
 
 @NotThreadSafe
 public class PolyglotScriptEngine implements ScriptEngine, Compilable, Invocable, AutoCloseable {
-    private final APolyglotScriptEngineFactory factory;
+    private final PolyglotScriptEngineFactory factory;
     private final PolyglotContext defaultContext;
 
-    public PolyglotScriptEngine(final APolyglotScriptEngineFactory factory) {
+    public PolyglotScriptEngine(final PolyglotScriptEngineFactory factory) {
         this.factory = factory;
         this.defaultContext = new PolyglotContext(factory);
     }

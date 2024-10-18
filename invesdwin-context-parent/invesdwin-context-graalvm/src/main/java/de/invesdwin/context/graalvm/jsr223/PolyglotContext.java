@@ -17,13 +17,13 @@ import org.graalvm.polyglot.Context;
 public class PolyglotContext implements ScriptContext {
     private Context context;
     @SuppressWarnings("unused")
-    private final APolyglotScriptEngineFactory factory;
+    private final PolyglotScriptEngineFactory factory;
     private final PolyglotReader in;
     private final PolyglotWriter out;
     private final PolyglotWriter err;
     private Bindings globalBindings;
 
-    public PolyglotContext(final APolyglotScriptEngineFactory factory) {
+    public PolyglotContext(final PolyglotScriptEngineFactory factory) {
         this.factory = factory;
         this.in = new PolyglotReader(new InputStreamReader(System.in));
         this.out = new PolyglotWriter(new OutputStreamWriter(System.out));

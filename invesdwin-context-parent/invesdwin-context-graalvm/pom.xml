@@ -20,6 +20,18 @@
 			<groupId>org.graalvm.polyglot</groupId>
 			<artifactId>polyglot</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>java</artifactId>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>llvm</artifactId>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
