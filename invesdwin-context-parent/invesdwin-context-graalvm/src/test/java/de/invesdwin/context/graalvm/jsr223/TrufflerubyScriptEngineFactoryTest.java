@@ -3,7 +3,7 @@ package de.invesdwin.context.graalvm.jsr223;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.script.ScriptException;
 
-import org.graalvm.polyglot.Source.Builder;
+import org.graalvm.polyglot.Source;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
@@ -16,7 +16,7 @@ public class TrufflerubyScriptEngineFactoryTest extends ATest {
     public void test() throws ScriptException {
         final PolyglotScriptEngineFactory factory = new PolyglotScriptEngineFactory("ruby") {
             @Override
-            public Builder customizeSourceBuilder(final Builder builder) {
+            public Source.Builder customizeSourceBuilder(final Source.Builder builder) {
                 return super.customizeSourceBuilder(builder).interactive(true);
             }
         };

@@ -3,7 +3,15 @@ package de.invesdwin.context.ruby.truffleruby;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.ruby.IScriptTaskInputsRuby;
+import de.invesdwin.util.math.Doubles;
+import de.invesdwin.util.math.Integers;
 
+/**
+ * org.truffleruby.language.RubyGuards.assertIsValidRubyValue: Byte, Short, Float not supported
+ *
+ * @author subes
+ *
+ */
 @NotThreadSafe
 public class TrufflerubyScriptTaskInputsRuby implements IScriptTaskInputsRuby {
 
@@ -20,32 +28,32 @@ public class TrufflerubyScriptTaskInputsRuby implements IScriptTaskInputsRuby {
 
     @Override
     public void putByte(final String variable, final byte value) {
-        engine.unwrap().put(variable, value);
+        putInteger(variable, Integers.checkedCast(value));
     }
 
     @Override
     public void putByteVector(final String variable, final byte[] value) {
-        engine.unwrap().put(variable, value);
+        putIntegerVector(variable, Integers.checkedCastVector(value));
     }
 
     @Override
     public void putByteMatrix(final String variable, final byte[][] value) {
-        engine.unwrap().put(variable, value);
+        putIntegerMatrix(variable, Integers.checkedCastMatrix(value));
     }
 
     @Override
     public void putCharacter(final String variable, final char value) {
-        engine.unwrap().put(variable, value);
+        putInteger(variable, Integers.checkedCast(value));
     }
 
     @Override
     public void putCharacterVector(final String variable, final char[] value) {
-        engine.unwrap().put(variable, value);
+        putIntegerVector(variable, Integers.checkedCastVector(value));
     }
 
     @Override
     public void putCharacterMatrix(final String variable, final char[][] value) {
-        engine.unwrap().put(variable, value);
+        putIntegerMatrix(variable, Integers.checkedCastMatrix(value));
     }
 
     @Override
@@ -65,17 +73,17 @@ public class TrufflerubyScriptTaskInputsRuby implements IScriptTaskInputsRuby {
 
     @Override
     public void putFloat(final String variable, final float value) {
-        engine.unwrap().put(variable, value);
+        putDouble(variable, Doubles.checkedCast(value));
     }
 
     @Override
     public void putFloatVector(final String variable, final float[] value) {
-        engine.unwrap().put(variable, value);
+        putDoubleVector(variable, Doubles.checkedCastVector(value));
     }
 
     @Override
     public void putFloatMatrix(final String variable, final float[][] value) {
-        engine.unwrap().put(variable, value);
+        putDoubleMatrix(variable, Doubles.checkedCastMatrix(value));
     }
 
     @Override
@@ -95,17 +103,17 @@ public class TrufflerubyScriptTaskInputsRuby implements IScriptTaskInputsRuby {
 
     @Override
     public void putShort(final String variable, final short value) {
-        engine.unwrap().put(variable, value);
+        putInteger(variable, Integers.checkedCast(value));
     }
 
     @Override
     public void putShortVector(final String variable, final short[] value) {
-        engine.unwrap().put(variable, value);
+        putIntegerVector(variable, Integers.checkedCastVector(value));
     }
 
     @Override
     public void putShortMatrix(final String variable, final short[][] value) {
-        engine.unwrap().put(variable, value);
+        putIntegerMatrix(variable, Integers.checkedCastMatrix(value));
     }
 
     @Override
