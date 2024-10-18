@@ -34,6 +34,13 @@
 			<!-- non-transitive test dependency -->
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>ruby</artifactId>
+			<type>pom</type>
+			<!-- non-transitive test dependency -->
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 </project>

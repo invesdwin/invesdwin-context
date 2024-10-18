@@ -8,9 +8,9 @@ import javax.script.ScriptEngineFactory;
 
 import org.graalvm.home.Version;
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Context.Builder;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Language;
+import org.graalvm.polyglot.Source;
 
 /**
  * Source: https://www.graalvm.org/latest/reference-manual/embed-languages/#compatibility-with-jsr-223-scriptengine
@@ -108,8 +108,12 @@ public class PolyglotScriptEngineFactory implements ScriptEngineFactory {
     /**
      * You can customize the context by overriding this
      */
-    protected Builder newContextBuilder() {
-        return Context.newBuilder(getLanguageId()).allowAllAccess(true);
+    public Context.Builder customizeContextBuilder(final Context.Builder builder) {
+        return builder.allowAllAccess(true);
+    }
+
+    public Source.Builder customizeSourceBuilder(final Source.Builder builder) {
+        return builder;
     }
 
 }

@@ -32,7 +32,10 @@ public class PolyglotContext implements ScriptContext {
 
     public Context getContext() {
         if (context == null) {
-            final Context.Builder builder = factory.newContextBuilder().in(this.in).out(this.out).err(this.err);
+            final Context.Builder builder = factory.customizeContextBuilder(Context.newBuilder(factory.getLanguageId()))
+                    .in(this.in)
+                    .out(this.out)
+                    .err(this.err);
             final Bindings globalBindings = getBindings(ScriptContext.GLOBAL_SCOPE);
             if (globalBindings != null) {
                 for (final Entry<String, Object> entry : globalBindings.entrySet()) {

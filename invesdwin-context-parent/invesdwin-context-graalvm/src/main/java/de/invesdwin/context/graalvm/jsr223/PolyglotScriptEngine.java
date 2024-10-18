@@ -34,7 +34,8 @@ public class PolyglotScriptEngine implements ScriptEngine, Compilable, Invocable
 
     @Override
     public CompiledScript compile(final String script) throws ScriptException {
-        final Source src = Source.create(factory.getLanguageId(), script);
+        final Source src = factory.customizeSourceBuilder(Source.newBuilder(factory.getLanguageId(), script, "Unnamed"))
+                .buildLiteral();
         try {
             defaultContext.getContext().parse(src); // only for the side-effect of validating the source
         } catch (final PolyglotException e) {
@@ -47,7 +48,8 @@ public class PolyglotScriptEngine implements ScriptEngine, Compilable, Invocable
     public CompiledScript compile(final Reader script) throws ScriptException {
         final Source src;
         try {
-            src = Source.newBuilder(factory.getLanguageId(), script, "sourcefromreader").build();
+            src = factory.customizeSourceBuilder(Source.newBuilder(factory.getLanguageId(), script, "sourcefromreader"))
+                    .build();
             defaultContext.getContext().parse(src); // only for the side-effect of validating the source
         } catch (PolyglotException | IOException e) {
             throw new ScriptException(e);
@@ -60,7 +62,10 @@ public class PolyglotScriptEngine implements ScriptEngine, Compilable, Invocable
         if (context instanceof PolyglotContext) {
             final PolyglotContext c = (PolyglotContext) context;
             try {
-                return c.getContext().eval(factory.getLanguageId(), script).as(Object.class);
+                final Source source = factory
+                        .customizeSourceBuilder(Source.newBuilder(factory.getLanguageId(), script, "Unnamed"))
+                        .buildLiteral();
+                return c.getContext().eval(source).as(Object.class);
             } catch (final PolyglotException e) {
                 throw new ScriptException(e);
             }
@@ -73,7 +78,8 @@ public class PolyglotScriptEngine implements ScriptEngine, Compilable, Invocable
     public Object eval(final Reader reader, final ScriptContext context) throws ScriptException {
         final Source src;
         try {
-            src = Source.newBuilder(factory.getLanguageId(), reader, "sourcefromreader").build();
+            src = factory.customizeSourceBuilder(Source.newBuilder(factory.getLanguageId(), reader, "sourcefromreader"))
+                    .build();
         } catch (final IOException e) {
             throw new ScriptException(e);
         }
@@ -135,7 +141,7 @@ public class PolyglotScriptEngine implements ScriptEngine, Compilable, Invocable
     }
 
     @Override
-    public ScriptContext getContext() {
+    public PolyglotContext getContext() {
         return defaultContext;
     }
 
