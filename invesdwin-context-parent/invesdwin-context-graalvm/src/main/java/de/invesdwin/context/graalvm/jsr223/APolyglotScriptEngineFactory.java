@@ -7,6 +7,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import org.graalvm.home.Version;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Context.Builder;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.Language;
 
@@ -101,6 +103,13 @@ public abstract class APolyglotScriptEngineFactory implements ScriptEngineFactor
     @Override
     public ScriptEngine getScriptEngine() {
         return new PolyglotScriptEngine(this);
+    }
+
+    /**
+     * You can customize the context by overriding this
+     */
+    protected Builder newContextBuilder() {
+        return Context.newBuilder(getLanguageId()).allowAllAccess(true);
     }
 
 }
