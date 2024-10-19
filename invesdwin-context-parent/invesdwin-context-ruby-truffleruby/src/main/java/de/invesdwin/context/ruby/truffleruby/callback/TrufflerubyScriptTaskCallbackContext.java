@@ -13,8 +13,6 @@ import de.invesdwin.context.integration.script.callback.IScriptTaskCallback;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskParameters;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskParametersPool;
 import de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturnValue;
-import de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturns;
-import de.invesdwin.context.integration.script.callback.ObjectScriptTaskReturnsPool;
 import de.invesdwin.util.lang.UUIDs;
 
 @ThreadSafe
@@ -47,13 +45,13 @@ public class TrufflerubyScriptTaskCallbackContext implements Closeable {
 
     public ObjectScriptTaskReturnValue invoke(final String methodName, final Object... args) {
         final ObjectScriptTaskParameters parameters = ObjectScriptTaskParametersPool.INSTANCE.borrowObject();
-        final ObjectScriptTaskReturns returns = ObjectScriptTaskReturnsPool.INSTANCE.borrowObject();
+        final TrufflerubyScriptTaskReturns returns = TrufflerubyScriptTaskReturnsPool.INSTANCE.borrowObject();
         try {
             parameters.setParameters(args);
             callback.invoke(methodName, parameters, returns);
             return returns.newReturn();
         } finally {
-            ObjectScriptTaskReturnsPool.INSTANCE.returnObject(returns);
+            TrufflerubyScriptTaskReturnsPool.INSTANCE.returnObject(returns);
             ObjectScriptTaskParametersPool.INSTANCE.returnObject(parameters);
         }
     }

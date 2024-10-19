@@ -25,6 +25,14 @@ public class TrufflerubyScriptEngineFactoryTest extends ATest {
         engine.eval("world = 2");
         final Integer result = (Integer) engine.eval("hello+world");
         Assertions.assertThat(result).isEqualTo(3);
+
+        engine.put("greeting", "hello world");
+        final String type = (String) engine.eval("greeting.class.to_s");
+        Assertions.assertThat(type).isEqualTo("Polyglot::ForeignString");
+
+        engine.eval("greetingStr = \"hello world\"");
+        final String typeStr = (String) engine.eval("greetingStr.class.to_s");
+        Assertions.assertThat(typeStr).isEqualTo("String");
     }
 
 }

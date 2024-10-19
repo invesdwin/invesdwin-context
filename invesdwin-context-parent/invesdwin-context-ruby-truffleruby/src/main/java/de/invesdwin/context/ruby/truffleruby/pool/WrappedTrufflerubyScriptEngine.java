@@ -135,7 +135,9 @@ public class WrappedTrufflerubyScriptEngine implements Closeable {
     }
 
     public void remove(final String variable) {
-        binding.remove(variable);
+        put(variable, null);
+        //UnsupportedOperationException
+        //        binding.remove(variable);
     }
 
     public boolean contains(final String variable) {
