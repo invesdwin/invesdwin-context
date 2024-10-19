@@ -110,7 +110,6 @@ public class WrappedTrufflerubyScriptEngine implements Closeable {
     }
 
     public void reset() {
-        //        binding.clear();
         this.binding.put("$binding", binding);
         if (scriptCache != null) {
             //we have to reset the script cache or ruby throws weird AssertionErrors
@@ -136,8 +135,6 @@ public class WrappedTrufflerubyScriptEngine implements Closeable {
 
     public void remove(final String variable) {
         put(variable, null);
-        //UnsupportedOperationException
-        //        binding.remove(variable);
     }
 
     public boolean contains(final String variable) {
