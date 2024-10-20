@@ -1,7 +1,0 @@
-<configuration>
-
-	<logger name="de.invesdwin.context.mvel.IScriptTaskRunnerJshell" additivity="true" level="DEBUG">
-	</logger>
-
-
-</configuration>

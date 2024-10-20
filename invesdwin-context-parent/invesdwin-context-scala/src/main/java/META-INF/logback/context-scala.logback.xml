@@ -1,7 +1,0 @@
-<configuration>
-
-	<logger name="de.invesdwin.context.scala.IScriptTaskRunnerScala" additivity="true" level="ERROR">
-	</logger>
-
-
-</configuration>

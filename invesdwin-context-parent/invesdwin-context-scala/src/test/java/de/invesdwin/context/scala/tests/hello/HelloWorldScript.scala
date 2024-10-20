@@ -1,1 +1,0 @@
-val world = "Hello " + hello + "!"

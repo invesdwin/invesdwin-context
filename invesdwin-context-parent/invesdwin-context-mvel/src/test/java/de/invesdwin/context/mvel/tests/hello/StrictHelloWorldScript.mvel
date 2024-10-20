@@ -1,2 +1,0 @@
-//inputs/outputs are also strict when using it like this
-var world = "Hello " + hello + "!"

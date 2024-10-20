@@ -1,1 +1,0 @@
-(def world (str "Hello " hello "!"))

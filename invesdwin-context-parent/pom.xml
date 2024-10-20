@@ -19,18 +19,6 @@
 		<module>invesdwin-context-webserver</module>
 		<module>invesdwin-context-jasperreports</module>
 		<module>invesdwin-context-jfreechart</module>
-		<module>invesdwin-context-clojure</module>
-		<module>invesdwin-context-groovy</module>
-		<module>invesdwin-context-kotlin</module>
-		<module>invesdwin-context-scala</module>
-		<module>invesdwin-context-ruby-contract</module>
-		<module>invesdwin-context-ruby-jruby</module>
-		<module>invesdwin-context-ruby-truffleruby</module>
-		<module>invesdwin-context-javascript</module>
-		<module>invesdwin-context-jshell</module>
-		<module>invesdwin-context-beanshell</module>
-		<module>invesdwin-context-mvel</module>
-		<module>invesdwin-context-graalvm</module>
 	</modules>
 
 	<licenses>
@@ -99,9 +87,6 @@
 		<version.mysql-connector-j>8.2.0</version.mysql-connector-j>
 		<version.postgresql>42.7.2</version.postgresql>
 
-		<version.jshellscriptengine>1.0</version.jshellscriptengine>
-		<version.bsh>2.1.1</version.bsh>
-		<version.mvel>2.5.0.Final</version.mvel>
 	</properties>
 
 	<dependencyManagement>
@@ -150,73 +135,6 @@
 				<artifactId>invesdwin-context-integration</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-clojure</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-groovy</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-kotlin</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-scala</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-ruby-contract</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-ruby-contract</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-ruby-jruby</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-ruby-truffleruby</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-javascript</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-jshell</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-beanshell</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-mvel</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-graalvm</artifactId>
-				<version>${project.version.invesdwin-context}</version>
-			</dependency>
-
 
 			<dependency>
 				<groupId>de.invesdwin</groupId>
@@ -635,22 +553,6 @@
 						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>com.github.rjolly</groupId>
-				<artifactId>jshellscriptengine</artifactId>
-				<version>${version.jshellscriptengine}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache-extras.beanshell</groupId>
-				<artifactId>bsh</artifactId>
-				<version>${version.bsh}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mvel</groupId>
-				<artifactId>mvel2</artifactId>
-				<version>${version.mvel}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

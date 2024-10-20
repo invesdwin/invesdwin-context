@@ -1,7 +1,0 @@
-<configuration>
-
-	<logger name="de.invesdwin.context.mvel.IScriptTaskRunnerMvel" additivity="true" level="ERROR">
-	</logger>
-
-
-</configuration>

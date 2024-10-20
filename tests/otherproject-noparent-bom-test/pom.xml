@@ -10,9 +10,7 @@
 	<properties>
 		<project.version.invesdwin-context>1.0.4-SNAPSHOT</project.version.invesdwin-context>
 		<project.version.invesdwin-context-client>1.0.3-SNAPSHOT</project.version.invesdwin-context-client>
-		<project.version.invesdwin-context-r>1.0.4-SNAPSHOT</project.version.invesdwin-context-r>
-		<project.version.invesdwin-context-python>1.0.4-SNAPSHOT</project.version.invesdwin-context-python>
-		<project.version.invesdwin-context-matlab>1.0.4-SNAPSHOT</project.version.invesdwin-context-matlab>
+		<project.version.invesdwin-scripting>1.0.4-SNAPSHOT</project.version.invesdwin-scripting>
 		<project.version.invesdwin-maven-plugin>1.0.14-SNAPSHOT</project.version.invesdwin-maven-plugin>
 		<version.maven-enforcer-plugin>3.1.0</version.maven-enforcer-plugin>
 		<version.build-helper-maven-plugin>3.3.0</version.build-helper-maven-plugin>
@@ -43,22 +41,8 @@
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-python-parent</artifactId>
-				<version>${project.version.invesdwin-context-python}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-matlab-parent</artifactId>
-				<version>${project.version.invesdwin-context-matlab}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>de.invesdwin</groupId>
-				<artifactId>invesdwin-context-r-parent</artifactId>
-				<version>${project.version.invesdwin-context-r}</version>
+				<artifactId>invesdwin-scripting-parent</artifactId>
+				<version>${project.version.invesdwin-scripting}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -73,15 +57,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-r-runtime-rcaller</artifactId>
+			<artifactId>invesdwin-scripting-r-runtime-rcaller</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-matlab-runtime-javaoctave</artifactId>
+			<artifactId>invesdwin-scripting-matlab-runtime-javaoctave</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-python-runtime-py4j</artifactId>
+			<artifactId>invesdwin-scripting-python-runtime-py4j</artifactId>
 		</dependency>
 
 		<dependency>

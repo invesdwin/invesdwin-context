@@ -1,7 +1,0 @@
-<configuration>
-
-	<logger name="de.invesdwin.context.jshell.IScriptTaskRunnerJshell" additivity="true" level="ERROR">
-	</logger>
-
-
-</configuration>

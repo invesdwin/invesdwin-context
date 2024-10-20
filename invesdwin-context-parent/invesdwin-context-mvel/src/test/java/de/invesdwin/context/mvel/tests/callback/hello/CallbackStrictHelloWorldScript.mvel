@@ -1,4 +1,0 @@
-de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext callback = de.invesdwin.context.mvel.callback.MvelScriptTaskCallbackContext.getContext(mvelScriptTaskCallbackContextUuid);
-String hello = callback.invoke("hello",new Object[0]);
-String world = "Hello " + hello + "!";
-callback.invoke("world", new Object[] {world});

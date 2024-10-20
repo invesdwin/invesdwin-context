@@ -1,7 +1,0 @@
-<configuration>
-
-	<logger name="de.invesdwin.context.beanshell.IScriptTaskRunnerBeanshell" additivity="true" level="ERROR">
-	</logger>
-
-
-</configuration>
