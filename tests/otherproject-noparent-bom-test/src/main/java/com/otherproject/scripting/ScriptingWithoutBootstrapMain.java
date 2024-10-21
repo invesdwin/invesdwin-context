@@ -3,13 +3,13 @@ package com.otherproject.scripting;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.beans.init.platform.DelegatePlatformInitializer;
-import de.invesdwin.context.integration.script.IScriptTaskEngine;
-import de.invesdwin.context.integration.script.IScriptTaskInputs;
-import de.invesdwin.context.integration.script.IScriptTaskResults;
-import de.invesdwin.context.matlab.runtime.contract.AScriptTaskMatlab;
-import de.invesdwin.context.python.runtime.contract.AScriptTaskPython;
-import de.invesdwin.context.python.runtime.py4j.Py4jProperties;
-import de.invesdwin.context.r.runtime.contract.AScriptTaskR;
+import de.invesdwin.scripting.IScriptTaskEngine;
+import de.invesdwin.scripting.IScriptTaskInputs;
+import de.invesdwin.scripting.IScriptTaskResults;
+import de.invesdwin.scripting.matlab.runtime.contract.AScriptTaskMatlab;
+import de.invesdwin.scripting.python.runtime.contract.AScriptTaskPython;
+import de.invesdwin.scripting.python.runtime.py4j.Py4jProperties;
+import de.invesdwin.scripting.r.runtime.contract.AScriptTaskR;
 import de.invesdwin.util.assertions.Assertions;
 
 public class ScriptingWithoutBootstrapMain {
