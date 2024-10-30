@@ -6,16 +6,20 @@ import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.concurrent.handler.IExecutorExceptionHandler;
 
 @Immutable
-public final class AlwaysErrUncaughtExecutorExceptionHandler implements IExecutorExceptionHandler {
+public final class ErrExecutorExceptionHandler implements IExecutorExceptionHandler {
 
-    public static final AlwaysErrUncaughtExecutorExceptionHandler INSTANCE = new AlwaysErrUncaughtExecutorExceptionHandler();
+    public static final ErrExecutorExceptionHandler INSTANCE = new ErrExecutorExceptionHandler();
 
-    private AlwaysErrUncaughtExecutorExceptionHandler() {}
+    private ErrExecutorExceptionHandler() {}
 
     @SuppressWarnings("deprecation")
     @Override
     public Throwable handleExecutorException(final Throwable t, final boolean executeCalledWithoutFuture,
             final boolean callableRequiresReturnValue) {
-        return Err.process(t, true);
+        if (executeCalledWithoutFuture) {
+            return Err.process(t, true);
+        } else {
+            return t;
+        }
     }
 }
