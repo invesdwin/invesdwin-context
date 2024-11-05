@@ -107,8 +107,13 @@ public abstract class AMain implements Runnable {
             if (arg.startsWith("-D") && (arg.length() > 2)) {
                 arg = arg.substring(2);
                 final int ePos = arg.indexOf("=");
-                if (ePos == -1 || ePos == 0 || ePos == arg.length() - 1) {
+                if (ePos == -1 || ePos == 0) {
+                    //"=" not found or arg starts with "="
                     throw new IllegalArgumentException("Invalid system property: \"" + arg + "\".");
+                }
+                if (ePos == arg.length() - 1) {
+                    //remove the sysprop if it contains no value
+                    sysProps.remove(arg);
                 }
                 sysProps.setString(arg.substring(0, ePos), arg.substring(ePos + 1));
             } else {
