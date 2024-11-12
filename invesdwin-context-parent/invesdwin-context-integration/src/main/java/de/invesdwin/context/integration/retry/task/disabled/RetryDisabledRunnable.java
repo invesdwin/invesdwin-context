@@ -21,7 +21,7 @@ public final class RetryDisabledRunnable implements IPriorityRunnable {
 
     @Override
     public void run() {
-        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+        final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             delegate.run();
         } finally {

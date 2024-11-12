@@ -110,7 +110,7 @@ public class RetryAspect implements InitializingBean {
     public Object retryDisabled(final ProceedingJoinPoint pjp) throws Throwable {
         final RetryDisabled annotation = ProceedingJoinPoints.getAnnotation(pjp, RetryDisabled.class);
         if (annotation == null || annotation.value()) {
-            final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+            final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
             try {
                 return pjp.proceed();
             } finally {

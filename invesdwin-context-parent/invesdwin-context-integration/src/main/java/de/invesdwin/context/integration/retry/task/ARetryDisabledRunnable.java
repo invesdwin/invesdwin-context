@@ -9,7 +9,7 @@ public abstract class ARetryDisabledRunnable implements Runnable {
 
     @Override
     public final void run() {
-        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+        final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             runRetryDisabled();
         } finally {

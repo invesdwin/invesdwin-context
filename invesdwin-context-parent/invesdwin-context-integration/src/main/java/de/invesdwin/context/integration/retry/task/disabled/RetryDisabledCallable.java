@@ -22,7 +22,7 @@ public final class RetryDisabledCallable<T> implements IPriorityCallable<T> {
 
     @Override
     public T call() throws Exception {
-        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+        final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             return delegate.call();
         } finally {

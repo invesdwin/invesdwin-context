@@ -11,7 +11,7 @@ public abstract class ARetryDisabledCallable<E> implements Callable<E> {
 
     @Override
     public final E call() {
-        final boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+        final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
         try {
             return callRetryDisabled();
         } finally {
