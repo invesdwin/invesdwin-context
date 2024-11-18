@@ -9,6 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.concurrent.reference.integer.AtomicIntReference;
 import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import de.invesdwin.util.lang.string.description.TextDescription;
@@ -27,8 +28,11 @@ public class DebugReferenceFile implements IDebugReferenceFile {
     }
 
     private final File file;
+    private final Object source;
+    private final int sourceIdentityhashCode;
+    private final String id;
 
-    public DebugReferenceFile(final String id) {
+    public DebugReferenceFile(final Object source, final String id) {
         this.file = new File(BASE_FOLDER, UNIQUE_NAME_GENERATOR.get(id + ".txt"));
         try {
             Files.forceMkdir(file.getParentFile());
@@ -36,6 +40,13 @@ public class DebugReferenceFile implements IDebugReferenceFile {
             throw new RuntimeException(e);
         }
         Files.deleteQuietly(file);
+
+        final Exception initExc = new Exception();
+        initExc.fillInStackTrace();
+        this.source = source;
+        this.sourceIdentityhashCode = System.identityHashCode(source);
+        this.id = id;
+        writeLine("init %s\n%s", this, Throwables.getFullStackTrace(initExc));
     }
 
     @Override
@@ -52,6 +63,11 @@ public class DebugReferenceFile implements IDebugReferenceFile {
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return source.getClass().getSimpleName() + "[" + sourceIdentityhashCode + "] " + id;
     }
 
 }
