@@ -17,7 +17,7 @@ public class DebugReferenceFile implements IDebugReferenceFile {
 
     public DebugReferenceFile(final Object source) {
         this.file = new File(ContextProperties.getCacheDirectory(), DebugReferenceFile.class.getSimpleName() + "/"
-                + source.getClass().getSimpleName() + "/" + Files.normalizeFilename(source.toString()) + ".trace");
+                + source.getClass().getSimpleName() + "/" + Files.normalizeFilename(source.toString()) + ".txt");
         try {
             Files.forceMkdir(file.getParentFile());
         } catch (final IOException e) {
