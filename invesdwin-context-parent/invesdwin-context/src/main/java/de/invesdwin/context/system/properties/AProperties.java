@@ -27,7 +27,6 @@ import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.math.decimal.Decimal;
-import de.invesdwin.util.streams.SocketUtils;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -386,14 +385,7 @@ public abstract class AProperties implements IProperties {
     public Integer getPort(final String key, final boolean validatePort) {
         final Integer port = getInteger(key);
         if (validatePort) {
-            if (port == 0) {
-                final int randomPort = SocketUtils.findAvailableTcpPort();
-                //override property
-                setInteger(key, randomPort);
-                return randomPort;
-            } else {
-                Assertions.assertThat(port).as("Unable to determine port").isGreaterThan(0);
-            }
+            return validatePort(key, port, true);
         }
         return port;
     }

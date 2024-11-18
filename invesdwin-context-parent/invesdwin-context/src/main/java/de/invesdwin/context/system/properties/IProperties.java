@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.invesdwin.util.math.decimal.Decimal;
+import de.invesdwin.util.streams.SocketUtils;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -326,17 +327,56 @@ public interface IProperties {
 
     void setURI(String key, URI value);
 
+    /**
+     * if validatePort == true then a negative port will result in an exception.
+     */
     Integer getPort(String key, boolean validatePort);
 
+    /**
+     * if validatePort == true then a negative port will result in null. If value does not exist, null is also returned
+     * as default value.
+     */
     default Integer getPortOptional(final String key, final boolean validatePort) {
         return getPortOptional(key, validatePort, null);
     }
 
+    /**
+     * if validatePort == true then a negative port will result in null regardless of the defaultValue. If value does
+     * not exist, default value is returned.
+     */
     default Integer getPortOptional(final String key, final boolean validatePort, final Integer defaultValue) {
         if (containsValue(key)) {
-            return getPort(key, validatePort);
+            final Integer port = getPort(key, false);
+            if (validatePort) {
+                return validatePort(key, port, false);
+            } else {
+                return port;
+            }
         } else {
             return defaultValue;
+        }
+    }
+
+    /**
+     * When port == 0 then a random available port is assigned. If port is negative then an exception is thrown or null
+     * is returned depending on the negativeException flag.
+     */
+    default Integer validatePort(final String key, final Integer port, final boolean negativeException) {
+        if (port == null) {
+            return null;
+        } else if (port == 0) {
+            final int randomPort = SocketUtils.findAvailableTcpPort();
+            //override property
+            setInteger(key, randomPort);
+            return randomPort;
+        } else if (port < 0) {
+            if (negativeException) {
+                throw new IllegalArgumentException("Port [" + key + "=" + port + "] should not be negative");
+            } else {
+                return null;
+            }
+        } else {
+            return port;
         }
     }
 
