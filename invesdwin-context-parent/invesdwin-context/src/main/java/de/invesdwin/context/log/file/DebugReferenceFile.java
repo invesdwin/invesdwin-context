@@ -31,6 +31,7 @@ public class DebugReferenceFile implements IDebugReferenceFile {
     private final Object source;
     private final int sourceIdentityhashCode;
     private final String id;
+    private final String toString;
 
     public DebugReferenceFile(final Object source, final String id) {
         this.file = new File(BASE_FOLDER, UNIQUE_NAME_GENERATOR.get(id + ".txt"));
@@ -46,6 +47,7 @@ public class DebugReferenceFile implements IDebugReferenceFile {
         this.source = source;
         this.sourceIdentityhashCode = System.identityHashCode(source);
         this.id = id;
+        this.toString = source.getClass().getSimpleName() + "[" + sourceIdentityhashCode + "] " + id;
         writeLine("init %s\n%s", this, Throwables.getFullStackTrace(initExc));
     }
 
@@ -67,7 +69,7 @@ public class DebugReferenceFile implements IDebugReferenceFile {
 
     @Override
     public String toString() {
-        return source.getClass().getSimpleName() + "[" + sourceIdentityhashCode + "] " + id;
+        return toString;
     }
 
 }
