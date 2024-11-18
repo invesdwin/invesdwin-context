@@ -39,7 +39,7 @@ public class DebugReferenceFile implements IDebugReferenceFile {
     }
 
     @Override
-    public IMutableIntReference newRequestId() {
+    public IMutableIntReference newCounter() {
         return new AtomicIntReference();
     }
 

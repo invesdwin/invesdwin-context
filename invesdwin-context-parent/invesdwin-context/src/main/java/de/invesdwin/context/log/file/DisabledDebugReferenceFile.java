@@ -13,7 +13,7 @@ public final class DisabledDebugReferenceFile implements IDebugReferenceFile {
     private DisabledDebugReferenceFile() {}
 
     @Override
-    public IMutableIntReference newRequestId() {
+    public IMutableIntReference newCounter() {
         return DisabledMMutableIntReference.INSTANCE;
     }
 

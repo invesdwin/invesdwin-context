@@ -4,7 +4,7 @@ import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
 
 public interface IDebugReferenceFile {
 
-    IMutableIntReference newRequestId();
+    IMutableIntReference newCounter();
 
     void writeLine(String format, Object... args);
 
