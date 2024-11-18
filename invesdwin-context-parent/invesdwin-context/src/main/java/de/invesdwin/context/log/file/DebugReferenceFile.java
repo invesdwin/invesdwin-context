@@ -15,11 +15,20 @@ import de.invesdwin.util.lang.string.description.TextDescription;
 @ThreadSafe
 public class DebugReferenceFile implements IDebugReferenceFile {
 
+    private static final File BASE_FOLDER;
+
+    static {
+        BASE_FOLDER = new File(ContextProperties.getCacheDirectory(), DebugReferenceFile.class.getSimpleName());
+        if (ContextProperties.IS_TEST_ENVIRONMENT) {
+            Files.deleteNative(BASE_FOLDER);
+        }
+    }
+
     private final File file;
 
     public DebugReferenceFile(final Object source) {
-        this.file = new File(ContextProperties.getCacheDirectory(), DebugReferenceFile.class.getSimpleName() + "/"
-                + source.getClass().getSimpleName() + "/" + Files.normalizeFilename(source.toString()) + ".txt");
+        this.file = new File(BASE_FOLDER,
+                source.getClass().getSimpleName() + "/" + Files.normalizeFilename(source.toString()) + ".txt");
         try {
             Files.forceMkdir(file.getParentFile());
         } catch (final IOException e) {
