@@ -1,6 +1,10 @@
 package de.invesdwin.context.log.file;
 
+import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
+
 public interface IDebugReferenceFile {
+
+    IMutableIntReference newRequestId();
 
     void writeLine(String format, Object... args);
 

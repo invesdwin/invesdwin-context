@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.util.concurrent.reference.integer.AtomicIntReference;
+import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.description.TextDescription;
 
@@ -24,6 +26,11 @@ public class DebugReferenceFile implements IDebugReferenceFile {
             throw new RuntimeException(e);
         }
         Files.deleteQuietly(file);
+    }
+
+    @Override
+    public IMutableIntReference newRequestId() {
+        return new AtomicIntReference();
     }
 
     @Override
