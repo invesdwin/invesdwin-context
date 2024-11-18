@@ -8,9 +8,9 @@ public interface IDebugReferenceFile {
 
     void writeLine(String format, Object... args);
 
-    static IDebugReferenceFile newInstance(final Object source, final String id, final boolean enabled) {
+    static IDebugReferenceFile newInstance(final boolean enabled, final String id, final Object... sources) {
         if (enabled) {
-            return new DebugReferenceFile(source, id);
+            return new DebugReferenceFile(id, sources);
         } else {
             return DisabledDebugReferenceFile.INSTANCE;
         }

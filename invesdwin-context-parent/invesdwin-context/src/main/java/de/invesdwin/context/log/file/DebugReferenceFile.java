@@ -11,6 +11,7 @@ import de.invesdwin.util.concurrent.reference.integer.AtomicIntReference;
 import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import de.invesdwin.util.lang.string.description.TextDescription;
 
@@ -28,12 +29,12 @@ public class DebugReferenceFile implements IDebugReferenceFile {
     }
 
     private final File file;
-    private final Object source;
-    private final int sourceIdentityhashCode;
+    private final Object[] sources;
+    private final int[] sourcesIdentityhashCode;
     private final String id;
     private final String toString;
 
-    public DebugReferenceFile(final Object source, final String id) {
+    public DebugReferenceFile(final String id, final Object... sources) {
         this.file = new File(BASE_FOLDER, UNIQUE_NAME_GENERATOR.get(id + ".txt"));
         try {
             Files.forceMkdir(file.getParentFile());
@@ -44,11 +45,37 @@ public class DebugReferenceFile implements IDebugReferenceFile {
 
         final Exception initExc = new Exception();
         initExc.fillInStackTrace();
-        this.source = source;
-        this.sourceIdentityhashCode = System.identityHashCode(source);
+        this.sources = sources;
+        this.sourcesIdentityhashCode = new int[sources.length];
+        for (int i = 0; i < sources.length; i++) {
+            sourcesIdentityhashCode[i] = System.identityHashCode(sources[i]);
+        }
         this.id = id;
-        this.toString = source.getClass().getSimpleName() + "[" + sourceIdentityhashCode + "] " + id;
+        this.toString = newToString();
         writeLine("init %s\n%s", this, Throwables.getFullStackTrace(initExc));
+    }
+
+    private String newToString() {
+        final StringBuilder sb = new StringBuilder(id);
+        for (int i = 0; i < sources.length; i++) {
+            sb.append(" ");
+            final Object source = sources[i];
+            if (source == null) {
+                sb.append(Strings.NULL_TEXT);
+            } else {
+                sb.append(source.getClass().getSimpleName());
+            }
+            sb.append("[");
+            sb.append(sourcesIdentityhashCode[i]);
+            sb.append(":");
+            if (source == null) {
+                sb.append(Strings.NULL_TEXT);
+            } else {
+                sb.append(source.toString());
+            }
+            sb.append("]");
+        }
+        return sb.toString();
     }
 
     @Override
