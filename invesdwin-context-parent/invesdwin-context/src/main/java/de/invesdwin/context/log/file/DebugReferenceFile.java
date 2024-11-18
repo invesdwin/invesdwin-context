@@ -10,12 +10,14 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.concurrent.reference.integer.AtomicIntReference;
 import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import de.invesdwin.util.lang.string.description.TextDescription;
 
 @ThreadSafe
 public class DebugReferenceFile implements IDebugReferenceFile {
 
     private static final File BASE_FOLDER;
+    private static final UniqueNameGenerator UNIQUE_NAME_GENERATOR = new UniqueNameGenerator();
 
     static {
         BASE_FOLDER = new File(ContextProperties.getCacheDirectory(), DebugReferenceFile.class.getSimpleName());
@@ -26,9 +28,9 @@ public class DebugReferenceFile implements IDebugReferenceFile {
 
     private final File file;
 
-    public DebugReferenceFile(final Object source) {
+    public DebugReferenceFile(final Object source, final String id) {
         this.file = new File(BASE_FOLDER,
-                source.getClass().getSimpleName() + "/" + Files.normalizeFilename(source.toString()) + ".txt");
+                UNIQUE_NAME_GENERATOR.get(source.getClass().getSimpleName() + "/" + Files.normalizePath(id) + ".txt"));
         try {
             Files.forceMkdir(file.getParentFile());
         } catch (final IOException e) {
