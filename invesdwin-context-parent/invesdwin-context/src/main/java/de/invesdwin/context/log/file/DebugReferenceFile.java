@@ -29,7 +29,7 @@ public class DebugReferenceFile implements IDebugReferenceFile {
     private final File file;
 
     public DebugReferenceFile(final String id) {
-        this.file = new File(BASE_FOLDER, UNIQUE_NAME_GENERATOR.get(Files.normalizePath(id) + ".txt"));
+        this.file = new File(BASE_FOLDER, UNIQUE_NAME_GENERATOR.get(id + ".txt"));
         try {
             Files.forceMkdir(file.getParentFile());
         } catch (final IOException e) {
