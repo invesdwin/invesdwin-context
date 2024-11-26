@@ -1,6 +1,7 @@
 package de.invesdwin.context.system.array;
 
 import de.invesdwin.context.system.properties.IProperties;
+import de.invesdwin.norva.beanpath.spi.IUnwrap;
 import de.invesdwin.util.collections.array.IBooleanArray;
 import de.invesdwin.util.collections.array.IDoubleArray;
 import de.invesdwin.util.collections.array.IIntegerArray;
@@ -13,7 +14,7 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
  * An instance of a primitive array allocator should only be shared within the same backtesting engine. Otherwise
  * engines might get confused when accessing and sharing cached time indexes.
  */
-public interface IPrimitiveArrayAllocator {
+public interface IPrimitiveArrayAllocator extends IUnwrap {
 
     IByteBuffer getByteBuffer(String id);
 
@@ -38,8 +39,6 @@ public interface IPrimitiveArrayAllocator {
     IBitSet newBitSet(String id, int size);
 
     ILongArray newLongArray(String id, int size);
-
-    <T> T unwrap(Class<T> type);
 
     IAttributesMap getAttributes();
 
