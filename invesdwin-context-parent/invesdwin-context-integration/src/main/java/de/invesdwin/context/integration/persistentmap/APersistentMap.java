@@ -51,6 +51,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     private Set<K> keySet;
     private Set<Entry<K, V>> entrySet;
     private Collection<V> values;
+    private volatile boolean tableEemptyIfNull;
 
     private final AtomicBoolean initializing = new AtomicBoolean();
 
@@ -262,6 +263,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             }
             try {
                 tableFinalizer.table = getFactory().newPersistentMap(this);
+                tableEemptyIfNull = false;
                 if (tableFinalizer.table == null) {
                     throw new IllegalStateException("table should not be null");
                 }
@@ -360,6 +362,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                 Files.deleteQuietly(getFile());
             }
         }
+        tableEemptyIfNull = true;
         tableCreationTime = null;
         onDeleteTableFinished();
     }
@@ -423,6 +426,9 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     public final boolean isEmpty() {
         Map<K, V> delegate = getPreLockedDelegate(false);
         if (delegate == null) {
+            if (tableEemptyIfNull) {
+                return true;
+            }
             if (!isDiskPersistence()) {
                 return true;
             }
