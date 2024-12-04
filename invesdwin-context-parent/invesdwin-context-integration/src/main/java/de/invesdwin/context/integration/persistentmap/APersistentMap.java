@@ -421,7 +421,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public final boolean isEmpty() {
-        final Map<K, V> delegate = getPreLockedDelegate(false);
+        Map<K, V> delegate = getPreLockedDelegate(false);
         if (delegate == null) {
             if (!isDiskPersistence()) {
                 return true;
@@ -436,6 +436,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                     return true;
                 }
             }
+            delegate = getPreLockedDelegate(true);
         }
         try {
             return delegate.isEmpty();
