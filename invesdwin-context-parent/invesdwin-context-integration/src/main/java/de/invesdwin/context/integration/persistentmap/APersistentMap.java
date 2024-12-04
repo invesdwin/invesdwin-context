@@ -173,6 +173,10 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     }
 
     public ConcurrentMap<K, V> getPreLockedDelegate() {
+        return getPreLockedDelegate(true);
+    }
+
+    private ConcurrentMap<K, V> getPreLockedDelegate(final boolean initialize) {
         maybePurgeTable();
         //directly return table with read lock if not null
         final ILock readLock = getReadLock();
@@ -180,6 +184,9 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         if (tableFinalizer.table != null) {
             //keep locked
             return tableFinalizer.table;
+        } else if (!initialize) {
+            readLock.unlock();
+            return null;
         }
         readLock.unlock();
         if (!initializing.compareAndSet(false, true)) {
@@ -414,7 +421,8 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public final boolean isEmpty() {
-        if (tableFinalizer.table == null) {
+        final Map<K, V> delegate = getPreLockedDelegate(false);
+        if (delegate == null) {
             if (!isDiskPersistence()) {
                 return true;
             }
@@ -429,7 +437,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                 }
             }
         }
-        final Map<K, V> delegate = getPreLockedDelegate();
         try {
             return delegate.isEmpty();
         } finally {
