@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @Immutable
-public class NotFiniteValidator implements ConstraintValidator<NotFinite, Number> {
+public class NonFiniteValidator implements ConstraintValidator<NonFinite, Number> {
 
     @Override
     public boolean isValid(final Number value, final ConstraintValidatorContext context) {
@@ -18,7 +18,7 @@ public class NotFiniteValidator implements ConstraintValidator<NotFinite, Number
         if (Doubles.isNaN(doubleValue)) {
             return true;
         }
-        return Doubles.isNotFinite(doubleValue);
+        return Doubles.isNonFinite(doubleValue);
     }
 
 }

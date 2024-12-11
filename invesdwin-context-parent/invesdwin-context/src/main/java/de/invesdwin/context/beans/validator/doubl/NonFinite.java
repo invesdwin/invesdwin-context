@@ -21,10 +21,10 @@ import jakarta.validation.Payload;
  */
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-@Repeatable(NotFinite.List.class)
+@Repeatable(NonFinite.List.class)
 @Documented
-@Constraint(validatedBy = { NotFiniteValidator.class })
-public @interface NotFinite {
+@Constraint(validatedBy = { NonFiniteValidator.class })
+public @interface NonFinite {
 
     String message() default "{de.invesdwin.context.beans.validator.doubl.NotFinite.message}";
 
@@ -33,7 +33,7 @@ public @interface NotFinite {
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * Defines several {@link NotFinite} annotations on the same element.
+     * Defines several {@link NonFinite} annotations on the same element.
      *
      * @see de.invesdwin.context.beans.validator.doubl.NotInfinite
      */
@@ -42,6 +42,6 @@ public @interface NotFinite {
     @Documented
     @interface List {
 
-        NotFinite[] value();
+        NonFinite[] value();
     }
 }
