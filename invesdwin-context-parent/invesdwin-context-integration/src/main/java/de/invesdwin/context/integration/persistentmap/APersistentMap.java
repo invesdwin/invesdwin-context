@@ -587,12 +587,32 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public final V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
-        final Map<K, V> delegate = getPreLockedDelegate();
+        V v;
+        Map<K, V> delegate = getPreLockedDelegate();
         try {
-            return delegate.computeIfAbsent(key, mappingFunction);
+            v = delegate.get(key);
         } finally {
             getReadLock().unlock();
         }
+        delegate = null;
+        if (v == null) {
+            //bad idea to synchronize in apply, this might cause deadlocks when threads are used inside of it
+            v = mappingFunction.apply(key);
+            if (v != null) {
+                delegate = getPreLockedDelegate();
+                try {
+                    final V oldV = delegate.get(key);
+                    if (oldV != null) {
+                        v = oldV;
+                    } else {
+                        delegate.put(key, v);
+                    }
+                } finally {
+                    getReadLock().unlock();
+                }
+            }
+        }
+        return v;
     }
 
     @Override
