@@ -28,6 +28,10 @@ final class ThrowableConverter {
 
         s.append(throwableToString(e, stackTrace, detailed));
 
+        if (!stackTrace) {
+            s.append("\n... see error.log");
+        }
+
         if (detailed) {
             s.append("\n\n\n");
         }
