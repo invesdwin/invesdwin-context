@@ -137,11 +137,11 @@ public final class Err {
     }
 
     public static String getDetailedStackTrace(final Throwable e) {
-        return ThrowableConverter.throwableToString(e, true);
+        return ThrowableConverter.throwableToString(e, true, true);
     }
 
     public static String getSimplifiedStackTrace(final Throwable e) {
-        return ThrowableConverter.throwableToString(e, false);
+        return ThrowableConverter.throwableToString(e, true, false);
     }
 
     /**

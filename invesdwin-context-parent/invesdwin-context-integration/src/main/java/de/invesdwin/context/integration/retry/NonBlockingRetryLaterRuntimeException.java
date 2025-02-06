@@ -2,10 +2,10 @@ package de.invesdwin.context.integration.retry;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.log.error.IGuiHiddenException;
+import de.invesdwin.context.log.error.IHiddenException;
 
 @Immutable
-public class NonBlockingRetryLaterRuntimeException extends RetryLaterRuntimeException implements IGuiHiddenException {
+public class NonBlockingRetryLaterRuntimeException extends RetryLaterRuntimeException implements IHiddenException {
 
     public NonBlockingRetryLaterRuntimeException() {
         super();

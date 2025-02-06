@@ -7,6 +7,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.collections.Arrays;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.string.Strings;
 
 @Immutable
@@ -16,14 +17,16 @@ final class ThrowableConverter {
     private static final String STACKTRACE_LINE_MARKED = "\n      * ";
     private static final String STACKTRACE_LINE = "\n        ";
 
-    private ThrowableConverter() {
-    }
+    private ThrowableConverter() {}
 
     public static String loggedRuntimeExceptionToString(final LoggedRuntimeException e, final boolean detailed) {
         final StringBuilder s = new StringBuilder("processing ");
         s.append(e.getIdString());
 
-        s.append(throwableToString(e, detailed));
+        final boolean stackTrace = detailed || Throwables.isDebugStackTraceEnabled()
+                || !Throwables.isCausedByType(e, IHiddenException.class);
+
+        s.append(throwableToString(e, stackTrace, detailed));
 
         if (detailed) {
             s.append("\n\n\n");
@@ -32,7 +35,7 @@ final class ThrowableConverter {
         return s.toString();
     }
 
-    public static String throwableToString(final Throwable e, final boolean detailed) {
+    public static String throwableToString(final Throwable e, final boolean stackTrace, final boolean detailed) {
         final StringBuilder s = new StringBuilder();
         Throwable cause = e;
         while (cause != null) {
@@ -44,7 +47,9 @@ final class ThrowableConverter {
             s.append(cause.getClass().getName());
             s.append(": ");
             s.append(cause.getMessage());
-            s.append(stackTraceToString(cause, detailed));
+            if (stackTrace) {
+                s.append(stackTraceToString(cause, detailed));
+            }
             cause = cause.getCause();
         }
         return s.toString();
