@@ -4,6 +4,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
+import de.invesdwin.context.integration.DatabaseThreads;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.webserver.WebserverProperties;
 import de.invesdwin.util.concurrent.Threads;
@@ -35,6 +36,7 @@ public class FastQueuedThreadPool extends QueuedThreadPool {
     @Override
     protected void runJob(final Runnable job) {
         Threads.registerThreadRetryDisabled();
+        DatabaseThreads.registerThreadBlockingUpdateDatabaseDisabled();
         try {
             super.runJob(job);
         } finally {
