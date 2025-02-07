@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.util.concurrent.Threads;
+import de.invesdwin.util.concurrent.RetryThreads;
 import de.invesdwin.util.concurrent.priority.IPriorityProvider;
 import de.invesdwin.util.concurrent.priority.IPriorityRunnable;
 
@@ -21,11 +21,11 @@ public final class RetryDisabledRunnable implements IPriorityRunnable {
 
     @Override
     public void run() {
-        final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+        final Boolean registerThreadRetryDisabled = RetryThreads.registerThreadRetryDisabled();
         try {
             delegate.run();
         } finally {
-            Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+            RetryThreads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
         }
     }
 

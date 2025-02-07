@@ -7,7 +7,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.lang3.BooleanUtils;
 
-import de.invesdwin.util.concurrent.Threads;
+import de.invesdwin.util.concurrent.RetryThreads;
 import io.netty.util.concurrent.FastThreadLocal;
 
 @ThreadSafe
@@ -27,14 +27,15 @@ public final class DatabaseThreads {
                 return existing;
             }
         }
-        return Threads.isThreadRetryDisabledDefault();
+        return RetryThreads.isThreadRetryDisabledDefault();
     }
 
     public static Boolean registerThreadBlockingUpdateDatabaseDisabled() {
         return registerThreadBlockingUpdateDatabaseDisabled(true);
     }
 
-    public static Boolean registerThreadBlockingUpdateDatabaseDisabled(final boolean threadBlockingUpdateDatabaseDisabled) {
+    public static Boolean registerThreadBlockingUpdateDatabaseDisabled(
+            final boolean threadBlockingUpdateDatabaseDisabled) {
         final boolean threadBlockingUpdateDatabaseDisabledBefore = registerThreadBlockingUpdateDatabaseDisabledUsed
                 && BooleanUtils.isTrue(THREAD_BLOCKING_UPDATE_DATABASE_DISABLED.get());
         if (threadBlockingUpdateDatabaseDisabledBefore != threadBlockingUpdateDatabaseDisabled) {
@@ -46,7 +47,8 @@ public final class DatabaseThreads {
         }
     }
 
-    public static void unregisterThreadBlockingUpdateDisabled(final Boolean registerThreadBlockingUpdateDatabaseDisabled) {
+    public static void unregisterThreadBlockingUpdateDisabled(
+            final Boolean registerThreadBlockingUpdateDatabaseDisabled) {
         if (registerThreadBlockingUpdateDatabaseDisabled == null) {
             //nothing to do since we did not change anything
             return;
@@ -62,11 +64,11 @@ public final class DatabaseThreads {
     public static <T> T callBlockingAll(final Supplier<T> supplier) {
         final Boolean registerThreadBlockingUpdateDatabaseDisabled = DatabaseThreads
                 .registerThreadBlockingUpdateDatabaseDisabled(false);
-        final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled(false);
+        final Boolean registerThreadRetryDisabled = RetryThreads.registerThreadRetryDisabled(false);
         try {
             return supplier.get();
         } finally {
-            Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+            RetryThreads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
             DatabaseThreads.unregisterThreadBlockingUpdateDisabled(registerThreadBlockingUpdateDatabaseDisabled);
         }
     }

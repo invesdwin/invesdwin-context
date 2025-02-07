@@ -7,7 +7,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import de.invesdwin.context.integration.DatabaseThreads;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.webserver.WebserverProperties;
-import de.invesdwin.util.concurrent.Threads;
+import de.invesdwin.util.concurrent.RetryThreads;
 import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.concurrent.FastThreadLocalThread;
 
@@ -35,7 +35,7 @@ public class FastQueuedThreadPool extends QueuedThreadPool {
 
     @Override
     protected void runJob(final Runnable job) {
-        Threads.registerThreadRetryDisabled();
+        RetryThreads.registerThreadRetryDisabled();
         DatabaseThreads.registerThreadBlockingUpdateDatabaseDisabled();
         try {
             super.runJob(job);

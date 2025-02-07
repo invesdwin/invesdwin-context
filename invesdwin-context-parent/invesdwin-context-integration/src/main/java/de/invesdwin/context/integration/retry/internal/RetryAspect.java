@@ -20,7 +20,7 @@ import de.invesdwin.context.integration.retry.hook.MaxRetriesHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.BackOffPolicies;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
-import de.invesdwin.util.concurrent.Threads;
+import de.invesdwin.util.concurrent.RetryThreads;
 import de.invesdwin.util.error.Throwables;
 import io.netty.util.concurrent.FastThreadLocal;
 import jakarta.inject.Inject;
@@ -110,11 +110,11 @@ public class RetryAspect implements InitializingBean {
     public Object retryDisabled(final ProceedingJoinPoint pjp) throws Throwable {
         final RetryDisabled annotation = ProceedingJoinPoints.getAnnotation(pjp, RetryDisabled.class);
         if (annotation == null || annotation.value()) {
-            final Boolean registerThreadRetryDisabled = Threads.registerThreadRetryDisabled();
+            final Boolean registerThreadRetryDisabled = RetryThreads.registerThreadRetryDisabled();
             try {
                 return pjp.proceed();
             } finally {
-                Threads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
+                RetryThreads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
             }
         } else {
             return pjp.proceed();

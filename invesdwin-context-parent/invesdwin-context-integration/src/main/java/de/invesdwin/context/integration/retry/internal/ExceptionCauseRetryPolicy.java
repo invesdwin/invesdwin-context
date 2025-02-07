@@ -26,7 +26,7 @@ import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
-import de.invesdwin.util.concurrent.Threads;
+import de.invesdwin.util.concurrent.RetryThreads;
 import de.invesdwin.util.error.Throwables;
 import jakarta.inject.Named;
 import jakarta.persistence.LockTimeoutException;
@@ -78,7 +78,7 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
         if (super.canRetry(context)) {
             return true;
         }
-        if (Threads.isThreadRetryDisabled()) {
+        if (RetryThreads.isThreadRetryDisabled()) {
             return false;
         }
         //After we check for exception we want to decide on
