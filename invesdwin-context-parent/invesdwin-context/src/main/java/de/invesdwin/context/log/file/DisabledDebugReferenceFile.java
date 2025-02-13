@@ -2,7 +2,7 @@ package de.invesdwin.context.log.file;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.util.concurrent.reference.integer.DisabledMMutableIntReference;
+import de.invesdwin.util.concurrent.reference.integer.DisabledMutableIntReference;
 import de.invesdwin.util.concurrent.reference.integer.IMutableIntReference;
 
 @Immutable
@@ -14,7 +14,7 @@ public final class DisabledDebugReferenceFile implements IDebugReferenceFile {
 
     @Override
     public IMutableIntReference newCounter() {
-        return DisabledMMutableIntReference.INSTANCE;
+        return DisabledMutableIntReference.INSTANCE;
     }
 
     @Override
