@@ -32,6 +32,8 @@ public final class CachingDelegateProperties implements IProperties {
 
     @GuardedBy("this")
     private final Map<String, Optional<?>> cache;
+    @GuardedBy("none")
+    private PropertiesAsMap asMap;
 
     public CachingDelegateProperties(final IProperties delegate) {
         Assertions.assertThat(delegate).isNotInstanceOf(getClass());
@@ -568,6 +570,29 @@ public final class CachingDelegateProperties implements IProperties {
     @Override
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
+    }
+
+    @Override
+    public int size() {
+        return delegate.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return delegate.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        delegate.clear();
+    }
+
+    @Override
+    public Map<String, String> asMap() {
+        if (asMap == null) {
+            asMap = new PropertiesAsMap(this);
+        }
+        return asMap;
     }
 
 }

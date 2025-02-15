@@ -8,8 +8,10 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.assertions.Assertions;
@@ -21,6 +23,8 @@ import de.invesdwin.util.time.duration.Duration;
 public final class IgnoreExceptionsDelegateProperties implements IProperties {
 
     private final IProperties delegate;
+    @GuardedBy("none")
+    private PropertiesAsMap asMap;
 
     public IgnoreExceptionsDelegateProperties(final IProperties delegate) {
         Assertions.assertThat(delegate).isNotInstanceOf(getClass());
@@ -473,6 +477,29 @@ public final class IgnoreExceptionsDelegateProperties implements IProperties {
     @Override
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
+    }
+
+    @Override
+    public int size() {
+        return delegate.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return delegate.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        delegate.clear();
+    }
+
+    @Override
+    public Map<String, String> asMap() {
+        if (asMap == null) {
+            asMap = new PropertiesAsMap(this);
+        }
+        return asMap;
     }
 
 }

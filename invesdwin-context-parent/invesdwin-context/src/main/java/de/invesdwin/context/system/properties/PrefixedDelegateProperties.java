@@ -8,8 +8,10 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.assertions.Assertions;
@@ -22,6 +24,8 @@ public class PrefixedDelegateProperties implements IProperties {
 
     private final IProperties delegate;
     private final String prefix;
+    @GuardedBy("none")
+    private PropertiesAsMap asMap;
 
     public PrefixedDelegateProperties(final IProperties delegate, final String prefix) {
         this.delegate = delegate;
@@ -283,6 +287,29 @@ public class PrefixedDelegateProperties implements IProperties {
     @Override
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         delegate.maybeLogSecurityWarning(prefix + key, actualValue, defaultValueWarning);
+    }
+
+    @Override
+    public int size() {
+        return delegate.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return delegate.isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        delegate.clear();
+    }
+
+    @Override
+    public Map<String, String> asMap() {
+        if (asMap == null) {
+            asMap = new PropertiesAsMap(this);
+        }
+        return asMap;
     }
 
 }

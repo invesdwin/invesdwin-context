@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -41,6 +42,8 @@ public abstract class AProperties implements IProperties {
 
     @GuardedBy("this")
     private AbstractConfiguration delegate;
+    @GuardedBy("none")
+    private PropertiesAsMap asMap;
 
     protected abstract AbstractConfiguration createDelegate();
 
@@ -460,8 +463,13 @@ public abstract class AProperties implements IProperties {
     @Override
     public synchronized String getErrorMessage(final String key, final Object value, final Class<?> expectedType,
             final String message) {
-        Assertions.assertThat(key).isNotNull();
-        String error = "Property " + prefix(key);
+        return newErrorMessage(prefix(key), value, expectedType, message);
+    }
+
+    public static String newErrorMessage(final String key, final Object value, final Class<?> expectedType,
+            final String message) {
+        Assertions.checkNotNull(key);
+        String error = "Property " + key;
         if (value != null) {
             error += " [" + value + "]";
         }
@@ -483,6 +491,29 @@ public abstract class AProperties implements IProperties {
         } else {
             return value;
         }
+    }
+
+    @Override
+    public int size() {
+        return getDelegate().size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return getDelegate().isEmpty();
+    }
+
+    @Override
+    public void clear() {
+        getDelegate().clear();
+    }
+
+    @Override
+    public Map<String, String> asMap() {
+        if (asMap == null) {
+            asMap = new PropertiesAsMap(this);
+        }
+        return asMap;
     }
 
 }

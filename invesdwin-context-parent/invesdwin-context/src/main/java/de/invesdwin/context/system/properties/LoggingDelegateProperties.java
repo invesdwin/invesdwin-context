@@ -8,8 +8,10 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.log.Log;
@@ -25,6 +27,8 @@ public class LoggingDelegateProperties implements IProperties {
     private final Log log;
     private final IProperties delegate;
     private final String prefix;
+    @GuardedBy("none")
+    private PropertiesAsMap asMap;
 
     public LoggingDelegateProperties(final Log log, final String prefix, final IProperties delegate) {
         this.log = log;
@@ -323,6 +327,29 @@ public class LoggingDelegateProperties implements IProperties {
     @Override
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
         delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
+    }
+
+    @Override
+    public Map<String, String> asMap() {
+        if (asMap == null) {
+            asMap = new PropertiesAsMap(this);
+        }
+        return asMap;
+    }
+
+    @Override
+    public int size() {
+        return delegate.size();
+    }
+
+    @Override
+    public void clear() {
+        delegate.clear();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return delegate.isEmpty();
     }
 
 }

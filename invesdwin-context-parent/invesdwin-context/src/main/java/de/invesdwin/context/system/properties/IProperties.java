@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.invesdwin.util.math.decimal.Decimal;
@@ -462,4 +463,12 @@ public interface IProperties {
     String getErrorMessage(String key, Object value, Class<?> expectedType, String message);
 
     void maybeLogSecurityWarning(String key, String actualValue, String defaultValueWarning);
+
+    Map<String, String> asMap();
+
+    int size();
+
+    boolean isEmpty();
+
+    void clear();
 }
