@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.collections.Collections;
+
 @NotThreadSafe
 public class PropertiesAsMap implements Map<String, String> {
 
@@ -110,6 +112,11 @@ public class PropertiesAsMap implements Map<String, String> {
             });
         }
         return entries;
+    }
+
+    @Override
+    public String toString() {
+        return Collections.toString(this);
     }
 
 }
