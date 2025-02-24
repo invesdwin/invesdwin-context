@@ -66,6 +66,11 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
+    public boolean isEmpty() {
+        return trueValues.isEmpty();
+    }
+
+    @Override
     public int getBuffer(final IByteBuffer buffer) {
         throw new UnsupportedOperationException();
     }
