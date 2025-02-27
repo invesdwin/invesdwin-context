@@ -5,14 +5,77 @@ import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.comparator.IComparator;
 import de.invesdwin.util.math.decimal.ADecimal;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;
+import de.invesdwin.util.math.statistics.distribution.ADistributionComparator;
+import de.invesdwin.util.math.statistics.distribution.AKolmogorovSmirnovTestComparator;
+import de.invesdwin.util.math.statistics.distribution.ATTestComparator;
+import de.invesdwin.util.math.statistics.distribution.AZScoreComparator;
 
 @Immutable
 public class DistributionMeasure {
+
+    public static final AZScoreComparator<DistributionMeasure> COMPARATOR_ZSCORE = new AZScoreComparator<DistributionMeasure>() {
+
+        @Override
+        protected boolean isHigherBetter(final DistributionMeasure element) {
+            return element.isHigherBetter();
+        }
+
+        @Override
+        protected double getStdev(final DistributionMeasure element) {
+            return element.getStdev().doubleValue();
+        }
+
+        @Override
+        protected int getCount(final DistributionMeasure element) {
+            return element.getCount();
+        }
+
+        @Override
+        protected double getAvg(final DistributionMeasure element) {
+            return element.getAvg().doubleValue();
+        }
+    };
+
+    public static final ATTestComparator<DistributionMeasure> COMPARATOR_TTEST = new ATTestComparator<DistributionMeasure>() {
+
+        @Override
+        protected boolean isHigherBetter(final DistributionMeasure element) {
+            return element.isHigherBetter();
+        }
+
+        @Override
+        protected int getCount(final DistributionMeasure element) {
+            return element.getCount();
+        }
+
+        @Override
+        protected double[] getValues(final DistributionMeasure element, final int maxCount) {
+            return element.getValuesAsDoubleArray(maxCount);
+        }
+    };
+
+    public static final AKolmogorovSmirnovTestComparator<DistributionMeasure> COMPARATOR_KSTEST = new AKolmogorovSmirnovTestComparator<DistributionMeasure>() {
+
+        @Override
+        protected boolean isHigherBetter(final DistributionMeasure element) {
+            return element.isHigherBetter();
+        }
+
+        @Override
+        protected double[] getValues(final DistributionMeasure element) {
+            return element.getValuesAsDoubleArray();
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public static final List<ADistributionComparator<DistributionMeasure>> COMPARATORS = Arrays
+            .asList(COMPARATOR_ZSCORE, COMPARATOR_TTEST, COMPARATOR_KSTEST);
 
     private final String sampleName;
     private final String measureName;

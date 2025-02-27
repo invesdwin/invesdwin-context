@@ -21,12 +21,7 @@ import de.invesdwin.util.math.decimal.scaled.PercentScale;
 public class HtmlDistributionReport {
 
     public static final int DEFAULT_BIN_COUNT = 50;
-    public static final String DEFAULT_HTML_FILE_NAME = "Distribution.html";
     public static final String DEFAULT_TABLE_DECIMAL_FORMAT = "0.00000";
-
-    protected String newHtmlFileName() {
-        return DEFAULT_HTML_FILE_NAME;
-    }
 
     public void writeReport(final File file, final List<? extends DistributionMeasure> measures) {
         for (int m = 0; m < measures.size(); m++) {
