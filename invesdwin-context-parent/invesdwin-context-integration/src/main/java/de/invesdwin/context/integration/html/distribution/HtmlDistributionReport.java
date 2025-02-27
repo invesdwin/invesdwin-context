@@ -22,7 +22,7 @@ public class HtmlDistributionReport {
 
     public static final int DEFAULT_BIN_COUNT = 50;
     public static final String DEFAULT_HTML_FILE_NAME = "Distribution.html";
-    public static final String DECIMAL_FORMAT = "0.00000";
+    public static final String DEFAULT_TABLE_DECIMAL_FORMAT = "0.00000";
 
     protected String newHtmlFileName() {
         return DEFAULT_HTML_FILE_NAME;
@@ -84,19 +84,20 @@ public class HtmlDistributionReport {
                     protected void appendPanelBody(final PrintWriter writer) {
                         try (HtmlTableWriter table = new HtmlTableWriter(writer).setTheme(HtmlTableTheme.BOOTSTRAP)
                                 .setCloseOut(false)) {
+                            final String decimalFormat = getTableDecimalFormat(measure);
                             table.line("Confidence Level", measure.getMeasureName());
                             for (final Percent confidenceLevel : newConfidenceLevels()) {
                                 table.line(confidenceLevel.toString(PercentScale.PERCENT),
                                         measure.getConfidenceLevelValue(confidenceLevel)
-                                                .toFormattedString(getDecimalFormat()));
+                                                .toFormattedString(decimalFormat));
                             }
-                            table.line("<i>Min</i>", measure.getMin().toFormattedString(getDecimalFormat()));
-                            table.line("<i>Max</i>", measure.getMax().toFormattedString(getDecimalFormat()));
-                            table.line("<i>Avg</i>", measure.getAvg().toFormattedString(getDecimalFormat()));
-                            table.line("<i>Median</i>", measure.getMedian().toFormattedString(getDecimalFormat()));
-                            table.line("<i>Stdev</i>", measure.getStdev().toFormattedString(getDecimalFormat()));
-                            table.line("<i>Range</i>", measure.getRange().toFormattedString(getDecimalFormat()));
-                            table.line("<i>IQ-Range</i>", measure.getIQRange().toFormattedString(getDecimalFormat()));
+                            table.line("<i>Min</i>", measure.getMin().toFormattedString(decimalFormat));
+                            table.line("<i>Max</i>", measure.getMax().toFormattedString(decimalFormat));
+                            table.line("<i>Avg</i>", measure.getAvg().toFormattedString(decimalFormat));
+                            table.line("<i>Median</i>", measure.getMedian().toFormattedString(decimalFormat));
+                            table.line("<i>Stdev</i>", measure.getStdev().toFormattedString(decimalFormat));
+                            table.line("<i>Range</i>", measure.getRange().toFormattedString(decimalFormat));
+                            table.line("<i>IQ-Range</i>", measure.getIQRange().toFormattedString(decimalFormat));
                         } catch (final IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -114,8 +115,8 @@ public class HtmlDistributionReport {
         return DEFAULT_BIN_COUNT;
     }
 
-    protected String getDecimalFormat() {
-        return DECIMAL_FORMAT;
+    protected String getTableDecimalFormat(final DistributionMeasure measure) {
+        return DEFAULT_TABLE_DECIMAL_FORMAT;
     }
 
     protected List<Percent> newConfidenceLevels() {
