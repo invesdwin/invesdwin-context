@@ -94,7 +94,6 @@ public class HtmlDistributionReport {
                             table.line("<i>Min</i>", measure.getMin().toFormattedString(decimalFormat));
                             table.line("<i>Max</i>", measure.getMax().toFormattedString(decimalFormat));
                             table.line("<i>Avg</i>", measure.getAvg().toFormattedString(decimalFormat));
-                            table.line("<i>Median</i>", measure.getMedian().toFormattedString(decimalFormat));
                             table.line("<i>Stdev</i>", measure.getStdev().toFormattedString(decimalFormat));
                             table.line("<i>Range</i>", measure.getRange().toFormattedString(decimalFormat));
                             table.line("<i>IQ-Range</i>", measure.getIQRange().toFormattedString(decimalFormat));
