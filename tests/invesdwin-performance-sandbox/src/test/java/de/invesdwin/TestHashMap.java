@@ -10,8 +10,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 
 import de.invesdwin.util.collections.loadingcache.historical.AHistoricalCache;
+import de.invesdwin.util.collections.loadingcache.historical.IValuesMap;
 import de.invesdwin.util.collections.loadingcache.historical.ImmutableHistoricalEntry;
-import de.invesdwin.util.collections.loadingcache.historical.internal.IValuesMap;
 import de.invesdwin.util.collections.loadingcache.historical.query.IHistoricalCacheQuery;
 import de.invesdwin.util.math.expression.lambda.IEvaluateGenericFDate;
 import de.invesdwin.util.time.Instant;
