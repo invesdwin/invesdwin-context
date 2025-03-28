@@ -21,19 +21,20 @@ public final class DefaultTimeZoneConfigurer {
 
     private static final String USER_TIMEZONE_PARAM = "user.timezone";
     private static final String KEEP_USER_TIMEZONE_PARAM = "keep.user.timezone";
-    private static final String ORIGINAL_TIMEZONE;
+    private static final String SYSTEM_TIMEZONE;
 
     static {
-        String originalTimeZone = null;
+        String systemTimeZone = null;
         try {
             //CHECKSTYLE:OFF
-            originalTimeZone = System.getProperty(USER_TIMEZONE_PARAM);
+            systemTimeZone = System.getProperty(USER_TIMEZONE_PARAM);
             //CHECKSTYLE:ON
         } catch (final Throwable t) {
             //webstart safety for access control
-            originalTimeZone = TimeZone.getDefault().getID();
+            systemTimeZone = TimeZone.getDefault().getID();
         }
-        ORIGINAL_TIMEZONE = originalTimeZone;
+        SYSTEM_TIMEZONE = systemTimeZone;
+        FDates.setSystemTimeZone(FTimeZone.valueOf(systemTimeZone));
     }
 
     private DefaultTimeZoneConfigurer() {}
@@ -43,8 +44,8 @@ public final class DefaultTimeZoneConfigurer {
         final TimeZone newTimeZone = TimeZones.getTimeZone("UTC");
         final Log log = new Log(DefaultTimeZoneConfigurer.class);
         if (!getKeepDefaultTimezone()) {
-            if (!ORIGINAL_TIMEZONE.equals(newTimeZone.getID())) {
-                log.warn("Changing JVM default " + TimeZone.class.getSimpleName() + " from [" + ORIGINAL_TIMEZONE
+            if (!SYSTEM_TIMEZONE.equals(newTimeZone.getID())) {
+                log.warn("Changing JVM default " + TimeZone.class.getSimpleName() + " from [" + SYSTEM_TIMEZONE
                         + "] to [" + newTimeZone.getID() + "] in order to have commonality between systems:"
                         + "\n- Use -D" + KEEP_USER_TIMEZONE_PARAM + "=true to keep the system default."
                         + " Additionally using -D" + USER_TIMEZONE_PARAM + "=<" + TimeZone.class.getSimpleName()
@@ -55,7 +56,7 @@ public final class DefaultTimeZoneConfigurer {
                 setDefaultTimeZone(newTimeZone);
             }
         } else {
-            setDefaultTimeZone(getOriginalTimezone());
+            setDefaultTimeZone(getSystemTimezone());
         }
         log.info("Using " + USER_TIMEZONE_PARAM + "=%s", TimeZone.getDefault().getID());
     }
@@ -101,8 +102,8 @@ public final class DefaultTimeZoneConfigurer {
         return new SystemProperties().getBooleanOptional(KEEP_USER_TIMEZONE_PARAM, false);
     }
 
-    public static TimeZone getOriginalTimezone() {
-        return TimeZones.getTimeZone(ORIGINAL_TIMEZONE);
+    public static TimeZone getSystemTimezone() {
+        return TimeZones.getTimeZone(SYSTEM_TIMEZONE);
     }
 
 }
