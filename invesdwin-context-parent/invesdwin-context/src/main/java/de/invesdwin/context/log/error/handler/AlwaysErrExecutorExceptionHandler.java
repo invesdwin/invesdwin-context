@@ -16,6 +16,6 @@ public final class AlwaysErrExecutorExceptionHandler implements IExecutorExcepti
     @Override
     public Throwable handleExecutorException(final Throwable t, final boolean executeCalledWithoutFuture,
             final boolean callableRequiresReturnValue) {
-        return Err.process(t, true);
+        return Err.process(t, false);
     }
 }
