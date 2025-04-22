@@ -46,6 +46,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     private volatile IMemoryMappedFile reader;
     private final boolean readOnly;
     private final boolean closeAllowed;
+    private final ChunkStorageMetadata metadata;
 
     private final Set<ChunkSummaryByteBuffer> readerBuffers;
 
@@ -56,6 +57,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
         this.valueSerde = valueSerde;
         this.readOnly = readOnly;
         this.closeAllowed = closeAllowed;
+        this.metadata = new ChunkStorageMetadata(memoryDirectory);
         if (readOnly) {
             readerBuffers = null;
         } else {
@@ -241,11 +243,14 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             if (!memoryDirectory.exists()) {
                 Files.forceMkdir(memoryDirectory);
             }
-            final File lastMemoryFile = memoryFiles.get(memoryFiles.size() - 1);
+            final int lastMemoryFileIndex = memoryFiles.size() - 1;
+            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
                 out.seek(addressOffset);
                 buffer.getBytesTo(0, (DataOutput) out, length);
-                return new ChunkSummary("", addressOffset, length);
+                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), addressOffset, length);
+                metadata.setSummary(summary);
+                return summary;
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);
