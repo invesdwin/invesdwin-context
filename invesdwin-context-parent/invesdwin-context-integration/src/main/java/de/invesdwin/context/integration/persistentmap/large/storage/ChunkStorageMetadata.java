@@ -27,6 +27,8 @@ public class ChunkStorageMetadata {
         logEntry.append(new FDate());
         logEntry.append("\nMEMORY_RESOURCE_URI=");
         logEntry.append(summary.getMemoryResourceUri());
+        logEntry.append("\nPRECEDING_MEMORY_OFFSET=");
+        logEntry.append(summary.getPrecedingMemoryOffset());
         logEntry.append("\nMEMORY_OFFSET=");
         logEntry.append(summary.getMemoryOffset());
         logEntry.append("\nMEMORY_LENGTH=");

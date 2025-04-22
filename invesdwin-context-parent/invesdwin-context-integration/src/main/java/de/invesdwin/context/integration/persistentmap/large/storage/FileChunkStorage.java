@@ -89,7 +89,7 @@ public class FileChunkStorage<V> implements IChunkStorage<V> {
             final File file = createNewFile();
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(file)) {
                 buffer.getBytesTo(0, (DataOutput) out, length);
-                final ChunkSummary summary = new ChunkSummary(file.getName(), 0, length);
+                final ChunkSummary summary = new ChunkSummary(file.getName(), -1, 0, length);
                 metadata.setSummary(summary);
                 return summary;
             }

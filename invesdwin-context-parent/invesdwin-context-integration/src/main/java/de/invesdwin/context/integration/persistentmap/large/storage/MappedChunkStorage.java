@@ -212,6 +212,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private ChunkSummary write(final IByteBuffer buffer, final int length) {
+        final long precedingAddressOffset;
         final long addressOffset;
         lock.writeLock().lock();
         try {
@@ -221,6 +222,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                 memoryFiles.add(nextMemoryFile());
             }
             //support parallel writes from this instance (we expect exclusive access to the file)
+            precedingAddressOffset = precedingPosition;
             addressOffset = position;
             position += length;
             if (readerBuffers != null) {
@@ -248,7 +250,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
                 out.seek(addressOffset);
                 buffer.getBytesTo(0, (DataOutput) out, length);
-                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), addressOffset, length);
+                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
+                        addressOffset, length);
                 metadata.setSummary(summary);
                 return summary;
             }
