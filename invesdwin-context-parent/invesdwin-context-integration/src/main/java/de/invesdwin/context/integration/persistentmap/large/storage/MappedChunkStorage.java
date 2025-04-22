@@ -100,8 +100,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                         final File memoryFile = memoryFiles.get(0);
                         final long positionCopy = position;
                         try {
-                            reader = IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy, readOnly,
-                                    closeAllowed);
+                            reader = IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed);
                         } catch (final IOException e) {
                             throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
                                     + " fileIndex=0 position=" + positionCopy, e);
@@ -119,8 +118,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                                 positionCopy = memoryFile.length();
                             }
                             try {
-                                mappedFiles.add(IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy,
-                                        readOnly, closeAllowed));
+                                mappedFiles.add(
+                                        IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed));
                             } catch (final IOException e) {
                                 throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
                                         + " fileIndex=" + mappedFiles.size() + " precedingPosition="
