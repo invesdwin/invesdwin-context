@@ -152,7 +152,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                 buffer = chunkBuffer;
             } else {
                 final int length = Integers.checkedCast(summary.getMemoryLength());
-                buffer = reader.newByteBuffer(summary.getMemoryOffset(), length);
+                final long memoryOffset = summary.getPrecedingMemoryOffset() + summary.getMemoryOffset();
+                buffer = reader.newByteBuffer(memoryOffset, length);
             }
             final V value = valueSerde.fromBuffer(buffer);
             return value;
