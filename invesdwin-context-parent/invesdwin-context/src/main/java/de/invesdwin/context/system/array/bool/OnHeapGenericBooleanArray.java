@@ -13,13 +13,25 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
     private final IPrimitiveArrayAllocator arrayAllocator;
     private final String name;
     private final IGenericArray<Boolean> values;
+    private volatile boolean initialized = false;
 
+    @SuppressWarnings("deprecation")
     private OnHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
             final int size) {
         this.arrayAllocator = arrayAllocator;
         this.name = name;
         this.values = IGenericArray.newInstance(Boolean.class, size);
-        setInitialized(false); //maybe reset flag if cache was cleared
+        setInitializedShared(false); //maybe reset flag if cache was cleared
+    }
+
+    @Override
+    public boolean isInitializedLocal() {
+        return initialized;
+    }
+
+    @Override
+    public void setInitializedLocal(final boolean initialized) {
+        this.initialized = initialized;
     }
 
     @Override

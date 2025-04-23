@@ -15,7 +15,9 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
     private final String name;
     private final IBitSet trueValues;
     private final IBitSet falseValues;
+    private volatile boolean initialized = false;
 
+    @SuppressWarnings("deprecation")
     private OffHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
             final int size) {
         this.arrayAllocator = arrayAllocator;
@@ -27,11 +29,22 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
         if (trueValuesCached != null && falseValuesCached != null) {
             trueValues = trueValuesCached;
             falseValues = falseValuesCached;
+            initialized = isInitializedShared();
         } else {
             trueValues = arrayAllocator.newBitSet(trueValuesId, size);
             falseValues = arrayAllocator.newBitSet(falseValuesId, size);
-            setInitialized(false); //maybe reset flag if cache was cleared
+            setInitializedShared(false); //maybe reset flag if cache was cleared
         }
+    }
+
+    @Override
+    public boolean isInitializedLocal() {
+        return initialized;
+    }
+
+    @Override
+    public void setInitializedLocal(final boolean initialized) {
+        this.initialized = initialized;
     }
 
     @Override
