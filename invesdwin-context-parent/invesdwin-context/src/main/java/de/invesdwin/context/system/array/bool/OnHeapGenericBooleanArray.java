@@ -19,6 +19,7 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
         this.arrayAllocator = arrayAllocator;
         this.name = name;
         this.values = IGenericArray.newInstance(Boolean.class, size);
+        setInitialized(false); //maybe reset flag if cache was cleared
     }
 
     @Override

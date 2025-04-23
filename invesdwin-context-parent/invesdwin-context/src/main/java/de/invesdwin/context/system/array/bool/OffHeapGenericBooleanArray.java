@@ -22,13 +22,15 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
         this.name = name;
         final String trueValuesId = name + "_trueValues";
         final String falseValuesId = name + "_falseValues";
-        final IBitSet trueValuesInitialized = arrayAllocator.getBitSet(trueValuesId);
-        if (trueValuesInitialized != null) {
-            trueValues = trueValuesInitialized;
-            falseValues = arrayAllocator.getBitSet(falseValuesId);
+        final IBitSet trueValuesCached = arrayAllocator.getBitSet(trueValuesId);
+        final IBitSet falseValuesCached = arrayAllocator.getBitSet(falseValuesId);
+        if (trueValuesCached != null && falseValuesCached != null) {
+            trueValues = trueValuesCached;
+            falseValues = falseValuesCached;
         } else {
             trueValues = arrayAllocator.newBitSet(trueValuesId, size);
             falseValues = arrayAllocator.newBitSet(falseValuesId, size);
+            setInitialized(false); //maybe reset flag if cache was cleared
         }
     }
 
