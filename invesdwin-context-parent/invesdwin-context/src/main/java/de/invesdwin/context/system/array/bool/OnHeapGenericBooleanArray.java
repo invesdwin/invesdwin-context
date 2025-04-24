@@ -25,6 +25,11 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
+    public int getId() {
+        return System.identityHashCode(values);
+    }
+
+    @Override
     public boolean isInitializedLocal() {
         return initialized;
     }

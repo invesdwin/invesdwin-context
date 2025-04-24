@@ -4,6 +4,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
 import de.invesdwin.util.collections.array.IGenericArray;
+import de.invesdwin.util.collections.array.IPrimitiveArrayId;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -35,6 +36,11 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
             falseValues = arrayAllocator.newBitSet(falseValuesId, size);
             setInitializedShared(false); //maybe reset flag if cache was cleared
         }
+    }
+
+    @Override
+    public int getId() {
+        return IPrimitiveArrayId.newId(trueValues, falseValues);
     }
 
     @Override
