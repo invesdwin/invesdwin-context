@@ -15,9 +15,11 @@ import de.invesdwin.context.integration.persistentmap.IPersistentMap;
 import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
 import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.MappedChunkStorage;
+import de.invesdwin.context.integration.persistentmap.large.storage.SequentialFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummarySerde;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.OperatingSystem;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.ISerde;
 
@@ -96,9 +98,17 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
         return newDefaultChunkStorage(directory, valueSerde, readOnly, closeAllowed);
     }
 
-    public static <V> MappedChunkStorage<V> newDefaultChunkStorage(final File directory, final ISerde<V> valueSerde,
+    public static <V> IChunkStorage<V> newDefaultChunkStorage(final File directory, final ISerde<V> valueSerde,
             final boolean readOnly, final boolean closeAllowed) {
-        return new MappedChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
+        if (OperatingSystem.isWindows()) {
+            //            Caused by: java.io.IOException: Die Auslagerungsdatei ist zu klein, um diesen Vorgang durchzuführen
+            //            at java.base/sun.nio.ch.FileChannelImpl.map0(Native Method)
+            //            at org.agrona.IoUtil.map(IoUtil.java:578)
+            //            at de.invesdwin.util.streams.buffer.file.MemoryMappedFile$MemoryMappedFileFinalizer.<init>(MemoryMappedFile.java:167)
+            return new SequentialFileChunkStorage<>(directory, valueSerde);
+        } else {
+            return new MappedChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
+        }
     }
 
     @Override

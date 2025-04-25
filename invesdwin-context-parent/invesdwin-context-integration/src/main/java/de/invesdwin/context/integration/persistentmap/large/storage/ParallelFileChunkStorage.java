@@ -21,7 +21,7 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
  * Values are deleted on the file system, so no problems with deletion.
  */
 @ThreadSafe
-public class FileChunkStorage<V> implements IChunkStorage<V> {
+public class ParallelFileChunkStorage<V> implements IChunkStorage<V> {
 
     private long fileIndex = System.currentTimeMillis();
 
@@ -29,7 +29,7 @@ public class FileChunkStorage<V> implements IChunkStorage<V> {
     private final ISerde<V> valueSerde;
     private final ChunkStorageMetadata metadata;
 
-    public FileChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde) {
+    public ParallelFileChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde) {
         this.memoryDirectory = memoryDirectory;
         this.valueSerde = valueSerde;
         this.metadata = new ChunkStorageMetadata(memoryDirectory);
