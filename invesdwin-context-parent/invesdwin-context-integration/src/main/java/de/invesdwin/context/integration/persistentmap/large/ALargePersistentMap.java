@@ -14,7 +14,7 @@ import de.invesdwin.context.integration.persistentmap.IKeyMatcher;
 import de.invesdwin.context.integration.persistentmap.IPersistentMap;
 import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
 import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
-import de.invesdwin.context.integration.persistentmap.large.storage.MappedChunkStorage;
+import de.invesdwin.context.integration.persistentmap.large.storage.MappedFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.SequentialFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummarySerde;
@@ -107,7 +107,7 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
             //            at de.invesdwin.util.streams.buffer.file.MemoryMappedFile$MemoryMappedFileFinalizer.<init>(MemoryMappedFile.java:167)
             return new SequentialFileChunkStorage<>(directory, valueSerde);
         } else {
-            return new MappedChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
+            return new MappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
         }
     }
 

@@ -32,13 +32,13 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
  * this sometime (could be done async).
  */
 @ThreadSafe
-public class MappedChunkStorage<V> implements IChunkStorage<V> {
+public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     private final File memoryDirectory;
     private final List<File> memoryFiles;
     private final ISerde<V> valueSerde;
     private final IReadWriteLock lock = ILockCollectionFactory.getInstance(true)
-            .newReadWriteLock(MappedChunkStorage.class.getSimpleName() + "_lock");
+            .newReadWriteLock(MappedFileChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
     private long precedingPosition;
     @GuardedBy("lock")
@@ -50,7 +50,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
 
     private final Set<ChunkSummaryByteBuffer> readerBuffers;
 
-    public MappedChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly,
+    public MappedFileChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly,
             final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFiles = new ArrayList<>();
