@@ -15,7 +15,10 @@ public final class ChunkSummarySerde implements ISerde<ChunkSummary> {
     private static final int MEMORYRESOURCEURISIZE_INDEX = 0;
     private static final int MEMORYRESOURCEURISIZE_SIZE = Integer.BYTES;
 
-    private static final int MEMORYOFFSET_INDEX = MEMORYRESOURCEURISIZE_INDEX + MEMORYRESOURCEURISIZE_SIZE;
+    private static final int PRECEDING_MEMORYOFFSET_INDEX = MEMORYRESOURCEURISIZE_INDEX + MEMORYRESOURCEURISIZE_SIZE;
+    private static final int PRECEDING_MEMORYOFFSET_SIZE = Long.BYTES;
+
+    private static final int MEMORYOFFSET_INDEX = PRECEDING_MEMORYOFFSET_INDEX + PRECEDING_MEMORYOFFSET_SIZE;
     private static final int MEMORYOFFSET_SIZE = Long.BYTES;
 
     private static final int MEMORYLENGTH_INDEX = MEMORYOFFSET_INDEX + MEMORYOFFSET_SIZE;
@@ -38,10 +41,11 @@ public final class ChunkSummarySerde implements ISerde<ChunkSummary> {
     @Override
     public ChunkSummary fromBuffer(final IByteBuffer buffer) {
         final int memoryResourceUriSize = buffer.getInt(MEMORYRESOURCEURISIZE_INDEX);
+        final long precedingMemoryOffset = buffer.getLong(PRECEDING_MEMORYOFFSET_INDEX);
         final long memoryOffset = buffer.getLong(MEMORYOFFSET_INDEX);
         final long memoryLength = buffer.getLong(MEMORYLENGTH_INDEX);
         final String memoryResourceUri = buffer.getStringUtf8(MEMORYRESOURCEURI_INDEX, memoryResourceUriSize);
-        return new ChunkSummary(memoryResourceUri, memoryOffset, memoryLength);
+        return new ChunkSummary(memoryResourceUri, precedingMemoryOffset, memoryOffset, memoryLength);
     }
 
     @Override
@@ -49,10 +53,12 @@ public final class ChunkSummarySerde implements ISerde<ChunkSummary> {
         final String memoryResourceUri = obj.getMemoryResourceUri();
         final byte[] memoryResourceUriBytes = ByteBuffers.newStringUtf8Bytes(memoryResourceUri);
         final int memoryResourceUriSize = memoryResourceUriBytes.length;
+        final long precedingMemoryOffset = obj.getPrecedingMemoryOffset();
         final long memoryOffset = obj.getMemoryOffset();
         final long memorySize = obj.getMemoryLength();
 
         buffer.putInt(MEMORYRESOURCEURISIZE_INDEX, memoryResourceUriSize);
+        buffer.putLong(PRECEDING_MEMORYOFFSET_INDEX, precedingMemoryOffset);
         buffer.putLong(MEMORYOFFSET_INDEX, memoryOffset);
         buffer.putLong(MEMORYLENGTH_INDEX, memorySize);
         int position = MEMORYRESOURCEURI_INDEX;

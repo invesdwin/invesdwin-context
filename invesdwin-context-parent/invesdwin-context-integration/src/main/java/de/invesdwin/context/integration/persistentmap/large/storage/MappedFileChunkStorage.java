@@ -32,13 +32,13 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
  * this sometime (could be done async).
  */
 @ThreadSafe
-public class MappedChunkStorage<V> implements IChunkStorage<V> {
+public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     private final File memoryDirectory;
     private final List<File> memoryFiles;
     private final ISerde<V> valueSerde;
     private final IReadWriteLock lock = ILockCollectionFactory.getInstance(true)
-            .newReadWriteLock(MappedChunkStorage.class.getSimpleName() + "_lock");
+            .newReadWriteLock(MappedFileChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
     private long precedingPosition;
     @GuardedBy("lock")
@@ -46,16 +46,18 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     private volatile IMemoryMappedFile reader;
     private final boolean readOnly;
     private final boolean closeAllowed;
+    private final ChunkStorageMetadata metadata;
 
     private final Set<ChunkSummaryByteBuffer> readerBuffers;
 
-    public MappedChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly,
+    public MappedFileChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly,
             final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFiles = new ArrayList<>();
         this.valueSerde = valueSerde;
         this.readOnly = readOnly;
         this.closeAllowed = closeAllowed;
+        this.metadata = new ChunkStorageMetadata(memoryDirectory);
         if (readOnly) {
             readerBuffers = null;
         } else {
@@ -98,8 +100,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                         final File memoryFile = memoryFiles.get(0);
                         final long positionCopy = position;
                         try {
-                            reader = IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy, readOnly,
-                                    closeAllowed);
+                            reader = IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed);
                         } catch (final IOException e) {
                             throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
                                     + " fileIndex=0 position=" + positionCopy, e);
@@ -117,8 +118,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                                 positionCopy = memoryFile.length();
                             }
                             try {
-                                mappedFiles.add(IMemoryMappedFile.map(memoryFile.getAbsolutePath(), 0L, positionCopy,
-                                        readOnly, closeAllowed));
+                                mappedFiles.add(
+                                        IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed));
                             } catch (final IOException e) {
                                 throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
                                         + " fileIndex=" + mappedFiles.size() + " precedingPosition="
@@ -151,7 +152,8 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                 buffer = chunkBuffer;
             } else {
                 final int length = Integers.checkedCast(summary.getMemoryLength());
-                buffer = reader.newByteBuffer(summary.getMemoryOffset(), length);
+                final long memoryOffset = summary.getPrecedingMemoryOffset() + summary.getMemoryOffset();
+                buffer = reader.newByteBuffer(memoryOffset, length);
             }
             final V value = valueSerde.fromBuffer(buffer);
             return value;
@@ -210,6 +212,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private ChunkSummary write(final IByteBuffer buffer, final int length) {
+        final long precedingAddressOffset;
         final long addressOffset;
         lock.writeLock().lock();
         try {
@@ -219,6 +222,7 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
                 memoryFiles.add(nextMemoryFile());
             }
             //support parallel writes from this instance (we expect exclusive access to the file)
+            precedingAddressOffset = precedingPosition;
             addressOffset = position;
             position += length;
             if (readerBuffers != null) {
@@ -241,11 +245,15 @@ public class MappedChunkStorage<V> implements IChunkStorage<V> {
             if (!memoryDirectory.exists()) {
                 Files.forceMkdir(memoryDirectory);
             }
-            final File lastMemoryFile = memoryFiles.get(memoryFiles.size() - 1);
+            final int lastMemoryFileIndex = memoryFiles.size() - 1;
+            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
                 out.seek(addressOffset);
                 buffer.getBytesTo(0, (DataOutput) out, length);
-                return new ChunkSummary("", addressOffset, length);
+                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
+                        addressOffset, length);
+                metadata.setSummary(summary);
+                return summary;
             }
         } catch (final IOException e) {
             throw new RuntimeException(e);

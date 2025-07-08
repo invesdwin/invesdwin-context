@@ -4,6 +4,7 @@ import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
 import de.invesdwin.util.collections.array.IGenericArray;
+import de.invesdwin.util.collections.array.IPrimitiveArrayId;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -15,21 +16,41 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
     private final String name;
     private final IBitSet trueValues;
     private final IBitSet falseValues;
+    private volatile boolean initialized = false;
 
+    @SuppressWarnings("deprecation")
     private OffHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
             final int size) {
         this.arrayAllocator = arrayAllocator;
         this.name = name;
         final String trueValuesId = name + "_trueValues";
         final String falseValuesId = name + "_falseValues";
-        final IBitSet trueValuesInitialized = arrayAllocator.getBitSet(trueValuesId);
-        if (trueValuesInitialized != null) {
-            trueValues = trueValuesInitialized;
-            falseValues = arrayAllocator.getBitSet(falseValuesId);
+        final IBitSet trueValuesCached = arrayAllocator.getBitSet(trueValuesId);
+        final IBitSet falseValuesCached = arrayAllocator.getBitSet(falseValuesId);
+        if (trueValuesCached != null && falseValuesCached != null) {
+            trueValues = trueValuesCached;
+            falseValues = falseValuesCached;
+            initialized = isInitializedShared();
         } else {
             trueValues = arrayAllocator.newBitSet(trueValuesId, size);
             falseValues = arrayAllocator.newBitSet(falseValuesId, size);
+            setInitializedShared(false); //maybe reset flag if cache was cleared
         }
+    }
+
+    @Override
+    public int getId() {
+        return IPrimitiveArrayId.newId(trueValues, falseValues);
+    }
+
+    @Override
+    public boolean isInitializedLocal() {
+        return initialized;
+    }
+
+    @Override
+    public void setInitializedLocal(final boolean initialized) {
+        this.initialized = initialized;
     }
 
     @Override

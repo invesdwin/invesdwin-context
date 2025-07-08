@@ -9,7 +9,6 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import ch.qos.logback.core.util.FileSize;
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.log.logback.internal.LogbackProperties;
 
 @NotThreadSafe
 public class ConfiguredFileAppender extends RollingFileAppender<ILoggingEvent> {
