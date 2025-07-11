@@ -44,6 +44,7 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     private byte[] newlineBytes;
 
     private final List<Object> currentLine = new ArrayList<Object>();
+    private int currentLineColumns = 0;
     private Integer assertColumnCount;
 
     public CsvTableWriter(final Appendable out) {
@@ -93,19 +94,32 @@ public class CsvTableWriter implements Closeable, ITableWriter {
 
     @Override
     public void column(final Object column) {
-        currentLine.add(Strings.asString(column));
+        if (currentLine.size() >= currentLineColumns) {
+            currentLine.set(currentLineColumns, Strings.asString(column));
+            currentLineColumns++;
+        } else {
+            currentLine.add(Strings.asString(column));
+        }
     }
 
     @Override
     public void newLine() throws IOException {
-        line(currentLine);
-        currentLine.clear();
+        line(currentLine, currentLineColumns);
+        currentLineColumns = 0;
     }
 
     @Override
     public void line(final List<?> columns) throws IOException {
-        assertColumnCount(columns.size());
-        for (int i = 0; i < columns.size(); i++) {
+        line(columns, columns.size());
+    }
+
+    @Override
+    public void line(final List<?> columns, final int length) throws IOException {
+        assertColumnCount(length);
+        for (int i = 0; i < length; i++) {
+            if (i > 0) {
+                finalizer.out.write(columnSeparatorBytes);
+            }
             final Object column = columns.get(i);
             if (column != null) {
                 if (quoteBytes != null) {
@@ -115,9 +129,6 @@ public class CsvTableWriter implements Closeable, ITableWriter {
                 if (quoteBytes != null) {
                     finalizer.out.write(quoteBytes);
                 }
-            }
-            if (i < columns.size() - 1) {
-                finalizer.out.write(columnSeparatorBytes);
             }
         }
         finalizer.out.write(newlineBytes);
@@ -140,6 +151,7 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     @Override
     public final void close() throws IOException {
         finalizer.close();
+        currentLine.clear();
     }
 
     @Override
