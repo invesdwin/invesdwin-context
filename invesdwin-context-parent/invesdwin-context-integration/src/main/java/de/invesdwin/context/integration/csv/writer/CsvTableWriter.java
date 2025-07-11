@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.csv.writer;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -14,8 +15,6 @@ import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.loadingcache.ALoadingCache;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.lang.string.Strings;
-import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
-import de.invesdwin.util.streams.buffer.bytes.extend.ArrayExpandableByteBuffer;
 
 @NotThreadSafe
 public class CsvTableWriter implements Closeable, ITableWriter {
@@ -44,9 +43,8 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     private byte[] columnSeparatorBytes;
     private byte[] newlineBytes;
 
-    private final IByteBuffer currentLine = new ArrayExpandableByteBuffer();
-    private int currentLinePosition = 0;
-    private int currentLineColumns = 0;
+    private final List<String> currentLine = new ArrayList<String>();
+    private int currentLineLength = 0;
     private Integer assertColumnCount;
 
     public CsvTableWriter(final Appendable out) {
@@ -70,16 +68,16 @@ public class CsvTableWriter implements Closeable, ITableWriter {
 
     public CsvTableWriter setQuote(final String quote) {
         if (Strings.isBlank(quote)) {
-            this.quoteBytes = null;
+            quoteBytes = null;
         } else {
-            this.quoteBytes = STR_BYTES.get(quote);
+            quoteBytes = STR_BYTES.get(quote);
         }
         return this;
     }
 
     public CsvTableWriter setColumnSeparator(final String columnSeparator) {
         Assertions.assertThat(columnSeparator).isNotEmpty();
-        this.columnSeparatorBytes = STR_BYTES.get(columnSeparator);
+        columnSeparatorBytes = STR_BYTES.get(columnSeparator);
         return this;
     }
 
@@ -96,37 +94,19 @@ public class CsvTableWriter implements Closeable, ITableWriter {
 
     @Override
     public void column(final Object column) {
-        final String columnStr;
-        if (column instanceof String) {
-            columnStr = (String) column;
+        final String columnStr = Strings.asString(column);
+        if (currentLine.size() > currentLineLength) {
+            currentLine.set(currentLineLength, columnStr);
         } else {
-            columnStr = Strings.asStringEmptyText(column);
+            currentLine.add(columnStr);
         }
-        if (currentLineColumns > 0) {
-            currentLine.putBytes(currentLinePosition, columnSeparatorBytes);
-            currentLinePosition += columnSeparatorBytes.length;
-        }
-        if (quoteBytes != null) {
-            currentLine.putBytes(currentLinePosition, columnSeparatorBytes);
-            currentLinePosition += quoteBytes.length;
-            final int columnStrLength = currentLine.putStringUtf8(currentLinePosition, columnStr);
-            currentLinePosition += columnStrLength;
-            currentLine.putBytes(currentLinePosition, columnSeparatorBytes);
-            currentLinePosition += quoteBytes.length;
-        } else {
-            final int columnStrLength = currentLine.putStringUtf8(currentLinePosition, columnStr);
-            currentLinePosition += columnStrLength;
-        }
-        currentLineColumns++;
+        currentLineLength++;
     }
 
     @Override
     public void newLine() throws IOException {
-        assertColumnCount(currentLineColumns);
-        currentLine.getBytesTo(0, finalizer.out, currentLinePosition);
-        finalizer.out.write(newlineBytes);
-        currentLineColumns = 0;
-        currentLinePosition = 0;
+        line(currentLine, currentLineLength);
+        currentLineLength = 0;
     }
 
     @Override
@@ -178,8 +158,8 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     @Override
     public final void close() throws IOException {
         finalizer.close();
-        currentLinePosition = 0;
-        currentLineColumns = 0;
+        currentLine.clear();
+        currentLineLength = 0;
     }
 
     @Override
