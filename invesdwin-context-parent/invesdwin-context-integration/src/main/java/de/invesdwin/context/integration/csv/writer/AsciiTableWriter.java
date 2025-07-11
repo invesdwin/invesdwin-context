@@ -20,7 +20,7 @@ public class AsciiTableWriter implements ITableWriter {
     protected final List<String[]> rows = new ArrayList<>();
     private final Appendable out;
     private final List<Object> currentLine = new ArrayList<Object>();
-    private int currentLineLength = 0;
+    private int currentLineColumns = 0;
     private Integer assertColumnCount;
     private AsciiTableTheme theme = AsciiTableTheme.DEFAULT;
 
@@ -55,18 +55,18 @@ public class AsciiTableWriter implements ITableWriter {
     @Override
     public void column(final Object column) {
         final String columnStr = Strings.asString(column);
-        if (currentLine.size() > currentLineLength) {
-            currentLine.set(currentLineLength, columnStr);
+        if (currentLine.size() > currentLineColumns) {
+            currentLine.set(currentLineColumns, columnStr);
         } else {
             currentLine.add(columnStr);
         }
-        currentLineLength++;
+        currentLineColumns++;
     }
 
     @Override
     public void newLine() {
-        line(currentLine, currentLineLength);
-        currentLineLength = 0;
+        line(currentLine, currentLineColumns);
+        currentLineColumns = 0;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class AsciiTableWriter implements ITableWriter {
     @Override
     public final void close() throws IOException {
         currentLine.clear();
-        currentLineLength = 0;
+        currentLineColumns = 0;
         if (rows.size() <= 1) {
             return;
         }

@@ -18,7 +18,7 @@ public class HtmlTableWriter implements ITableWriter {
 
     private final Appendable out;
     private final List<Object> currentLine = new ArrayList<Object>();
-    private int currentLineLength = 0;
+    private int currentLineColumns = 0;
     private Integer assertColumnCount;
     private int lineIdx = 0;
     private boolean headerRowEnabled = true;
@@ -74,18 +74,18 @@ public class HtmlTableWriter implements ITableWriter {
     @Override
     public void column(final Object column) {
         final String columnStr = Strings.asString(column);
-        if (currentLine.size() > currentLineLength) {
-            currentLine.set(currentLineLength, columnStr);
+        if (currentLine.size() > currentLineColumns) {
+            currentLine.set(currentLineColumns, columnStr);
         } else {
             currentLine.add(columnStr);
         }
-        currentLineLength++;
+        currentLineColumns++;
     }
 
     @Override
     public void newLine() throws IOException {
-        line(currentLine, currentLineLength);
-        currentLineLength = 0;
+        line(currentLine, currentLineColumns);
+        currentLineColumns = 0;
     }
 
     @Override
