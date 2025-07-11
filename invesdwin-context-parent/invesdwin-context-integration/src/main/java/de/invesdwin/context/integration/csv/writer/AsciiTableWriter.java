@@ -80,7 +80,13 @@ public class AsciiTableWriter implements ITableWriter {
         final String[] row = new String[length];
         for (int i = 0; i < length; i++) {
             final Object column = columns.get(i);
-            row[i] = Strings.asStringEmptyText(column);
+            final String columnStr;
+            if (column instanceof String) {
+                columnStr = (String) column;
+            } else {
+                columnStr = Strings.asStringEmptyText(column);
+            }
+            row[i] = columnStr;
         }
         rows.add(row);
     }

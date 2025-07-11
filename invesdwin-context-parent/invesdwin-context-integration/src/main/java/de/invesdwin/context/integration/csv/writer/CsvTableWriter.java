@@ -43,7 +43,7 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     private byte[] columnSeparatorBytes;
     private byte[] newlineBytes;
 
-    private final List<Object> currentLine = new ArrayList<Object>();
+    private final List<String> currentLine = new ArrayList<String>();
     private int currentLineLength = 0;
     private Integer assertColumnCount;
 
@@ -126,7 +126,13 @@ public class CsvTableWriter implements Closeable, ITableWriter {
                 if (quoteBytes != null) {
                     finalizer.out.write(quoteBytes);
                 }
-                finalizer.out.write(Strings.asStringEmptyText(column).getBytes());
+                final String columnStr;
+                if (column instanceof String) {
+                    columnStr = (String) column;
+                } else {
+                    columnStr = Strings.asStringEmptyText(column);
+                }
+                finalizer.out.write(columnStr.getBytes());
                 if (quoteBytes != null) {
                     finalizer.out.write(quoteBytes);
                 }

@@ -117,8 +117,13 @@ public class HtmlTableWriter implements ITableWriter {
             } else {
                 out.append(theme.tdOpenTag(headerRowEnabled, lineIdx, colIdx));
             }
-            final String content = Strings.asStringEmptyText(column);
-            out.append(content);
+            final String columnStr;
+            if (column instanceof String) {
+                columnStr = (String) column;
+            } else {
+                columnStr = Strings.asStringEmptyText(column);
+            }
+            out.append(columnStr);
             if (lineIdx == 0 && headerRowEnabled) {
                 out.append(theme.thCloseTag());
             } else {
