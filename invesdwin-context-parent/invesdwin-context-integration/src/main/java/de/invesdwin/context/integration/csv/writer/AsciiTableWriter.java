@@ -20,6 +20,7 @@ public class AsciiTableWriter implements ITableWriter {
     protected final List<String[]> rows = new ArrayList<>();
     private final Appendable out;
     private final List<Object> currentLine = new ArrayList<Object>();
+    private int currentLineLength = 0;
     private Integer assertColumnCount;
     private AsciiTableTheme theme = AsciiTableTheme.DEFAULT;
 
@@ -53,20 +54,31 @@ public class AsciiTableWriter implements ITableWriter {
 
     @Override
     public void column(final Object column) {
-        currentLine.add(Strings.asString(column));
+        final String columnStr = Strings.asString(column);
+        if (currentLine.size() > currentLineLength) {
+            currentLine.set(currentLineLength, columnStr);
+            currentLineLength++;
+        } else {
+            currentLine.add(columnStr);
+        }
     }
 
     @Override
     public void newLine() {
-        line(currentLine);
-        currentLine.clear();
+        line(currentLine, currentLineLength);
+        currentLineLength = 0;
     }
 
     @Override
     public void line(final List<?> columns) {
-        assertColumnCount(columns.size());
-        final String[] row = new String[columns.size()];
-        for (int i = 0; i < columns.size(); i++) {
+        line(columns, columns.size());
+    }
+
+    @Override
+    public void line(final List<?> columns, final int length) {
+        assertColumnCount(length);
+        final String[] row = new String[length];
+        for (int i = 0; i < length; i++) {
             final Object column = columns.get(i);
             row[i] = Strings.asStringEmptyText(column);
         }
@@ -90,6 +102,7 @@ public class AsciiTableWriter implements ITableWriter {
     @Override
     public final void close() throws IOException {
         currentLine.clear();
+        currentLineLength = 0;
         if (rows.size() <= 1) {
             return;
         }

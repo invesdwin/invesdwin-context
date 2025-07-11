@@ -44,7 +44,7 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     private byte[] newlineBytes;
 
     private final List<Object> currentLine = new ArrayList<Object>();
-    private int currentLineColumns = 0;
+    private int currentLineLength = 0;
     private Integer assertColumnCount;
 
     public CsvTableWriter(final Appendable out) {
@@ -94,18 +94,19 @@ public class CsvTableWriter implements Closeable, ITableWriter {
 
     @Override
     public void column(final Object column) {
-        if (currentLine.size() >= currentLineColumns) {
-            currentLine.set(currentLineColumns, Strings.asString(column));
-            currentLineColumns++;
+        final String columnStr = Strings.asString(column);
+        if (currentLine.size() > currentLineLength) {
+            currentLine.set(currentLineLength, columnStr);
+            currentLineLength++;
         } else {
-            currentLine.add(Strings.asString(column));
+            currentLine.add(columnStr);
         }
     }
 
     @Override
     public void newLine() throws IOException {
-        line(currentLine, currentLineColumns);
-        currentLineColumns = 0;
+        line(currentLine, currentLineLength);
+        currentLineLength = 0;
     }
 
     @Override
@@ -152,6 +153,7 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     public final void close() throws IOException {
         finalizer.close();
         currentLine.clear();
+        currentLineLength = 0;
     }
 
     @Override
