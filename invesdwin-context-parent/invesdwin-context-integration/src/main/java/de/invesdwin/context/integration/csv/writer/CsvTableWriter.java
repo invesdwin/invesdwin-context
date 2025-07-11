@@ -97,10 +97,10 @@ public class CsvTableWriter implements Closeable, ITableWriter {
         final String columnStr = Strings.asString(column);
         if (currentLine.size() > currentLineLength) {
             currentLine.set(currentLineLength, columnStr);
-            currentLineLength++;
         } else {
             currentLine.add(columnStr);
         }
+        currentLineLength++;
     }
 
     @Override
