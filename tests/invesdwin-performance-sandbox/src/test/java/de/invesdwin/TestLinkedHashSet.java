@@ -1,7 +1,5 @@
 package de.invesdwin;
 
-import static java.util.Arrays.stream;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -10,6 +8,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.google.common.collect.GuavaCompactLinkedHashSet;
 
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.time.Instant;
 
 @NotThreadSafe
@@ -25,7 +24,7 @@ public class TestLinkedHashSet extends AbstractPerformanceTest {
         for (int ix = 0; ix < TIMES; ix++) {
             add[ix] = new Long(Math.round(Math.random() * MAX));
         }
-        ELEMENTS_SIZE = stream(add).distinct().count() * measureHeapSize(add[0]);
+        ELEMENTS_SIZE = Arrays.stream(add).distinct().count() * measureHeapSize(add[0]);
         for (int ix = 0; ix < TIMES; ix++) {
             lookup[ix] = new Long(Math.round(Math.random() * MAX));
         }
