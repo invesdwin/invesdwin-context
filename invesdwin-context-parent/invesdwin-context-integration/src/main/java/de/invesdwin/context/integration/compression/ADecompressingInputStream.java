@@ -15,7 +15,7 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.string.description.TextDescription;
-import de.invesdwin.util.streams.ADelegateInputStream;
+import de.invesdwin.util.streams.delegate.ADelegateInputStream;
 
 /**
  * An InputStream that acts as a wrapper to commons-compress to decompress diverse archives and compressions. Examples
