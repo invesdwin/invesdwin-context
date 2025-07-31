@@ -70,7 +70,9 @@ public abstract class AMain implements Runnable {
     }
 
     protected CmdLineParser newCmdLineParser() {
-        return new CmdLineParser(this);
+        final CmdLineParser parser = new CmdLineParser(this);
+        parser.getProperties().withUsageWidth(120);
+        return parser;
     }
 
     /**
@@ -132,7 +134,6 @@ public abstract class AMain implements Runnable {
 
     protected String createHelpString(final CmdLineParser parser) {
         final StringWriter writer = new StringWriter();
-        parser.setUsageWidth(120);
         final ResourceBundle rb = ResourceBundles.getResourceBundle(getClass());
         writer.append("\nUsage:\tjava ");
         writer.append(getClass().getName());
