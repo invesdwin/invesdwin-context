@@ -32,6 +32,6 @@ public interface IStub {
      * This normally gets called after the tests finished, but also gets called when test context failed to initialize
      * in order to clean up the mess.
      */
-    void tearDownOnce(ATest test) throws Exception;
+    void tearDownOnce(ATest test, TestContext ctx) throws Exception;
 
 }

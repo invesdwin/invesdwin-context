@@ -191,11 +191,12 @@ public class TestContextLoader implements ContextLoader {
                 return ctx;
             }
         } catch (final Throwable t) {
+            final TestContext premergedContext = new TestContext(PreMergedContext.getInstance(true), null);
             final LoggedRuntimeException processed = Err.process(t);
             try {
                 //need to clean up the mess, but cannot use currentTest since hooks are not initialized there
                 for (final IStub hook : getTestHooks(PreMergedContext.getInstance())) {
-                    hook.tearDownOnce(currentTest);
+                    hook.tearDownOnce(currentTest, premergedContext);
                 }
                 ReinitializationHookManager.reinitializationFailed();
             } catch (final Throwable tInner) {

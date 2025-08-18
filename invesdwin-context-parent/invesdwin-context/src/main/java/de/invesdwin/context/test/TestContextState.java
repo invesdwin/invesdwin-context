@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.util.collections.attributes.AttributesMap;
+import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
@@ -16,6 +18,7 @@ class TestContextState {
     private final AtomicInteger registeredTestsCount = new AtomicInteger();
     private final List<String> locationStrings;
     private volatile TestContext context;
+    private final IAttributesMap attributes = new AttributesMap();
 
     TestContextState(final List<String> locationStrings) {
         this.locationStrings = locationStrings;
@@ -46,8 +49,17 @@ class TestContextState {
     }
 
     void waitForFinished() {
-        while (registeredTestsCount.get() > 0) {
+        while (!isFinished()) {
             FTimeUnit.MILLISECONDS.sleepNoInterrupt(1);
         }
     }
+
+    boolean isFinished() {
+        return registeredTestsCount.get() <= 0;
+    }
+
+    IAttributesMap getAttributes() {
+        return attributes;
+    }
+
 }

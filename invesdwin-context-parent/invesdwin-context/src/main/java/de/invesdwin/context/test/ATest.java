@@ -26,6 +26,7 @@ import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.loadingcache.ALoadingCache;
 import de.invesdwin.util.time.Instant;
+import io.netty.util.concurrent.FastThreadLocal;
 import jakarta.inject.Inject;
 
 /**
@@ -68,6 +69,7 @@ public abstract class ATest implements ITestLifecycle {
             return true;
         }
     };
+    private static final FastThreadLocal<ATest> LAST_TEST = new FastThreadLocal<>();
 
     protected final Log log = new Log(this);
 
@@ -92,6 +94,7 @@ public abstract class ATest implements ITestLifecycle {
         if (TestContextLoader.getCurrentTest() == null) {
             TestContextLoader.setCurrentTest(this);
         }
+        LAST_TEST.set(this);
     }
 
     void setContext(final TestContext ctx) {
@@ -143,9 +146,11 @@ public abstract class ATest implements ITestLifecycle {
     }
 
     @AfterAll
-    public static void afterAll() {
+    public static void afterAll() throws Exception {
         //clean up refrence also in the thread where the instance got created and registered
         TestContextLoader.setCurrentTest(null);
+        final ATest lastTest = LAST_TEST.get();
+        lastTest.run.tearDownOnce(lastTest);
     }
 
     private static final class TestClassRun {
@@ -167,7 +172,7 @@ public abstract class ATest implements ITestLifecycle {
                 return;
             }
             setUpOnceCalled = true;
-            test.log.info("%s) >> [%s] >> running", testClassId, test.getClass().getName());
+            test.log.info("%s) >> [%s] >> running (%s)", testClassId, test.getClass().getName(), activeCount.get());
             test.setUpOnce();
             for (final IStub hook : test.hooks) {
                 hook.setUpOnce(test, ctx);
@@ -175,13 +180,13 @@ public abstract class ATest implements ITestLifecycle {
         }
 
         public synchronized void setUp(final ATest test, final TestInfo testInfo) throws Exception {
-            activeCount.incrementAndGet();
+            final int active = activeCount.incrementAndGet();
             test.testMethodName = testInfo.getTestMethod().get().getName();
             test.testMethodId = nextTestMethodId.incrementAndGet();
-            test.mocks = MockitoAnnotations.openMocks(this);
+            test.mocks = MockitoAnnotations.openMocks(test);
             maybeSetUpOnce(test);
-            test.log.info("%s.%s) ++ [%s.%s] ++ running", testClassId, test.testMethodId, getClass().getSimpleName(),
-                    test.testMethodName);
+            test.log.info("%s.%s) ++ [%s.%s] ++ running (%s)", testClassId, test.testMethodId,
+                    getClass().getSimpleName(), test.testMethodName, active);
             test.setUp();
             for (final IStub hook : test.hooks) {
                 hook.setUp(test, ctx);
@@ -190,8 +195,9 @@ public abstract class ATest implements ITestLifecycle {
         }
 
         public synchronized void tearDown(final ATest test) throws Exception {
-            test.log.info("%s.%s) -- [%s.%s] -- finished after %s", testClassId, test.testMethodId,
-                    test.getClass().getSimpleName(), test.testMethodName, test.testMethodTimeMeasurement);
+            final int active = activeCount.getAndDecrement();
+            test.log.info("%s.%s) -- [%s.%s] -- finished (%s) after %s", testClassId, test.testMethodId,
+                    test.getClass().getSimpleName(), test.testMethodName, active, test.testMethodTimeMeasurement);
             test.tearDown();
             for (final IStub hook : test.hooks) {
                 hook.tearDown(test, ctx);
@@ -203,25 +209,18 @@ public abstract class ATest implements ITestLifecycle {
             test.testMethodName = null;
             test.testMethodId = 0;
             test.testMethodTimeMeasurement = null;
-            final int activeCountAfter = activeCount.decrementAndGet();
-            if (activeCountAfter <= 0) {
-                if (activeCountAfter < 0) {
-                    activeCount.set(0);
-                }
-                tearDownOnce(test);
-            }
         }
 
         public synchronized void tearDownOnce(final ATest test) throws Exception {
+            ctx.getState().unregisterTest(test);
             test.tearDownOnce();
             for (final IStub hook : test.hooks) {
-                hook.tearDownOnce(test);
+                hook.tearDownOnce(test, ctx);
             }
             TEST_CLASS_RUN.remove(getClass());
             //clean up reference on any thread that might have had created an instance for running a parallel test method
             TestContextLoader.setCurrentTest(null);
-            ctx.getState().unregisterTest(test);
-            test.log.info("%s) << [%s] << finished after %s", testClassId, getClass().getName(),
+            test.log.info("%s) << [%s] << finished (%s) after %s", testClassId, getClass().getName(), activeCount.get(),
                     testClassTimeMeasurement);
         }
     }

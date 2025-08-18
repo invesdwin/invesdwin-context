@@ -29,6 +29,6 @@ public class StubSupport implements IStub {
     public void tearDown(final ATest test, final TestContext ctx) throws Exception {}
 
     @Override
-    public void tearDownOnce(final ATest test) throws Exception {}
+    public void tearDownOnce(final ATest test, final TestContext ctx) throws Exception {}
 
 }

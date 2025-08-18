@@ -6,6 +6,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import de.invesdwin.context.beans.init.ADelegateContext;
 import de.invesdwin.context.beans.init.ApplicationContexts;
+import de.invesdwin.util.collections.attributes.EmptyAttributesMap;
+import de.invesdwin.util.collections.attributes.IAttributesMap;
 
 @ThreadSafe
 public class TestContext extends ADelegateContext {
@@ -15,6 +17,7 @@ public class TestContext extends ADelegateContext {
     TestContext(final ConfigurableApplicationContext ctx, final TestContextState state) {
         super(ctx);
         this.state = state;
+        //temporary pre merged context has null state
         if (state != null) {
             state.setContext(this);
         }
@@ -38,6 +41,24 @@ public class TestContext extends ADelegateContext {
 
     public void deactivateBean(final Class<?> bean) {
         ApplicationContexts.deactivateBean(this, bean);
+    }
+
+    public boolean isFinished() {
+        if (state == null) {
+            //temporary pre merged context has null state
+            return false;
+        } else {
+            return state.isFinished();
+        }
+    }
+
+    public IAttributesMap getAttributes() {
+        if (state == null) {
+            //temporary pre merged context has null state
+            return EmptyAttributesMap.INSTANCE;
+        } else {
+            return state.getAttributes();
+        }
     }
 
 }
