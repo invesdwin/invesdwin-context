@@ -150,7 +150,10 @@ public abstract class ATest implements ITestLifecycle {
         //clean up refrence also in the thread where the instance got created and registered
         TestContextLoader.setCurrentTest(null);
         final ATest lastTest = LAST_TEST.get();
-        lastTest.run.tearDownOnce(lastTest);
+        if (lastTest != null) {
+            lastTest.run.tearDownOnce(lastTest);
+            LAST_TEST.remove();
+        }
     }
 
     private static final class TestClassRun {
