@@ -10,8 +10,18 @@ import de.invesdwin.context.beans.init.ApplicationContexts;
 @ThreadSafe
 public class TestContext extends ADelegateContext {
 
-    TestContext(final ConfigurableApplicationContext ctx) {
+    private final TestContextState state;
+
+    TestContext(final ConfigurableApplicationContext ctx, final TestContextState state) {
         super(ctx);
+        this.state = state;
+        if (state != null) {
+            state.setContext(this);
+        }
+    }
+
+    TestContextState getState() {
+        return state;
     }
 
     public boolean beanExists(final Class<?> beanType) {

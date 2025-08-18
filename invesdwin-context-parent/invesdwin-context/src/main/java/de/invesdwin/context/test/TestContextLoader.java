@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.commons.io.IOUtils;
@@ -30,12 +31,14 @@ import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.lang.string.Strings;
+import io.netty.util.concurrent.FastThreadLocal;
 
 @NotThreadSafe
 public class TestContextLoader implements ContextLoader {
@@ -44,7 +47,8 @@ public class TestContextLoader implements ContextLoader {
     private static final AtomicBoolean FIRST_INITIALIZATION = new AtomicBoolean(true);
     private static final AtomicBoolean PRESTARTUP_HOOKS_STARTED = new AtomicBoolean(false);
 
-    private static volatile ATest currentTest;
+    private static final FastThreadLocal<ATest> CURRENT_TEST_HOLDER = new FastThreadLocal<>();
+    private static final FastThreadLocal<TestContextState> TEST_CONTEXT_STATE_HOLDER = new FastThreadLocal<>();
 
     static {
         Assertions.checkNotNull(PreMergedContext.getInstance());
@@ -54,30 +58,34 @@ public class TestContextLoader implements ContextLoader {
         @Override
         protected void customizeContext(final GenericApplicationContext ctx) {
             try {
-                configureContext(new TestContext(ctx));
+                final ATest currentTest = getCurrentTest();
+                configureContext(currentTest, new TestContext(ctx, TEST_CONTEXT_STATE_HOLDER.get()), true);
             } catch (final Exception e) {
                 throw Err.process(e);
             }
         };
     };
 
+    @GuardedBy("this.class")
+    private static TestContextState curTestContextState;
+
     static void setCurrentTest(final ATest currentTest) {
-        TestContextLoader.currentTest = currentTest;
+        TestContextLoader.CURRENT_TEST_HOLDER.set(currentTest);
     }
 
     static ATest getCurrentTest() {
-        return currentTest;
+        return TestContextLoader.CURRENT_TEST_HOLDER.get();
     }
 
-    protected List<PositionedResource> configureContextLocations() throws Exception {
-        ReinitializationHookManager.reinitializationStarted();
-        final TestContext premergedContext = new TestContext(PreMergedContext.getInstance(true));
+    private List<PositionedResource> configureContextLocations() throws Exception {
+        final TestContext premergedContext = new TestContext(PreMergedContext.getInstance(true), null);
         final List<PositionedResource> preMergedContexts = PreMergedContext.collectMergedContexts();
+        final ATest currentTest = getCurrentTest();
         currentTest.setUpContextLocations(preMergedContexts);
         for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
             testHook.setUpContextLocations(currentTest, preMergedContexts);
         }
-        configureContext(premergedContext);
+        configureContext(currentTest, premergedContext, false);
         final List<PositionedResource> mergedContexts = PreMergedContext.collectMergedContexts();
         currentTest.setUpContextLocations(mergedContexts);
         for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
@@ -87,8 +95,11 @@ public class TestContextLoader implements ContextLoader {
         return mergedContexts;
     }
 
-    protected static void configureContext(final TestContext ctx) throws Exception {
-        MergedContext.autowire(ctx);
+    private static void configureContext(final ATest currentTest, final TestContext ctx,
+            final boolean replaceMergedContext) throws Exception {
+        if (replaceMergedContext) {
+            MergedContext.autowire(ctx);
+        }
         currentTest.setUpContext(ctx);
         for (final IStub testHook : getTestHooks(ctx)) {
             testHook.setUpContext(currentTest, ctx);
@@ -113,6 +124,7 @@ public class TestContextLoader implements ContextLoader {
 
     @Override
     public ApplicationContext loadContext(final String... locations) throws Exception {
+        final ATest currentTest = getCurrentTest();
         try {
             if (!PRESTARTUP_HOOKS_STARTED.getAndSet(true)) {
                 PreMergedContext.getInstance().getBean(PreStartupHookManager.class).start();
@@ -132,29 +144,54 @@ public class TestContextLoader implements ContextLoader {
                     .entrySet()) {
                 final File xmlFile = new File(ContextProperties.TEMP_DIRECTORY,
                         "ctx.component.scan_" + e.getKey() + ".xml");
-                final InputStream in = e.getValue().getInputStream();
-                Files.write(xmlFile, IOUtils.toString(in, Charset.defaultCharset()), Charset.defaultCharset());
-                in.close();
+                if (!xmlFile.exists()) {
+                    final InputStream in = e.getValue().getInputStream();
+                    Files.write(xmlFile, IOUtils.toString(in, Charset.defaultCharset()), Charset.defaultCharset());
+                    in.close();
+                    xmlFile.deleteOnExit();
+                }
                 final FileSystemResource fsResource = new FileSystemResource(xmlFile);
                 newLocations.add(PositionedResource.of(fsResource, null));
-                xmlFile.deleteOnExit();
             }
-
-            MergedContext.logContextsBeingLoaded(newLocations);
             final List<String> locationStrings = new ArrayList<String>();
             for (final Resource resource : newLocations) {
                 final String resourceString = resource.getURI().toString();
                 locationStrings.add(resourceString);
             }
-            final ConfigurableApplicationContext delegate = PARENT
-                    .loadContext(locationStrings.toArray(Strings.EMPTY_ARRAY));
-            final TestContext ctx = new TestContext(delegate);
-            if (FIRST_INITIALIZATION.getAndSet(false)) {
-                MergedContext.logBootstrapFinished();
+
+            synchronized (TestContextLoader.class) {
+                if (curTestContextState != null) {
+                    if (curTestContextState.getLocationStrings().equals(locationStrings)) {
+                        //return existing MergedContext since locations are the same
+                        curTestContextState.registerTest(currentTest);
+                        final TestContext ctx = curTestContextState.getContext();
+                        currentTest.setContext(ctx);
+                        return ctx;
+                    } else {
+                        //make sure existing test context is not used anymore before replacing MergedContext with a different one
+                        curTestContextState.waitForFinished();
+                    }
+                }
+                //load a new MergedContext based on the locationStrings
+                final TestContextState state = new TestContextState(locationStrings);
+                state.registerTest(currentTest);
+                curTestContextState = state;
+                ReinitializationHookManager.reinitializationStarted();
+                MergedContext.logContextsBeingLoaded(newLocations);
+                TEST_CONTEXT_STATE_HOLDER.set(state);
+                final ConfigurableApplicationContext delegate = PARENT
+                        .loadContext(locationStrings.toArray(Strings.EMPTY_ARRAY));
+                TEST_CONTEXT_STATE_HOLDER.remove();
+                final TestContext ctx = new TestContext(delegate, state);
+                currentTest.setContext(ctx);
+                if (FIRST_INITIALIZATION.getAndSet(false)) {
+                    MergedContext.logBootstrapFinished();
+                }
+                ReinitializationHookManager.reinitializationFinished();
+                return ctx;
             }
-            ReinitializationHookManager.reinitializationFinished();
-            return ctx;
         } catch (final Throwable t) {
+            final LoggedRuntimeException processed = Err.process(t);
             try {
                 //need to clean up the mess, but cannot use currentTest since hooks are not initialized there
                 for (final IStub hook : getTestHooks(PreMergedContext.getInstance())) {
@@ -164,7 +201,7 @@ public class TestContextLoader implements ContextLoader {
             } catch (final Throwable tInner) {
                 Err.process(tInner);
             }
-            throw t;
+            throw processed;
         }
     }
 
