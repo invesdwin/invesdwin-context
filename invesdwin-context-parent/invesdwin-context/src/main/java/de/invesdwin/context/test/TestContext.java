@@ -43,9 +43,12 @@ public class TestContext extends ADelegateContext {
         ApplicationContexts.deactivateBean(this, bean);
     }
 
+    public boolean isPreMergedContext() {
+        return state == null;
+    }
+
     public boolean isFinished() {
-        if (state == null) {
-            //temporary pre merged context has null state
+        if (isPreMergedContext()) {
             return false;
         } else {
             return state.isFinished();
@@ -53,8 +56,7 @@ public class TestContext extends ADelegateContext {
     }
 
     public IAttributesMap getAttributes() {
-        if (state == null) {
-            //temporary pre merged context has null state
+        if (isPreMergedContext()) {
             return EmptyAttributesMap.INSTANCE;
         } else {
             return state.getAttributes();
