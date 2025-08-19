@@ -13,7 +13,7 @@ public class WebserverContextLocationStub extends StubSupport {
 
     @Override
     public void tearDownOnce(final ATest test, final TestContext ctx) {
-        if (!ctx.isFinished()) {
+        if (!ctx.isFinishedGlobal()) {
             return;
         }
         WebserverContextLocation.deactivate();

@@ -16,7 +16,7 @@ public class URIsConnectStub extends StubSupport {
 
     @Override
     public void tearDown(final ATest test, final TestContext ctx) throws IOException {
-        if (!ctx.isFinished()) {
+        if (!ctx.isFinishedGlobal()) {
             return;
         }
         URIs.getDefaultUrisConnectFactory().reset();

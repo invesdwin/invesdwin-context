@@ -14,7 +14,7 @@ public class CachingStub extends StubSupport {
 
     @Override
     public void tearDownOnce(final ATest test, final TestContext ctx) {
-        if (!ctx.isFinished()) {
+        if (!ctx.isFinishedGlobal()) {
             return;
         }
         Caching.getCachingProvider().close();
