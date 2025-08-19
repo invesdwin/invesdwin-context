@@ -54,9 +54,7 @@ import jakarta.inject.Inject;
 @NotThreadSafe
 //TransactionalTestExecutionListener collides with CTW transactions
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
-public abstract class ATest implements ITestLifecycle {
-
-    private static final AtomicInteger GLOBAL_ACTIVE_COUNT = new AtomicInteger();
+public abstract class ATest implements ITestLifecycle, ITestContextState {
 
     private static final AtomicInteger NEXT_TEST_CLASS_ID = new AtomicInteger();
     @GuardedBy("this.class")
@@ -102,8 +100,13 @@ public abstract class ATest implements ITestLifecycle {
     /**
      * Tells how many parallel tests are currently running over all test classes.
      */
-    public int getGlobalActiveCount() {
-        return GLOBAL_ACTIVE_COUNT.get();
+    public int getActiveCountGlobal() {
+        return TestContextState.ACTIVE_COUNT_GLOBAL.get();
+    }
+
+    @Override
+    public boolean isFinishedGlobal() {
+        return TestContextState.ACTIVE_COUNT_GLOBAL.get() <= 0;
     }
 
     /**
@@ -117,6 +120,14 @@ public abstract class ATest implements ITestLifecycle {
             return 0;
         }
         return run.activeCount.get();
+    }
+
+    @Override
+    public boolean isFinished() {
+        if (run == null) {
+            return false;
+        }
+        return run.activeCount.get() <= 0;
     }
 
     void setContext(final TestContext ctx) {
@@ -200,7 +211,7 @@ public abstract class ATest implements ITestLifecycle {
             }
             setUpOnceCalled = true;
             test.log.info("%s) >> [%s] >> running (%s|%s)", testClassId, test.getClass().getName(),
-                    GLOBAL_ACTIVE_COUNT.get(), activeCount.get());
+                    TestContextState.ACTIVE_COUNT_GLOBAL.get(), activeCount.get());
             test.setUpOnce();
             for (final IStub hook : test.hooks) {
                 hook.setUpOnce(test, ctx);
@@ -208,7 +219,7 @@ public abstract class ATest implements ITestLifecycle {
         }
 
         public synchronized void setUp(final ATest test, final TestInfo testInfo) throws Exception {
-            final int globalActive = GLOBAL_ACTIVE_COUNT.incrementAndGet();
+            final int globalActive = TestContextState.ACTIVE_COUNT_GLOBAL.incrementAndGet();
             final int active = activeCount.incrementAndGet();
             test.testMethodName = testInfo.getTestMethod().get().getName();
             test.testMethodId = nextTestMethodId.incrementAndGet();
@@ -224,7 +235,7 @@ public abstract class ATest implements ITestLifecycle {
         }
 
         public synchronized void tearDown(final ATest test) throws Exception {
-            final int globalActive = GLOBAL_ACTIVE_COUNT.getAndDecrement();
+            final int globalActive = TestContextState.ACTIVE_COUNT_GLOBAL.getAndDecrement();
             final int active = activeCount.getAndDecrement();
             test.log.info("%s.%s) -- [%s.%s] -- finished (%s|%s) after %s", testClassId, test.testMethodId,
                     test.getClass().getSimpleName(), test.testMethodName, globalActive, active,
@@ -252,7 +263,7 @@ public abstract class ATest implements ITestLifecycle {
             //clean up reference on any thread that might have had created an instance for running a parallel test method
             TestContextLoader.setCurrentTest(null);
             test.log.info("%s) << [%s] << finished (%s|%s) after %s", testClassId, test.getClass().getName(),
-                    GLOBAL_ACTIVE_COUNT.get(), activeCount.get(), testClassTimeMeasurement);
+                    TestContextState.ACTIVE_COUNT_GLOBAL.get(), activeCount.get(), testClassTimeMeasurement);
         }
     }
 

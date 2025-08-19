@@ -10,7 +10,7 @@ import de.invesdwin.util.collections.attributes.EmptyAttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 
 @ThreadSafe
-public class TestContext extends ADelegateContext {
+public class TestContext extends ADelegateContext implements ITestContextState {
 
     private final TestContextState state;
 
@@ -47,12 +47,18 @@ public class TestContext extends ADelegateContext {
         return state == null;
     }
 
+    @Override
     public boolean isFinished() {
         if (isPreMergedContext()) {
             return false;
         } else {
             return state.isFinished();
         }
+    }
+
+    @Override
+    public boolean isFinishedGlobal() {
+        return TestContextState.isFinishedGlobal();
     }
 
     public IAttributesMap getAttributes() {

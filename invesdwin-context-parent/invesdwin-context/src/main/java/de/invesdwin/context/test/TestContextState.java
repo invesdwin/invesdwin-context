@@ -14,6 +14,8 @@ import de.invesdwin.util.time.date.FTimeUnit;
 @ThreadSafe
 class TestContextState {
 
+    static final AtomicInteger ACTIVE_COUNT_GLOBAL = new AtomicInteger();
+
     private final Set<ATest> registeredTests = new LinkedHashSet<ATest>();
     private final AtomicInteger registeredTestsCount = new AtomicInteger();
     private final List<String> locationStrings;
@@ -56,6 +58,10 @@ class TestContextState {
 
     boolean isFinished() {
         return registeredTestsCount.get() <= 0;
+    }
+
+    static boolean isFinishedGlobal() {
+        return ACTIVE_COUNT_GLOBAL.get() <= 0;
     }
 
     IAttributesMap getAttributes() {
