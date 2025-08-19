@@ -186,8 +186,11 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
         TestContextLoader.setCurrentTest(null);
         final ATest lastTest = LAST_TEST.get();
         if (lastTest != null) {
-            lastTest.run.tearDownOnce(lastTest);
-            LAST_TEST.remove();
+            final TestClassRun run = lastTest.run;
+            if (run != null) {
+                run.tearDownOnce(lastTest);
+                LAST_TEST.remove();
+            }
         }
     }
 
