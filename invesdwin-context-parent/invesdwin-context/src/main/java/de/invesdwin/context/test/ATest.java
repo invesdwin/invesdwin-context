@@ -56,6 +56,8 @@ import jakarta.inject.Inject;
 @TestExecutionListeners({ DirtiesContextTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 public abstract class ATest implements ITestLifecycle {
 
+    private static final AtomicInteger GLOBAL_ACTIVE_COUNT = new AtomicInteger();
+
     private static final AtomicInteger NEXT_TEST_CLASS_ID = new AtomicInteger();
     @GuardedBy("this.class")
     private static final ALoadingCache<Class<?>, TestClassRun> TEST_CLASS_RUN = new ALoadingCache<Class<?>, TestClassRun>() {
@@ -97,9 +99,31 @@ public abstract class ATest implements ITestLifecycle {
         LAST_TEST.set(this);
     }
 
+    /**
+     * Tells how many parallel tests are currently running over all test classes.
+     */
+    public int getGlobalActiveCount() {
+        return GLOBAL_ACTIVE_COUNT.get();
+    }
+
+    /**
+     * Tells how many parallel tests are currently running on this test class (each thread has its own instance of this
+     * class, thus setUpOnce/tearDownOnce should only modify static state, while setUp/tearDown should modify only the
+     * current instance). @ParallelSuite wrappers allow to modify if parallelisation should happen per testSuite,
+     * testClass, or testMethod to control thread safety further for tests.
+     */
+    public int getActiveCount() {
+        if (run == null) {
+            return 0;
+        }
+        return run.activeCount.get();
+    }
+
     void setContext(final TestContext ctx) {
-        run = TEST_CLASS_RUN.get(getClass());
-        run.setUpContext(ctx);
+        if (run == null) {
+            run = TEST_CLASS_RUN.get(getClass());
+        }
+        run.setContext(ctx);
     }
 
     @Override
@@ -166,7 +190,7 @@ public abstract class ATest implements ITestLifecycle {
 
         private TestClassRun() {}
 
-        public void setUpContext(final TestContext ctx) {
+        public void setContext(final TestContext ctx) {
             this.ctx = ctx;
         }
 
@@ -175,7 +199,8 @@ public abstract class ATest implements ITestLifecycle {
                 return;
             }
             setUpOnceCalled = true;
-            test.log.info("%s) >> [%s] >> running (%s)", testClassId, test.getClass().getName(), activeCount.get());
+            test.log.info("%s) >> [%s] >> running (%s|%s)", testClassId, test.getClass().getName(),
+                    GLOBAL_ACTIVE_COUNT.get(), activeCount.get());
             test.setUpOnce();
             for (final IStub hook : test.hooks) {
                 hook.setUpOnce(test, ctx);
@@ -183,13 +208,14 @@ public abstract class ATest implements ITestLifecycle {
         }
 
         public synchronized void setUp(final ATest test, final TestInfo testInfo) throws Exception {
+            final int globalActive = GLOBAL_ACTIVE_COUNT.incrementAndGet();
             final int active = activeCount.incrementAndGet();
             test.testMethodName = testInfo.getTestMethod().get().getName();
             test.testMethodId = nextTestMethodId.incrementAndGet();
             test.mocks = MockitoAnnotations.openMocks(test);
             maybeSetUpOnce(test);
-            test.log.info("%s.%s) ++ [%s.%s] ++ running (%s)", testClassId, test.testMethodId,
-                    getClass().getSimpleName(), test.testMethodName, active);
+            test.log.info("%s.%s) ++ [%s.%s] ++ running (%s|%s)", testClassId, test.testMethodId,
+                    test.getClass().getSimpleName(), test.testMethodName, globalActive, active);
             test.setUp();
             for (final IStub hook : test.hooks) {
                 hook.setUp(test, ctx);
@@ -198,9 +224,11 @@ public abstract class ATest implements ITestLifecycle {
         }
 
         public synchronized void tearDown(final ATest test) throws Exception {
+            final int globalActive = GLOBAL_ACTIVE_COUNT.getAndDecrement();
             final int active = activeCount.getAndDecrement();
-            test.log.info("%s.%s) -- [%s.%s] -- finished (%s) after %s", testClassId, test.testMethodId,
-                    test.getClass().getSimpleName(), test.testMethodName, active, test.testMethodTimeMeasurement);
+            test.log.info("%s.%s) -- [%s.%s] -- finished (%s|%s) after %s", testClassId, test.testMethodId,
+                    test.getClass().getSimpleName(), test.testMethodName, globalActive, active,
+                    test.testMethodTimeMeasurement);
             test.tearDown();
             for (final IStub hook : test.hooks) {
                 hook.tearDown(test, ctx);
@@ -220,11 +248,11 @@ public abstract class ATest implements ITestLifecycle {
             for (final IStub hook : test.hooks) {
                 hook.tearDownOnce(test, ctx);
             }
-            TEST_CLASS_RUN.remove(getClass());
+            TEST_CLASS_RUN.remove(test.getClass());
             //clean up reference on any thread that might have had created an instance for running a parallel test method
             TestContextLoader.setCurrentTest(null);
-            test.log.info("%s) << [%s] << finished (%s) after %s", testClassId, getClass().getName(), activeCount.get(),
-                    testClassTimeMeasurement);
+            test.log.info("%s) << [%s] << finished (%s|%s) after %s", testClassId, test.getClass().getName(),
+                    GLOBAL_ACTIVE_COUNT.get(), activeCount.get(), testClassTimeMeasurement);
         }
     }
 
