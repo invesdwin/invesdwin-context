@@ -1,25 +1,27 @@
 package de.invesdwin.context;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.context.test.TestContext;
 import de.invesdwin.context.test.stub.StubSupport;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.collections.fast.IFastIterableSet;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.lang.string.Strings;
 import jakarta.inject.Named;
 
 @Named
-@NotThreadSafe
+@ThreadSafe
 public class ContextDirectoriesStub extends StubSupport {
 
-    private static final Set<String> PROTECTED_DIRECTORIES = new HashSet<String>();
+    private static final IFastIterableSet<String> PROTECTED_DIRECTORIES = ILockCollectionFactory.getInstance(true)
+            .newFastIterableLinkedSet();
 
     static {
         addProtectedDirectory(ContextProperties.TEMP_CLASSPATH_DIRECTORY);
@@ -52,10 +54,12 @@ public class ContextDirectoriesStub extends StubSupport {
 
     private void cleanDirectory(final File dir) {
         if (dir != null && dir.exists()) {
+            final String[] protectedDirectories = PROTECTED_DIRECTORIES.asArray(Strings.EMPTY_ARRAY);
             for (final File f : dir.listFiles()) {
                 boolean isProtectedDir = false;
-                for (final String protectedDir : PROTECTED_DIRECTORIES) {
-                    if (FilenameUtils.normalizeNoEndSeparator(f.getAbsolutePath()).startsWith(protectedDir)) {
+                for (int i = 0; i < protectedDirectories.length; i++) {
+                    final String protectedDirectory = protectedDirectories[i];
+                    if (FilenameUtils.normalizeNoEndSeparator(f.getAbsolutePath()).startsWith(protectedDirectory)) {
                         isProtectedDir = true;
                         break;
                     }

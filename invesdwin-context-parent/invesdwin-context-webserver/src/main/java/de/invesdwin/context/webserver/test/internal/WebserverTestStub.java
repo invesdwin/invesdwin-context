@@ -2,7 +2,8 @@ package de.invesdwin.context.webserver.test.internal;
 
 import java.util.List;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.eclipse.jetty.server.Server;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -21,10 +22,11 @@ import de.invesdwin.util.shutdown.ShutdownHookManager;
 import jakarta.inject.Named;
 
 @Named
-@NotThreadSafe
+@ThreadSafe
 public class WebserverTestStub extends StubSupport {
 
-    private static volatile Server lastServer;
+    @GuardedBy("this.class")
+    private static Server lastServer;
 
     static {
         ShutdownHookManager.register(new IShutdownHook() {
@@ -37,8 +39,6 @@ public class WebserverTestStub extends StubSupport {
 
     @Override
     public void setUpContextLocations(final ATest test, final List<PositionedResource> locations) throws Exception {
-        //if for some reason the tearDownOnce was not executed on the last test (maybe maven killed it?), then try to stop here aswell
-        maybeStopLastServer();
         final WebserverTest annotation = Reflections.getAnnotation(test, WebserverTest.class);
         if (annotation != null) {
             if (annotation.value()) {
@@ -50,11 +50,24 @@ public class WebserverTestStub extends StubSupport {
     }
 
     @Override
+    public void setUpContext(final ATest test, final TestContext ctx) throws Exception {
+        if (ctx.isPreMergedContext()) {
+            return;
+        }
+        //if for some reason the tearDownOnce was not executed on the last test (maybe maven killed it?), then try to stop here aswell
+        maybeStopLastServer();
+    }
+
+    @Override
     public void setUpOnce(final ATest test, final TestContext ctx) throws Exception {
-        try {
-            WebserverTestStub.lastServer = MergedContext.getInstance().getBean(Server.class);
-        } catch (final NoSuchBeanDefinitionException e) { //SUPPRESS CHECKSTYLE empty block
-            //ignore
+        synchronized (WebserverTestStub.class) {
+            if (WebserverTestStub.lastServer == null) {
+                try {
+                    WebserverTestStub.lastServer = MergedContext.getInstance().getBean(Server.class);
+                } catch (final NoSuchBeanDefinitionException e) { //SUPPRESS CHECKSTYLE empty block
+                    //ignore
+                }
+            }
         }
     }
 
@@ -66,7 +79,7 @@ public class WebserverTestStub extends StubSupport {
         maybeStopLastServer();
     }
 
-    private static void maybeStopLastServer() throws Exception {
+    private static synchronized void maybeStopLastServer() throws Exception {
         if (lastServer != null) {
             IntegrationProperties.setWebserverTest(false);
             lastServer.stop();

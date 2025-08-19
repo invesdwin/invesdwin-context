@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.time.date.FTimeUnit;
 
-@Immutable
+@ThreadSafe
 class TestContextState {
 
     private final Set<ATest> registeredTests = new LinkedHashSet<ATest>();
