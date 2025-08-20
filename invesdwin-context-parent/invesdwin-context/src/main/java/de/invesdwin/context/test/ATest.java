@@ -198,13 +198,15 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
         private final Instant testClassTimeMeasurement = new Instant();
         private final int testClassId = NEXT_TEST_CLASS_ID.incrementAndGet();
         private final AtomicInteger nextTestMethodId = new AtomicInteger();
+        @GuardedBy("this")
         private boolean setUpOnceCalled = false;
         private final AtomicInteger activeCount = new AtomicInteger();
+        @GuardedBy("this")
         private TestContext ctx;
 
         private TestClassRun() {}
 
-        public void setContext(final TestContext ctx) {
+        public synchronized void setContext(final TestContext ctx) {
             this.ctx = ctx;
         }
 
