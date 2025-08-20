@@ -17,6 +17,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
+import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.log.Log;
@@ -202,12 +203,24 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
         private boolean setUpOnceCalled = false;
         private final AtomicInteger activeCount = new AtomicInteger();
         @GuardedBy("this")
-        private TestContext ctx;
+        private TestContext context;
 
         private TestClassRun() {}
 
-        public synchronized void setContext(final TestContext ctx) {
-            this.ctx = ctx;
+        public synchronized void setContext(final TestContext context) {
+            this.context = context;
+        }
+
+        public synchronized TestContext getContext() {
+            if (context != null) {
+                return context;
+            }
+            final TestContextState state = TestContextLoader.getCurTestContextState();
+            if (state == null) {
+                return new TestContext(PreMergedContext.getInstance(), null);
+            } else {
+                return new TestContext(MergedContext.getInstance(), state);
+            }
         }
 
         public synchronized void maybeSetUpOnce(final ATest test) throws Exception {
@@ -217,6 +230,7 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
             setUpOnceCalled = true;
             test.log.info("%s) >> [%s] >> running (%s|%s)", testClassId, test.getClass().getName(),
                     TestContextState.ACTIVE_COUNT_GLOBAL.get(), activeCount.get());
+            final TestContext ctx = getContext();
             test.setUpOnce();
             for (final IStub hook : test.hooks) {
                 hook.setUpOnce(test, ctx);
@@ -232,6 +246,7 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
             maybeSetUpOnce(test);
             test.log.info("%s.%s) ++ [%s.%s] ++ running (%s|%s)", testClassId, test.testMethodId,
                     test.getClass().getSimpleName(), test.testMethodName, globalActive, active);
+            final TestContext ctx = getContext();
             test.setUp();
             for (final IStub hook : test.hooks) {
                 hook.setUp(test, ctx);
@@ -245,6 +260,7 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
             test.log.info("%s.%s) -- [%s.%s] -- finished (%s|%s) after %s", testClassId, test.testMethodId,
                     test.getClass().getSimpleName(), test.testMethodName, globalActive, active,
                     test.testMethodTimeMeasurement);
+            final TestContext ctx = getContext();
             test.tearDown();
             for (final IStub hook : test.hooks) {
                 hook.tearDown(test, ctx);
@@ -259,6 +275,7 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
         }
 
         public synchronized void tearDownOnce(final ATest test) throws Exception {
+            final TestContext ctx = getContext();
             ctx.getState().unregisterTest(test);
             test.tearDownOnce();
             for (final IStub hook : test.hooks) {

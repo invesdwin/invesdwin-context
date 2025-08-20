@@ -95,6 +95,10 @@ public class TestContextLoader implements ContextLoader {
         return mergedContexts;
     }
 
+    static synchronized TestContextState getCurTestContextState() {
+        return curTestContextState;
+    }
+
     private static void configureContext(final ATest currentTest, final TestContext ctx,
             final boolean replaceMergedContext) throws Exception {
         if (replaceMergedContext) {
