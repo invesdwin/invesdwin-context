@@ -167,13 +167,19 @@ public class TestContextLoader implements ContextLoader {
                 if (curTestContextState != null) {
                     if (curTestContextState.getLocationStrings().equals(locationStrings)) {
                         //return existing MergedContext since locations are the same
-                        curTestContextState.registerTest(currentTest);
                         final TestContext ctx = curTestContextState.getContext();
-                        currentTest.setContext(ctx);
-                        return ctx;
+                        if (ctx != null && ctx.isActive() && !ctx.isCloseRequested()) {
+                            curTestContextState.registerTest(currentTest);
+                            currentTest.setContext(ctx);
+                            return ctx;
+                        }
                     } else {
                         //make sure existing test context is not used anymore before replacing MergedContext with a different one
                         curTestContextState.waitForFinished();
+                        final TestContext ctx = curTestContextState.getContext();
+                        if (ctx != null && ctx.isActive()) {
+                            ctx.closeAndEvict();
+                        }
                     }
                 }
                 //load a new MergedContext based on the locationStrings
@@ -224,12 +230,17 @@ public class TestContextLoader implements ContextLoader {
     }
 
     /**
-     * Forces loadContext to be called, by having a unique locations list every time.
+     * Forces loadContext to be called, by having a unique locations list every time. Essentially forcing
+     * org.springframework.test.context.cache.DefaultContextCache to not really be used (since there is no better way to
+     * disable the cache?). This will cause the DefaultContextCache to grow unlimited, potentially causing a memory
+     * leak; though since we don't expect too many contexts per executed tests (this is a finite number) to be loaded
+     * anyway and a closed TestContext does not take too much space, since the delegate is nulled, this should not cause
+     * any memory problems during testing.
      */
     @Override
     public String[] processLocations(final Class<?> clazz, final String... locations) {
         final List<String> list = new ArrayList<String>(Arrays.asList(locations));
-        list.add(0, CTX_DUMMY + UUID.randomUUID().toString());
+        list.add(0, CTX_DUMMY + "_" + UUID.randomUUID().toString());
         return list.toArray(Strings.EMPTY_ARRAY);
     }
 }

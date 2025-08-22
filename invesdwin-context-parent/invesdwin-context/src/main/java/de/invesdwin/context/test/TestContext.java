@@ -12,7 +12,8 @@ import de.invesdwin.util.collections.attributes.IAttributesMap;
 @ThreadSafe
 public class TestContext extends ADelegateContext implements ITestContextState {
 
-    private final TestContextState state;
+    private TestContextState state;
+    private volatile boolean closeRequested;
 
     TestContext(final ConfigurableApplicationContext ctx, final TestContextState state) {
         super(ctx);
@@ -23,8 +24,29 @@ public class TestContext extends ADelegateContext implements ITestContextState {
         }
     }
 
+    @Override
+    public synchronized void close() {
+        if (TestContextState.isFinishedGlobal()) {
+            if (delegate != null) {
+                closeAndEvict();
+            }
+        } else {
+            closeRequested = true;
+        }
+    }
+
+    public boolean isCloseRequested() {
+        return closeRequested;
+    }
+
     TestContextState getState() {
         return state;
+    }
+
+    synchronized void closeAndEvict() {
+        super.close();
+        delegate = null;
+        state = null;
     }
 
     public boolean beanExists(final Class<?> beanType) {
