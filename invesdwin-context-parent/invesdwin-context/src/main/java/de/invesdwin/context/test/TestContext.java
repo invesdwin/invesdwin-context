@@ -44,9 +44,11 @@ public class TestContext extends ADelegateContext implements ITestContextState {
     }
 
     synchronized void closeAndEvict() {
-        super.close();
-        delegate = null;
-        state = null;
+        if (delegate != null) {
+            super.close();
+            delegate = null;
+            state = null;
+        }
     }
 
     public boolean beanExists(final Class<?> beanType) {
