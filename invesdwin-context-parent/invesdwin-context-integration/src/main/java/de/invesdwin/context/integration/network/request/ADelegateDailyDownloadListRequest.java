@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<List<? extends E>> {
 
     @Override
-    public final List<? extends E> call() throws Exception {
+    public final List<? extends E> call() {
         try {
             final String content = newDailyDownloadCache().downloadString(getDownloadFileName(),
                     new Callable<String>() {
