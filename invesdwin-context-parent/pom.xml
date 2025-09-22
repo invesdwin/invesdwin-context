@@ -65,6 +65,8 @@
 		<version.commons-configuration2>2.10.1</version.commons-configuration2>
 		<version.commons-compress>1.26.1</version.commons-compress>
 		<version.jarchivelib>1.2.0</version.jarchivelib>
+		<version.jarchivelib>1.2.0</version.jarchivelib>
+		<version.sevenzipjbinding>16.02-2.01</version.sevenzipjbinding>
 
 		<version.logback>1.5.8</version.logback>
 
@@ -179,6 +181,16 @@
 				<groupId>org.rauschig</groupId>
 				<artifactId>jarchivelib</artifactId>
 				<version>${version.jarchivelib}</version>
+			</dependency>
+			<dependency>
+			    <groupId>net.sf.sevenzipjbinding</groupId>
+			    <artifactId>sevenzipjbinding</artifactId>
+			    <version>${version.sevenzipjbinding}</version>
+			</dependency>
+			<dependency>
+			    <groupId>net.sf.sevenzipjbinding</groupId>
+			    <artifactId>sevenzipjbinding-all-platforms</artifactId>
+			    <version>${version.sevenzipjbinding}</version>
 			</dependency>
 
 			<dependency>

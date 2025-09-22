@@ -79,6 +79,16 @@
 			<artifactId>jarchivelib</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>net.sf.sevenzipjbinding</groupId>
+		    <artifactId>sevenzipjbinding</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.sevenzipjbinding</groupId>
+		    <artifactId>sevenzipjbinding-all-platforms</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
 		</dependency>

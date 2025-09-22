@@ -10,7 +10,7 @@ import de.invesdwin.context.test.ATest;
 
 // CHECKSTYLE:OFF
 @ThreadSafe
-public class ADecompressingInputStreamTest extends ATest {
+public class CommonsDecompressingInputStreamTest extends ATest {
     //CHECKSTYLE:ON
 
     @Test
