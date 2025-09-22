@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,7 +40,7 @@ import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.lang.string.Strings;
 import io.netty.util.concurrent.FastThreadLocal;
 
-@NotThreadSafe
+@ThreadSafe
 public class TestContextLoader implements ContextLoader {
 
     public static final String CTX_DUMMY = "CTX_DUMMY";
