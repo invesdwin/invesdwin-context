@@ -620,6 +620,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     public final V computeIfAbsentNonRecursive(final K key, final Function<? super K, ? extends V> mappingFunction)
             throws RecursiveLoadException {
+        preventRecursiveLoad.preventRecursiveLoad(key);
         V v;
         Map<K, V> delegate = getPreLockedDelegate();
         try {
