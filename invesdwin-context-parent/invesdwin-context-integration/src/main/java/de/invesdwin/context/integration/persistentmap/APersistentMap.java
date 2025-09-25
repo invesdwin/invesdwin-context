@@ -21,8 +21,6 @@ import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedCollection;
 import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedSet;
-import de.invesdwin.util.collections.recursive.PreventRecursiveLoad;
-import de.invesdwin.util.collections.recursive.RecursiveLoadException;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.error.Throwables;
@@ -54,7 +52,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     private Set<Entry<K, V>> entrySet;
     private Collection<V> values;
     private volatile boolean tableEemptyIfNull;
-    private final PreventRecursiveLoad<K, V> preventRecursiveLoad = new PreventRecursiveLoad<K, V>();
 
     private final AtomicBoolean initializing = new AtomicBoolean();
 
@@ -601,36 +598,6 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         if (v == null) {
             //bad idea to synchronize in apply, this might cause deadlocks when threads are used inside of it
             v = mappingFunction.apply(key);
-            if (v != null) {
-                delegate = getPreLockedDelegate();
-                try {
-                    final V oldV = delegate.get(key);
-                    if (oldV != null) {
-                        v = oldV;
-                    } else {
-                        delegate.put(key, v);
-                    }
-                } finally {
-                    getReadLock().unlock();
-                }
-            }
-        }
-        return v;
-    }
-
-    public final V computeIfAbsentNonRecursive(final K key, final Function<? super K, ? extends V> mappingFunction)
-            throws RecursiveLoadException {
-        V v;
-        Map<K, V> delegate = getPreLockedDelegate();
-        try {
-            v = delegate.get(key);
-        } finally {
-            getReadLock().unlock();
-        }
-        delegate = null;
-        if (v == null) {
-            //bad idea to synchronize in apply, this might cause deadlocks when threads are used inside of it
-            v = preventRecursiveLoad.preventRecursiveLoad(key, mappingFunction);
             if (v != null) {
                 delegate = getPreLockedDelegate();
                 try {
