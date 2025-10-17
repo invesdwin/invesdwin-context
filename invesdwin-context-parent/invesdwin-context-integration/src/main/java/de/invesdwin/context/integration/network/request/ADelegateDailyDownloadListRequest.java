@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<List<? extends E>> {
 
     @Override
-    public final List<? extends E> call() throws Exception {
+    public final List<? extends E> call() {
         try {
             final String content = newDailyDownloadCache().downloadString(getDownloadFileName(),
                     new Callable<String>() {
@@ -38,17 +38,35 @@ public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<L
                             }
                         }
                     }, getNow());
-            if (Strings.isBlank(content)) {
-                throw new RetryLaterRuntimeException("Empty result for request: " + getDownloadFileName());
-            }
+            assertNotBlank(content);
             final ICloseableIterator<E> reader = newReader(new FastByteArrayInputStream(content.getBytes()));
             final List<E> list = Lists.toListWithoutHasNext(reader);
-            Assertions.checkNotEmpty(list, "%s", getDownloadFileName());
+            assertNotEmpty(list);
             return list;
         } catch (final Throwable t) {
             DailyDownloadCache.delete(getDownloadFileName());
             throw Throwables.propagate(t);
         }
+    }
+
+    private void assertNotBlank(final String content) {
+        if (isAllowEmptyResult()) {
+            return;
+        }
+        if (Strings.isBlank(content)) {
+            throw new RetryLaterRuntimeException("Empty result for request: " + getDownloadFileName());
+        }
+    }
+
+    private void assertNotEmpty(final List<E> list) {
+        if (isAllowEmptyResult()) {
+            return;
+        }
+        Assertions.checkNotEmpty(list, "%s", getDownloadFileName());
+    }
+
+    protected boolean isAllowEmptyResult() {
+        return false;
     }
 
     protected FDate getNow() {

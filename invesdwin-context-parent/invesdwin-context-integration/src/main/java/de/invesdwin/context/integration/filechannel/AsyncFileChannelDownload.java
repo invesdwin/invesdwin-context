@@ -17,7 +17,7 @@ import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.future.Futures;
 import de.invesdwin.util.lang.string.description.TextDescription;
-import de.invesdwin.util.streams.ADelegateInputStream;
+import de.invesdwin.util.streams.delegate.ADelegateInputStream;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FTimeUnit;

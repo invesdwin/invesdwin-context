@@ -38,7 +38,7 @@ import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.string.Strings;
-import de.invesdwin.util.streams.ALazyDelegateInputStream;
+import de.invesdwin.util.streams.delegate.AFastDelegateInputStream;
 import de.invesdwin.util.streams.pool.PooledFastByteArrayOutputStream;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
@@ -232,7 +232,7 @@ public enum JFreeChartExporter {
 
     public InputStream exportToStreamCallable(final Callable<JFreeChart> chart,
             final JFreeChartExporterSettings settings) {
-        return new ALazyDelegateInputStream() {
+        return new AFastDelegateInputStream() {
 
             @Override
             protected InputStream newDelegate() {
@@ -254,7 +254,7 @@ public enum JFreeChartExporter {
     public InputStream exportToStreamCallable(final Callable<JFreeChart> chart,
             final JFreeChartExporterSettings settings, final WrappedExecutorService parallelRenderer,
             final Duration renderTimeout) {
-        return new ALazyDelegateInputStream() {
+        return new AFastDelegateInputStream() {
 
             private final Lock lock = Locks
                     .newReentrantLock(JFreeChartExporter.class.getSimpleName() + "_exportToStreamCallable_lock");

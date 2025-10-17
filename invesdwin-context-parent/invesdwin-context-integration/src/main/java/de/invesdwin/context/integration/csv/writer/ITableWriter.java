@@ -12,6 +12,8 @@ public interface ITableWriter extends Closeable {
 
     void line(List<?> columns) throws IOException;
 
+    void line(List<?> columns, int length) throws IOException;
+
     void line(Object... columns) throws IOException;
 
     void flush() throws IOException;

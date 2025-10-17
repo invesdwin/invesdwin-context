@@ -2,7 +2,6 @@ package de.invesdwin.context.beans.init;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.NotThreadSafe;
-import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import de.invesdwin.context.beans.init.duplicate.IBeanWithSameClassName;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
+import jakarta.inject.Inject;
 
 @NotThreadSafe
 public class TestTest extends ATest implements InitializingBean {

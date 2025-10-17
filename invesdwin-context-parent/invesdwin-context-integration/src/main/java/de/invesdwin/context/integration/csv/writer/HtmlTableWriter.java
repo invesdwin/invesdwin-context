@@ -18,6 +18,7 @@ public class HtmlTableWriter implements ITableWriter {
 
     private final Appendable out;
     private final List<Object> currentLine = new ArrayList<Object>();
+    private int currentLineColumns = 0;
     private Integer assertColumnCount;
     private int lineIdx = 0;
     private boolean headerRowEnabled = true;
@@ -72,18 +73,29 @@ public class HtmlTableWriter implements ITableWriter {
 
     @Override
     public void column(final Object column) {
-        currentLine.add(Strings.asString(column));
+        final String columnStr = Strings.asString(column);
+        if (currentLine.size() > currentLineColumns) {
+            currentLine.set(currentLineColumns, columnStr);
+        } else {
+            currentLine.add(columnStr);
+        }
+        currentLineColumns++;
     }
 
     @Override
     public void newLine() throws IOException {
-        line(currentLine);
-        currentLine.clear();
+        line(currentLine, currentLineColumns);
+        currentLineColumns = 0;
     }
 
     @Override
     public void line(final List<?> columns) throws IOException {
-        assertColumnCount(columns.size());
+        line(columns, columns.size());
+    }
+
+    @Override
+    public void line(final List<?> columns, final int length) throws IOException {
+        assertColumnCount(length);
         if (lineIdx == 0) {
             out.append(theme.tableOpenTag());
             out.append(theme.lineFeed());
@@ -98,15 +110,20 @@ public class HtmlTableWriter implements ITableWriter {
         }
         out.append(theme.trOpenTag());
         out.append(theme.lineFeed());
-        for (int colIdx = 0; colIdx < columns.size(); colIdx++) {
+        for (int colIdx = 0; colIdx < length; colIdx++) {
             final Object column = columns.get(colIdx);
             if (lineIdx == 0 && headerRowEnabled) {
                 out.append(theme.thOpenTag());
             } else {
                 out.append(theme.tdOpenTag(headerRowEnabled, lineIdx, colIdx));
             }
-            final String content = Strings.asStringEmptyText(column);
-            out.append(content);
+            final String columnStr;
+            if (column instanceof String) {
+                columnStr = (String) column;
+            } else {
+                columnStr = Strings.asStringEmptyText(column);
+            }
+            out.append(columnStr);
             if (lineIdx == 0 && headerRowEnabled) {
                 out.append(theme.thCloseTag());
             } else {

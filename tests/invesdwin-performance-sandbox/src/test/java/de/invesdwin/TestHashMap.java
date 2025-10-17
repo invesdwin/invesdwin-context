@@ -1,7 +1,5 @@
 package de.invesdwin;
 
-import static java.util.Arrays.stream;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import com.carrotsearch.hppc.ObjectObjectHashMap;
 
+import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.loadingcache.historical.AHistoricalCache;
 import de.invesdwin.util.collections.loadingcache.historical.IValuesMap;
 import de.invesdwin.util.collections.loadingcache.historical.ImmutableHistoricalEntry;
@@ -210,7 +209,7 @@ public class TestHashMap extends AbstractPerformanceTest {
         for (int ix = 0; ix < TIMES; ix++) {
             add[ix] = new Long(Math.round(Math.random() * MAX));
         }
-        ELEMENTS_SIZE = stream(add).distinct().count() * measureHeapSize(add[0]);
+        ELEMENTS_SIZE = Arrays.stream(add).distinct().count() * measureHeapSize(add[0]);
         for (int ix = 0; ix < TIMES; ix++) {
             lookup[ix] = new Long(Math.round(Math.random() * MAX));
         }

@@ -26,7 +26,8 @@ public interface IBeanTableWriter<E> extends Closeable {
         int count = 0;
         try (ICloseableIterator<? extends E> it = iterator) {
             while (true) {
-                write(it.next());
+                final E next = it.next();
+                write(next);
                 count++;
             }
         } catch (final NoSuchElementException e) {

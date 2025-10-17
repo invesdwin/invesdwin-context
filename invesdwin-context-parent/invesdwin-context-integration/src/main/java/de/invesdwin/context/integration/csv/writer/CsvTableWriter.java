@@ -43,7 +43,8 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     private byte[] columnSeparatorBytes;
     private byte[] newlineBytes;
 
-    private final List<Object> currentLine = new ArrayList<Object>();
+    private final List<String> currentLine = new ArrayList<String>();
+    private int currentLineLength = 0;
     private Integer assertColumnCount;
 
     public CsvTableWriter(final Appendable out) {
@@ -93,31 +94,48 @@ public class CsvTableWriter implements Closeable, ITableWriter {
 
     @Override
     public void column(final Object column) {
-        currentLine.add(Strings.asString(column));
+        final String columnStr = Strings.asString(column);
+        if (currentLine.size() > currentLineLength) {
+            currentLine.set(currentLineLength, columnStr);
+        } else {
+            currentLine.add(columnStr);
+        }
+        currentLineLength++;
     }
 
     @Override
     public void newLine() throws IOException {
-        line(currentLine);
-        currentLine.clear();
+        line(currentLine, currentLineLength);
+        currentLineLength = 0;
     }
 
     @Override
     public void line(final List<?> columns) throws IOException {
-        assertColumnCount(columns.size());
-        for (int i = 0; i < columns.size(); i++) {
+        line(columns, columns.size());
+    }
+
+    @Override
+    public void line(final List<?> columns, final int length) throws IOException {
+        assertColumnCount(length);
+        for (int i = 0; i < length; i++) {
+            if (i > 0) {
+                finalizer.out.write(columnSeparatorBytes);
+            }
             final Object column = columns.get(i);
             if (column != null) {
                 if (quoteBytes != null) {
                     finalizer.out.write(quoteBytes);
                 }
-                finalizer.out.write(Strings.asStringEmptyText(column).getBytes());
+                final String columnStr;
+                if (column instanceof String) {
+                    columnStr = (String) column;
+                } else {
+                    columnStr = Strings.asStringEmptyText(column);
+                }
+                finalizer.out.write(columnStr.getBytes());
                 if (quoteBytes != null) {
                     finalizer.out.write(quoteBytes);
                 }
-            }
-            if (i < columns.size() - 1) {
-                finalizer.out.write(columnSeparatorBytes);
             }
         }
         finalizer.out.write(newlineBytes);
@@ -140,6 +158,8 @@ public class CsvTableWriter implements Closeable, ITableWriter {
     @Override
     public final void close() throws IOException {
         finalizer.close();
+        currentLine.clear();
+        currentLineLength = 0;
     }
 
     @Override

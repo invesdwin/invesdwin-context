@@ -13,9 +13,11 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 
+import de.invesdwin.util.lang.Closeables;
+import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.string.description.TextDescription;
-import de.invesdwin.util.streams.ADelegateInputStream;
+import de.invesdwin.util.streams.delegate.ADelegateInputStream;
 
 /**
  * An InputStream that acts as a wrapper to commons-compress to decompress diverse archives and compressions. Examples
@@ -27,12 +29,17 @@ import de.invesdwin.util.streams.ADelegateInputStream;
  * 
  */
 @NotThreadSafe
-public abstract class ADecompressingInputStream extends ADelegateInputStream {
+public class CommonsDecompressingInputStream extends ADelegateInputStream {
 
     private boolean oneArchiveEntryAlreadyExtraced = false;
+    private final CommonsDecompressingInputStreamFinalizer finalizer;
 
-    public ADecompressingInputStream(final TextDescription name) {
+    public CommonsDecompressingInputStream(final TextDescription name, final InputStream inputStream) {
         super(name);
+        this.finalizer = new CommonsDecompressingInputStreamFinalizer();
+        registerCloseable(finalizer);
+
+        finalizer.inputStream = inputStream;
     }
 
     private static InputStream wrap(final InputStream in) {
@@ -58,10 +65,10 @@ public abstract class ADecompressingInputStream extends ADelegateInputStream {
 
     @Override
     protected final InputStream newDelegate() {
-        return wrap(innerNewDelegate());
+        final InputStream wrapped = wrap(finalizer.inputStream);
+        finalizer.inputStream = null;
+        return wrapped;
     }
-
-    protected abstract InputStream innerNewDelegate();
 
     @Override
     public int read() throws IOException {
@@ -175,6 +182,32 @@ public abstract class ADecompressingInputStream extends ADelegateInputStream {
             }
         }
         return readNBytes;
+    }
+
+    private static final class CommonsDecompressingInputStreamFinalizer extends AFinalizer {
+
+        private InputStream inputStream;
+
+        private CommonsDecompressingInputStreamFinalizer() {}
+
+        @Override
+        protected void clean() {
+            if (inputStream != null) {
+                Closeables.closeQuietly(inputStream);
+                inputStream = null;
+            }
+        }
+
+        @Override
+        protected boolean isCleaned() {
+            return inputStream == null;
+        }
+
+        @Override
+        public boolean isThreadLocal() {
+            return true;
+        }
+
     }
 
 }

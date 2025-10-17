@@ -42,7 +42,7 @@ public abstract class ACachedMarshalledDownloadListRequest<E> implements Callabl
                     if (!file.exists() || isExpired(file)) {
                         final List<E> downloaded = download();
                         if (downloaded.isEmpty()) {
-                            Files.touch(file);
+                            Files.writeStringToFile(file, "", Charsets.DEFAULT);
                         } else {
                             final String json = toMarshalled(downloaded);
                             Files.writeStringToFile(file, json, Charsets.DEFAULT);

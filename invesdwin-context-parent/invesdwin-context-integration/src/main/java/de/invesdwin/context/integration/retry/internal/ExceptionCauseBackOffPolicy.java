@@ -22,7 +22,8 @@ public final class ExceptionCauseBackOffPolicy implements BackOffPolicy {
 
     private ExceptionCauseBackOffPolicy() {
         defaultBackOffPolicy = new ExponentialBackOffPolicy();
-        defaultBackOffPolicy.setInitialInterval(new Duration(1, FTimeUnit.SECONDS).longValue(FTimeUnit.MILLISECONDS));
+        defaultBackOffPolicy
+                .setInitialInterval(new Duration(1, FTimeUnit.MILLISECONDS).longValue(FTimeUnit.MILLISECONDS));
         defaultBackOffPolicy.setMaxInterval(new Duration(1, FTimeUnit.MINUTES).longValue(FTimeUnit.MILLISECONDS));
     }
 
