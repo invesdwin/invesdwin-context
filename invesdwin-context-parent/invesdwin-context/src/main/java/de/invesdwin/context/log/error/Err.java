@@ -2,6 +2,7 @@ package de.invesdwin.context.log.error;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -144,12 +145,17 @@ public final class Err {
         return ThrowableConverter.throwableToString(e, true, false);
     }
 
-    /**
-     * Only logs the exception in the given interval if it has the same meaning, otherwise returns the previous logged
-     * exception and ignores the new one.
-     */
     public static synchronized LoggedRuntimeException processInterval(final Exception exception,
             final Duration interval) {
+        return processInterval(exception, interval, Err::process);
+    }
+
+    /**
+     * Only logs the exception in the given interval if it has the same meaning, otherwise returns the previous logged
+     * exception and ignores the new one. Though new exceptions with different meanings are also logged.
+     */
+    public static synchronized LoggedRuntimeException processInterval(final Exception exception,
+            final Duration interval, final Function<Exception, LoggedRuntimeException> processF) {
         final ICloseableIterator<IntervalException> iterator = INTERVAL_EXCEPTIONS.iterator();
         try {
             while (true) {
@@ -165,7 +171,7 @@ public final class Err {
         } catch (final NoSuchElementException e) {
             //end reached
         }
-        final LoggedRuntimeException logged = process(exception);
+        final LoggedRuntimeException logged = processF.apply(exception);
         INTERVAL_EXCEPTIONS.add(new IntervalException(logged, interval));
         while (INTERVAL_EXCEPTIONS.size() > MAX_INTERVAL_EXCEPTIONS) {
             INTERVAL_EXCEPTIONS.next();
