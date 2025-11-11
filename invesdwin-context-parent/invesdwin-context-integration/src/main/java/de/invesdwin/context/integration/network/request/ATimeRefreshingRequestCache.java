@@ -114,7 +114,7 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
     }
 
     @Override
-    protected IHistoricalCacheRangeQueryInterceptor<E> getRangeQueryInterceptor() {
+    protected IHistoricalCacheRangeQueryInterceptor<E> newRangeQueryInterceptor() {
         return new AHistoricalCacheRangeQueryInterceptor<E>(this) {
             @Override
             protected ICloseableIterable<IHistoricalEntry<E>> innerGetEntries(final FDate from, final FDate to) {
