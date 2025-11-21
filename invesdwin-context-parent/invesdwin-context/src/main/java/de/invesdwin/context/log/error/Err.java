@@ -1,7 +1,9 @@
 package de.invesdwin.context.log.error;
 
+import java.io.Closeable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -50,6 +52,43 @@ public final class Err {
     }
 
     private Err() {}
+
+    public static <T extends Runnable & Closeable> void runAndCloseVerbose(final T runnable) {
+        runAndCloseVerbose(runnable, runnable);
+    }
+
+    public static void runAndCloseVerbose(final Runnable runnable, final Closeable closeable) {
+        try {
+            runnable.run();
+            closeable.close();
+        } catch (final Throwable t) {
+            throw closeVerbose(closeable, t);
+        }
+    }
+
+    public static <T extends Callable<V> & Closeable, V> V callAndCloseVerbose(final T callable) {
+        return callAndCloseVerbose(callable, callable);
+    }
+
+    public static <T extends Callable<V> & Closeable, V> V callAndCloseVerbose(final Callable<V> callable,
+            final Closeable closeable) {
+        try {
+            final V value = callable.call();
+            closeable.close();
+            return value;
+        } catch (final Throwable t) {
+            throw closeVerbose(closeable, t);
+        }
+    }
+
+    public static RuntimeException closeVerbose(final Closeable closeable, final Throwable t) {
+        try {
+            closeable.close();
+        } catch (final Throwable c) {
+            Err.process(new Exception("Ignoring follow-up exception during close after exception: " + t, c));
+        }
+        return Throwables.propagate(t);
+    }
 
     /**
      * Logs an Exception as an error and returns it so that it can be analyzed or rethrown.
