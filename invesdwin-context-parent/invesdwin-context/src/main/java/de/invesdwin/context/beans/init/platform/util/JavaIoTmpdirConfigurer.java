@@ -3,6 +3,7 @@ package de.invesdwin.context.beans.init.platform.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -46,13 +47,12 @@ public final class JavaIoTmpdirConfigurer {
             final Class<?> tempFileHelperClass = Class.forName(tempFileHelper);
             final Field tmpdirField = tempFileHelperClass.getDeclaredField("tmpdir");
             tmpdirField.setAccessible(true);
-            DynamicInstrumentationReflections.removeFinalModifier(tmpdirField);
-            tmpdirField.set(null, javaIoTmpdir.toPath());
-        } catch (final NoSuchFieldException | ClassNotFoundException e) {
+            DynamicInstrumentationReflections.setStaticFinalField(tmpdirField, javaIoTmpdir.toPath());
+        } catch (final NoSuchFieldException | NoSuchMethodException | InstantiationException
+                | ClassNotFoundException e) {
             //ignore, might be a different java version
-        } catch (final SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
@@ -64,13 +64,12 @@ public final class JavaIoTmpdirConfigurer {
             final Class<?> staticPropertyClass = Class.forName(staticProperty);
             final Field javaIoTmpdirField = staticPropertyClass.getDeclaredField("JAVA_IO_TMPDIR");
             javaIoTmpdirField.setAccessible(true);
-            DynamicInstrumentationReflections.removeFinalModifier(javaIoTmpdirField);
-            javaIoTmpdirField.set(null, javaIoTmpdir.getAbsolutePath());
-        } catch (final NoSuchFieldException | ClassNotFoundException e) {
+            DynamicInstrumentationReflections.setStaticFinalField(javaIoTmpdirField, javaIoTmpdir.getAbsolutePath());
+        } catch (final NoSuchFieldException | NoSuchMethodException | InstantiationException
+                | ClassNotFoundException e) {
             //ignore, might be a different java version
-        } catch (final SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (final IllegalAccessException e) {
+        } catch (final SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
