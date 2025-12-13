@@ -1,6 +1,5 @@
 package de.invesdwin.context.test;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,6 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @ThreadSafe
@@ -16,7 +16,8 @@ class TestContextState {
 
     static final AtomicInteger ACTIVE_COUNT_GLOBAL = new AtomicInteger();
 
-    private final Set<ATest> registeredTests = new LinkedHashSet<ATest>();
+    private final Set<Class<? extends ATest>> registeredTests = ILockCollectionFactory.getInstance(false)
+            .newIdentitySet();
     private final AtomicInteger registeredTestsCount = new AtomicInteger();
     private final List<String> locationStrings;
     private volatile TestContext context;
@@ -31,13 +32,13 @@ class TestContextState {
     }
 
     synchronized void registerTest(final ATest test) {
-        if (registeredTests.add(test)) {
+        if (registeredTests.add(test.getClass())) {
             registeredTestsCount.incrementAndGet();
         }
     }
 
     synchronized void unregisterTest(final ATest test) {
-        if (registeredTests.remove(test)) {
+        if (registeredTests.remove(test.getClass())) {
             registeredTestsCount.decrementAndGet();
         }
     }
