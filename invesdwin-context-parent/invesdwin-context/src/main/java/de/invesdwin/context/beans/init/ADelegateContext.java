@@ -445,4 +445,9 @@ public abstract class ADelegateContext implements ConfigurableApplicationContext
             final boolean allowFactoryBeanInit) throws NoSuchBeanDefinitionException {
         return delegate.findAllAnnotationsOnBean(beanName, annotationType, allowFactoryBeanInit);
     }
+
+    @Override
+    public boolean isClosed() {
+        return delegate.isClosed();
+    }
 }
