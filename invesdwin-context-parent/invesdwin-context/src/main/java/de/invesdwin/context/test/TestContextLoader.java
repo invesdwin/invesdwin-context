@@ -59,7 +59,8 @@ public class TestContextLoader implements ContextLoader {
         protected void customizeContext(final GenericApplicationContext ctx) {
             try {
                 final ATest currentTest = getCurrentTest();
-                configureContext(currentTest, new TestContext(ctx, TEST_CONTEXT_STATE_HOLDER.get()), true);
+                final TestContext testContext = new TestContext(ctx, TEST_CONTEXT_STATE_HOLDER.get());
+                configureContext(currentTest, testContext, testContext, true);
             } catch (final Exception e) {
                 throw Err.process(e);
             }
@@ -85,7 +86,7 @@ public class TestContextLoader implements ContextLoader {
         for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
             testHook.setUpContextLocations(currentTest, preMergedContexts);
         }
-        configureContext(currentTest, premergedContext, false);
+        configureContext(currentTest, premergedContext, premergedContext, false);
         final List<PositionedResource> mergedContexts = PreMergedContext.collectMergedContexts();
         currentTest.setUpContextLocations(mergedContexts);
         for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
@@ -99,14 +100,14 @@ public class TestContextLoader implements ContextLoader {
         return curTestContextState;
     }
 
-    private static void configureContext(final ATest currentTest, final TestContext ctx,
-            final boolean replaceMergedContext) throws Exception {
+    private static void configureContext(final ATest currentTest, final ITestContext ctx,
+            final ITestContextSetup ctxSetup, final boolean replaceMergedContext) throws Exception {
         if (replaceMergedContext) {
             MergedContext.autowire(ctx);
         }
-        currentTest.setUpContext(ctx);
+        currentTest.setUpContext(ctxSetup);
         for (final IStub testHook : getTestHooks(ctx)) {
-            testHook.setUpContext(currentTest, ctx);
+            testHook.setUpContext(currentTest, ctxSetup);
         }
     }
 
@@ -165,7 +166,7 @@ public class TestContextLoader implements ContextLoader {
 
             synchronized (TestContextLoader.class) {
                 if (curTestContextState != null) {
-                    if (curTestContextState.getLocationStrings().equals(locationStrings)) {
+                    if (isReuseTestContext(locationStrings)) {
                         //return existing MergedContext since locations are the same
                         final TestContext ctx = curTestContextState.getContext();
                         if (ctx != null && ctx.isActive() && !ctx.isCloseRequested()) {
@@ -218,6 +219,19 @@ public class TestContextLoader implements ContextLoader {
             }
             throw processed;
         }
+    }
+
+    private boolean isReuseTestContext(final List<String> locationStrings) throws Exception {
+        if (!curTestContextState.getLocationStrings().equals(locationStrings)) {
+            return false;
+        }
+        final TestContext ctx = curTestContextState.getContext();
+        final PretendingTestContextSetup ctxSetup = new PretendingTestContextSetup(ctx);
+        configureContext(getCurrentTest(), ctx, ctxSetup, false);
+        if (!curTestContextState.getContextModifications().equals(ctxSetup.getContextModifications())) {
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -1,5 +1,7 @@
 package de.invesdwin.context.test;
 
+import java.util.Set;
+
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,7 +12,7 @@ import de.invesdwin.util.collections.attributes.EmptyAttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 
 @ThreadSafe
-public class TestContext extends ADelegateContext implements ITestContextState {
+public class TestContext extends ADelegateContext implements ITestContext {
 
     private TestContextState state;
     private volatile boolean closeRequested;
@@ -51,24 +53,43 @@ public class TestContext extends ADelegateContext implements ITestContextState {
         }
     }
 
+    @Override
     public boolean beanExists(final Class<?> beanType) {
         return ApplicationContexts.beanExists(this, beanType);
     }
 
+    @Override
     public void replaceBean(final Class<?> bean, final Class<?> withBean) {
         ApplicationContexts.replaceBean(this, bean, withBean);
+        if (state != null) {
+            state.getContextModifications().add("replace[" + bean.getName() + "," + withBean.getName() + "]");
+        }
     }
 
+    @Override
     public void activateBean(final Class<?> bean) {
         ApplicationContexts.activateBean(this, bean);
+        if (state != null) {
+            state.getContextModifications().add("activate[" + bean.getName() + "]");
+        }
     }
 
+    @Override
     public void deactivateBean(final Class<?> bean) {
         ApplicationContexts.deactivateBean(this, bean);
+        if (state != null) {
+            state.getContextModifications().add("deactivate[" + bean.getName() + "]");
+        }
     }
 
+    @Override
     public boolean isPreMergedContext() {
         return state == null;
+    }
+
+    @Override
+    public Set<String> getContextModifications() {
+        return state.getContextModifications();
     }
 
     @Override

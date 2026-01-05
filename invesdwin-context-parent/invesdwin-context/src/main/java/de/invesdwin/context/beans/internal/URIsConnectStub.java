@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.context.test.TestContext;
+import de.invesdwin.context.test.ITestContext;
 import de.invesdwin.context.test.stub.StubSupport;
 import de.invesdwin.util.lang.uri.URIs;
 import jakarta.inject.Named;
@@ -15,7 +15,7 @@ import jakarta.inject.Named;
 public class URIsConnectStub extends StubSupport {
 
     @Override
-    public void tearDown(final ATest test, final TestContext ctx) throws IOException {
+    public void tearDown(final ATest test, final ITestContext ctx) throws IOException {
         if (!ctx.isFinishedGlobal()) {
             return;
         }
