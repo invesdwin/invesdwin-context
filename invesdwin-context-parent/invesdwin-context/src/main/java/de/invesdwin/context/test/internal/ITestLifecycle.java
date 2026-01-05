@@ -12,6 +12,8 @@ public interface ITestLifecycle {
 
     void setUpContextLocations(List<PositionedResource> contextLocations) throws Exception;
 
+    void setUpContextBeforeLoading() throws Exception;
+
     void setUpContext(TestContext ctx) throws Exception;
 
     void setUpOnce() throws Exception;

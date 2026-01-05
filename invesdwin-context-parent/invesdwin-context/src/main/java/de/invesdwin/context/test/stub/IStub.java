@@ -20,6 +20,8 @@ public interface IStub {
 
     void setUpContextLocations(ATest test, List<PositionedResource> locations) throws Exception;
 
+    void setUpContextBeforeLoading(ATest test) throws Exception;
+
     void setUpContext(ATest test, TestContext ctx) throws Exception;
 
     void setUpOnce(ATest test, TestContext ctx) throws Exception;

@@ -1,6 +1,7 @@
 package de.invesdwin.context.jcache;
 
 import javax.annotation.concurrent.Immutable;
+import javax.cache.CacheManager;
 import javax.cache.Caching;
 
 import de.invesdwin.context.test.ATest;
@@ -17,7 +18,15 @@ public class CachingStub extends StubSupport {
         if (!ctx.isFinishedGlobal()) {
             return;
         }
-        Caching.getCachingProvider().close();
+        final CacheManager cacheManager = Caching.getCachingProvider().getCacheManager();
+        for (final String cacheName : cacheManager.getCacheNames()) {
+            cacheManager.getCache(cacheName).clear();
+        }
+    }
+
+    @Override
+    public void setUpContextBeforeLoading(final ATest test) throws Exception {
+        Caching.getCachingProvider().getCacheManager().close();
     }
 
 }

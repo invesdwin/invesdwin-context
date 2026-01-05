@@ -144,6 +144,11 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
     }
 
     @Override
+    public void setUpContextBeforeLoading() throws Exception {
+        //noop
+    }
+
+    @Override
     public void setUpContext(final TestContext ctx) throws Exception {
         //noop
     }

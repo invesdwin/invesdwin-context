@@ -187,6 +187,10 @@ public class TestContextLoader implements ContextLoader {
                 state.registerTest(currentTest);
                 curTestContextState = state;
                 ReinitializationHookManager.reinitializationStarted();
+                currentTest.setUpContextBeforeLoading();
+                for (final IStub testHook : getTestHooks(PreMergedContext.getInstance())) {
+                    testHook.setUpContextBeforeLoading(currentTest);
+                }
                 MergedContext.logContextsBeingLoaded(newLocations);
                 TEST_CONTEXT_STATE_HOLDER.set(state);
                 final ConfigurableApplicationContext delegate = PARENT
