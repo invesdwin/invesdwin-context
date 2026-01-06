@@ -16,8 +16,8 @@ public class PretendingTestContextSetup implements ITestContextSetup {
     }
 
     @Override
-    public boolean isFinished() {
-        return delegate.isFinished();
+    public boolean isFinishedContext() {
+        return delegate.isFinishedContext();
     }
 
     @Override

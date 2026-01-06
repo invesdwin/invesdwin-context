@@ -106,6 +106,24 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
     }
 
     @Override
+    public boolean isFinishedContext() {
+        if (run == null) {
+            return false;
+        }
+        return run.getContext().isFinishedContext();
+    }
+
+    /**
+     * Tells if there are no more parallel test method runs active within this test class.
+     */
+    public boolean isFinishedLocal() {
+        if (run == null) {
+            return false;
+        }
+        return run.activeCount.get() <= 0;
+    }
+
+    @Override
     public boolean isFinishedGlobal() {
         return TestContextState.ACTIVE_COUNT_GLOBAL.get() <= 0;
     }
@@ -121,14 +139,6 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
             return 0;
         }
         return run.activeCount.get();
-    }
-
-    @Override
-    public boolean isFinished() {
-        if (run == null) {
-            return false;
-        }
-        return run.activeCount.get() <= 0;
     }
 
     void setContext(final TestContext ctx) {

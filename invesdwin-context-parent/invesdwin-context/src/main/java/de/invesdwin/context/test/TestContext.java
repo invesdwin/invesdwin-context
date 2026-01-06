@@ -93,11 +93,11 @@ public class TestContext extends ADelegateContext implements ITestContext {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinishedContext() {
         if (isPreMergedContext()) {
             return false;
         } else {
-            return state.isFinished();
+            return state.isFinishedContext();
         }
     }
 

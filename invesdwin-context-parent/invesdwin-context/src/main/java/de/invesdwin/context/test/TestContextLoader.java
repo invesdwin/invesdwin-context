@@ -176,7 +176,7 @@ public class TestContextLoader implements ContextLoader {
                         }
                     } else {
                         //make sure existing test context is not used anymore before replacing MergedContext with a different one
-                        curTestContextState.waitForFinished();
+                        curTestContextState.waitForFinishedContext();
                         final TestContext ctx = curTestContextState.getContext();
                         if (ctx != null && ctx.isActive()) {
                             ctx.closeAndEvict();

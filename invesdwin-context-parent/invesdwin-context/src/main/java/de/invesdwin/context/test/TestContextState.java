@@ -57,14 +57,14 @@ class TestContextState {
         return context;
     }
 
-    void waitForFinished() {
-        while (!isFinished()) {
+    void waitForFinishedContext() {
+        while (!isFinishedContext()) {
             FTimeUnit.MILLISECONDS.sleepNoInterrupt(1);
         }
     }
 
-    boolean isFinished() {
-        return registeredTestsCount.get() <= 0;
+    boolean isFinishedContext() {
+        return registeredTestsCount.get() <= 1;
     }
 
     static boolean isFinishedGlobal() {
