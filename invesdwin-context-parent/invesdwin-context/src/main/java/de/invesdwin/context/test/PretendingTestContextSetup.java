@@ -31,18 +31,24 @@ public class PretendingTestContextSetup implements ITestContextSetup {
     }
 
     @Override
-    public void replaceBean(final Class<?> bean, final Class<?> withBean) {
-        getContextModifications().add("replace[" + bean.getName() + "," + withBean.getName() + "]");
+    public void replaceBean(final Class<?> bean, final Class<?> withBean, final boolean record) {
+        if (record) {
+            getContextModifications().add("replace[" + bean.getName() + "," + withBean.getName() + "]");
+        }
     }
 
     @Override
-    public void activateBean(final Class<?> bean) {
-        getContextModifications().add("activate[" + bean.getName() + "]");
+    public void activateBean(final Class<?> bean, final boolean record) {
+        if (record) {
+            getContextModifications().add("activate[" + bean.getName() + "]");
+        }
     }
 
     @Override
-    public void deactivateBean(final Class<?> bean) {
-        getContextModifications().add("deactivate[" + bean.getName() + "]");
+    public void deactivateBean(final Class<?> bean, final boolean record) {
+        if (record) {
+            getContextModifications().add("deactivate[" + bean.getName() + "]");
+        }
     }
 
     @Override

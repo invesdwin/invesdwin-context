@@ -59,25 +59,25 @@ public class TestContext extends ADelegateContext implements ITestContext {
     }
 
     @Override
-    public void replaceBean(final Class<?> bean, final Class<?> withBean) {
+    public void replaceBean(final Class<?> bean, final Class<?> withBean, final boolean record) {
         ApplicationContexts.replaceBean(this, bean, withBean);
-        if (state != null) {
+        if (state != null && record) {
             state.getContextModifications().add("replace[" + bean.getName() + "," + withBean.getName() + "]");
         }
     }
 
     @Override
-    public void activateBean(final Class<?> bean) {
+    public void activateBean(final Class<?> bean, final boolean record) {
         ApplicationContexts.activateBean(this, bean);
-        if (state != null) {
+        if (state != null && record) {
             state.getContextModifications().add("activate[" + bean.getName() + "]");
         }
     }
 
     @Override
-    public void deactivateBean(final Class<?> bean) {
+    public void deactivateBean(final Class<?> bean, final boolean record) {
         ApplicationContexts.deactivateBean(this, bean);
-        if (state != null) {
+        if (state != null && record) {
             state.getContextModifications().add("deactivate[" + bean.getName() + "]");
         }
     }

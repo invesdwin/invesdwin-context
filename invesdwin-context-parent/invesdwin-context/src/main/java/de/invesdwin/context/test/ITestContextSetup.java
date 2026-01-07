@@ -6,11 +6,23 @@ public interface ITestContextSetup extends ITestContextState {
 
     boolean beanExists(Class<?> beanType);
 
-    void replaceBean(Class<?> bean, Class<?> withBean);
+    default void replaceBean(final Class<?> bean, final Class<?> withBean) {
+        replaceBean(bean, withBean, true);
+    }
 
-    void activateBean(Class<?> bean);
+    void replaceBean(Class<?> bean, Class<?> withBean, boolean record);
 
-    void deactivateBean(Class<?> bean);
+    default void activateBean(final Class<?> bean) {
+        activateBean(bean, true);
+    }
+
+    void activateBean(Class<?> bean, boolean record);
+
+    default void deactivateBean(final Class<?> bean) {
+        deactivateBean(bean, true);
+    }
+
+    void deactivateBean(Class<?> bean, boolean record);
 
     boolean isPreMergedContext();
 
