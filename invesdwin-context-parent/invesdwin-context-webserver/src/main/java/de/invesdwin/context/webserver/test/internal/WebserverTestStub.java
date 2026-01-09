@@ -55,7 +55,7 @@ public class WebserverTestStub extends StubSupport {
         if (ctx.isPreMergedContext()) {
             return;
         }
-        //if for some reason the tearDownOnce was not executed on the last test (maybe maven killed it?), then try to stop here aswell
+        //tearDownOnce is not closing the server, since the context might still get reused, we thus close it here if not done so already
         maybeStopLastServer();
     }
 
@@ -70,14 +70,6 @@ public class WebserverTestStub extends StubSupport {
                 }
             }
         }
-    }
-
-    @Override
-    public void tearDownOnce(final ATest test, final ITestContext ctx) throws Exception {
-        if (!ctx.isFinishedGlobal()) {
-            return;
-        }
-        maybeStopLastServer();
     }
 
     private static synchronized void maybeStopLastServer() throws Exception {
