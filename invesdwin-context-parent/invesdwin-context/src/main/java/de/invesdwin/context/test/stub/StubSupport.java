@@ -3,11 +3,12 @@ package de.invesdwin.context.test.stub;
 import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
-import jakarta.inject.Named;
 
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.context.test.TestContext;
+import de.invesdwin.context.test.ITestContext;
+import de.invesdwin.context.test.ITestContextSetup;
+import jakarta.inject.Named;
 
 @Named
 @Immutable
@@ -17,18 +18,21 @@ public class StubSupport implements IStub {
     public void setUpContextLocations(final ATest test, final List<PositionedResource> locations) throws Exception {}
 
     @Override
-    public void setUpContext(final ATest test, final TestContext ctx) throws Exception {}
+    public void setUpContextBeforeLoading(final ATest test) throws Exception {}
 
     @Override
-    public void setUpOnce(final ATest test, final TestContext ctx) throws Exception {}
+    public void setUpContext(final ATest test, final ITestContextSetup ctx) throws Exception {}
 
     @Override
-    public void setUp(final ATest test, final TestContext ctx) throws Exception {}
+    public void setUpOnce(final ATest test, final ITestContext ctx) throws Exception {}
 
     @Override
-    public void tearDown(final ATest test, final TestContext ctx) throws Exception {}
+    public void setUp(final ATest test, final ITestContext ctx) throws Exception {}
 
     @Override
-    public void tearDownOnce(final ATest test, final TestContext ctx) throws Exception {}
+    public void tearDown(final ATest test, final ITestContext ctx) throws Exception {}
+
+    @Override
+    public void tearDownOnce(final ATest test, final ITestContext ctx) throws Exception {}
 
 }

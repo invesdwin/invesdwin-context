@@ -7,7 +7,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.apache.commons.io.FilenameUtils;
 
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.context.test.TestContext;
+import de.invesdwin.context.test.ITestContext;
 import de.invesdwin.context.test.stub.StubSupport;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.fast.IFastIterableSet;
@@ -38,7 +38,7 @@ public class ContextDirectoriesStub extends StubSupport {
      * be missing then (e.g. SubscriptionStorageFile during IQFeed startup).
      */
     @Override
-    public void tearDownOnce(final ATest test, final TestContext ctx) {
+    public void tearDownOnce(final ATest test, final ITestContext ctx) {
         if (!ctx.isFinishedGlobal()) {
             return;
         }

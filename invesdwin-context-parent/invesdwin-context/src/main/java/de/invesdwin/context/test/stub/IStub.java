@@ -4,7 +4,8 @@ import java.util.List;
 
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.context.test.TestContext;
+import de.invesdwin.context.test.ITestContext;
+import de.invesdwin.context.test.ITestContextSetup;
 
 /**
  * This interface can be used to let other classes participate in the lifecycle of tests or to replace objects with
@@ -20,18 +21,20 @@ public interface IStub {
 
     void setUpContextLocations(ATest test, List<PositionedResource> locations) throws Exception;
 
-    void setUpContext(ATest test, TestContext ctx) throws Exception;
+    void setUpContextBeforeLoading(ATest test) throws Exception;
 
-    void setUpOnce(ATest test, TestContext ctx) throws Exception;
+    void setUpContext(ATest test, ITestContextSetup ctx) throws Exception;
 
-    void setUp(ATest test, TestContext ctx) throws Exception;
+    void setUpOnce(ATest test, ITestContext ctx) throws Exception;
 
-    void tearDown(ATest test, TestContext ctx) throws Exception;
+    void setUp(ATest test, ITestContext ctx) throws Exception;
+
+    void tearDown(ATest test, ITestContext ctx) throws Exception;
 
     /**
      * This normally gets called after the tests finished, but also gets called when test context failed to initialize
      * in order to clean up the mess.
      */
-    void tearDownOnce(ATest test, TestContext ctx) throws Exception;
+    void tearDownOnce(ATest test, ITestContext ctx) throws Exception;
 
 }

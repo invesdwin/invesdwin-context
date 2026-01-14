@@ -9,6 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @ThreadSafe
@@ -16,9 +17,11 @@ class TestContextState {
 
     static final AtomicInteger ACTIVE_COUNT_GLOBAL = new AtomicInteger();
 
-    private final Set<ATest> registeredTests = new LinkedHashSet<ATest>();
+    private final Set<Class<? extends ATest>> registeredTests = ILockCollectionFactory.getInstance(false)
+            .newIdentitySet();
     private final AtomicInteger registeredTestsCount = new AtomicInteger();
     private final List<String> locationStrings;
+    private final Set<String> contextModifications = new LinkedHashSet<>();
     private volatile TestContext context;
     private final IAttributesMap attributes = new AttributesMap();
 
@@ -30,14 +33,18 @@ class TestContextState {
         return locationStrings;
     }
 
+    Set<String> getContextModifications() {
+        return contextModifications;
+    }
+
     synchronized void registerTest(final ATest test) {
-        if (registeredTests.add(test)) {
+        if (registeredTests.add(test.getClass())) {
             registeredTestsCount.incrementAndGet();
         }
     }
 
     synchronized void unregisterTest(final ATest test) {
-        if (registeredTests.remove(test)) {
+        if (registeredTests.remove(test.getClass())) {
             registeredTestsCount.decrementAndGet();
         }
     }
@@ -50,14 +57,14 @@ class TestContextState {
         return context;
     }
 
-    void waitForFinished() {
-        while (!isFinished()) {
+    void waitForFinishedContext() {
+        while (!isFinishedContext()) {
             FTimeUnit.MILLISECONDS.sleepNoInterrupt(1);
         }
     }
 
-    boolean isFinished() {
-        return registeredTestsCount.get() <= 0;
+    boolean isFinishedContext() {
+        return registeredTestsCount.get() <= 1;
     }
 
     static boolean isFinishedGlobal() {

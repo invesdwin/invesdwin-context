@@ -12,7 +12,8 @@ import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.integration.IntegrationProperties;
 import de.invesdwin.context.test.ATest;
-import de.invesdwin.context.test.TestContext;
+import de.invesdwin.context.test.ITestContext;
+import de.invesdwin.context.test.ITestContextSetup;
 import de.invesdwin.context.test.stub.StubSupport;
 import de.invesdwin.context.webserver.WebserverContextLocation;
 import de.invesdwin.context.webserver.test.WebserverTest;
@@ -50,16 +51,16 @@ public class WebserverTestStub extends StubSupport {
     }
 
     @Override
-    public void setUpContext(final ATest test, final TestContext ctx) throws Exception {
+    public void setUpContext(final ATest test, final ITestContextSetup ctx) throws Exception {
         if (ctx.isPreMergedContext()) {
             return;
         }
-        //if for some reason the tearDownOnce was not executed on the last test (maybe maven killed it?), then try to stop here aswell
+        //tearDownOnce is not closing the server, since the context might still get reused, we thus close it here if not done so already
         maybeStopLastServer();
     }
 
     @Override
-    public void setUpOnce(final ATest test, final TestContext ctx) throws Exception {
+    public void setUpOnce(final ATest test, final ITestContext ctx) throws Exception {
         synchronized (WebserverTestStub.class) {
             if (WebserverTestStub.lastServer == null) {
                 try {
@@ -69,14 +70,6 @@ public class WebserverTestStub extends StubSupport {
                 }
             }
         }
-    }
-
-    @Override
-    public void tearDownOnce(final ATest test, final TestContext ctx) throws Exception {
-        if (!ctx.isFinishedGlobal()) {
-            return;
-        }
-        maybeStopLastServer();
     }
 
     private static synchronized void maybeStopLastServer() throws Exception {

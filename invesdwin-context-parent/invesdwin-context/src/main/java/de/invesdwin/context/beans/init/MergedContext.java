@@ -138,7 +138,7 @@ public final class MergedContext extends ADelegateContext {
         final MergedContext prevInstance = instance;
         instance = new MergedContext(delegateCtx);
         configureInstance();
-        if (prevInstance != null) {
+        if (prevInstance != null && prevInstance.isActive()) {
             //during tests the transaction manager cache inside spring needs to be reset
             try {
                 final TransactionAspectSupport transactionAspectSupport = prevInstance
