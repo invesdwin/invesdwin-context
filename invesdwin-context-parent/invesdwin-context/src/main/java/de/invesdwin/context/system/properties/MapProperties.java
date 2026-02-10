@@ -60,6 +60,11 @@ public class MapProperties extends AProperties {
             protected void addPropertyDirect(final String key, final Object value) {
                 map.put(key, value);
             }
+
+            @Override
+            protected boolean containsValueInternal(final Object value) {
+                return map.containsValue(value);
+            }
         };
     }
 
