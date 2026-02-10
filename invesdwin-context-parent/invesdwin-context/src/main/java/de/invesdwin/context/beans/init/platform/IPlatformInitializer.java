@@ -11,6 +11,8 @@ public interface IPlatformInitializer {
 
     void initInstrumentation();
 
+    void initBeanPathCollectionsProvider();
+
     void initFstDeepCloneProvider();
 
     void initDefaultUncaughtExceptionHandler(UncaughtExceptionHandler handler);

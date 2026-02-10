@@ -38,7 +38,9 @@ import de.invesdwin.instrument.DynamicInstrumentationLoader;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
 import de.invesdwin.norva.beanpath.BeanPathObjects;
+import de.invesdwin.norva.beanpath.collection.BeanPathCollections;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.FactoryBeanPathCollectionProvider;
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
@@ -63,6 +65,11 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         DynamicInstrumentationLoader.waitForInitialized();
         Assertions.assertThat(DynamicInstrumentationLoader.initLoadTimeWeavingContext()).isNotNull();
         InstrumentationHookLoader.runInstrumentationHooks();
+    }
+
+    @Override
+    public void initBeanPathCollectionsProvider() {
+        BeanPathCollections.setProvider(FactoryBeanPathCollectionProvider.INSTANCE);
     }
 
     @Override
