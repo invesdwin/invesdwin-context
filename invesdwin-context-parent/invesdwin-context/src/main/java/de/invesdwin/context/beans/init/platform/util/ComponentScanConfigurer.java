@@ -1,6 +1,5 @@
 package de.invesdwin.context.beans.init.platform.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
@@ -10,13 +9,14 @@ import org.springframework.core.io.Resource;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.error.Err;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 
 @Immutable
 public class ComponentScanConfigurer {
 
     public Map<String, Resource> getApplicationContextXmlConfigs(final boolean defaultLazyInit) {
         try {
-            final Map<String, Resource> xmls = new HashMap<String, Resource>();
+            final Map<String, Resource> xmls = ILockCollectionFactory.getInstance(false).newMap();
             for (final String basePackage : ContextProperties.getBasePackages()) {
                 final StringBuilder sb = new StringBuilder();
                 sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

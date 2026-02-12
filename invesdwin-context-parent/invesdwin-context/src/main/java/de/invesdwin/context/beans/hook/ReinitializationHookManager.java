@@ -1,17 +1,17 @@
 package de.invesdwin.context.beans.hook;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import jakarta.inject.Named;
 
 @ThreadSafe
 @Named
@@ -20,7 +20,8 @@ public final class ReinitializationHookManager
 
     private static final ReinitializationHookManager INSTANCE = new ReinitializationHookManager();
     @GuardedBy("INSTANCE")
-    private static final Set<IReinitializationHook> REGISTERED_HOOKS = new HashSet<IReinitializationHook>();
+    private static final Set<IReinitializationHook> REGISTERED_HOOKS = ILockCollectionFactory.getInstance(false)
+            .newLinkedSet();
 
     private ReinitializationHookManager() {}
 

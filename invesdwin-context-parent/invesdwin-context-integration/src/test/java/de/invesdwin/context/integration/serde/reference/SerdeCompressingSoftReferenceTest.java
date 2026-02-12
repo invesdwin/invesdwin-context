@@ -1,6 +1,5 @@
 package de.invesdwin.context.integration.serde.reference;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -11,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import de.invesdwin.context.integration.compression.lz4.LZ4Streams;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;
 import de.invesdwin.util.math.decimal.Decimal;
 
@@ -32,7 +32,8 @@ public class SerdeCompressingSoftReferenceTest extends ATest {
     @Test
     @Disabled("manual test")
     public void testOutOfMemory() {
-        final Set<SerdeCompressingSoftReference<Decimal>> refs = new LinkedHashSet<SerdeCompressingSoftReference<Decimal>>();
+        final Set<SerdeCompressingSoftReference<Decimal>> refs = ILockCollectionFactory.getInstance(false)
+                .newLinkedSet();
         Decimal curValue = Decimal.ZERO;
         while (true) {
             curValue = curValue.add(Decimal.ONE);

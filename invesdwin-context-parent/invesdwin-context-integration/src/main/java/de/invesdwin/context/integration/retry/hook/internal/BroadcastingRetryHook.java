@@ -1,12 +1,12 @@
 package de.invesdwin.context.integration.retry.hook.internal;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.fast.concurrent.ASynchronizedFastIterableDelegateSet;
 
 @ThreadSafe
@@ -15,7 +15,7 @@ public class BroadcastingRetryHook implements IRetryHook {
     private final ASynchronizedFastIterableDelegateSet<IRetryHook> hooks = new ASynchronizedFastIterableDelegateSet<IRetryHook>() {
         @Override
         protected Set<IRetryHook> newDelegate() {
-            return new LinkedHashSet<IRetryHook>();
+            return ILockCollectionFactory.getInstance(false).newLinkedSet();
         }
     };
 

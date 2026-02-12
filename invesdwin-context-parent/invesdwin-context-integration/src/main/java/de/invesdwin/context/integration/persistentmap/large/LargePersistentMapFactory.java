@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.persistentmap.large;
 
 import java.io.File;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.concurrent.Immutable;
@@ -115,7 +116,7 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
     }
 
     @Override
-    public void removeAll(final ConcurrentMap<K, V> table, final IKeyMatcher<K> matcher) {
+    public void removeAll(final Map<K, V> table, final IKeyMatcher<K> matcher) {
         final ALargePersistentMap<K, V> cTable = (ALargePersistentMap<K, V>) table;
         cTable.removeAll(matcher);
     }

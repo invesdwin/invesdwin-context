@@ -1,6 +1,5 @@
 package de.invesdwin.context.test;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,7 +20,7 @@ class TestContextState {
             .newIdentitySet();
     private final AtomicInteger registeredTestsCount = new AtomicInteger();
     private final List<String> locationStrings;
-    private final Set<String> contextModifications = new LinkedHashSet<>();
+    private final Set<String> contextModifications = ILockCollectionFactory.getInstance(false).newLinkedSet();
     private volatile TestContext context;
     private final IAttributesMap attributes = new AttributesMap();
 

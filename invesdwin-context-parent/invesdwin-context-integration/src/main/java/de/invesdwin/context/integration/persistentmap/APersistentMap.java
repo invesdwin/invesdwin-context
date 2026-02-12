@@ -6,7 +6,6 @@ import java.nio.channels.OverlappingFileLockException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -104,7 +103,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public void removeAll(final IKeyMatcher<K> matcher) {
-        final ConcurrentMap<K, V> delegate = getPreLockedDelegate();
+        final Map<K, V> delegate = getPreLockedDelegate();
         try {
             getFactory().removeAll(delegate, matcher);
         } finally {
@@ -176,11 +175,11 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         return tableCreationTime;
     }
 
-    public ConcurrentMap<K, V> getPreLockedDelegate() {
+    public Map<K, V> getPreLockedDelegate() {
         return getPreLockedDelegate(true);
     }
 
-    private ConcurrentMap<K, V> getPreLockedDelegate(final boolean initialize) {
+    private Map<K, V> getPreLockedDelegate(final boolean initialize) {
         maybePurgeTable();
         //directly return table with read lock if not null
         final ILock readLock = getReadLock();
@@ -200,11 +199,11 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
             return getPreLockedDelegate();
         } else {
             try {
-                return new ARetryCallable<ConcurrentMap<K, V>>(
+                return new ARetryCallable<Map<K, V>>(
                         new RetryOriginator(APersistentMap.class, "initializeTableInitLocked", getName())) {
 
                     @Override
-                    protected ConcurrentMap<K, V> callRetry() throws Exception {
+                    protected Map<K, V> callRetry() throws Exception {
                         return initializeTableInitLocked(readLock);
                     }
                 }.call();
@@ -214,7 +213,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         }
     }
 
-    private ConcurrentMap<K, V> initializeTableInitLocked(final ILock readLock) {
+    private Map<K, V> initializeTableInitLocked(final ILock readLock) {
         initializeTableInitLockedRetry(readLock, true);
         return tableFinalizer.table;
     }
@@ -393,7 +392,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     }
 
     private static final class TableFinalizer<_K, _V> extends AFinalizer {
-        private volatile ConcurrentMap<_K, _V> table;
+        private volatile Map<_K, _V> table;
 
         @Override
         protected void clean() {

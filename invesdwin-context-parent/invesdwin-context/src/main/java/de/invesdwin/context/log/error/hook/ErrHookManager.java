@@ -1,11 +1,9 @@
 package de.invesdwin.context.log.error.hook;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +11,8 @@ import org.springframework.context.ApplicationContextAware;
 
 import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import jakarta.inject.Named;
 
 @ThreadSafe
 @Named
@@ -20,7 +20,7 @@ public final class ErrHookManager implements ApplicationContextAware, FactoryBea
 
     private static final ErrHookManager INSTANCE = new ErrHookManager();
     @GuardedBy("INSTANCE")
-    private static final Set<IErrHook> REGISTRIERTE_HOOKS = new HashSet<IErrHook>();
+    private static final Set<IErrHook> REGISTRIERTE_HOOKS = ILockCollectionFactory.getInstance(false).newLinkedSet();
 
     private ErrHookManager() {}
 

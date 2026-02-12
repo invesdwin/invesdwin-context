@@ -1,6 +1,5 @@
 package de.invesdwin.context.beans.init;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +31,7 @@ import de.invesdwin.context.beans.init.locations.PositionedResource;
 import de.invesdwin.context.beans.init.platform.util.ComponentScanConfigurer;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.streams.resource.Resources;
 import de.invesdwin.util.time.Instant;
@@ -49,12 +49,15 @@ public final class MergedContext extends ADelegateContext {
      * Order must be preserved, thus LinkedHashSet.
      */
     @GuardedBy("MergedContext.class")
-    private static final Set<ParentContext> TO_BE_SET_PARENTS = new LinkedHashSet<ParentContext>();
+    private static final Set<ParentContext> TO_BE_SET_PARENTS = ILockCollectionFactory.getInstance(false)
+            .newLinkedSet();
     /*
      * Order must be preserved, thus LinkedHashSet.
      */
     @GuardedBy("MergedContext.class")
-    private static final Set<BeanFactoryPostProcessor> TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS = new LinkedHashSet<BeanFactoryPostProcessor>();
+    private static final Set<BeanFactoryPostProcessor> TO_BET_SET_BEAN_FACTORY_POST_PROCESSORS = ILockCollectionFactory
+            .getInstance(false)
+            .newLinkedSet();
     @GuardedBy("MergedContext.class")
     private static MergedContext instance;
     private static volatile boolean bootstrapRunning;

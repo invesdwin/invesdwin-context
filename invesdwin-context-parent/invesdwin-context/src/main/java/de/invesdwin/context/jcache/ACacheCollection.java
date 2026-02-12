@@ -1,13 +1,14 @@
 package de.invesdwin.context.jcache;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
+
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 
 @NotThreadSafe
 public abstract class ACacheCollection<E> implements Collection<E> {
@@ -129,7 +130,7 @@ public abstract class ACacheCollection<E> implements Collection<E> {
 
     @Override
     public boolean retainAll(final Collection<?> c) {
-        final Set<Integer> cKeys = new HashSet<Integer>();
+        final Set<Integer> cKeys = ILockCollectionFactory.getInstance(false).newSet();
         for (final Object o : c) {
             cKeys.add(keyOf(o));
         }

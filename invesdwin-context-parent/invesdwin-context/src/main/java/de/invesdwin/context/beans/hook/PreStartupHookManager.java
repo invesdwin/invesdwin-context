@@ -1,11 +1,9 @@
 package de.invesdwin.context.beans.hook;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-import jakarta.inject.Named;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
@@ -13,6 +11,8 @@ import org.springframework.context.ApplicationContextAware;
 
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import jakarta.inject.Named;
 
 /**
  * Registers hooks for the application start. The hooks are called only once before the merged ApplicationContext has
@@ -29,7 +29,8 @@ public final class PreStartupHookManager implements ApplicationContextAware, Fac
 
     private static final PreStartupHookManager INSTANCE = new PreStartupHookManager();
     @GuardedBy("INSTANCE")
-    private static final Set<IPreStartupHook> REGISTERED_HOOKS = new HashSet<IPreStartupHook>();
+    private static final Set<IPreStartupHook> REGISTERED_HOOKS = ILockCollectionFactory.getInstance(false)
+            .newLinkedSet();
     @GuardedBy("INSTANCE")
     private static boolean alreadyStarted;
 

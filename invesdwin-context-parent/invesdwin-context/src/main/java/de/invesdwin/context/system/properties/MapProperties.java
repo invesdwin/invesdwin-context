@@ -1,6 +1,5 @@
 package de.invesdwin.context.system.properties;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -9,13 +8,15 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+
 @ThreadSafe
 public class MapProperties extends AProperties {
 
     private final Map<String, Object> map;
 
     public MapProperties() {
-        this(new HashMap<>());
+        this(ILockCollectionFactory.getInstance(false).newMap());
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
