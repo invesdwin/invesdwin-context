@@ -14,6 +14,7 @@ import de.invesdwin.util.collections.array.ILongArray;
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
@@ -24,11 +25,21 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
     private final String prefix;
     private AttributesMap attributes;
     private PrefixedDelegateProperties properties;
+    private final File directory;
 
     public PrefixedPrimitiveArrayAllocator(final IPrimitiveArrayAllocator delegate, final String prefix) {
         this.delegate = delegate;
         this.prefix = prefix;
         Assertions.checkNotBlank(prefix);
+        this.directory = newDirectory();
+    }
+
+    private File newDirectory() {
+        final File directory = delegate.getDirectory();
+        if (directory == null) {
+            return null;
+        }
+        return new File(directory, Files.normalizeFilename(prefix));
     }
 
     @Override
@@ -161,7 +172,7 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
 
     @Override
     public File getDirectory() {
-        return delegate.getDirectory();
+        return directory;
     }
 
 }
