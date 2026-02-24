@@ -1,5 +1,7 @@
 package de.invesdwin.context.system.array;
 
+import java.io.File;
+
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.norva.beanpath.spi.IUnwrap;
 import de.invesdwin.util.collections.array.IBooleanArray;
@@ -46,8 +48,8 @@ public interface IPrimitiveArrayAllocator extends IUnwrap {
 
     void clear();
 
-    static IPrimitiveArrayAllocator newInstance() {
-        return new OnHeapPrimitiveArrayAllocator();
-    }
+    boolean isOnHeap(int size);
+
+    File getDirectory();
 
 }

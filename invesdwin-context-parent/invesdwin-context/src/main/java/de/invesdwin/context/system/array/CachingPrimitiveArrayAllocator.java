@@ -1,5 +1,6 @@
 package de.invesdwin.context.system.array;
 
+import java.io.File;
 import java.util.Map;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -28,9 +29,10 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
 
     public CachingPrimitiveArrayAllocator(final IPrimitiveArrayAllocator delegate) {
         this.delegate = delegate;
-        if (delegate.unwrap(OnHeapPrimitiveArrayAllocator.class) != null) {
+        if (delegate.isOnHeap(1)) {
             this.maybeClearCache = () -> MemoryLimit.maybeClearCache(CachingPrimitiveArrayAllocator.class, "map", map);
         } else {
+            //offHeap is not counted on the heap, so MemoryLimit cannot help us here
             this.maybeClearCache = () -> {
             };
         }
@@ -40,75 +42,133 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
         return ILockCollectionFactory.getInstance(true).newConcurrentMap();
     }
 
+    protected void maybeClearCache() {
+        maybeClearCache.run();
+    }
+
     @Override
     public IByteBuffer getByteBuffer(final String id) {
-        maybeClearCache.run();
-        return (IByteBuffer) map.get(id);
+        maybeClearCache();
+        IByteBuffer cached = (IByteBuffer) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getByteBuffer(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
     }
 
     @Override
     public IDoubleArray getDoubleArray(final String id) {
-        maybeClearCache.run();
-        return (IDoubleArray) map.get(id);
+        maybeClearCache();
+        IDoubleArray cached = (IDoubleArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getDoubleArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
     }
 
     @Override
     public IIntegerArray getIntegerArray(final String id) {
-        maybeClearCache.run();
-        return (IIntegerArray) map.get(id);
+        maybeClearCache();
+        IIntegerArray cached = (IIntegerArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getIntegerArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
     }
 
     @Override
     public IBooleanArray getBooleanArray(final String id) {
-        maybeClearCache.run();
-        return (IBooleanArray) map.get(id);
+        maybeClearCache();
+        IBooleanArray cached = (IBooleanArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getBooleanArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
     }
 
     @Override
     public IBitSet getBitSet(final String id) {
-        maybeClearCache.run();
-        return (IBitSet) map.get(id);
+        maybeClearCache();
+        IBitSet cached = (IBitSet) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getBitSet(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
     }
 
     @Override
     public ILongArray getLongArray(final String id) {
-        maybeClearCache.run();
-        return (ILongArray) map.get(id);
+        maybeClearCache();
+        ILongArray cached = (ILongArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getLongArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
     }
 
     @Override
     public IByteBuffer newByteBuffer(final String id, final int size) {
-        maybeClearCache.run();
+        maybeClearCache();
         return (IByteBuffer) map.computeIfAbsent(id, (t) -> delegate.newByteBuffer(id, size));
     }
 
     @Override
     public IDoubleArray newDoubleArray(final String id, final int size) {
-        maybeClearCache.run();
+        maybeClearCache();
         return (IDoubleArray) map.computeIfAbsent(id, (t) -> delegate.newDoubleArray(id, size));
     }
 
     @Override
     public IIntegerArray newIntegerArray(final String id, final int size) {
-        maybeClearCache.run();
+        maybeClearCache();
         return (IIntegerArray) map.computeIfAbsent(id, (t) -> delegate.newIntegerArray(id, size));
     }
 
     @Override
     public IBooleanArray newBooleanArray(final String id, final int size) {
-        maybeClearCache.run();
+        maybeClearCache();
         return (IBooleanArray) map.computeIfAbsent(id, (t) -> delegate.newBooleanArray(id, size));
     }
 
     @Override
     public IBitSet newBitSet(final String id, final int size) {
-        maybeClearCache.run();
+        maybeClearCache();
         return (IBitSet) map.computeIfAbsent(id, (t) -> delegate.newBitSet(id, size));
     }
 
     @Override
     public ILongArray newLongArray(final String id, final int size) {
-        maybeClearCache.run();
+        maybeClearCache();
         return (ILongArray) map.computeIfAbsent(id, (t) -> delegate.newLongArray(id, size));
     }
 
@@ -167,6 +227,16 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
             attributesCopy.clear();
             attributes = null;
         }
+    }
+
+    @Override
+    public boolean isOnHeap(final int size) {
+        return delegate.isOnHeap(size);
+    }
+
+    @Override
+    public File getDirectory() {
+        return delegate.getDirectory();
     }
 
 }

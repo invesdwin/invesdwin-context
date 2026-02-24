@@ -1,5 +1,7 @@
 package de.invesdwin.context.system.array;
 
+import java.io.File;
+
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
@@ -141,6 +143,16 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
             attributes = null;
         }
         properties = null;
+    }
+
+    @Override
+    public boolean isOnHeap(final int size) {
+        return true;
+    }
+
+    @Override
+    public File getDirectory() {
+        return null;
     }
 
 }
