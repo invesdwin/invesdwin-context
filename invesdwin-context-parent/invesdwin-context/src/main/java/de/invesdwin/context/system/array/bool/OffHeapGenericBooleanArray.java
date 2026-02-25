@@ -151,4 +151,10 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void clear() {
+        trueValues.clear();
+        falseValues.clear();
+    }
+
 }

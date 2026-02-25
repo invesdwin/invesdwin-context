@@ -10,6 +10,7 @@ import de.invesdwin.util.collections.array.IBooleanArray;
 import de.invesdwin.util.collections.array.IDoubleArray;
 import de.invesdwin.util.collections.array.IIntegerArray;
 import de.invesdwin.util.collections.array.ILongArray;
+import de.invesdwin.util.collections.array.accessor.IArrayAccessor;
 import de.invesdwin.util.collections.array.buffer.BufferBooleanArray;
 import de.invesdwin.util.collections.array.buffer.BufferDoubleArray;
 import de.invesdwin.util.collections.array.buffer.BufferIntegerArray;
@@ -23,6 +24,7 @@ import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.math.BitSets;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.UninitializedDirectByteBuffers;
 
 @ThreadSafe
 public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
@@ -69,28 +71,46 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
 
     @Override
     public IDoubleArray newDoubleArray(final String id, final int size) {
-        return new BufferDoubleArray(ByteBuffers.allocateDirect(size * Double.BYTES));
+        final BufferDoubleArray array = new BufferDoubleArray(ByteBuffers.allocateDirect(size * Double.BYTES));
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IIntegerArray newIntegerArray(final String id, final int size) {
-        return new BufferIntegerArray(ByteBuffers.allocateDirect(size * Integer.BYTES));
+        final BufferIntegerArray array = new BufferIntegerArray(ByteBuffers.allocateDirect(size * Integer.BYTES));
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IBooleanArray newBooleanArray(final String id, final int size) {
-        return new BufferBooleanArray(ByteBuffers.allocateDirect((BitSets.wordIndex(size) + 1) * Long.BYTES), size);
+        final BufferBooleanArray array = new BufferBooleanArray(
+                ByteBuffers.allocateDirect((BitSets.wordIndex(size - 1) + 1) * Long.BYTES), size);
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IBitSet newBitSet(final String id, final int size) {
-        return new LongArrayBitSet(new LongArrayBitSetBase(newLongArray(id, BitSets.wordIndex(size - 1) + 1), size),
-                size);
+        final LongArrayBitSet array = new LongArrayBitSet(
+                new LongArrayBitSetBase(newLongArray(id, BitSets.wordIndex(size - 1) + 1), size), size);
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public ILongArray newLongArray(final String id, final int size) {
-        return new BufferLongArray(ByteBuffers.allocateDirect(size * Long.BYTES));
+        final BufferLongArray array = new BufferLongArray(ByteBuffers.allocateDirect(size * Long.BYTES));
+        clearBeforeUsage(array);
+        return array;
+    }
+
+    protected void clearBeforeUsage(final IArrayAccessor array) {
+        if (UninitializedDirectByteBuffers.isDirectByteBufferNoCleanerSupported()) {
+            //make sure everything is clear since usage might sparsely fill
+            array.clear();
+        }
     }
 
     @Override

@@ -122,4 +122,9 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void clear() {
+        values.clear();
+    }
+
 }
