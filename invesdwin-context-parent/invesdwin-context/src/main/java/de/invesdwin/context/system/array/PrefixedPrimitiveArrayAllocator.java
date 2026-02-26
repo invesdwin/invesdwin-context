@@ -175,4 +175,9 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
         return directory;
     }
 
+    @Override
+    public void close() {
+        delegate.close();
+    }
+
 }

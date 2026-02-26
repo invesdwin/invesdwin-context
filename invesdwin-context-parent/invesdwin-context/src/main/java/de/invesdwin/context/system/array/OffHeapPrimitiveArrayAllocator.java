@@ -182,4 +182,7 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
         return null;
     }
 
+    @Override
+    public void close() {}
+
 }

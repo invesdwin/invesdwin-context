@@ -1,5 +1,6 @@
 package de.invesdwin.context.system.array;
 
+import java.io.Closeable;
 import java.io.File;
 
 import de.invesdwin.context.system.properties.IProperties;
@@ -16,7 +17,7 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
  * An instance of a primitive array allocator should only be shared within the same backtesting engine. Otherwise
  * engines might get confused when accessing and sharing cached time indexes.
  */
-public interface IPrimitiveArrayAllocator extends IUnwrap {
+public interface IPrimitiveArrayAllocator extends IUnwrap, Closeable {
 
     IByteBuffer getByteBuffer(String id);
 
@@ -51,5 +52,8 @@ public interface IPrimitiveArrayAllocator extends IUnwrap {
     boolean isOnHeap(int size);
 
     File getDirectory();
+
+    @Override
+    void close();
 
 }

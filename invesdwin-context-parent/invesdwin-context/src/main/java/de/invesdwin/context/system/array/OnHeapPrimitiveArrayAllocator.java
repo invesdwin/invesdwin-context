@@ -155,4 +155,7 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
         return null;
     }
 
+    @Override
+    public void close() {}
+
 }

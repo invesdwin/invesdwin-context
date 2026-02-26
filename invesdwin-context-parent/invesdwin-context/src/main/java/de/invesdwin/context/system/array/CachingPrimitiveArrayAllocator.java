@@ -239,4 +239,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
         return delegate.getDirectory();
     }
 
+    @Override
+    public void close() {
+        delegate.close();
+    }
+
 }
