@@ -18,8 +18,6 @@ import de.invesdwin.util.collections.array.buffer.BufferLongArray;
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
-import de.invesdwin.util.collections.bitset.LongArrayBitSet;
-import de.invesdwin.util.collections.bitset.LongArrayBitSetBase;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.math.BitSets;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
@@ -93,10 +91,8 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
 
     @Override
     public IBitSet newBitSet(final String id, final int size) {
-        final LongArrayBitSet array = new LongArrayBitSet(
-                new LongArrayBitSetBase(newLongArray(id, BitSets.wordIndex(size - 1) + 1), size), size);
-        clearBeforeUsage(array);
-        return array;
+        final BufferBooleanArray booleanArray = (BufferBooleanArray) newBooleanArray(id, size);
+        return booleanArray.getDelegate().getBitSet();
     }
 
     @Override
