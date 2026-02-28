@@ -2,13 +2,8 @@ package de.invesdwin.context.system.array.bool;
 
 import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
 import de.invesdwin.util.collections.array.IPrimitiveArrayId;
-import de.invesdwin.util.concurrent.lock.ILock;
 
 public interface IPrimitiveArrayInitializable extends IPrimitiveArrayId {
-
-    default ILock getLock() {
-        return getArrayAllocator().getLock(getName());
-    }
 
     default boolean isInitialized() {
         if (isInitializedLocal()) {
