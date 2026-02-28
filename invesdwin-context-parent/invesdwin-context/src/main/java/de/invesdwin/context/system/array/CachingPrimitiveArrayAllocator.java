@@ -11,10 +11,10 @@ import de.invesdwin.util.collections.array.IDoubleArray;
 import de.invesdwin.util.collections.array.IIntegerArray;
 import de.invesdwin.util.collections.array.ILongArray;
 import de.invesdwin.util.collections.array.IPrimitiveArray;
-import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.pool.MemoryLimit;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -25,7 +25,6 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     private final IPrimitiveArrayAllocator delegate;
     private final Map<String, IPrimitiveArray> map = newMap();
     private final Runnable maybeClearCache;
-    private AttributesMap attributes;
 
     public CachingPrimitiveArrayAllocator(final IPrimitiveArrayAllocator delegate) {
         this.delegate = delegate;
@@ -203,14 +202,7 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
 
     @Override
     public IAttributesMap getAttributes() {
-        if (attributes == null) {
-            synchronized (this) {
-                if (attributes == null) {
-                    attributes = new AttributesMap();
-                }
-            }
-        }
-        return attributes;
+        return delegate.getAttributes();
     }
 
     @Override
@@ -222,11 +214,6 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     public void clear() {
         map.clear();
         delegate.clear();
-        final AttributesMap attributesCopy = attributes;
-        if (attributesCopy != null) {
-            attributesCopy.clear();
-            attributes = null;
-        }
     }
 
     @Override
@@ -242,6 +229,11 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     @Override
     public void close() {
         delegate.close();
+    }
+
+    @Override
+    public ILock getLock(final String id) {
+        return delegate.getLock(id);
     }
 
 }

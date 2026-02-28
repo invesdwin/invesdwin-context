@@ -11,6 +11,7 @@ import de.invesdwin.util.collections.array.IIntegerArray;
 import de.invesdwin.util.collections.array.ILongArray;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
+import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 /**
@@ -55,5 +56,7 @@ public interface IPrimitiveArrayAllocator extends IUnwrap, Closeable {
 
     @Override
     void close();
+
+    ILock getLock(String id);
 
 }

@@ -14,6 +14,8 @@ import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -157,5 +159,10 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
 
     @Override
     public void close() {}
+
+    @Override
+    public ILock getLock(final String id) {
+        return (ILock) getAttributes().computeIfAbsent(id, (k) -> Locks.newReentrantLock(k));
+    }
 
 }
