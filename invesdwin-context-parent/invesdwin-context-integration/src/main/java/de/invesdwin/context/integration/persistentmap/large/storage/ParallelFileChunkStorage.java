@@ -41,7 +41,7 @@ public class ParallelFileChunkStorage<V> implements IChunkStorage<V> {
         if (!file.exists()) {
             return null;
         }
-        try (ICloseableByteBuffer buffer = ByteBuffers.DIRECT_EXPANDABLE_POOL.borrowObject()) {
+        try (ICloseableByteBuffer buffer = ByteBuffers.EXPANDABLE_POOL.borrowObject()) {
             try (BufferedFileDataInputStream in = new BufferedFileDataInputStream(file)) {
                 buffer.putBytesTo(0, (DataInput) in, Integers.checkedCast(summary.getMemoryLength()));
                 final V value = valueSerde.fromBuffer(buffer);
@@ -78,7 +78,7 @@ public class ParallelFileChunkStorage<V> implements IChunkStorage<V> {
 
     @Override
     public ChunkSummary put(final V value) {
-        try (ICloseableByteBuffer buffer = ByteBuffers.DIRECT_EXPANDABLE_POOL.borrowObject()) {
+        try (ICloseableByteBuffer buffer = ByteBuffers.EXPANDABLE_POOL.borrowObject()) {
             final int length = valueSerde.toBuffer(buffer, value);
             return write(buffer, length);
         }
