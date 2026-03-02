@@ -79,8 +79,9 @@ public class SequentialFileChunkStorage<V> implements IChunkStorage<V> {
             try (ICloseableByteBuffer buffer = ByteBuffers.EXPANDABLE_POOL.borrowObject()) {
                 try (BufferedFileDataInputStream in = new BufferedFileDataInputStream(file)) {
                     in.position(summary.getMemoryOffset());
-                    buffer.putBytesTo(0, (DataInput) in, Integers.checkedCast(summary.getMemoryLength()));
-                    final V value = valueSerde.fromBuffer(buffer);
+                    final int length = Integers.checkedCast(summary.getMemoryLength());
+                    buffer.putBytesTo(0, (DataInput) in, length);
+                    final V value = valueSerde.fromBuffer(buffer.sliceTo(length));
                     return value;
                 } catch (final IOException e) {
                     throw new RuntimeException(e);
