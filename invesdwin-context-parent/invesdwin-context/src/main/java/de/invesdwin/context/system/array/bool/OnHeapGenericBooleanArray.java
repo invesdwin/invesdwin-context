@@ -83,6 +83,11 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
+    public int getBufferLength() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void set(final int index, final Boolean value) {
         values.set(index, value);
     }

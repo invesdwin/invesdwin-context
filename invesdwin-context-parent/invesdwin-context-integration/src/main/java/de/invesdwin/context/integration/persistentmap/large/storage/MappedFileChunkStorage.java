@@ -14,15 +14,18 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummaryByteBuffer;
+import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.marshallers.serde.ISerdeLengthProvider;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.delegate.DataOutputDelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.file.SegmentedMemoryMappedFile;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
@@ -37,6 +40,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     private final File memoryDirectory;
     private final List<File> memoryFiles;
     private final ISerde<V> valueSerde;
+    private final ISerdeLengthProvider<V> valueSerdeLengthProvider;
     private final IReadWriteLock lock = ILockCollectionFactory.getInstance(true)
             .newReadWriteLock(MappedFileChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
@@ -50,11 +54,17 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     private final Set<ChunkSummaryByteBuffer> readerBuffers;
 
+    @SuppressWarnings("unchecked")
     public MappedFileChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly,
             final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFiles = new ArrayList<>();
         this.valueSerde = valueSerde;
+        if (valueSerde instanceof ISerdeLengthProvider) {
+            this.valueSerdeLengthProvider = (ISerdeLengthProvider<V>) valueSerde;
+        } else {
+            this.valueSerdeLengthProvider = null;
+        }
         this.readOnly = readOnly;
         this.closeAllowed = closeAllowed;
         this.metadata = new ChunkStorageMetadata(memoryDirectory);
@@ -205,13 +215,18 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     @Override
     public ChunkSummary put(final V value) {
-        try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
-            final int length = valueSerde.toBuffer(buffer, value);
-            return write(buffer, length);
+        if (valueSerdeLengthProvider != null) {
+            final int length = valueSerdeLengthProvider.getLength(value);
+            return writeValue(value, length);
+        } else {
+            try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
+                final int length = valueSerde.toBuffer(buffer, value);
+                return writeBuffer(buffer, length);
+            }
         }
     }
 
-    private ChunkSummary write(final IByteBuffer buffer, final int length) {
+    private ChunkSummary writeBuffer(final IByteBuffer buffer, final int length) {
         final long precedingAddressOffset;
         final long addressOffset;
         lock.writeLock().lock();
@@ -250,6 +265,58 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
                 out.seek(addressOffset);
                 buffer.getBytesTo(0, (DataOutput) out, length);
+                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
+                        addressOffset, length);
+                metadata.setSummary(summary);
+                return summary;
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private ChunkSummary writeValue(final V value, final int length) {
+        final long precedingAddressOffset;
+        final long addressOffset;
+        lock.writeLock().lock();
+        try {
+            if (memoryFiles.isEmpty() || position > 0 && IMemoryMappedFile.isSegmentSizeExceeded(position + length)) {
+                precedingPosition += position;
+                position = 0;
+                memoryFiles.add(nextMemoryFile());
+            }
+            //support parallel writes from this instance (we expect exclusive access to the file)
+            precedingAddressOffset = precedingPosition;
+            addressOffset = position;
+            position += length;
+            if (readerBuffers != null) {
+                //finalize reader asynchronously so that other threads can evict it properly using GC
+                reader = null;
+                if (!readerBuffers.isEmpty()) {
+                    final IMemoryMappedFile newReader = getReader();
+                    for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
+                        readerBuffer.init(newReader);
+                    }
+                }
+            } else {
+                closeReaderWriteLocked();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+        lock.readLock().lock();
+        try {
+            if (!memoryDirectory.exists()) {
+                Files.forceMkdir(memoryDirectory);
+            }
+            final int lastMemoryFileIndex = memoryFiles.size() - 1;
+            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
+            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
+                out.seek(addressOffset);
+                final int bufferLength = valueSerde.toBuffer(new DataOutputDelegateByteBuffer(out), value);
+                Assertions.checkEquals(length, bufferLength);
                 final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
                         addressOffset, length);
                 metadata.setSummary(summary);
