@@ -28,10 +28,14 @@ public class FastRetryDisabledException extends RetryDisabledException {
 
     @Override
     public synchronized Throwable fillInStackTrace() {
-        if (Throwables.isDebugStackTraceEnabled()) {
+        if (isDebugStackTraceEnabled()) {
             return super.fillInStackTrace();
         }
         return this;
+    }
+
+    private static boolean isDebugStackTraceEnabled() {
+        return Throwables.isDebugStackTraceEnabled();
     }
 
 }

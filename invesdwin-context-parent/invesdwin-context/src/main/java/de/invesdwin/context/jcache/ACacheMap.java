@@ -2,7 +2,6 @@ package de.invesdwin.context.jcache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import javax.cache.Cache;
 
 import de.invesdwin.context.jcache.internal.SizeCountingCacheEntryListener;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 
 @NotThreadSafe
 public abstract class ACacheMap<K, V> implements Map<K, V> {
@@ -114,7 +114,7 @@ public abstract class ACacheMap<K, V> implements Map<K, V> {
      * Use keysIterator instead
      */
     public Set<K> keySet() {
-        final Set<K> keys = new HashSet<K>();
+        final Set<K> keys = ILockCollectionFactory.getInstance(false).newSet();
         for (final javax.cache.Cache.Entry<K, V> e : getDelegate()) {
             keys.add(e.getKey());
         }
@@ -182,7 +182,7 @@ public abstract class ACacheMap<K, V> implements Map<K, V> {
      * Use entriesIterator instead
      */
     public Set<Entry<K, V>> entrySet() {
-        final Set<Entry<K, V>> entries = new HashSet<Entry<K, V>>();
+        final Set<Entry<K, V>> entries = ILockCollectionFactory.getInstance(false).newSet();
         for (final javax.cache.Cache.Entry<K, V> e : getDelegate()) {
             entries.add(new CacheEntryWrapper(e));
         }

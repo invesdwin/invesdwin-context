@@ -1,5 +1,7 @@
 package de.invesdwin.context.system.array;
 
+import java.io.File;
+
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
@@ -8,6 +10,7 @@ import de.invesdwin.util.collections.array.IBooleanArray;
 import de.invesdwin.util.collections.array.IDoubleArray;
 import de.invesdwin.util.collections.array.IIntegerArray;
 import de.invesdwin.util.collections.array.ILongArray;
+import de.invesdwin.util.collections.array.accessor.IArrayAccessor;
 import de.invesdwin.util.collections.array.buffer.BufferBooleanArray;
 import de.invesdwin.util.collections.array.buffer.BufferDoubleArray;
 import de.invesdwin.util.collections.array.buffer.BufferIntegerArray;
@@ -15,12 +18,13 @@ import de.invesdwin.util.collections.array.buffer.BufferLongArray;
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
-import de.invesdwin.util.collections.bitset.LongArrayBitSet;
-import de.invesdwin.util.collections.bitset.LongArrayBitSetBase;
+import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.math.BitSets;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.UninitializedDirectByteBuffers;
 
 @ThreadSafe
 public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
@@ -67,28 +71,44 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
 
     @Override
     public IDoubleArray newDoubleArray(final String id, final int size) {
-        return new BufferDoubleArray(ByteBuffers.allocateDirect(size * Double.BYTES));
+        final BufferDoubleArray array = new BufferDoubleArray(ByteBuffers.allocateDirect(size * Double.BYTES));
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IIntegerArray newIntegerArray(final String id, final int size) {
-        return new BufferIntegerArray(ByteBuffers.allocateDirect(size * Integer.BYTES));
+        final BufferIntegerArray array = new BufferIntegerArray(ByteBuffers.allocateDirect(size * Integer.BYTES));
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IBooleanArray newBooleanArray(final String id, final int size) {
-        return new BufferBooleanArray(ByteBuffers.allocateDirect((BitSets.wordIndex(size) + 1) * Long.BYTES), size);
+        final BufferBooleanArray array = new BufferBooleanArray(
+                ByteBuffers.allocateDirect((BitSets.wordIndex(size - 1) + 1) * Long.BYTES), size);
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IBitSet newBitSet(final String id, final int size) {
-        return new LongArrayBitSet(new LongArrayBitSetBase(newLongArray(id, BitSets.wordIndex(size - 1) + 1), size),
-                size);
+        final BufferBooleanArray booleanArray = (BufferBooleanArray) newBooleanArray(id, size);
+        return booleanArray.getDelegate().getBitSet();
     }
 
     @Override
     public ILongArray newLongArray(final String id, final int size) {
-        return new BufferLongArray(ByteBuffers.allocateDirect(size * Long.BYTES));
+        final BufferLongArray array = new BufferLongArray(ByteBuffers.allocateDirect(size * Long.BYTES));
+        clearBeforeUsage(array);
+        return array;
+    }
+
+    protected void clearBeforeUsage(final IArrayAccessor array) {
+        if (UninitializedDirectByteBuffers.isDirectByteBufferNoCleanerSupported()) {
+            //make sure everything is clear since usage might sparsely fill
+            array.clear();
+        }
     }
 
     @Override
@@ -148,6 +168,24 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
             attributes = null;
         }
         properties = null;
+    }
+
+    @Override
+    public boolean isOnHeap(final int size) {
+        return false;
+    }
+
+    @Override
+    public File getDirectory() {
+        return null;
+    }
+
+    @Override
+    public void close() {}
+
+    @Override
+    public ILock getLock(final String id) {
+        return (ILock) getAttributes().computeIfAbsent(id, (k) -> Locks.newReentrantLock(k));
     }
 
 }

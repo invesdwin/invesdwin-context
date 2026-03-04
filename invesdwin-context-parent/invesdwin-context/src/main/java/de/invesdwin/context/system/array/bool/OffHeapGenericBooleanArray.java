@@ -7,6 +7,7 @@ import de.invesdwin.util.collections.array.IGenericArray;
 import de.invesdwin.util.collections.array.IPrimitiveArrayId;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
+import de.invesdwin.util.concurrent.lock.ICloseableLock;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
@@ -25,16 +26,18 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
         this.name = name;
         final String trueValuesId = name + "_trueValues";
         final String falseValuesId = name + "_falseValues";
-        final IBitSet trueValuesCached = arrayAllocator.getBitSet(trueValuesId);
-        final IBitSet falseValuesCached = arrayAllocator.getBitSet(falseValuesId);
-        if (trueValuesCached != null && falseValuesCached != null) {
-            trueValues = trueValuesCached;
-            falseValues = falseValuesCached;
-            initialized = isInitializedShared();
-        } else {
-            trueValues = arrayAllocator.newBitSet(trueValuesId, size);
-            falseValues = arrayAllocator.newBitSet(falseValuesId, size);
-            setInitializedShared(false); //maybe reset flag if cache was cleared
+        try (ICloseableLock lock = arrayAllocator.getLock(trueValuesId).locked()) {
+            final IBitSet trueValuesCached = arrayAllocator.getBitSet(trueValuesId);
+            final IBitSet falseValuesCached = arrayAllocator.getBitSet(falseValuesId);
+            if (trueValuesCached != null && falseValuesCached != null) {
+                trueValues = trueValuesCached;
+                falseValues = falseValuesCached;
+                initialized = isInitializedShared();
+            } else {
+                trueValues = arrayAllocator.newBitSet(trueValuesId, size);
+                falseValues = arrayAllocator.newBitSet(falseValuesId, size);
+                setInitializedShared(false); //maybe reset flag if cache was cleared
+            }
         }
     }
 
@@ -97,6 +100,11 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
+    public int getBufferLength() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void set(final int index, final Boolean value) {
         if (value == null) {
             trueValues.remove(index);
@@ -149,6 +157,12 @@ public final class OffHeapGenericBooleanArray implements IGenericBooleanArray {
     @Override
     public void getGenerics(final int srcPos, final IGenericArray<Boolean> dest, final int destPos, final int length) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void clear() {
+        trueValues.clear();
+        falseValues.clear();
     }
 
 }

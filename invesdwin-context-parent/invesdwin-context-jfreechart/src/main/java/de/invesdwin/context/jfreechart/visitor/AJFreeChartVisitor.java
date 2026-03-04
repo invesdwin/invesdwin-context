@@ -2,7 +2,6 @@ package de.invesdwin.context.jfreechart.visitor;
 
 import java.awt.Font;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +40,8 @@ import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedDomainCatego
 import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedDomainXYPlot;
 import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedRangeCategoryPlot;
 import de.invesdwin.context.jfreechart.plot.combined.WrappedCombinedRangeXYPlot;
+import de.invesdwin.util.collections.factory.pool.set.ICloseableSet;
+import de.invesdwin.util.collections.factory.pool.set.PooledSet;
 import de.invesdwin.util.lang.string.Strings;
 
 @NotThreadSafe
@@ -60,7 +61,9 @@ public abstract class AJFreeChartVisitor {
             processTitle(subtitle);
         }
 
-        processPlotRecursive(chart.getPlot(), new HashSet<Integer>());
+        try (ICloseableSet<Integer> duplicateAxisFilter = PooledSet.getInstance()) {
+            processPlotRecursive(chart.getPlot(), duplicateAxisFilter);
+        }
     }
 
     public Font processFont(final Font font) {
@@ -90,7 +93,9 @@ public abstract class AJFreeChartVisitor {
     }
 
     public final void processPlot(final Plot plot) {
-        processPlotRecursive(plot, new HashSet<Integer>());
+        try (ICloseableSet<Integer> duplicateAxisFilter = PooledSet.getInstance()) {
+            processPlotRecursive(plot, duplicateAxisFilter);
+        }
     }
 
     protected void processPlotRecursive(final Plot plot, final Set<Integer> duplicateAxisFilter) {

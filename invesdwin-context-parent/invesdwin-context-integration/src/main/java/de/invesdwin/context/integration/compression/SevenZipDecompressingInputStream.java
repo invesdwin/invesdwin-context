@@ -10,10 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.util.lang.Closeables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.lang.string.description.TextDescription;
+import de.invesdwin.util.streams.closeable.Closeables;
 import de.invesdwin.util.streams.delegate.ADelegateInputStream;
 import net.sf.sevenzipjbinding.ExtractOperationResult;
 import net.sf.sevenzipjbinding.IInArchive;

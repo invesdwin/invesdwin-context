@@ -2,7 +2,6 @@ package de.invesdwin.context.system.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -17,6 +16,7 @@ import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.beans.init.PreMergedContext;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 
 /**
  * This class can be used to conveniently access system properties. Properties files are generally loaded into system
@@ -93,7 +93,7 @@ public class SystemProperties extends AProperties {
      * Should only be used by infrastructure classes.
      */
     public static void setSystemProperties(final Properties props, final boolean overwrite) {
-        final Map<String, String> systemProperties = new HashMap<String, String>();
+        final Map<String, String> systemProperties = ILockCollectionFactory.getInstance(false).newMap();
         for (final Entry<Object, Object> entry : props.entrySet()) {
             final String key = (String) entry.getKey();
             final String value = (String) entry.getValue();

@@ -2,7 +2,6 @@ package de.invesdwin.context.system.properties;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,6 +9,7 @@ import java.util.Set;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.collections.Collections;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 
 @NotThreadSafe
 public class PropertiesAsMap implements Map<String, String> {
@@ -73,7 +73,7 @@ public class PropertiesAsMap implements Map<String, String> {
 
     @Override
     public Set<String> keySet() {
-        return new LinkedHashSet<>(properties.getKeys());
+        return ILockCollectionFactory.getInstance(false).newLinkedSet(properties.getKeys());
     }
 
     @Override
@@ -91,7 +91,7 @@ public class PropertiesAsMap implements Map<String, String> {
     @Override
     public Set<Entry<String, String>> entrySet() {
         final List<String> keys = properties.getKeys();
-        final Set<Entry<String, String>> entries = new LinkedHashSet<>(keys.size());
+        final Set<Entry<String, String>> entries = ILockCollectionFactory.getInstance(false).newLinkedSet(keys.size());
         for (int i = 0; i < keys.size(); i++) {
             final String key = keys.get(i);
             entries.add(new Entry<String, String>() {

@@ -75,6 +75,11 @@ public class PersistentMapProperties extends AProperties {
             protected void addPropertyDirect(final String key, final Object value) {
                 table.put(key, value);
             }
+
+            @Override
+            protected boolean containsValueInternal(final Object value) {
+                return table.containsValue(value);
+            }
         };
     }
 

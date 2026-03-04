@@ -1,5 +1,7 @@
 package de.invesdwin.context.system.array;
 
+import java.io.File;
+
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
@@ -9,9 +11,11 @@ import de.invesdwin.util.collections.array.IBooleanArray;
 import de.invesdwin.util.collections.array.IDoubleArray;
 import de.invesdwin.util.collections.array.IIntegerArray;
 import de.invesdwin.util.collections.array.ILongArray;
-import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
+import de.invesdwin.util.collections.attributes.PrefixedDelegateAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
+import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
@@ -20,13 +24,23 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
 
     private final IPrimitiveArrayAllocator delegate;
     private final String prefix;
-    private AttributesMap attributes;
+    private PrefixedDelegateAttributesMap attributes;
     private PrefixedDelegateProperties properties;
+    private final File directory;
 
     public PrefixedPrimitiveArrayAllocator(final IPrimitiveArrayAllocator delegate, final String prefix) {
         this.delegate = delegate;
         this.prefix = prefix;
         Assertions.checkNotBlank(prefix);
+        this.directory = newDirectory();
+    }
+
+    private File newDirectory() {
+        final File directory = delegate.getDirectory();
+        if (directory == null) {
+            return null;
+        }
+        return new File(directory, Files.normalizeFilename(prefix));
     }
 
     @Override
@@ -123,7 +137,7 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
         if (attributes == null) {
             synchronized (this) {
                 if (attributes == null) {
-                    attributes = new AttributesMap();
+                    attributes = new PrefixedDelegateAttributesMap(delegate.getAttributes(), prefix);
                 }
             }
         }
@@ -145,11 +159,28 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
     @Override
     public void clear() {
         delegate.clear();
-        final AttributesMap attributesCopy = attributes;
-        if (attributesCopy != null) {
-            attributesCopy.clear();
-            attributes = null;
-        }
+        attributes = null;
+        properties = null;
+    }
+
+    @Override
+    public boolean isOnHeap(final int size) {
+        return delegate.isOnHeap(size);
+    }
+
+    @Override
+    public File getDirectory() {
+        return directory;
+    }
+
+    @Override
+    public void close() {
+        delegate.close();
+    }
+
+    @Override
+    public ILock getLock(final String id) {
+        return delegate.getLock(prefix + id);
     }
 
 }

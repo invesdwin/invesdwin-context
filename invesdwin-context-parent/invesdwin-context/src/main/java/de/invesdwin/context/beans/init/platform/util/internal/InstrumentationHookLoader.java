@@ -1,7 +1,7 @@
 package de.invesdwin.context.beans.init.platform.util.internal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -17,7 +17,9 @@ public final class InstrumentationHookLoader {
     private InstrumentationHookLoader() {}
 
     public static void runInstrumentationHooks() {
-        final Set<IInstrumentationHook> instrumentationHooks = new HashSet<IInstrumentationHook>();
+        //CHECKSTYLE:OFF
+        final Set<IInstrumentationHook> instrumentationHooks = new LinkedHashSet<>();
+        //CHECKSTYLE:ON
         for (final IInstrumentationHook hook : ServiceLoader.load(IInstrumentationHook.class)) {
             instrumentationHooks.add(hook);
         }

@@ -1,6 +1,5 @@
 package de.invesdwin.context.jcache;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
@@ -14,6 +13,7 @@ import javax.cache.integration.CacheWriter;
 import de.invesdwin.context.jcache.internal.CacheBuilderInternalFactory;
 import de.invesdwin.util.bean.AValueObject;
 import de.invesdwin.util.collections.Collections;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -27,10 +27,11 @@ public class CacheBuilder<K, V> extends AValueObject {
     private Boolean writeThrough;
     private Boolean storeByValue;
     private Boolean statisticsEnabled;
-    private final Set<ExpiryPolicy> expiryPolicies = new LinkedHashSet<ExpiryPolicy>();
+    private final Set<ExpiryPolicy> expiryPolicies = ILockCollectionFactory.getInstance(false).newLinkedSet();
     private CacheLoader<K, V> cacheLoader;
     private CacheWriter<K, V> cacheWriter;
-    private final Set<CacheEntryListenerSupport<K, V>> cacheEntryListeners = new LinkedHashSet<CacheEntryListenerSupport<K, V>>();
+    private final Set<CacheEntryListenerSupport<K, V>> cacheEntryListeners = ILockCollectionFactory.getInstance(false)
+            .newLinkedSet();
 
     //caffeine
     private String name;
@@ -40,8 +41,7 @@ public class CacheBuilder<K, V> extends AValueObject {
     private Duration refreshAfterWrite;
     private Executor executor;
 
-    public CacheBuilder() {
-    }
+    public CacheBuilder() {}
 
     //---------------------------------- jCacheConfig -----------------------------------//
 

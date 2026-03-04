@@ -8,7 +8,6 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -22,6 +21,7 @@ import org.apache.commons.configuration2.AbstractConfiguration;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.list.Lists;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.Addresses;
@@ -279,7 +279,7 @@ public abstract class AProperties implements IProperties {
         if (list == null) {
             return null;
         } else {
-            return new LinkedHashSet<String>(list);
+            return ILockCollectionFactory.getInstance(false).newLinkedSet(list);
         }
     }
 

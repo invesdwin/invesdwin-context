@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.marshaller.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import org.springframework.util.ClassUtils;
 
 import de.invesdwin.context.integration.marshaller.IMergedJaxbContextPath;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.streams.resource.Resources;
 import jakarta.xml.bind.Marshaller;
@@ -30,7 +30,7 @@ import jakarta.xml.bind.Marshaller;
 public class MergedJaxb2Marshaller extends Jaxb2Marshaller implements ApplicationContextAware {
 
     public MergedJaxb2Marshaller() {
-        final Map<String, Object> properties = new HashMap<String, Object>();
+        final Map<String, Object> properties = ILockCollectionFactory.getInstance(false).newMap();
         //never format output to preserve performance
         properties.put(Marshaller.JAXB_FORMATTED_OUTPUT, false);
         super.setMarshallerProperties(properties);

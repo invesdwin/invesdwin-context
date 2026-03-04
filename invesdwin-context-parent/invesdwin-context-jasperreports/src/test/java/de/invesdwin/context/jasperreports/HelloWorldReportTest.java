@@ -3,7 +3,6 @@ package de.invesdwin.context.jasperreports;
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -43,7 +43,7 @@ public final class HelloWorldReportTest extends ATest {
     public void testCompileAndView() throws JRException, IOException, InterruptedException {
         final ClassPathResource resource = new ClassPathResource(jrxml);
         final JasperReport jasperReport = JasperCompileManager.compileReport(resource.getInputStream());
-        final Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = ILockCollectionFactory.getInstance(false).newMap();
         params.put("SomeParam", "testCompileAndView");
         final JRDataSource dataSource = new JREmptyDataSource();
         final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
@@ -66,7 +66,7 @@ public final class HelloWorldReportTest extends ATest {
     public void testExportToPDF() throws JRException, IOException {
         final ClassPathResource resource = new ClassPathResource(jrxml);
         final JasperReport jasperReport = JasperCompileManager.compileReport(resource.getInputStream());
-        final Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = ILockCollectionFactory.getInstance(false).newMap();
         params.put("SomeParam", "testExportToPDF");
         final JRDataSource dataSource = new JREmptyDataSource();
         final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
@@ -80,7 +80,7 @@ public final class HelloWorldReportTest extends ATest {
     public void testExportToHtml() throws JRException, IOException {
         final ClassPathResource resource = new ClassPathResource(jrxml);
         final JasperReport jasperReport = JasperCompileManager.compileReport(resource.getInputStream());
-        final Map<String, Object> params = new HashMap<String, Object>();
+        final Map<String, Object> params = ILockCollectionFactory.getInstance(false).newMap();
         params.put("SomeParam", "testExportToHtml");
         final JRDataSource dataSource = new JREmptyDataSource();
         final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);

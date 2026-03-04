@@ -1,6 +1,6 @@
 package de.invesdwin.context.integration.persistentmap;
 
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -13,7 +13,7 @@ import de.invesdwin.util.collections.factory.SynchronizedLockCollectionFactory;
 public class PersistentHeapMapFactory<K, V> implements IPersistentMapFactory<K, V> {
 
     @Override
-    public ConcurrentMap<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
+    public Map<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
         return SynchronizedLockCollectionFactory.INSTANCE.newConcurrentMap();
     }
 
@@ -23,7 +23,7 @@ public class PersistentHeapMapFactory<K, V> implements IPersistentMapFactory<K, 
     }
 
     @Override
-    public void removeAll(final ConcurrentMap<K, V> table, final IKeyMatcher<K> matcher) {
+    public void removeAll(final Map<K, V> table, final IKeyMatcher<K> matcher) {
         for (final K key : table.keySet()) {
             if (matcher.matches(key)) {
                 table.remove(key);

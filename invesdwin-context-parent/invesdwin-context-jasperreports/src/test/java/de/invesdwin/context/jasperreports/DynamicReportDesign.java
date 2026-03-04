@@ -26,12 +26,12 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.sbt;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.PageXofYBuilder;
@@ -52,11 +52,12 @@ public class DynamicReportDesign {
     public JasperReportBuilder build() throws DRException {
         final JasperReportBuilder report = report();
 
-        report.setTemplate(DynamicReportTemplates.reportTemplate).title(DynamicReportTemplates.createTitleComponent("DynamicReport"));
+        report.setTemplate(DynamicReportTemplates.reportTemplate)
+                .title(DynamicReportTemplates.createTitleComponent("DynamicReport"));
 
         final DynamicReport dynamicReport = data.getDynamicReport();
         final List<DynamicColumn> columns = dynamicReport.getColumns();
-        final Map<String, TextColumnBuilder> drColumns = new HashMap<String, TextColumnBuilder>();
+        final Map<String, TextColumnBuilder> drColumns = ILockCollectionFactory.getInstance(false).newMap();
 
         for (final DynamicColumn column : columns) {
             final TextColumnBuilder drColumn = col.column(column.getTitle(), column.getName(),

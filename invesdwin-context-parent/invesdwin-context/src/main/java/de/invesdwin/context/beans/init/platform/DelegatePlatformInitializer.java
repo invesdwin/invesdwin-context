@@ -24,6 +24,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
+    public void initBeanPathCollectionsProvider() {
+        delegate.initBeanPathCollectionsProvider();
+    }
+
+    @Override
     public void initFstDeepCloneProvider() {
         delegate.initFstDeepCloneProvider();
     }

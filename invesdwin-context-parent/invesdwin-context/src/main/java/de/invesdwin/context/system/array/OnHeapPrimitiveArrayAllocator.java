@@ -1,5 +1,7 @@
 package de.invesdwin.context.system.array;
 
+import java.io.File;
+
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
@@ -12,6 +14,8 @@ import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -141,6 +145,24 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
             attributes = null;
         }
         properties = null;
+    }
+
+    @Override
+    public boolean isOnHeap(final int size) {
+        return true;
+    }
+
+    @Override
+    public File getDirectory() {
+        return null;
+    }
+
+    @Override
+    public void close() {}
+
+    @Override
+    public ILock getLock(final String id) {
+        return (ILock) getAttributes().computeIfAbsent(id, (k) -> Locks.newReentrantLock(k));
     }
 
 }

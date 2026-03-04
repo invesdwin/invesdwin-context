@@ -1,15 +1,16 @@
 package de.invesdwin.context.test;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
+
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 
 @NotThreadSafe
 public class PretendingTestContextSetup implements ITestContextSetup {
 
     private final TestContext delegate;
-    private final Set<String> contextModifications = new LinkedHashSet<>();
+    private final Set<String> contextModifications = ILockCollectionFactory.getInstance(false).newLinkedSet();
 
     public PretendingTestContextSetup(final TestContext delegate) {
         this.delegate = delegate;

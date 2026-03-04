@@ -22,6 +22,7 @@ public final class JavaIoTmpdirConfigurer {
             Files.forceMkdir(javaIoTmpdir);
             //CHECKSTYLE:OFF
             System.setProperty("java.io.tmpdir", javaIoTmpdir.getAbsolutePath());
+            Files.setTempDirectory(tempDirectory);
             //CHECKSTYLE:ON
             configureStaticProperty(javaIoTmpdir);
             configureTempFileHelper(javaIoTmpdir);

@@ -1,15 +1,15 @@
 package de.invesdwin.context.integration.persistentmap;
 
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
 public interface IPersistentMapFactory<K, V> {
 
-    ConcurrentMap<K, V> newPersistentMap(IPersistentMapConfig<K, V> config);
+    Map<K, V> newPersistentMap(IPersistentMapConfig<K, V> config);
 
-    void removeAll(ConcurrentMap<K, V> table, IKeyMatcher<K> matcher);
+    void removeAll(Map<K, V> table, IKeyMatcher<K> matcher);
 
     boolean isDiskPersistenceSupported();
 
