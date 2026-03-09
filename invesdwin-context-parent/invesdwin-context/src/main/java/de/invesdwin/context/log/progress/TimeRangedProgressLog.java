@@ -9,7 +9,6 @@ import de.invesdwin.util.math.decimal.scaled.Percent;
 import de.invesdwin.util.math.decimal.scaled.PercentScale;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.date.FDate;
-import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.AEstimatedRemainingDuration;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -88,7 +87,7 @@ public class TimeRangedProgressLog {
             sb.append(" during ");
             sb.append(duration);
             sb.append(". Estimated remaining duration: ");
-            sb.append(estimatedRemainingDuration.getEstimatedRemainingDuration().toString(FTimeUnit.SECONDS));
+            sb.append(estimatedRemainingDuration);
         }
 
         log.info("%s", sb);
