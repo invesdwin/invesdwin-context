@@ -227,6 +227,9 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private ChunkSummary writeBuffer(final IByteBuffer buffer, final int length) {
+        if (length < 0) {
+            throw new IllegalArgumentException("length must be non-negative: " + length);
+        }
         final long precedingAddressOffset;
         final long addressOffset;
         lock.writeLock().lock();
@@ -278,6 +281,9 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private ChunkSummary writeValue(final V value, final int length) {
+        if (length < 0) {
+            throw new IllegalArgumentException("length must be non-negative: " + length);
+        }
         final long precedingAddressOffset;
         final long addressOffset;
         lock.writeLock().lock();
