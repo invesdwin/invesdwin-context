@@ -33,7 +33,7 @@ public class ChunkSummaryByteBuffer extends ADelegateByteBuffer implements Close
 
     public void init(final IMemoryMappedFile file) {
         final int length = Integers.checkedCast(summary.getMemoryLength());
-        this.buffer = file.newByteBuffer(summary.getMemoryOffset(), length);
+        this.buffer = file.newByteBuffer(summary.getPrecedingMemoryOffset() + summary.getMemoryOffset(), length);
         this.file = file;
     }
 
