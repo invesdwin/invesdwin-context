@@ -23,7 +23,7 @@ import de.invesdwin.util.collections.fast.concurrent.locked.pre.APreLockedSet;
 import de.invesdwin.util.collections.recursive.PreventRecursiveLoad;
 import de.invesdwin.util.collections.recursive.RecursiveLoadException;
 import de.invesdwin.util.concurrent.lock.ILock;
-import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
+import de.invesdwin.util.concurrent.lock.readwrite.IReentrantReadWriteLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
@@ -44,7 +44,7 @@ import de.invesdwin.util.time.date.FTimeUnit;
 public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> implements IPersistentMap<K, V> {
 
     protected TextDescription iteratorName;
-    protected final IReadWriteLock tableLock;
+    protected final IReentrantReadWriteLock tableLock;
     protected final TableFinalizer<K, V> tableFinalizer;
     protected FDate tableCreationTime;
     protected IPersistentMapFactory<K, V> factory;
@@ -141,7 +141,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     protected abstract IPersistentMapFactory<K, V> newFactory();
 
-    protected IReadWriteLock newTableLock() {
+    protected IReentrantReadWriteLock newTableLock() {
         return ILockCollectionFactory.getInstance(isThreadSafe())
                 .newReadWriteLock(APersistentMap.class.getSimpleName() + "_" + getName() + "_tableLock");
     }
@@ -241,11 +241,22 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
         if (ShutdownHookManager.isShuttingDown()) {
             throw new RuntimeException("Shutting down");
         }
-        tableLock.writeLock().lock();
+        final ILock readLock = tableLock.readLock();
+        final int readHoldCount = tableLock.getReadHoldCount();
+        for (int i = 0; i < readHoldCount; i++) {
+            readLock.unlock();
+        }
         try {
-            initializeTableLocked();
+            tableLock.writeLock().lock();
+            try {
+                initializeTableLocked();
+            } finally {
+                tableLock.writeLock().unlock();
+            }
         } finally {
-            tableLock.writeLock().unlock();
+            for (int i = 0; i < readHoldCount; i++) {
+                readLock.lock();
+            }
         }
     }
 
