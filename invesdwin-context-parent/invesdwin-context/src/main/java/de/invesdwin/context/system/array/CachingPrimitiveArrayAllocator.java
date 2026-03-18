@@ -2,6 +2,7 @@ package de.invesdwin.context.system.array;
 
 import java.io.File;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -135,40 +136,50 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
         return cached;
     }
 
+    @SuppressWarnings("unchecked")
+    private <T extends IPrimitiveArray> T computeIfAbsentSized(final Class<T> type, final String id, final int size,
+            final Function<String, T> mappingFunction) {
+        maybeClearCache();
+        for (int i = 0; i < 2; i++) {
+            final T computed = (T) map.computeIfAbsent(id, mappingFunction);
+            if (computed.size() == size) {
+                return computed;
+            } else {
+                map.remove(id);
+            }
+        }
+        throw new IllegalStateException(
+                "Failed to create " + type.getSimpleName() + " of size [" + size + "] for id [" + id + "]");
+    }
+
     @Override
     public IByteBuffer newByteBuffer(final String id, final int size) {
-        maybeClearCache();
-        return (IByteBuffer) map.computeIfAbsent(id, (t) -> delegate.newByteBuffer(id, size));
+        return computeIfAbsentSized(IByteBuffer.class, id, size, (t) -> delegate.newByteBuffer(id, size));
     }
 
     @Override
     public IDoubleArray newDoubleArray(final String id, final int size) {
-        maybeClearCache();
-        return (IDoubleArray) map.computeIfAbsent(id, (t) -> delegate.newDoubleArray(id, size));
+        return computeIfAbsentSized(IDoubleArray.class, id, size, (t) -> delegate.newDoubleArray(id, size));
     }
 
     @Override
     public IIntegerArray newIntegerArray(final String id, final int size) {
-        maybeClearCache();
-        return (IIntegerArray) map.computeIfAbsent(id, (t) -> delegate.newIntegerArray(id, size));
+        return computeIfAbsentSized(IIntegerArray.class, id, size, (t) -> delegate.newIntegerArray(id, size));
     }
 
     @Override
     public IBooleanArray newBooleanArray(final String id, final int size) {
-        maybeClearCache();
-        return (IBooleanArray) map.computeIfAbsent(id, (t) -> delegate.newBooleanArray(id, size));
+        return computeIfAbsentSized(IBooleanArray.class, id, size, (t) -> delegate.newBooleanArray(id, size));
     }
 
     @Override
     public IBitSet newBitSet(final String id, final int size) {
-        maybeClearCache();
-        return (IBitSet) map.computeIfAbsent(id, (t) -> delegate.newBitSet(id, size));
+        return computeIfAbsentSized(IBitSet.class, id, size, (t) -> delegate.newBitSet(id, size));
     }
 
     @Override
     public ILongArray newLongArray(final String id, final int size) {
-        maybeClearCache();
-        return (ILongArray) map.computeIfAbsent(id, (t) -> delegate.newLongArray(id, size));
+        return computeIfAbsentSized(ILongArray.class, id, size, (t) -> delegate.newLongArray(id, size));
     }
 
     @Override
