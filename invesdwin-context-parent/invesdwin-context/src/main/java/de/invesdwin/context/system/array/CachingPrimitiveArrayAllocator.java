@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.log.Log;
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.util.collections.array.IBooleanArray;
 import de.invesdwin.util.collections.array.IDoubleArray;
@@ -22,6 +23,8 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @ThreadSafe
 public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
+
+    private static final Log LOG = new Log(CachingPrimitiveArrayAllocator.class);
 
     private final IPrimitiveArrayAllocator delegate;
     private final Map<String, IPrimitiveArray> map = newMap();
@@ -145,6 +148,8 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
             if (computed.size() == size) {
                 return computed;
             } else {
+                LOG.warn("Expected size [" + size + "] but got [" + computed.size() + "] for id [" + id + "] and type ["
+                        + type.getSimpleName() + "] in: " + this + ". Removing from cache and trying again.");
                 map.remove(id);
             }
         }
