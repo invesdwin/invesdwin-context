@@ -13,6 +13,7 @@ import de.invesdwin.util.collections.array.IPrimitiveArray;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
@@ -54,52 +55,52 @@ public class SizeAssertingPrimitiveArrayAllocator implements IPrimitiveArrayAllo
         return delegate.getLongArray(id);
     }
 
+    public static void assertSize(final Object parent, final String id, final int size, final IPrimitiveArray array) {
+        if (size != array.size()) {
+            throw new IllegalStateException(
+                    "Expected size [" + size + "] but got [" + array.size() + "] for id [" + id + "] in: " + parent);
+        }
+    }
+
     @Override
     public IByteBuffer newByteBuffer(final String id, final int size) {
         final IByteBuffer array = delegate.newByteBuffer(id, size);
-        assertSize(id, size, array);
+        assertSize(this, id, size, array);
         return array;
-    }
-
-    public static void assertSize(final String id, final int size, final IPrimitiveArray array) {
-        if (size != array.size()) {
-            throw new IllegalStateException(
-                    "Expected size [" + size + "] but got [" + array.size() + "] for id: " + id);
-        }
     }
 
     @Override
     public IDoubleArray newDoubleArray(final String id, final int size) {
         final IDoubleArray array = delegate.newDoubleArray(id, size);
-        assertSize(id, size, array);
+        assertSize(this, id, size, array);
         return array;
     }
 
     @Override
     public IIntegerArray newIntegerArray(final String id, final int size) {
         final IIntegerArray array = delegate.newIntegerArray(id, size);
-        assertSize(id, size, array);
+        assertSize(this, id, size, array);
         return array;
     }
 
     @Override
     public IBooleanArray newBooleanArray(final String id, final int size) {
         final IBooleanArray array = delegate.newBooleanArray(id, size);
-        assertSize(id, size, array);
+        assertSize(this, id, size, array);
         return array;
     }
 
     @Override
     public IBitSet newBitSet(final String id, final int size) {
         final IBitSet array = delegate.newBitSet(id, size);
-        assertSize(id, size, array);
+        assertSize(this, id, size, array);
         return array;
     }
 
     @Override
     public ILongArray newLongArray(final String id, final int size) {
         final ILongArray array = delegate.newLongArray(id, size);
-        assertSize(id, size, array);
+        assertSize(this, id, size, array);
         return array;
     }
 
@@ -148,4 +149,22 @@ public class SizeAssertingPrimitiveArrayAllocator implements IPrimitiveArrayAllo
         return delegate.getLock(id);
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof SizeAssertingPrimitiveArrayAllocator) {
+            final SizeAssertingPrimitiveArrayAllocator cObj = (SizeAssertingPrimitiveArrayAllocator) obj;
+            return Objects.equals(delegate, cObj.delegate);
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(SizeAssertingPrimitiveArrayAllocator.class, delegate);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(delegate).toString();
+    }
 }
