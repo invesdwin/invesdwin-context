@@ -143,15 +143,25 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     private <T extends IPrimitiveArray> T computeIfAbsentSized(final Class<T> type, final String id, final int size,
             final Function<String, T> mappingFunction) {
         maybeClearCache();
-        for (int i = 0; i < 2; i++) {
-            final T computed = (T) map.computeIfAbsent(id, mappingFunction);
-            if (computed.size() == size) {
-                return computed;
-            } else {
-                LOG.warn(
-                        "%s: Removing from cache and trying again because [%s] is not expected size [%s] for id [%s] in: %s",
-                        type.getSimpleName(), computed.size(), size, id, this);
-                map.remove(id);
+        ILock lock = null;
+        try {
+            for (int i = 0; i < 2; i++) {
+                final T computed = (T) map.computeIfAbsent(id, mappingFunction);
+                if (computed.size() == size) {
+                    return computed;
+                } else {
+                    LOG.warn(
+                            "%s: Removing from cache and trying again because [%s] is not expected size [%s] for id [%s] in: %s",
+                            type.getSimpleName(), computed.size(), size, id, this);
+                    lock = getLock(id);
+                    //make the retry thread safe if too many threads are trying to create the same array with different sizes
+                    lock.lock();
+                    map.remove(id);
+                }
+            }
+        } finally {
+            if (lock != null) {
+                lock.unlock();
             }
         }
         throw new IllegalStateException(
