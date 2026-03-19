@@ -233,8 +233,8 @@ public enum JFreeChartExporter {
         return new AFastDelegateInputStream() {
             private final File tempFile = new File(
                     new File(Files.getTempDirectory(), JFreeChartExporter.class.getSimpleName()),
-                    Files.normalizeFilename(
-                            UNIQUE_NAME_GENERATOR.get(Strings.putSuffix(chart.getID(), getFileExtension()))));
+                    Files.normalizeFilename(UNIQUE_NAME_GENERATOR
+                            .get(Strings.putSuffix(JFreeChart.class.getSimpleName(), getFileExtension()))));
 
             @Override
             protected InputStream newDelegate() {
