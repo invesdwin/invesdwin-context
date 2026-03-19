@@ -4,11 +4,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,16 +38,17 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.error.Throwables;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.lang.string.UniqueNameGenerator;
 import de.invesdwin.util.streams.closeable.Closeables;
 import de.invesdwin.util.streams.delegate.AFastDelegateInputStream;
-import de.invesdwin.util.streams.pool.PooledFastByteArrayOutputStream;
+import de.invesdwin.util.streams.pool.buffered.PooledFastBufferedOutputStream;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
 
 @Immutable
 public enum JFreeChartExporter {
-
     JPG(".jpg") {
         @Override
         public void writeChart(final OutputStream out, final JFreeChart chart,
@@ -113,6 +116,13 @@ public enum JFreeChartExporter {
             DIMENSION_DIN_A4_25_DPI.height * 5);
     public static final Dimension DIMENSION_DIN_A4_200_DPI = new Dimension(DIMENSION_DIN_A4_100_DPI.width * 2,
             DIMENSION_DIN_A4_100_DPI.height * 2);
+
+    private static final UniqueNameGenerator UNIQUE_NAME_GENERATOR = new UniqueNameGenerator() {
+        @Override
+        protected long getInitialValue() {
+            return 1;
+        }
+    };
 
     private final String fileExtension;
 
@@ -220,14 +230,31 @@ public enum JFreeChartExporter {
     }
 
     public InputStream exportToStream(final JFreeChart chart, final JFreeChartExporterSettings settings) {
-        final PooledFastByteArrayOutputStream out = PooledFastByteArrayOutputStream.newInstance();
-        try {
-            writeChart(out.asNonClosing(), chart, settings);
-            return out.asInputStream();
-        } catch (final IOException e) {
-            out.close();
-            throw new RuntimeException(e);
-        }
+        return new AFastDelegateInputStream() {
+            private final File tempFile = new File(
+                    new File(Files.getTempDirectory(), JFreeChartExporter.class.getSimpleName()),
+                    Files.normalizeFilename(
+                            UNIQUE_NAME_GENERATOR.get(Strings.putSuffix(chart.getID(), getFileExtension()))));
+
+            @Override
+            protected InputStream newDelegate() {
+                try {
+                    try (OutputStream out = PooledFastBufferedOutputStream
+                            .newInstance(new FileOutputStream(tempFile))) {
+                        writeChart(out, chart, settings);
+                    }
+                    return new FileInputStream(tempFile);
+                } catch (final IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+
+            @Override
+            public void close() throws IOException {
+                super.close();
+                Files.deleteQuietly(tempFile);
+            }
+        };
     }
 
     public InputStream exportToStreamCallable(final Callable<JFreeChart> chart,
