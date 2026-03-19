@@ -239,6 +239,7 @@ public enum JFreeChartExporter {
             @Override
             protected InputStream newDelegate() {
                 try {
+                    Files.forceMkdirParent(tempFile);
                     try (OutputStream out = PooledFastBufferedOutputStream
                             .newInstance(new FileOutputStream(tempFile))) {
                         writeChart(out, chart, settings);
