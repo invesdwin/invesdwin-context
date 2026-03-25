@@ -1,4 +1,4 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 public interface IPrimitiveArrayAllocatorFactory {
 

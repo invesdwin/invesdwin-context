@@ -1,26 +1,26 @@
-package de.invesdwin.context.system.array.bool;
+package de.invesdwin.context.system.array.primitive.bool;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
-import de.invesdwin.util.collections.array.IGenericArray;
+import de.invesdwin.context.system.array.primitive.IPrimitiveArrayAllocator;
+import de.invesdwin.util.collections.array.primitive.IGenericPrimitiveArray;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @Immutable
-public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
+public final class OnHeapGenericBooleanPrimitiveArray implements IGenericBooleanPrimitiveArray {
 
     private final IPrimitiveArrayAllocator arrayAllocator;
     private final String name;
-    private final IGenericArray<Boolean> values;
+    private final IGenericPrimitiveArray<Boolean> values;
     private volatile boolean initialized = false;
 
     @SuppressWarnings("deprecation")
-    private OnHeapGenericBooleanArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
+    private OnHeapGenericBooleanPrimitiveArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
             final int size) {
         this.arrayAllocator = arrayAllocator;
         this.name = name;
-        this.values = IGenericArray.newInstance(Boolean.class, size);
+        this.values = IGenericPrimitiveArray.newInstance(Boolean.class, size);
         setInitializedShared(false); //maybe reset flag if cache was cleared
     }
 
@@ -49,21 +49,21 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
         return name;
     }
 
-    public static OnHeapGenericBooleanArray getInstance(final IPrimitiveArrayAllocator arrayAllocator,
+    public static OnHeapGenericBooleanPrimitiveArray getInstance(final IPrimitiveArrayAllocator arrayAllocator,
             final String name) {
-        return (OnHeapGenericBooleanArray) arrayAllocator.getAttributes().get(newKey(name));
+        return (OnHeapGenericBooleanPrimitiveArray) arrayAllocator.getAttributes().get(newKey(name));
     }
 
     private static String newKey(final String name) {
-        return OnHeapGenericBooleanArray.class.getSimpleName() + "_" + name;
+        return OnHeapGenericBooleanPrimitiveArray.class.getSimpleName() + "_" + name;
     }
 
-    public static OnHeapGenericBooleanArray newInstance(final IPrimitiveArrayAllocator arrayAllocator,
+    public static OnHeapGenericBooleanPrimitiveArray newInstance(final IPrimitiveArrayAllocator arrayAllocator,
             final String name, final int size) {
         final IAttributesMap attributes = arrayAllocator.getAttributes();
         synchronized (attributes) {
             final String key = newKey(name);
-            return attributes.getOrCreate(key, () -> new OnHeapGenericBooleanArray(arrayAllocator, key, size));
+            return attributes.getOrCreate(key, () -> new OnHeapGenericBooleanPrimitiveArray(arrayAllocator, key, size));
         }
     }
 
@@ -98,7 +98,7 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
-    public IGenericArray<Boolean> slice(final int fromIndex, final int length) {
+    public IGenericPrimitiveArray<Boolean> slice(final int fromIndex, final int length) {
         throw new UnsupportedOperationException();
     }
 
@@ -123,7 +123,7 @@ public final class OnHeapGenericBooleanArray implements IGenericBooleanArray {
     }
 
     @Override
-    public void getGenerics(final int srcPos, final IGenericArray<Boolean> dest, final int destPos, final int length) {
+    public void getGenerics(final int srcPos, final IGenericPrimitiveArray<Boolean> dest, final int destPos, final int length) {
         throw new UnsupportedOperationException();
     }
 

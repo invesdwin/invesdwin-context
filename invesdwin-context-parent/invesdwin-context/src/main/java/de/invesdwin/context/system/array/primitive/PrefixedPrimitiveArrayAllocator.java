@@ -1,4 +1,4 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 import java.io.File;
 
@@ -7,13 +7,13 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.PrefixedDelegateProperties;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.collections.array.IBooleanArray;
-import de.invesdwin.util.collections.array.IDoubleArray;
-import de.invesdwin.util.collections.array.IIntegerArray;
-import de.invesdwin.util.collections.array.ILongArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.attributes.PrefixedDelegateAttributesMap;
-import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
@@ -49,27 +49,27 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
     }
 
     @Override
-    public IDoubleArray getDoubleArray(final String id) {
+    public IDoublePrimitiveArray getDoubleArray(final String id) {
         return delegate.getDoubleArray(prefix + id);
     }
 
     @Override
-    public IIntegerArray getIntegerArray(final String id) {
+    public IIntegerPrimitiveArray getIntegerArray(final String id) {
         return delegate.getIntegerArray(prefix + id);
     }
 
     @Override
-    public IBooleanArray getBooleanArray(final String id) {
+    public IBooleanPrimtiveArray getBooleanArray(final String id) {
         return delegate.getBooleanArray(prefix + id);
     }
 
     @Override
-    public IBitSet getBitSet(final String id) {
+    public IPrimitiveBitSet getBitSet(final String id) {
         return delegate.getBitSet(prefix + id);
     }
 
     @Override
-    public ILongArray getLongArray(final String id) {
+    public ILongPrimitiveArray getLongArray(final String id) {
         return delegate.getLongArray(prefix + id);
     }
 
@@ -79,27 +79,27 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
     }
 
     @Override
-    public IDoubleArray newDoubleArray(final String id, final int size) {
+    public IDoublePrimitiveArray newDoubleArray(final String id, final int size) {
         return delegate.newDoubleArray(prefix + id, size);
     }
 
     @Override
-    public IIntegerArray newIntegerArray(final String id, final int size) {
+    public IIntegerPrimitiveArray newIntegerArray(final String id, final int size) {
         return delegate.newIntegerArray(prefix + id, size);
     }
 
     @Override
-    public IBooleanArray newBooleanArray(final String id, final int size) {
+    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
         return delegate.newBooleanArray(prefix + id, size);
     }
 
     @Override
-    public IBitSet newBitSet(final String id, final int size) {
+    public IPrimitiveBitSet newBitSet(final String id, final int size) {
         return delegate.newBitSet(prefix + id, size);
     }
 
     @Override
-    public ILongArray newLongArray(final String id, final int size) {
+    public ILongPrimitiveArray newLongArray(final String id, final int size) {
         return delegate.newLongArray(prefix + id, size);
     }
 

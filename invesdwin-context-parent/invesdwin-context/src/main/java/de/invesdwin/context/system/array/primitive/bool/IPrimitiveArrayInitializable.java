@@ -1,7 +1,7 @@
-package de.invesdwin.context.system.array.bool;
+package de.invesdwin.context.system.array.primitive.bool;
 
-import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
-import de.invesdwin.util.collections.array.IPrimitiveArrayId;
+import de.invesdwin.context.system.array.primitive.IPrimitiveArrayAllocator;
+import de.invesdwin.util.collections.array.primitive.IPrimitiveArrayId;
 
 public interface IPrimitiveArrayInitializable extends IPrimitiveArrayId {
 

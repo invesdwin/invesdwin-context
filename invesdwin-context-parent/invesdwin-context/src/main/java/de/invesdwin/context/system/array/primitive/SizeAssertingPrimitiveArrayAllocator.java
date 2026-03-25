@@ -1,17 +1,17 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 import java.io.File;
 
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.system.properties.IProperties;
-import de.invesdwin.util.collections.array.IBooleanArray;
-import de.invesdwin.util.collections.array.IDoubleArray;
-import de.invesdwin.util.collections.array.IIntegerArray;
-import de.invesdwin.util.collections.array.ILongArray;
-import de.invesdwin.util.collections.array.IPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
-import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
@@ -31,27 +31,27 @@ public class SizeAssertingPrimitiveArrayAllocator implements IPrimitiveArrayAllo
     }
 
     @Override
-    public IDoubleArray getDoubleArray(final String id) {
+    public IDoublePrimitiveArray getDoubleArray(final String id) {
         return delegate.getDoubleArray(id);
     }
 
     @Override
-    public IIntegerArray getIntegerArray(final String id) {
+    public IIntegerPrimitiveArray getIntegerArray(final String id) {
         return delegate.getIntegerArray(id);
     }
 
     @Override
-    public IBooleanArray getBooleanArray(final String id) {
+    public IBooleanPrimtiveArray getBooleanArray(final String id) {
         return delegate.getBooleanArray(id);
     }
 
     @Override
-    public IBitSet getBitSet(final String id) {
+    public IPrimitiveBitSet getBitSet(final String id) {
         return delegate.getBitSet(id);
     }
 
     @Override
-    public ILongArray getLongArray(final String id) {
+    public ILongPrimitiveArray getLongArray(final String id) {
         return delegate.getLongArray(id);
     }
 
@@ -70,36 +70,36 @@ public class SizeAssertingPrimitiveArrayAllocator implements IPrimitiveArrayAllo
     }
 
     @Override
-    public IDoubleArray newDoubleArray(final String id, final int size) {
-        final IDoubleArray array = delegate.newDoubleArray(id, size);
+    public IDoublePrimitiveArray newDoubleArray(final String id, final int size) {
+        final IDoublePrimitiveArray array = delegate.newDoubleArray(id, size);
         assertSize(this, id, size, array);
         return array;
     }
 
     @Override
-    public IIntegerArray newIntegerArray(final String id, final int size) {
-        final IIntegerArray array = delegate.newIntegerArray(id, size);
+    public IIntegerPrimitiveArray newIntegerArray(final String id, final int size) {
+        final IIntegerPrimitiveArray array = delegate.newIntegerArray(id, size);
         assertSize(this, id, size, array);
         return array;
     }
 
     @Override
-    public IBooleanArray newBooleanArray(final String id, final int size) {
-        final IBooleanArray array = delegate.newBooleanArray(id, size);
+    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
+        final IBooleanPrimtiveArray array = delegate.newBooleanArray(id, size);
         assertSize(this, id, size, array);
         return array;
     }
 
     @Override
-    public IBitSet newBitSet(final String id, final int size) {
-        final IBitSet array = delegate.newBitSet(id, size);
+    public IPrimitiveBitSet newBitSet(final String id, final int size) {
+        final IPrimitiveBitSet array = delegate.newBitSet(id, size);
         assertSize(this, id, size, array);
         return array;
     }
 
     @Override
-    public ILongArray newLongArray(final String id, final int size) {
-        final ILongArray array = delegate.newLongArray(id, size);
+    public ILongPrimitiveArray newLongArray(final String id, final int size) {
+        final ILongPrimitiveArray array = delegate.newLongArray(id, size);
         assertSize(this, id, size, array);
         return array;
     }
