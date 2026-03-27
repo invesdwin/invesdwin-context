@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
 
@@ -20,10 +20,10 @@ public class OffHeapPrimitiveArrayAllocatorTest extends ATest {
         final int size = 1000;
 
         final IPrimitiveBitSet onHeapBitSet = onHeapAllocator.newBitSet("onHeapBitSet", size);
-        final IBooleanPrimtiveArray onHeapBooleanArray = onHeapAllocator.newBooleanArray("onHeapBooleanArray", size);
+        final IBooleanPrimitiveArray onHeapBooleanArray = onHeapAllocator.newBooleanArray("onHeapBooleanArray", size);
 
         final IPrimitiveBitSet offHeapBitSet = offHeapAllocator.newBitSet("offHeapBitSet", size);
-        final IBooleanPrimtiveArray offHeapBooleanArray = offHeapAllocator.newBooleanArray("offHeapBooleanArray", size);
+        final IBooleanPrimitiveArray offHeapBooleanArray = offHeapAllocator.newBooleanArray("offHeapBooleanArray", size);
 
         for (int i = 0; i < size; i++) {
             Assertions.checkFalse(onHeapBitSet.contains(i), "%s", i);

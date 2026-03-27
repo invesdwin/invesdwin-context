@@ -5,7 +5,7 @@ import java.io.File;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.norva.beanpath.spi.IUnwrap;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
@@ -26,7 +26,7 @@ public interface IPrimitiveArrayAllocator extends IUnwrap, Closeable {
 
     IIntegerPrimitiveArray getIntegerArray(String id);
 
-    IBooleanPrimtiveArray getBooleanArray(String id);
+    IBooleanPrimitiveArray getBooleanArray(String id);
 
     IPrimitiveBitSet getBitSet(String id);
 
@@ -38,7 +38,7 @@ public interface IPrimitiveArrayAllocator extends IUnwrap, Closeable {
 
     IIntegerPrimitiveArray newIntegerArray(String id, int size);
 
-    IBooleanPrimtiveArray newBooleanArray(String id, int size);
+    IBooleanPrimitiveArray newBooleanArray(String id, int size);
 
     IPrimitiveBitSet newBitSet(String id, int size);
 

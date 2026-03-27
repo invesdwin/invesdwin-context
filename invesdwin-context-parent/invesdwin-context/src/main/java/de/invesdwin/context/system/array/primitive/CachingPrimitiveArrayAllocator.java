@@ -8,7 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.system.properties.IProperties;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
@@ -95,9 +95,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public IBooleanPrimtiveArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         maybeClearCache();
-        IBooleanPrimtiveArray cached = (IBooleanPrimtiveArray) map.get(id);
+        IBooleanPrimitiveArray cached = (IBooleanPrimitiveArray) map.get(id);
         if (cached != null) {
             return cached;
         }
@@ -184,8 +184,8 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
-        return computeIfAbsentSized(IBooleanPrimtiveArray.class, id, size, (t) -> delegate.newBooleanArray(id, size));
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
+        return computeIfAbsentSized(IBooleanPrimitiveArray.class, id, size, (t) -> delegate.newBooleanArray(id, size));
     }
 
     @Override

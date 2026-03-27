@@ -7,7 +7,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.PrefixedDelegateProperties;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
@@ -59,7 +59,7 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
     }
 
     @Override
-    public IBooleanPrimtiveArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         return delegate.getBooleanArray(prefix + id);
     }
 
@@ -89,7 +89,7 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
     }
 
     @Override
-    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
         return delegate.newBooleanArray(prefix + id, size);
     }
 

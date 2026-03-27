@@ -6,7 +6,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
@@ -44,7 +44,7 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
     }
 
     @Override
-    public IBooleanPrimtiveArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         return null;
     }
 
@@ -74,13 +74,13 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
     }
 
     @Override
-    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
-        return IBooleanPrimtiveArray.newInstance(ILockCollectionFactory.getInstance(false).newBitSet(size));
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
+        return IBooleanPrimitiveArray.newInstance(ILockCollectionFactory.getInstance(false).newPrimitiveBitSet(size));
     }
 
     @Override
     public IPrimitiveBitSet newBitSet(final String id, final int size) {
-        return ILockCollectionFactory.getInstance(false).newBitSet(size);
+        return ILockCollectionFactory.getInstance(false).newPrimitiveBitSet(size);
     }
 
     @Override

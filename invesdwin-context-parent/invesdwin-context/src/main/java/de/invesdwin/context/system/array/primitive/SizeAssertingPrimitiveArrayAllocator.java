@@ -5,7 +5,7 @@ import java.io.File;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.system.properties.IProperties;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
@@ -41,7 +41,7 @@ public class SizeAssertingPrimitiveArrayAllocator implements IPrimitiveArrayAllo
     }
 
     @Override
-    public IBooleanPrimtiveArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         return delegate.getBooleanArray(id);
     }
 
@@ -84,8 +84,8 @@ public class SizeAssertingPrimitiveArrayAllocator implements IPrimitiveArrayAllo
     }
 
     @Override
-    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
-        final IBooleanPrimtiveArray array = delegate.newBooleanArray(id, size);
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
+        final IBooleanPrimitiveArray array = delegate.newBooleanArray(id, size);
         assertSize(this, id, size, array);
         return array;
     }

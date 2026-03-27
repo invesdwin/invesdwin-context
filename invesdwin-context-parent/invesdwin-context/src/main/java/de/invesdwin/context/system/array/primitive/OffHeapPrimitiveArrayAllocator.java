@@ -6,12 +6,13 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
-import de.invesdwin.util.collections.array.primitive.IBooleanPrimtiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.accessor.IPrimitiveArrayAccessor;
 import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
+import de.invesdwin.util.collections.array.primitive.bitset.LongArrayPrimitiveBitSet;
 import de.invesdwin.util.collections.array.primitive.buffer.BufferBooleanPrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.buffer.BufferDoublePrimitiveArray;
 import de.invesdwin.util.collections.array.primitive.buffer.BufferIntegerPrimitiveArray;
@@ -50,7 +51,7 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
     }
 
     @Override
-    public IBooleanPrimtiveArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         return null;
     }
 
@@ -66,26 +67,31 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
 
     @Override
     public IByteBuffer newByteBuffer(final String id, final int size) {
-        return ByteBuffers.allocateDirect(size);
+        final IByteBuffer array = ByteBuffers.allocateDirect(size);
+        clearBeforeUsage(array);
+        return array;
     }
 
     @Override
     public IDoublePrimitiveArray newDoubleArray(final String id, final int size) {
-        final BufferDoublePrimitiveArray array = new BufferDoublePrimitiveArray(ByteBuffers.allocateDirect(size * Double.BYTES));
+        final BufferDoublePrimitiveArray array = new BufferDoublePrimitiveArray(
+                ByteBuffers.allocateDirect(size * Double.BYTES));
         clearBeforeUsage(array);
         return array;
     }
 
     @Override
     public IIntegerPrimitiveArray newIntegerArray(final String id, final int size) {
-        final BufferIntegerPrimitiveArray array = new BufferIntegerPrimitiveArray(ByteBuffers.allocateDirect(size * Integer.BYTES));
+        final BufferIntegerPrimitiveArray array = new BufferIntegerPrimitiveArray(
+                ByteBuffers.allocateDirect(size * Integer.BYTES));
         clearBeforeUsage(array);
         return array;
     }
 
     @Override
-    public IBooleanPrimtiveArray newBooleanArray(final String id, final int size) {
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
         final BufferBooleanPrimitiveArray array = new BufferBooleanPrimitiveArray(
+                LongArrayPrimitiveBitSet.DEFAULT_COPY_FACTORY,
                 ByteBuffers.allocateDirect((BitSets.wordIndex(size - 1) + 1) * Long.BYTES), size);
         clearBeforeUsage(array);
         return array;
@@ -99,7 +105,8 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
 
     @Override
     public ILongPrimitiveArray newLongArray(final String id, final int size) {
-        final BufferLongPrimitiveArray array = new BufferLongPrimitiveArray(ByteBuffers.allocateDirect(size * Long.BYTES));
+        final BufferLongPrimitiveArray array = new BufferLongPrimitiveArray(
+                ByteBuffers.allocateDirect(size * Long.BYTES));
         clearBeforeUsage(array);
         return array;
     }
