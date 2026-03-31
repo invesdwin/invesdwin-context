@@ -27,7 +27,7 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.delegate.DataOutputDelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
-import de.invesdwin.util.streams.buffer.file.SegmentedMemoryMappedFile;
+import de.invesdwin.util.streams.buffer.file.ListMemoryMappedFile;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
 /**
@@ -136,7 +136,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
                                         + precedingPositionCopy + " position=" + positionCopy, e);
                             }
                         }
-                        return new SegmentedMemoryMappedFile(closeAllowed, mappedFiles);
+                        return new ListMemoryMappedFile(closeAllowed, mappedFiles);
                     }
                 }
             } finally {

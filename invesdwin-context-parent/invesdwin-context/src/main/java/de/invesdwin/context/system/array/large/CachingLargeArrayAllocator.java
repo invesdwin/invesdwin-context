@@ -1,0 +1,266 @@
+package de.invesdwin.context.system.array.large;
+
+import java.io.File;
+import java.util.Map;
+import java.util.function.Function;
+
+import javax.annotation.concurrent.ThreadSafe;
+
+import de.invesdwin.context.log.Log;
+import de.invesdwin.context.system.properties.IProperties;
+import de.invesdwin.util.collections.array.large.IBooleanLargeArray;
+import de.invesdwin.util.collections.array.large.IDoubleLargeArray;
+import de.invesdwin.util.collections.array.large.IIntegerLargeArray;
+import de.invesdwin.util.collections.array.large.ILargeArray;
+import de.invesdwin.util.collections.array.large.ILongLargeArray;
+import de.invesdwin.util.collections.array.large.bitset.ILargeBitSet;
+import de.invesdwin.util.collections.attributes.IAttributesMap;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.pool.MemoryLimit;
+import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
+
+@ThreadSafe
+public class CachingLargeArrayAllocator implements ILargeArrayAllocator {
+
+    private static final Log LOG = new Log(CachingLargeArrayAllocator.class);
+
+    private final ILargeArrayAllocator delegate;
+    private final Map<String, ILargeArray> map = newMap();
+    private final Runnable maybeClearCache;
+
+    public CachingLargeArrayAllocator(final ILargeArrayAllocator delegate) {
+        this.delegate = delegate;
+        if (delegate.isOnHeap(1)) {
+            this.maybeClearCache = () -> MemoryLimit.maybeClearCache(CachingLargeArrayAllocator.class, "map", map);
+        } else {
+            //offHeap is not counted on the heap, so MemoryLimit cannot help us here
+            this.maybeClearCache = () -> {
+            };
+        }
+    }
+
+    protected Map<String, ILargeArray> newMap() {
+        return ILockCollectionFactory.getInstance(true).newConcurrentMap();
+    }
+
+    protected void maybeClearCache() {
+        maybeClearCache.run();
+    }
+
+    @Override
+    public IMemoryBuffer getMemoryBuffer(final String id) {
+        maybeClearCache();
+        IMemoryBuffer cached = (IMemoryBuffer) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getMemoryBuffer(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
+    }
+
+    @Override
+    public IDoubleLargeArray getDoubleArray(final String id) {
+        maybeClearCache();
+        IDoubleLargeArray cached = (IDoubleLargeArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getDoubleArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
+    }
+
+    @Override
+    public IIntegerLargeArray getIntegerArray(final String id) {
+        maybeClearCache();
+        IIntegerLargeArray cached = (IIntegerLargeArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getIntegerArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
+    }
+
+    @Override
+    public IBooleanLargeArray getBooleanArray(final String id) {
+        maybeClearCache();
+        IBooleanLargeArray cached = (IBooleanLargeArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getBooleanArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
+    }
+
+    @Override
+    public ILargeBitSet getBitSet(final String id) {
+        maybeClearCache();
+        ILargeBitSet cached = (ILargeBitSet) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getBitSet(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
+    }
+
+    @Override
+    public ILongLargeArray getLongArray(final String id) {
+        maybeClearCache();
+        ILongLargeArray cached = (ILongLargeArray) map.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        cached = delegate.getLongArray(id);
+        if (cached == null) {
+            return null;
+        }
+        map.put(id, cached);
+        return cached;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends ILargeArray> T computeIfAbsentSized(final Class<T> type, final String id, final long size,
+            final Function<String, T> mappingFunction) {
+        maybeClearCache();
+        ILock lock = null;
+        try {
+            for (int i = 0; i < 2; i++) {
+                final T computed = (T) map.computeIfAbsent(id, mappingFunction);
+                if (computed.size() == size) {
+                    return computed;
+                } else {
+                    LOG.warn(
+                            "%s: Removing from cache and trying again because [%s] is not expected size [%s] for id [%s] in: %s",
+                            type.getSimpleName(), computed.size(), size, id, this);
+                    lock = getLock(id);
+                    //make the retry thread safe if too many threads are trying to create the same array with different sizes
+                    lock.lock();
+                    map.remove(id);
+                }
+            }
+        } finally {
+            if (lock != null) {
+                lock.unlock();
+            }
+        }
+        throw new IllegalStateException(
+                "Failed to create " + type.getSimpleName() + " of size [" + size + "] for id [" + id + "]");
+    }
+
+    @Override
+    public IMemoryBuffer newMemoryBuffer(final String id, final long size) {
+        return computeIfAbsentSized(IMemoryBuffer.class, id, size, (t) -> delegate.newMemoryBuffer(id, size));
+    }
+
+    @Override
+    public IDoubleLargeArray newDoubleArray(final String id, final long size) {
+        return computeIfAbsentSized(IDoubleLargeArray.class, id, size, (t) -> delegate.newDoubleArray(id, size));
+    }
+
+    @Override
+    public IIntegerLargeArray newIntegerArray(final String id, final long size) {
+        return computeIfAbsentSized(IIntegerLargeArray.class, id, size, (t) -> delegate.newIntegerArray(id, size));
+    }
+
+    @Override
+    public IBooleanLargeArray newBooleanArray(final String id, final long size) {
+        return computeIfAbsentSized(IBooleanLargeArray.class, id, size, (t) -> delegate.newBooleanArray(id, size));
+    }
+
+    @Override
+    public ILargeBitSet newBitSet(final String id, final long size) {
+        return computeIfAbsentSized(ILargeBitSet.class, id, size, (t) -> delegate.newBitSet(id, size));
+    }
+
+    @Override
+    public ILongLargeArray newLongArray(final String id, final long size) {
+        return computeIfAbsentSized(ILongLargeArray.class, id, size, (t) -> delegate.newLongArray(id, size));
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof CachingLargeArrayAllocator) {
+            final CachingLargeArrayAllocator cObj = (CachingLargeArrayAllocator) obj;
+            return Objects.equals(delegate, cObj.delegate);
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(CachingLargeArrayAllocator.class, delegate);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).addValue(delegate).toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T unwrap(final Class<T> type) {
+        if (type.isAssignableFrom(getClass())) {
+            return (T) this;
+        } else {
+            return delegate.unwrap(type);
+        }
+    }
+
+    @Override
+    public IAttributesMap getAttributes() {
+        return delegate.getAttributes();
+    }
+
+    @Override
+    public IProperties getProperties() {
+        return delegate.getProperties();
+    }
+
+    @Override
+    public void clear() {
+        map.clear();
+        delegate.clear();
+    }
+
+    @Override
+    public boolean isOnHeap(final long size) {
+        return delegate.isOnHeap(size);
+    }
+
+    @Override
+    public File getDirectory() {
+        return delegate.getDirectory();
+    }
+
+    @Override
+    public void close() {
+        delegate.close();
+    }
+
+    @Override
+    public ILock getLock(final String id) {
+        return delegate.getLock(id);
+    }
+
+}
