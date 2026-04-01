@@ -14,6 +14,7 @@ import de.invesdwin.context.integration.persistentmap.IKeyMatcher;
 import de.invesdwin.context.integration.persistentmap.IPersistentMap;
 import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
 import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
+import de.invesdwin.context.integration.persistentmap.large.storage.LargeMappedFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.MappedFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.SequentialFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
@@ -22,6 +23,7 @@ import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.OperatingSystem;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
 
 @ThreadSafe
 public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, V> implements IPersistentMap<K, V> {
@@ -86,7 +88,12 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     private IChunkStorage<V> newChunkStorage() {
         final File directory = new File(getFile(), "storage");
-        return newChunkStorage(directory, newValueSerde(), isReadOnly(), isCloseAllowed());
+        final ILargeSerde<V> largeValueSerde = newLargeValueSerde();
+        if (largeValueSerde != null) {
+            return newLargeChunkStorage(directory, largeValueSerde, isReadOnly(), isCloseAllowed());
+        } else {
+            return newChunkStorage(directory, newValueSerde(), isReadOnly(), isCloseAllowed());
+        }
     }
 
     protected abstract boolean isReadOnly();
@@ -96,6 +103,11 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
     protected IChunkStorage<V> newChunkStorage(final File directory, final ISerde<V> valueSerde, final boolean readOnly,
             final boolean closeAllowed) {
         return newDefaultChunkStorage(directory, valueSerde, readOnly, closeAllowed);
+    }
+
+    protected IChunkStorage<V> newLargeChunkStorage(final File directory, final ILargeSerde<V> valueSerde,
+            final boolean readOnly, final boolean closeAllowed) {
+        return newDefaultLargeChunkStorage(directory, valueSerde, readOnly, closeAllowed);
     }
 
     public static <V> IChunkStorage<V> newDefaultChunkStorage(final File directory, final ISerde<V> valueSerde,
@@ -109,6 +121,11 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
         } else {
             return new MappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
         }
+    }
+
+    public static <V> IChunkStorage<V> newDefaultLargeChunkStorage(final File directory,
+            final ILargeSerde<V> valueSerde, final boolean readOnly, final boolean closeAllowed) {
+        return new LargeMappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
     }
 
     @Override

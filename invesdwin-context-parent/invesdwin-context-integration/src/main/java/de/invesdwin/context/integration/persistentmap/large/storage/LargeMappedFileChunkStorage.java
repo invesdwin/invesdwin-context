@@ -1,0 +1,349 @@
+package de.invesdwin.context.integration.persistentmap.large.storage;
+
+import java.io.DataOutput;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+
+import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
+import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummaryMemoryBuffer;
+import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Collections;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
+import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerdeLengthProvider;
+import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
+import de.invesdwin.util.streams.buffer.file.ListMemoryMappedFile;
+import de.invesdwin.util.streams.buffer.memory.DataOutputDelegateMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.ICloseableMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.MemoryBuffers;
+import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
+
+/**
+ * Removed values are not reclaimed, they only get removed from the index. We could implement a compaction process for
+ * this sometime (could be done async).
+ */
+@ThreadSafe
+public class LargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
+
+    private final File memoryDirectory;
+    private final List<File> memoryFiles;
+    private final ILargeSerde<V> valueSerde;
+    private final ILargeSerdeLengthProvider<V> valueSerdeLengthProvider;
+    private final IReadWriteLock lock = ILockCollectionFactory.getInstance(true)
+            .newReadWriteLock(LargeMappedFileChunkStorage.class.getSimpleName() + "_lock");
+    @GuardedBy("lock")
+    private long precedingPosition;
+    @GuardedBy("lock")
+    private long position;
+    private volatile IMemoryMappedFile reader;
+    private final boolean readOnly;
+    private final boolean closeAllowed;
+    private final ChunkStorageMetadata metadata;
+
+    private final Set<ChunkSummaryMemoryBuffer> readerBuffers;
+
+    @SuppressWarnings("unchecked")
+    public LargeMappedFileChunkStorage(final File memoryDirectory, final ILargeSerde<V> valueSerde,
+            final boolean readOnly, final boolean closeAllowed) {
+        this.memoryDirectory = memoryDirectory;
+        this.memoryFiles = new ArrayList<>();
+        this.valueSerde = valueSerde;
+        if (valueSerde instanceof ILargeSerdeLengthProvider) {
+            this.valueSerdeLengthProvider = (ILargeSerdeLengthProvider<V>) valueSerde;
+        } else {
+            this.valueSerdeLengthProvider = null;
+        }
+        this.readOnly = readOnly;
+        this.closeAllowed = closeAllowed;
+        this.metadata = new ChunkStorageMetadata(memoryDirectory);
+        if (readOnly) {
+            readerBuffers = null;
+        } else {
+            readerBuffers = Collections.newSetFromMap(
+                    Caffeine.newBuilder().weakKeys().<ChunkSummaryMemoryBuffer, Boolean> build().asMap());
+        }
+        initMemoryFiles();
+    }
+
+    public void initMemoryFiles() {
+        precedingPosition = 0;
+        position = 0;
+        while (true) {
+            final File curMemoryFile = nextMemoryFile();
+            if (curMemoryFile.exists()) {
+                precedingPosition += position;
+                position = curMemoryFile.length();
+                memoryFiles.add(curMemoryFile);
+            } else {
+                break;
+            }
+        }
+    }
+
+    public File nextMemoryFile() {
+        return new File(memoryDirectory, "memory_" + memoryFiles.size() + ".bin");
+    }
+
+    private IMemoryMappedFile getReader() {
+        if (reader == null) {
+            if (memoryFiles.isEmpty()) {
+                return null;
+            }
+            lock.readLock().lock();
+            try {
+                if (reader == null) {
+                    if (memoryFiles.isEmpty()) {
+                        return null;
+                    } else if (memoryFiles.size() == 1) {
+                        final File memoryFile = memoryFiles.get(0);
+                        final long positionCopy = position;
+                        try {
+                            reader = IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed);
+                        } catch (final IOException e) {
+                            throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
+                                    + " fileIndex=0 position=" + positionCopy, e);
+                        }
+                    } else {
+                        final List<IMemoryMappedFile> mappedFiles = new ArrayList<>();
+                        final int lastMemoryFileIndex = memoryFiles.size() - 1;
+                        for (int i = 0; i <= lastMemoryFileIndex; i++) {
+                            final File memoryFile = memoryFiles.get(i);
+                            final long precedingPositionCopy = precedingPosition;
+                            final long positionCopy;
+                            if (i == lastMemoryFileIndex) {
+                                positionCopy = position;
+                            } else {
+                                positionCopy = memoryFile.length();
+                            }
+                            try {
+                                mappedFiles.add(
+                                        IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed));
+                            } catch (final IOException e) {
+                                throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
+                                        + " fileIndex=" + mappedFiles.size() + " precedingPosition="
+                                        + precedingPositionCopy + " position=" + positionCopy, e);
+                            }
+                        }
+                        return new ListMemoryMappedFile(closeAllowed, mappedFiles);
+                    }
+                }
+            } finally {
+                lock.readLock().unlock();
+            }
+        }
+        return reader;
+    }
+
+    @Override
+    public V get(final ChunkSummary summary) {
+        lock.readLock().lock();
+        try {
+            final IMemoryMappedFile reader = getReader();
+            if (reader == null) {
+                return null;
+            }
+            final IMemoryBuffer buffer;
+            if (readerBuffers != null) {
+                final ChunkSummaryMemoryBuffer chunkBuffer = new ChunkSummaryMemoryBuffer(summary);
+                chunkBuffer.init(reader);
+                readerBuffers.add(chunkBuffer);
+                buffer = chunkBuffer;
+            } else {
+                final int length = Integers.checkedCast(summary.getMemoryLength());
+                final long memoryOffset = summary.getPrecedingMemoryOffset() + summary.getMemoryOffset();
+                buffer = reader.newMemoryBuffer(memoryOffset, length);
+            }
+            final V value = valueSerde.fromBuffer(buffer);
+            return value;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public void remove(final ChunkSummary summary) {
+        //noop
+    }
+
+    @Override
+    public boolean isRemovable() {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+        lock.writeLock().lock();
+        try {
+            clearReaderBuffers();
+            closeReaderWriteLocked();
+            Files.deleteQuietly(memoryDirectory);
+            precedingPosition = 0;
+            position = 0;
+            memoryFiles.clear();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private void clearReaderBuffers() {
+        if (readerBuffers != null && !readerBuffers.isEmpty()) {
+            for (final ChunkSummaryMemoryBuffer readerBuffer : readerBuffers) {
+                readerBuffer.close();
+            }
+            readerBuffers.clear();
+        }
+    }
+
+    private void closeReaderWriteLocked() {
+        if (reader != null) {
+            reader.close();
+            reader = null;
+        }
+    }
+
+    @Override
+    public ChunkSummary put(final V value) {
+        if (valueSerdeLengthProvider != null) {
+            final long length = valueSerdeLengthProvider.getLength(value);
+            return writeValue(value, length);
+        } else {
+            try (ICloseableMemoryBuffer buffer = MemoryBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
+                final long length = valueSerde.toBuffer(buffer, value);
+                return writeBuffer(buffer, length);
+            }
+        }
+    }
+
+    private ChunkSummary writeBuffer(final IMemoryBuffer buffer, final long length) {
+        if (length < 0) {
+            throw new IllegalArgumentException("length must be non-negative: " + length);
+        }
+        final long precedingAddressOffset;
+        final long addressOffset;
+        lock.writeLock().lock();
+        try {
+            if (memoryFiles.isEmpty() || position > 0 && IMemoryMappedFile.isSegmentSizeExceeded(position + length)) {
+                precedingPosition += position;
+                position = 0;
+                memoryFiles.add(nextMemoryFile());
+            }
+            //support parallel writes from this instance (we expect exclusive access to the file)
+            precedingAddressOffset = precedingPosition;
+            addressOffset = position;
+            position += length;
+            if (readerBuffers != null) {
+                //finalize reader asynchronously so that other threads can evict it properly using GC
+                reader = null;
+                if (!readerBuffers.isEmpty()) {
+                    final IMemoryMappedFile newReader = getReader();
+                    for (final ChunkSummaryMemoryBuffer readerBuffer : readerBuffers) {
+                        readerBuffer.init(newReader);
+                    }
+                }
+            } else {
+                closeReaderWriteLocked();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+        lock.readLock().lock();
+        try {
+            if (!memoryDirectory.exists()) {
+                Files.forceMkdir(memoryDirectory);
+            }
+            final int lastMemoryFileIndex = memoryFiles.size() - 1;
+            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
+            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
+                out.seek(addressOffset);
+                buffer.getBytesTo(0, (DataOutput) out, length);
+                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
+                        addressOffset, length);
+                metadata.setSummary(summary);
+                return summary;
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private ChunkSummary writeValue(final V value, final long length) {
+        if (length < 0) {
+            throw new IllegalArgumentException("length must be non-negative: " + length);
+        }
+        final long precedingAddressOffset;
+        final long addressOffset;
+        lock.writeLock().lock();
+        try {
+            if (memoryFiles.isEmpty() || position > 0 && IMemoryMappedFile.isSegmentSizeExceeded(position + length)) {
+                precedingPosition += position;
+                position = 0;
+                memoryFiles.add(nextMemoryFile());
+            }
+            //support parallel writes from this instance (we expect exclusive access to the file)
+            precedingAddressOffset = precedingPosition;
+            addressOffset = position;
+            position += length;
+            if (readerBuffers != null) {
+                //finalize reader asynchronously so that other threads can evict it properly using GC
+                reader = null;
+                if (!readerBuffers.isEmpty()) {
+                    final IMemoryMappedFile newReader = getReader();
+                    for (final ChunkSummaryMemoryBuffer readerBuffer : readerBuffers) {
+                        readerBuffer.init(newReader);
+                    }
+                }
+            } else {
+                closeReaderWriteLocked();
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+        lock.readLock().lock();
+        try {
+            if (!memoryDirectory.exists()) {
+                Files.forceMkdir(memoryDirectory);
+            }
+            final int lastMemoryFileIndex = memoryFiles.size() - 1;
+            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
+            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
+                out.seek(addressOffset);
+                final long bufferLength = valueSerde.toBuffer(new DataOutputDelegateMemoryBuffer(out), value);
+                Assertions.checkEquals(length, bufferLength);
+                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
+                        addressOffset, length);
+                metadata.setSummary(summary);
+                return summary;
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public void close() {
+        lock.writeLock().lock();
+        try {
+            clearReaderBuffers();
+            closeReaderWriteLocked();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+}

@@ -8,6 +8,7 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.TypeDelegateSerde;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
 
 @NotThreadSafe
 public abstract class APersistentMapConfig<K, V> implements IPersistentMapConfig<K, V> {
@@ -26,6 +27,11 @@ public abstract class APersistentMapConfig<K, V> implements IPersistentMapConfig
     @Override
     public ISerde<K> newKeySerde() {
         return new TypeDelegateSerde<K>(getKeyType());
+    }
+
+    @Override
+    public ILargeSerde<V> newLargeValueSerde() {
+        return null;
     }
 
     @Override

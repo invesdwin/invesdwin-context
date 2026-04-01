@@ -12,6 +12,7 @@ import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
 import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
 
 @Immutable
 public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K, V> {
@@ -49,6 +50,11 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
         return ALargePersistentMap.newDefaultChunkStorage(directory, valueSerde, readOnly, closeAllowed);
     }
 
+    protected IChunkStorage<V> newLargeChunkStorage(final File directory, final ILargeSerde<V> valueSerde,
+            final boolean readOnly, final boolean closeAllowed) {
+        return ALargePersistentMap.newDefaultLargeChunkStorage(directory, valueSerde, readOnly, closeAllowed);
+    }
+
     @Override
     public final ConcurrentMap<K, V> newPersistentMap(final IPersistentMapConfig<K, V> config) {
         return new ALargePersistentMap<K, V>(config.getName()) {
@@ -74,6 +80,13 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
             }
 
             @Override
+            protected IChunkStorage<V> newLargeChunkStorage(final File directory, final ILargeSerde<V> valueSerde,
+                    final boolean readOnly, final boolean closeAllowed) {
+                return LargePersistentMapFactory.this.newLargeChunkStorage(directory, valueSerde, readOnly,
+                        closeAllowed);
+            }
+
+            @Override
             public boolean isDiskPersistence() {
                 return config.isDiskPersistence();
             }
@@ -86,6 +99,11 @@ public class LargePersistentMapFactory<K, V> implements IPersistentMapFactory<K,
             @Override
             public ISerde<V> newValueSerde() {
                 return config.newValueSerde();
+            }
+
+            @Override
+            public ILargeSerde<V> newLargeValueSerde() {
+                return config.newLargeValueSerde();
             }
 
             @Override

@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.persistentmap;
 import java.io.File;
 
 import de.invesdwin.util.marshallers.serde.ISerde;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
 
 public interface IPersistentMapConfig<K, V> {
 
@@ -11,6 +12,11 @@ public interface IPersistentMapConfig<K, V> {
     boolean isDiskPersistence();
 
     ISerde<K> newKeySerde();
+
+    /**
+     * has precedence over newValueSerde on supported storages
+     */
+    ILargeSerde<V> newLargeValueSerde();
 
     ISerde<V> newValueSerde();
 
