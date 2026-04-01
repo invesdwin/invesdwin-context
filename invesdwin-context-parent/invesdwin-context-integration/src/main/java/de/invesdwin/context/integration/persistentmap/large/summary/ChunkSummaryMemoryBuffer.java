@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.persistentmap.large.summary;
 
 import java.io.Closeable;
+import java.io.File;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -35,6 +36,11 @@ public class ChunkSummaryMemoryBuffer extends ADelegateMemoryBuffer implements C
         final long length = Integers.checkedCast(summary.getMemoryLength());
         this.buffer = file.newMemoryBuffer(summary.getPrecedingMemoryOffset() + summary.getMemoryOffset(), length);
         this.file = file;
+    }
+
+    public void init(final File file, final IMemoryBuffer buffer) {
+        final long length = Integers.checkedCast(summary.getMemoryLength());
+        this.buffer = buffer.newSlice(summary.getPrecedingMemoryOffset() + summary.getMemoryOffset(), length);
     }
 
     @Override

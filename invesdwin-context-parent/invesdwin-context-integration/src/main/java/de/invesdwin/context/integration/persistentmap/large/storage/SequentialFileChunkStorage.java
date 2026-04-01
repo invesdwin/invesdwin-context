@@ -25,7 +25,14 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
 /**
  * Removed values are not reclaimed, they only get removed from the index. We could implement a compaction process for
- * this sometime (could be done async).
+ * this sometime (could be done async). Each value is stored in sequentially chunked files.
+ * 
+ * This implementation does not use memory-mapped files, because we expect the files to be written sequentially and read
+ * randomly. Memory-mapped files are optimized for random access, but they can be inefficient for sequential writes,
+ * especially if the file size exceeds the available memory. By using regular file streams, we can write data
+ * sequentially without worrying about memory constraints, and we can still read data randomly when needed.
+ * 
+ * This implementation is not suitable for flyweight pattern, which is better serve with memory mapped files.
  */
 @ThreadSafe
 public class SequentialFileChunkStorage<V> implements IChunkStorage<V> {
@@ -152,7 +159,7 @@ public class SequentialFileChunkStorage<V> implements IChunkStorage<V> {
                 buffer.getBytesTo(0, (DataOutput) out, length);
                 final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
                         addressOffset, length);
-                metadata.setSummary(summary);
+                metadata.putSummary(summary);
                 return summary;
             }
         } catch (final IOException e) {

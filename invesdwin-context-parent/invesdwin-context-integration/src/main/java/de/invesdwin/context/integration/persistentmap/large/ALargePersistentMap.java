@@ -125,6 +125,7 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     public static <V> IChunkStorage<V> newDefaultLargeChunkStorage(final File directory,
             final ILargeSerde<V> valueSerde, final boolean readOnly, final boolean closeAllowed) {
+        //            return new ChronicleLargeMappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
         return new LargeMappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
     }
 
