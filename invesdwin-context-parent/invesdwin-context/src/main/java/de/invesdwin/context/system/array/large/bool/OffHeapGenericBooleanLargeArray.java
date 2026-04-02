@@ -1,34 +1,34 @@
-package de.invesdwin.context.system.array.primitive.bool;
+package de.invesdwin.context.system.array.large.bool;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.system.array.primitive.IPrimitiveArrayAllocator;
-import de.invesdwin.util.collections.array.base.IBaseArrayId;
-import de.invesdwin.util.collections.array.primitive.IGenericPrimitiveArray;
-import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
+import de.invesdwin.context.system.array.large.ILargeArrayAllocator;
+import de.invesdwin.util.collections.array.large.IGenericLargeArray;
+import de.invesdwin.util.collections.array.large.ILargeArrayId;
+import de.invesdwin.util.collections.array.large.bitset.ILargeBitSet;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.concurrent.lock.ICloseableLock;
-import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
 
 @Immutable
-public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBooleanPrimitiveArray {
+public final class OffHeapGenericBooleanLargeArray implements IGenericBooleanLargeArray {
 
-    private final IPrimitiveArrayAllocator arrayAllocator;
+    private final ILargeArrayAllocator arrayAllocator;
     private final String name;
-    private final IPrimitiveBitSet trueValues;
-    private final IPrimitiveBitSet falseValues;
+    private final ILargeBitSet trueValues;
+    private final ILargeBitSet falseValues;
     private volatile boolean initialized = false;
 
     @SuppressWarnings("deprecation")
-    private OffHeapGenericBooleanPrimitiveArray(final IPrimitiveArrayAllocator arrayAllocator, final String name,
-            final int size) {
+    private OffHeapGenericBooleanLargeArray(final ILargeArrayAllocator arrayAllocator, final String name,
+            final long size) {
         this.arrayAllocator = arrayAllocator;
         this.name = name;
         final String trueValuesId = name + "_trueValues";
         final String falseValuesId = name + "_falseValues";
         try (ICloseableLock lock = arrayAllocator.getLock(trueValuesId).locked()) {
-            final IPrimitiveBitSet trueValuesCached = arrayAllocator.getBitSet(trueValuesId);
-            final IPrimitiveBitSet falseValuesCached = arrayAllocator.getBitSet(falseValuesId);
+            final ILargeBitSet trueValuesCached = arrayAllocator.getBitSet(trueValuesId);
+            final ILargeBitSet falseValuesCached = arrayAllocator.getBitSet(falseValuesId);
             if (trueValuesCached != null && falseValuesCached != null) {
                 trueValues = trueValuesCached;
                 falseValues = falseValuesCached;
@@ -43,7 +43,7 @@ public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBoolea
 
     @Override
     public int getId() {
-        return IBaseArrayId.newId(trueValues, falseValues);
+        return ILargeArrayId.newId(trueValues, falseValues);
     }
 
     @Override
@@ -57,7 +57,7 @@ public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBoolea
     }
 
     @Override
-    public IPrimitiveArrayAllocator getArrayAllocator() {
+    public ILargeArrayAllocator getArrayAllocator() {
         return arrayAllocator;
     }
 
@@ -66,26 +66,26 @@ public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBoolea
         return name;
     }
 
-    public static OffHeapGenericBooleanPrimitiveArray getInstance(final IPrimitiveArrayAllocator arrayAllocator,
+    public static OffHeapGenericBooleanLargeArray getInstance(final ILargeArrayAllocator arrayAllocator,
             final String name) {
-        return (OffHeapGenericBooleanPrimitiveArray) arrayAllocator.getAttributes().get(newKey(name));
+        return (OffHeapGenericBooleanLargeArray) arrayAllocator.getAttributes().get(newKey(name));
     }
 
     private static String newKey(final String name) {
-        return OffHeapGenericBooleanPrimitiveArray.class.getSimpleName() + "_" + name;
+        return OffHeapGenericBooleanLargeArray.class.getSimpleName() + "_" + name;
     }
 
-    public static OffHeapGenericBooleanPrimitiveArray newInstance(final IPrimitiveArrayAllocator arrayAllocator,
-            final String name, final int size) {
+    public static OffHeapGenericBooleanLargeArray newInstance(final ILargeArrayAllocator arrayAllocator,
+            final String name, final long size) {
         final IAttributesMap attributes = arrayAllocator.getAttributes();
         synchronized (attributes) {
             final String key = newKey(name);
-            return attributes.getOrCreate(key, () -> new OffHeapGenericBooleanPrimitiveArray(arrayAllocator, key, size));
+            return attributes.getOrCreate(key, () -> new OffHeapGenericBooleanLargeArray(arrayAllocator, key, size));
         }
     }
 
     @Override
-    public int size() {
+    public long size() {
         return trueValues.size();
     }
 
@@ -95,17 +95,17 @@ public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBoolea
     }
 
     @Override
-    public int getBuffer(final IByteBuffer buffer) {
+    public long getBuffer(final IMemoryBuffer buffer) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int getBufferLength() {
+    public long getBufferLength() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void set(final int index, final Boolean value) {
+    public void set(final long index, final Boolean value) {
         if (value == null) {
             trueValues.remove(index);
             falseValues.remove(index);
@@ -119,7 +119,7 @@ public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBoolea
     }
 
     @Override
-    public Boolean get(final int index) {
+    public Boolean get(final long index) {
         if (trueValues.contains(index)) {
             return Boolean.TRUE;
         } else if (falseValues.contains(index)) {
@@ -130,32 +130,23 @@ public final class OffHeapGenericBooleanPrimitiveArray implements IGenericBoolea
     }
 
     @Override
-    public IGenericPrimitiveArray<Boolean> slice(final int fromIndex, final int length) {
+    public IGenericLargeArray<Boolean> slice(final long fromIndex, final long length) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Boolean[] asArray() {
+    public Boolean[] asArray(final long fromIndex, final int length) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Boolean[] asArray(final int fromIndex, final int length) {
+    public Boolean[] asArrayCopy(final long fromIndex, final int length) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Boolean[] asArrayCopy() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Boolean[] asArrayCopy(final int fromIndex, final int length) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void getGenerics(final int srcPos, final IGenericPrimitiveArray<Boolean> dest, final int destPos, final int length) {
+    public void getGenerics(final long srcPos, final IGenericLargeArray<Boolean> dest, final long destPos,
+            final long length) {
         throw new UnsupportedOperationException();
     }
 

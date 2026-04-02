@@ -22,6 +22,7 @@ import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.ISerdeLengthProvider;
 import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.math.Longs;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
@@ -41,6 +42,8 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 @ThreadSafe
 public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
+    private static final int MAX_SEGMENT_SIZE = Integers
+            .checkedCast(Longs.min(ListMemoryMappedFile.WINDOWS_MAX_LENGTH_PER_SEGMENT_MAPPED, Integer.MAX_VALUE));
     private final File memoryDirectory;
     private final List<File> memoryFiles;
     private final ISerde<V> valueSerde;
@@ -367,13 +370,12 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             final long startOffset = position;
 
             // Calculate how many segments we need
-            final long maxSegmentSize = ListMemoryMappedFile.WINDOWS_MAX_LENGTH_PER_SEGMENT_MAPPED;
             int remainingLength = length;
             int bufferOffset = 0;
             int segmentCount = 0;
 
             while (remainingLength > 0) {
-                final int segmentLength = (int) Math.min(remainingLength, maxSegmentSize);
+                final int segmentLength = Integers.checkedCast(Longs.min(remainingLength, MAX_SEGMENT_SIZE));
 
                 // Write this segment
                 try {

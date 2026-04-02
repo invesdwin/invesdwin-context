@@ -21,6 +21,7 @@ import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
 import de.invesdwin.util.marshallers.serde.large.ILargeSerdeLengthProvider;
+import de.invesdwin.util.math.Longs;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.file.ListMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.memory.DataOutputDelegateMemoryBuffer;
@@ -372,7 +373,7 @@ public class LargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
             int segmentCount = 0;
 
             while (remainingLength > 0) {
-                final long segmentLength = Math.min(remainingLength, maxSegmentSize);
+                final long segmentLength = Longs.min(remainingLength, maxSegmentSize);
 
                 // Write this segment
                 try {

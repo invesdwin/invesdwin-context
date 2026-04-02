@@ -5,6 +5,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import javax.cache.event.CacheEntryEvent;
 
 import de.invesdwin.context.jcache.CacheEntryListenerSupport;
+import de.invesdwin.util.math.Integers;
 
 @ThreadSafe
 public class SizeCountingCacheEntryListener<K, V> extends CacheEntryListenerSupport<K, V> {
@@ -20,7 +21,7 @@ public class SizeCountingCacheEntryListener<K, V> extends CacheEntryListenerSupp
             count++;
         }
         synchronized (this) {
-            size = Math.max(0, size - count);
+            size = Integers.max(0, size - count);
         }
     }
 
@@ -37,7 +38,7 @@ public class SizeCountingCacheEntryListener<K, V> extends CacheEntryListenerSupp
             count++;
         }
         synchronized (this) {
-            size = Math.max(0, size + count);
+            size = Integers.max(0, size + count);
         }
     }
 
