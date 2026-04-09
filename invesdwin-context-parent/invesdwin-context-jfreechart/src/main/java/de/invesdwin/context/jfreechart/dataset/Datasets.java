@@ -11,6 +11,7 @@ import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.OHLCDataset;
 import org.jfree.data.xy.XYDataset;
 
+import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.math.Integers;
 
 @Immutable
@@ -18,8 +19,7 @@ public final class Datasets {
 
     private static final int INCREMENT_THRESHOLD = 10000;
 
-    private Datasets() {
-    }
+    private Datasets() {}
 
     /**
      * Adapted from DatasetUtils.
@@ -85,10 +85,10 @@ public final class Datasets {
                         final Number lvalue = bx.getMinRegularValue(series, item);
                         final Number uvalue = bx.getMaxRegularValue(series, item);
                         if (lvalue != null) {
-                            minimum = Math.min(minimum, lvalue.doubleValue());
+                            minimum = Doubles.min(minimum, lvalue.doubleValue());
                         }
                         if (uvalue != null) {
-                            maximum = Math.max(maximum, uvalue.doubleValue());
+                            maximum = Doubles.max(maximum, uvalue.doubleValue());
                         }
                     }
                 }
@@ -131,10 +131,10 @@ public final class Datasets {
                         final double lvalue = ohlc.getLowValue(series, item);
                         final double uvalue = ohlc.getHighValue(series, item);
                         if (!Double.isNaN(lvalue)) {
-                            minimum = Math.min(minimum, lvalue);
+                            minimum = Doubles.min(minimum, lvalue);
                         }
                         if (!Double.isNaN(uvalue)) {
-                            maximum = Math.max(maximum, uvalue);
+                            maximum = Doubles.max(maximum, uvalue);
                         }
                     }
                 }
@@ -178,14 +178,14 @@ public final class Datasets {
                         final double lvalue = ixyd.getStartYValue(series, item);
                         final double uvalue = ixyd.getEndYValue(series, item);
                         if (!Double.isNaN(yvalue)) {
-                            minimum = Math.min(minimum, yvalue);
-                            maximum = Math.max(maximum, yvalue);
+                            minimum = Doubles.min(minimum, yvalue);
+                            maximum = Doubles.max(maximum, yvalue);
                         }
                         if (!Double.isNaN(lvalue)) {
-                            minimum = Math.min(minimum, lvalue);
+                            minimum = Doubles.min(minimum, lvalue);
                         }
                         if (!Double.isNaN(uvalue)) {
-                            maximum = Math.max(maximum, uvalue);
+                            maximum = Doubles.max(maximum, uvalue);
                         }
                     }
                 }
@@ -225,8 +225,8 @@ public final class Datasets {
                 final double y = dataset.getYValue(series, item);
                 if (xRange.contains(x)) {
                     if (!Double.isNaN(y)) {
-                        minimum = Math.min(minimum, y);
-                        maximum = Math.max(maximum, y);
+                        minimum = Doubles.min(minimum, y);
+                        maximum = Doubles.max(maximum, y);
                     }
                 }
             }

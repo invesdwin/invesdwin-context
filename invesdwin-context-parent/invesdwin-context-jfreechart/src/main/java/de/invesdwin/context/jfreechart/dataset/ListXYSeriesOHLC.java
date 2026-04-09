@@ -11,6 +11,7 @@ import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 
 import de.invesdwin.util.lang.reflection.Reflections;
+import de.invesdwin.util.math.Doubles;
 
 @NotThreadSafe
 public class ListXYSeriesOHLC extends XYSeries {
@@ -82,22 +83,22 @@ public class ListXYSeriesOHLC extends XYSeries {
     }
 
     public void updateBoundsForAddedItem(final MutableXYDataItemOHLC item) {
-        setMinX(minIgnoreNaN(getMinX(), getItemMinX(item)));
-        setMaxX(maxIgnoreNaN(getMaxX(), getItemMaxX(item)));
+        setMinX(Doubles.min(getMinX(), getItemMinX(item)));
+        setMaxX(Doubles.max(getMaxX(), getItemMaxX(item)));
         if (item.getY() != null) {
-            setMinY(minIgnoreNaN(getMinY(), getItemMinY(item)));
-            setMaxY(maxIgnoreNaN(getMaxY(), getItemMaxY(item)));
+            setMinY(Doubles.min(getMinY(), getItemMinY(item)));
+            setMaxY(Doubles.max(getMaxY(), getItemMaxY(item)));
         }
     }
 
     public double getItemMaxY(final MutableXYDataItemOHLC item) {
         final TimeRangedOHLCDataItem ohlc = item.getOHLC();
-        return maxIgnoreNaN(ohlc.getOpen(), ohlc.getHigh(), ohlc.getLow(), ohlc.getClose());
+        return Doubles.max(ohlc.getOpen(), ohlc.getHigh(), ohlc.getLow(), ohlc.getClose());
     }
 
     public double getItemMinY(final MutableXYDataItemOHLC item) {
         final TimeRangedOHLCDataItem ohlc = item.getOHLC();
-        return minIgnoreNaN(ohlc.getOpen(), ohlc.getHigh(), ohlc.getLow(), ohlc.getClose());
+        return Doubles.min(ohlc.getOpen(), ohlc.getHigh(), ohlc.getLow(), ohlc.getClose());
     }
 
     public double getItemMaxX(final MutableXYDataItemOHLC item) {
@@ -106,42 +107,6 @@ public class ListXYSeriesOHLC extends XYSeries {
 
     public double getItemMinX(final MutableXYDataItemOHLC item) {
         return item.getXValue();
-    }
-
-    protected double minIgnoreNaN(final double... arr) {
-        double min = Double.NaN;
-        for (int i = 0; i < arr.length; i++) {
-            min = minIgnoreNaN(min, arr[i]);
-        }
-        return min;
-    }
-
-    protected double maxIgnoreNaN(final double... arr) {
-        double max = Double.NaN;
-        for (int i = 0; i < arr.length; i++) {
-            max = maxIgnoreNaN(max, arr[i]);
-        }
-        return max;
-    }
-
-    protected double minIgnoreNaN(final double a, final double b) {
-        if (Double.isNaN(a)) {
-            return b;
-        }
-        if (Double.isNaN(b)) {
-            return a;
-        }
-        return Math.min(a, b);
-    }
-
-    protected double maxIgnoreNaN(final double a, final double b) {
-        if (Double.isNaN(a)) {
-            return b;
-        }
-        if (Double.isNaN(b)) {
-            return a;
-        }
-        return Math.max(a, b);
     }
 
     @Deprecated
