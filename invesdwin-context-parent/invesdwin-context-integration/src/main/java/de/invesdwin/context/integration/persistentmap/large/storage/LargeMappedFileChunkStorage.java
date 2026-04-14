@@ -37,6 +37,12 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
  * Files can be smaller than the configured segment size, but never larger. If a value exceeds the segment size, it gets
  * split across multiple files and the summary contains the total length and the name of the first file. This allows us
  * to support values larger than the segment size.
+ * 
+ * TODO: implement a variant of this class that pre-allocates segments and files in exact chunks, similar to
+ * SegmentedRoaringLargeBitSet so that chunk indexes can be retrieved as fast as possible.
+ * 
+ * TODO: instead of moving into a new segment before starting a new value, we should just wrap it to the next file with
+ * the remaining amount. That way we reduce fragmentation.
  */
 @ThreadSafe
 public class LargeMappedFileChunkStorage<V> implements IChunkStorage<V> {

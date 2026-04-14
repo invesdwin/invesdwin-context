@@ -24,6 +24,11 @@ import net.openhft.chronicle.core.OS;
  * 
  * This implementation uses Chronicle's expandable MappedFile which handles Windows limitations internally. It is not
  * prone to files being smaller than the maximum chunk size.
+ * 
+ * TODO: Even with "mappedFile.retain=true", the overhead of
+ * "net.openhft.chronicle.bytes.internal.ChunkedMappedFile.acquireByteStore(...)" is still too high when writing
+ * individual values. This could be optimized by directly going against the stores instead of retrieving them before
+ * each write inside MappedBytes via direct store indexing similar to SegmentedRoaringLargeBitSet.
  */
 @ThreadSafe
 public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
