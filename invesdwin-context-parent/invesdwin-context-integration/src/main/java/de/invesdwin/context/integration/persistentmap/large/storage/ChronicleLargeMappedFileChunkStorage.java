@@ -28,6 +28,11 @@ import net.openhft.chronicle.core.OS;
 @ThreadSafe
 public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
 
+    /**
+     * 1 GB
+     */
+    public static final long DEFAULT_CHUNK_SIZE = 1024 * 1024 * 1024;
+
     private final File memoryDirectory;
     private final File memoryFile;
     private final File positionFile;
@@ -97,7 +102,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
     }
 
     protected long newChunkSize() {
-        return MappedExpandableMemoryBuffer.DEFAULT_CHUNK_SIZE;
+        return DEFAULT_CHUNK_SIZE;
     }
 
     protected long newOverlapSize() {
