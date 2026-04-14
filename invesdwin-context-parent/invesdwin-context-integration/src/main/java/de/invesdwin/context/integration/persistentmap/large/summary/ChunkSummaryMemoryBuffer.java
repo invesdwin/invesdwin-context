@@ -7,7 +7,6 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.agrona.MutableDirectBuffer;
 
-import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.memory.ClosedMemoryBuffer;
@@ -33,13 +32,13 @@ public class ChunkSummaryMemoryBuffer extends ADelegateMemoryBuffer implements C
     }
 
     public void init(final IMemoryMappedFile file) {
-        final long length = Integers.checkedCast(summary.getMemoryLength());
+        final long length = summary.getMemoryLength();
         this.buffer = file.newMemoryBuffer(summary.getPrecedingMemoryOffset() + summary.getMemoryOffset(), length);
         this.file = file;
     }
 
     public void init(final File file, final IMemoryBuffer buffer) {
-        final long length = Integers.checkedCast(summary.getMemoryLength());
+        final long length = summary.getMemoryLength();
         this.buffer = buffer.newSlice(summary.getPrecedingMemoryOffset() + summary.getMemoryOffset(), length);
     }
 
