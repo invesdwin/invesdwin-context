@@ -15,7 +15,7 @@ import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
 import de.invesdwin.util.marshallers.serde.large.ILargeSerdeLengthProvider;
 import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
-import de.invesdwin.util.streams.buffer.memory.extend.MappedExpandableMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.extend.ChronicleMappedExpandableMemoryBuffer;
 import net.openhft.chronicle.core.OS;
 
 /**
@@ -25,7 +25,7 @@ import net.openhft.chronicle.core.OS;
  * This implementation uses Chronicle's expandable MappedFile which handles Windows limitations internally. It is not
  * prone to files being smaller than the maximum chunk size.
  * 
- * WARNING: this storage is inherently slower than our own alternatives
+ * WARNING: this storage is inherently slower than our own alternatives.
  */
 @ThreadSafe
 public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
@@ -44,7 +44,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
             .newReadWriteLock(ChronicleLargeMappedFileChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
     private long position;
-    private volatile MappedExpandableMemoryBuffer mappedFile;
+    private volatile ChronicleMappedExpandableMemoryBuffer mappedFile;
     private final boolean readOnly;
     private final boolean closeAllowed;
     private final ChunkStorageMetadata metadata;
@@ -81,7 +81,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
         }
     }
 
-    private MappedExpandableMemoryBuffer getMappedFile() {
+    private ChronicleMappedExpandableMemoryBuffer getMappedFile() {
         if (mappedFile == null) {
             lock.readLock().lock();
             try {
@@ -90,7 +90,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
                         if (!memoryFile.getParentFile().exists()) {
                             Files.forceMkdir(memoryFile.getParentFile());
                         }
-                        mappedFile = new MappedExpandableMemoryBuffer(newChunkSize(), memoryFile, false,
+                        mappedFile = new ChronicleMappedExpandableMemoryBuffer(newChunkSize(), memoryFile, false,
                                 newOverlapSize(), readOnly, closeAllowed);
                     }
                 }
@@ -115,7 +115,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
     public V get(final ChunkSummary summary) {
         lock.readLock().lock();
         try {
-            final MappedExpandableMemoryBuffer reader = getMappedFile();
+            final ChronicleMappedExpandableMemoryBuffer reader = getMappedFile();
             if (reader == null) {
                 return null;
             }
@@ -175,7 +175,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
         try {
             //we have to do sequential writes since we don't know the length up front
             addressOffset = position;
-            final MappedExpandableMemoryBuffer mf = getMappedFile();
+            final ChronicleMappedExpandableMemoryBuffer mf = getMappedFile();
             length = valueSerde.toBuffer(mf.sliceFrom(addressOffset), value);
             position += length;
             writePosition(position);
@@ -207,7 +207,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
 
         lock.readLock().lock();
         try {
-            final MappedExpandableMemoryBuffer mf = getMappedFile();
+            final ChronicleMappedExpandableMemoryBuffer mf = getMappedFile();
             final long writtenLength = valueSerde.toBuffer(mf.sliceFrom(addressOffset), value);
             Assertions.checkEquals(length, writtenLength);
             final ChunkSummary summary = new ChunkSummary(memoryFile.getName(), 0L, addressOffset, length);
