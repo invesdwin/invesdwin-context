@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.util.assertions.Assertions;
@@ -25,14 +25,17 @@ import net.openhft.chronicle.core.OS;
  * This implementation uses Chronicle's expandable MappedFile which handles Windows limitations internally. It is not
  * prone to files being smaller than the maximum chunk size.
  * 
- * WARNING: this storage is inherently slower than our own alternatives.
+ * WARNING: this storage is inherently slower than our own alternatives and not thread safe because MappedBytes keeps a
+ * local storage variable. This implementation is only for testing purposes.
  */
-@ThreadSafe
+@Deprecated
+@NotThreadSafe
 public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     /**
      * 1 GB
      */
+    @Deprecated
     public static final long DEFAULT_CHUNK_SIZE = 1024 * 1024 * 1024;
 
     private final File memoryDirectory;
@@ -49,6 +52,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
     private final boolean closeAllowed;
     private final ChunkStorageMetadata metadata;
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public ChronicleLargeMappedFileChunkStorage(final File memoryDirectory, final ILargeSerde<V> valueSerde,
             final boolean readOnly, final boolean closeAllowed) {
@@ -103,14 +107,17 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
         return mappedFile;
     }
 
+    @Deprecated
     protected long newChunkSize() {
         return DEFAULT_CHUNK_SIZE;
     }
 
+    @Deprecated
     protected long newOverlapSize() {
         return OS.pageSize();
     }
 
+    @Deprecated
     @Override
     public V get(final ChunkSummary summary) {
         lock.readLock().lock();
@@ -129,16 +136,19 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
         }
     }
 
+    @Deprecated
     @Override
     public void remove(final ChunkSummary summary) {
         //noop
     }
 
+    @Deprecated
     @Override
     public boolean isRemovable() {
         return false;
     }
 
+    @Deprecated
     @Override
     public void clear() {
         lock.writeLock().lock();
@@ -158,6 +168,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
         }
     }
 
+    @Deprecated
     @Override
     public ChunkSummary put(final V value) {
         if (valueSerdeLengthProvider != null) {
@@ -218,6 +229,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
         }
     }
 
+    @Deprecated
     @Override
     public void close() {
         lock.writeLock().lock();
