@@ -26,9 +26,10 @@ import de.invesdwin.util.math.Longs;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
-import de.invesdwin.util.streams.buffer.bytes.delegate.DataOutputDelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
-import de.invesdwin.util.streams.buffer.file.ListMemoryMappedFile;
+import de.invesdwin.util.streams.buffer.file.MemoryMappedFile;
+import de.invesdwin.util.streams.buffer.file.SegmentedMemoryMappedFile;
+import de.invesdwin.util.streams.buffer.memory.DataOutputDelegateMemoryBuffer;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
 /**
@@ -42,8 +43,8 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 @ThreadSafe
 public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
-    private static final int MAX_SEGMENT_SIZE = Integers
-            .checkedCast(Longs.min(ListMemoryMappedFile.WINDOWS_MAX_LENGTH_PER_SEGMENT_MAPPED, Integer.MAX_VALUE));
+    private static final int SEGMENT_SIZE = Integers
+            .checkedCast(Longs.min(LargeMappedFileChunkStorage.SEGMENT_SIZE, Integer.MAX_VALUE));
     private final File memoryDirectory;
     private final List<File> memoryFiles;
     private final ISerde<V> valueSerde;
@@ -100,7 +101,16 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     }
 
     public File nextMemoryFile() {
-        return new File(memoryDirectory, "memory_" + memoryFiles.size() + ".bin");
+        final int nextIndex = memoryFiles.size();
+        return newMemoryFile(nextIndex);
+    }
+
+    private File newMemoryFile(final int index) {
+        return new File(memoryDirectory, newMemoryFileName(index));
+    }
+
+    private String newMemoryFileName(final int index) {
+        return "memory_" + index + ".bin";
     }
 
     private IMemoryMappedFile getReader() {
@@ -118,7 +128,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
                             final File memoryFile = memoryFiles.get(0);
                             final long positionCopy = position;
                             try {
-                                reader = IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly, closeAllowed);
+                                reader = new MemoryMappedFile(closeAllowed, memoryFile, 0L, positionCopy, readOnly);
                             } catch (final IOException e) {
                                 throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
                                         + " fileIndex=0 position=" + positionCopy, e);
@@ -136,15 +146,15 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
                                     positionCopy = memoryFile.length();
                                 }
                                 try {
-                                    mappedFiles.add(IMemoryMappedFile.map(memoryFile, 0L, positionCopy, readOnly,
-                                            closeAllowed));
+                                    mappedFiles.add(
+                                            new MemoryMappedFile(closeAllowed, memoryFile, 0L, positionCopy, readOnly));
                                 } catch (final IOException e) {
                                     throw new RuntimeException("directory=" + memoryDirectory.getAbsolutePath()
                                             + " fileIndex=" + mappedFiles.size() + " precedingPosition="
                                             + precedingPositionCopy + " position=" + positionCopy, e);
                                 }
                             }
-                            return new ListMemoryMappedFile(closeAllowed, mappedFiles);
+                            return new SegmentedMemoryMappedFile(SEGMENT_SIZE, closeAllowed, mappedFiles);
                         }
                     }
                 }
@@ -170,7 +180,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
                 readerBuffers.add(chunkBuffer);
                 buffer = chunkBuffer;
             } else {
-                final int length = Integers.checkedCast(summary.getMemoryLength());
+                final int length = ByteBuffers.checkedCast(summary.getMemoryLength());
                 final long memoryOffset = summary.getPrecedingMemoryOffset() + summary.getMemoryOffset();
                 buffer = reader.newByteBuffer(memoryOffset, length);
             }
@@ -228,10 +238,51 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             final int length = valueSerdeLengthProvider.getLength(value);
             return writeValue(value, length);
         } else {
+            //ystem.out.println("use a temp file instead of a memory mapped file");
             try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
                 final int length = valueSerde.toBuffer(buffer, value);
                 return writeBuffer(buffer, length);
             }
+        }
+    }
+
+    private void prepareSegmentsWriteLocked(final long length) {
+        if (memoryFiles.isEmpty()) {
+            if (!memoryDirectory.exists()) {
+                try {
+                    Files.forceMkdir(memoryDirectory);
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            memoryFiles.add(nextMemoryFile());
+        }
+
+        long remainingLength = length;
+        while (remainingLength > 0) {
+            final long segmentRemainingLength = SEGMENT_SIZE - position;
+            final long segmentLength = Longs.min(remainingLength, segmentRemainingLength);
+            position += segmentLength;
+            remainingLength -= segmentLength;
+
+            // Prepare next segment if needed
+            if (remainingLength > 0) {
+                precedingPosition += position;
+                position = 0;
+                memoryFiles.add(nextMemoryFile());
+            }
+        }
+
+        if (readerBuffers != null) {
+            reader = null;
+            if (!readerBuffers.isEmpty()) {
+                final IMemoryMappedFile newReader = getReader();
+                for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
+                    readerBuffer.init(newReader);
+                }
+            }
+        } else {
+            closeReaderWriteLocked();
         }
     }
 
@@ -240,54 +291,65 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             throw new IllegalArgumentException("length must be non-negative: " + length);
         }
 
-        // Check if this single value exceeds segment size and needs to be split
-        if (IMemoryMappedFile.isSegmentSizeExceeded(length)) {
-            return writeLargeBufferSplitAcrossSegments(buffer, length);
-        }
+        long startPrecedingPosition;
+        long startFilePosition;
+        int startFileIndex;
 
-        final long precedingAddressOffset;
-        final long addressOffset;
         lock.writeLock().lock();
         try {
-            if (memoryFiles.isEmpty() || position > 0 && IMemoryMappedFile.isSegmentSizeExceeded(position + length)) {
-                precedingPosition += position;
-                position = 0;
-                memoryFiles.add(nextMemoryFile());
+            startPrecedingPosition = precedingPosition;
+            startFilePosition = position;
+            startFileIndex = Integers.max(0, memoryFiles.size() - 1);
+            final long startFileRemainingLength = SEGMENT_SIZE - startFilePosition;
+            if (startFileRemainingLength <= 0) {
+                //directly roll over to next segment, since last one is full
+                startPrecedingPosition += startFilePosition;
+                startFilePosition = 0;
+                startFileIndex++;
             }
-            //support parallel writes from this instance (we expect exclusive access to the file)
-            precedingAddressOffset = precedingPosition;
-            addressOffset = position;
-            position += length;
-            if (readerBuffers != null) {
-                //finalize reader asynchronously so that other threads can evict it properly using GC
-                reader = null;
-                if (!readerBuffers.isEmpty()) {
-                    final IMemoryMappedFile newReader = getReader();
-                    for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
-                        readerBuffer.init(newReader);
-                    }
-                }
-            } else {
-                closeReaderWriteLocked();
-            }
+            prepareSegmentsWriteLocked(length);
         } finally {
             lock.writeLock().unlock();
         }
+
+        return writeBufferPrepared(buffer, length, startPrecedingPosition, startFilePosition, startFileIndex);
+    }
+
+    private ChunkSummary writeBufferPrepared(final IByteBuffer buffer, final int length,
+            final long startPrecedingPosition, final long startFilePosition, final int startFileIndex) {
+        // Write the data, potentially across multiple segments
+        int bufferRemainingLength = length;
+        int bufferPosition = 0;
+        int curFileIndex = startFileIndex;
+        int curFilePosition = ByteBuffers.checkedCast(startFilePosition);
+
         lock.readLock().lock();
         try {
-            if (!memoryDirectory.exists()) {
-                Files.forceMkdir(memoryDirectory);
+            while (bufferRemainingLength > 0) {
+                final int curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
+                final int segmentLength = Integers.min(bufferRemainingLength, curFileRemainingLength);
+
+                final File curMemoryFile = memoryFiles.get(curFileIndex);
+                try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(curMemoryFile)) {
+                    out.seek(curFilePosition);
+                    buffer.getBytesTo(bufferPosition, (DataOutput) out, segmentLength);
+                }
+
+                bufferRemainingLength -= segmentLength;
+                bufferPosition += segmentLength;
+
+                //move to next segment if needed
+                if (bufferRemainingLength > 0) {
+                    curFilePosition = 0;
+                    curFileIndex++;
+                }
             }
-            final int lastMemoryFileIndex = memoryFiles.size() - 1;
-            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
-            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
-                out.seek(addressOffset);
-                buffer.getBytesTo(0, (DataOutput) out, length);
-                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
-                        addressOffset, length);
-                metadata.putSummary(summary);
-                return summary;
-            }
+
+            // Create ChunkSummary using the first segment's info
+            final ChunkSummary summary = new ChunkSummary(memoryFiles.get(startFileIndex).getName(),
+                    startPrecedingPosition, startFilePosition, length);
+            metadata.putSummary(summary);
+            return summary;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -300,145 +362,69 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             throw new IllegalArgumentException("length must be non-negative: " + length);
         }
 
-        // Check if this single value exceeds segment size and needs to be split
-        if (IMemoryMappedFile.isSegmentSizeExceeded(length)) {
-            return writeLargeValueSplitAcrossSegments(value, length);
-        }
+        long startPrecedingPosition;
+        long startFilePosition;
+        int startFileIndex;
 
-        final long precedingAddressOffset;
-        final long addressOffset;
         lock.writeLock().lock();
         try {
-            if (memoryFiles.isEmpty() || position > 0 && IMemoryMappedFile.isSegmentSizeExceeded(position + length)) {
-                precedingPosition += position;
-                position = 0;
-                memoryFiles.add(nextMemoryFile());
+            startPrecedingPosition = precedingPosition;
+            startFilePosition = position;
+            startFileIndex = Integers.max(0, memoryFiles.size() - 1);
+            final long startFileRemainingLength = SEGMENT_SIZE - startFilePosition;
+            if (startFileRemainingLength <= 0) {
+                //directly roll over to next segment, since last one is full
+                startPrecedingPosition += startFilePosition;
+                startFilePosition = 0;
+                startFileIndex++;
             }
-            //support parallel writes from this instance (we expect exclusive access to the file)
-            precedingAddressOffset = precedingPosition;
-            addressOffset = position;
-            position += length;
-            if (readerBuffers != null) {
-                //finalize reader asynchronously so that other threads can evict it properly using GC
-                reader = null;
-                if (!readerBuffers.isEmpty()) {
-                    final IMemoryMappedFile newReader = getReader();
-                    for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
-                        readerBuffer.init(newReader);
-                    }
-                }
-            } else {
-                closeReaderWriteLocked();
-            }
+            prepareSegmentsWriteLocked(length);
         } finally {
             lock.writeLock().unlock();
         }
+
+        return writeValuePrepared(value, length, startPrecedingPosition, startFilePosition, startFileIndex);
+    }
+
+    private ChunkSummary writeValuePrepared(final V value, final int length, final long startPrecedingPosition,
+            final long startFilePosition, final int startFileIndex) {
+        // Write the data, potentially across multiple segments
+        final long startFileRemainingLength = SEGMENT_SIZE - startFilePosition;
+
+        if (length >= startFileRemainingLength) {
+            /*
+             * we have to make another copy despite knowing the length up front, since zero-copy path is only available
+             * if value fits into the current segment
+             */
+            //ystem.out.println("use a temp file instead of a memory mapped file");
+            try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
+                final int bufferLength = valueSerde.toBuffer(buffer, value);
+                if (bufferLength != length) {
+                    throw new IllegalStateException("Expected buffer length " + length + " but got " + bufferLength);
+                }
+                return writeBufferPrepared(buffer, length, startPrecedingPosition, startFilePosition, startFileIndex);
+            }
+        }
+
+        //zero-copy path is available
         lock.readLock().lock();
         try {
-            if (!memoryDirectory.exists()) {
-                Files.forceMkdir(memoryDirectory);
-            }
-            final int lastMemoryFileIndex = memoryFiles.size() - 1;
-            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
-            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
-                out.seek(addressOffset);
-                final int bufferLength = valueSerde.toBuffer(new DataOutputDelegateByteBuffer(out), value);
+            final File curMemoryFile = memoryFiles.get(startFileIndex);
+            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(curMemoryFile)) {
+                out.seek(startFilePosition);
+                final long bufferLength = valueSerde.toBuffer(new DataOutputDelegateMemoryBuffer(out), value);
                 Assertions.checkEquals(length, bufferLength);
-                final ChunkSummary summary = new ChunkSummary(lastMemoryFile.getName(), precedingAddressOffset,
-                        addressOffset, length);
-                metadata.putSummary(summary);
-                return summary;
             }
+
+            // Create ChunkSummary using the first segment's info
+            final ChunkSummary summary = new ChunkSummary(memoryFiles.get(startFileIndex).getName(),
+                    startPrecedingPosition, startFilePosition, length);
+            metadata.putSummary(summary);
+            return summary;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } finally {
             lock.readLock().unlock();
-        }
-    }
-
-    private ChunkSummary writeLargeBufferSplitAcrossSegments(final IByteBuffer buffer, final int length) {
-        lock.writeLock().lock();
-        try {
-            // Ensure we start with a fresh segment for large values
-            if (position > 0) {
-                precedingPosition += position;
-                position = 0;
-                memoryFiles.add(nextMemoryFile());
-            }
-
-            final long startPrecedingOffset = precedingPosition;
-            final long startOffset = position;
-
-            // Calculate how many segments we need
-            int remainingLength = length;
-            int bufferOffset = 0;
-            int segmentCount = 0;
-
-            while (remainingLength > 0) {
-                final int segmentLength = Integers.checkedCast(Longs.min(remainingLength, MAX_SEGMENT_SIZE));
-
-                // Write this segment
-                try {
-                    writeBufferSegment(buffer, bufferOffset, segmentLength);
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                remainingLength -= segmentLength;
-                bufferOffset += segmentLength;
-                segmentCount++;
-
-                // Prepare next segment if needed
-                if (remainingLength > 0) {
-                    precedingPosition += position;
-                    position = 0;
-                    memoryFiles.add(nextMemoryFile());
-                }
-            }
-
-            // Create a special ChunkSummary that indicates multi-segment storage
-            // We use first file's name and total length
-            final ChunkSummary summary = new ChunkSummary(memoryFiles.get(memoryFiles.size() - segmentCount).getName(),
-                    startPrecedingOffset, startOffset, length);
-            metadata.putSummary(summary);
-            return summary;
-
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    private void writeBufferSegment(final IByteBuffer buffer, final int bufferOffset, final int segmentLength)
-            throws IOException {
-        lock.readLock().lock();
-        try {
-            if (!memoryDirectory.exists()) {
-                try {
-                    Files.forceMkdir(memoryDirectory);
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            final int lastMemoryFileIndex = memoryFiles.size() - 1;
-            final File lastMemoryFile = memoryFiles.get(lastMemoryFileIndex);
-            try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(lastMemoryFile)) {
-                out.seek(position);
-                buffer.getBytesTo(bufferOffset, (DataOutput) out, segmentLength);
-                position += segmentLength;
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    private ChunkSummary writeLargeValueSplitAcrossSegments(final V value, final int length) {
-        // First serialize to a temporary buffer to get the bytes
-        try (ICloseableByteBuffer tempBuffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
-            final int bufferLength = valueSerde.toBuffer(tempBuffer, value);
-            Assertions.checkEquals(length, bufferLength);
-            return writeLargeBufferSplitAcrossSegments(tempBuffer, length);
         }
     }
 
