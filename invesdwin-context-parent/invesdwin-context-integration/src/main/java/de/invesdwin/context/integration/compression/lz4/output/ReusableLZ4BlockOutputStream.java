@@ -6,6 +6,7 @@ import java.util.zip.Checksum;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.pool.APooledOutputStream;
 import net.jpountz.lz4.LZ4Compressor;
@@ -85,7 +86,7 @@ public class ReusableLZ4BlockOutputStream extends APooledOutputStream {
         int compressionLevel = 32 - Integer.numberOfLeadingZeros(blockSize - 1); // ceil of log2
         assert (1 << compressionLevel) >= blockSize;
         assert blockSize * 2 > (1 << compressionLevel);
-        compressionLevel = Math.max(0, compressionLevel - COMPRESSION_LEVEL_BASE);
+        compressionLevel = Integers.max(0, compressionLevel - COMPRESSION_LEVEL_BASE);
         assert compressionLevel >= 0 && compressionLevel <= 0x0F;
         return compressionLevel;
     }

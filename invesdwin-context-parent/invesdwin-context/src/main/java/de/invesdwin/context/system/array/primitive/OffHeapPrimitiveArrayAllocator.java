@@ -1,4 +1,4 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 import java.io.File;
 
@@ -6,18 +6,19 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
-import de.invesdwin.util.collections.array.IBooleanArray;
-import de.invesdwin.util.collections.array.IDoubleArray;
-import de.invesdwin.util.collections.array.IIntegerArray;
-import de.invesdwin.util.collections.array.ILongArray;
-import de.invesdwin.util.collections.array.accessor.IArrayAccessor;
-import de.invesdwin.util.collections.array.buffer.BufferBooleanArray;
-import de.invesdwin.util.collections.array.buffer.BufferDoubleArray;
-import de.invesdwin.util.collections.array.buffer.BufferIntegerArray;
-import de.invesdwin.util.collections.array.buffer.BufferLongArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.accessor.IPrimitiveArrayAccessor;
+import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
+import de.invesdwin.util.collections.array.primitive.bitset.LongArrayPrimitiveBitSet;
+import de.invesdwin.util.collections.array.primitive.buffer.BufferBooleanPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.buffer.BufferDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.buffer.BufferIntegerPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.buffer.BufferLongPrimitiveArray;
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
-import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.Locks;
 import de.invesdwin.util.lang.Objects;
@@ -40,71 +41,77 @@ public final class OffHeapPrimitiveArrayAllocator implements IPrimitiveArrayAllo
     }
 
     @Override
-    public IDoubleArray getDoubleArray(final String id) {
+    public IDoublePrimitiveArray getDoubleArray(final String id) {
         return null;
     }
 
     @Override
-    public IIntegerArray getIntegerArray(final String id) {
+    public IIntegerPrimitiveArray getIntegerArray(final String id) {
         return null;
     }
 
     @Override
-    public IBooleanArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         return null;
     }
 
     @Override
-    public IBitSet getBitSet(final String id) {
+    public IPrimitiveBitSet getBitSet(final String id) {
         return null;
     }
 
     @Override
-    public ILongArray getLongArray(final String id) {
+    public ILongPrimitiveArray getLongArray(final String id) {
         return null;
     }
 
     @Override
     public IByteBuffer newByteBuffer(final String id, final int size) {
-        return ByteBuffers.allocateDirect(size);
-    }
-
-    @Override
-    public IDoubleArray newDoubleArray(final String id, final int size) {
-        final BufferDoubleArray array = new BufferDoubleArray(ByteBuffers.allocateDirect(size * Double.BYTES));
+        final IByteBuffer array = ByteBuffers.allocateDirect(size);
         clearBeforeUsage(array);
         return array;
     }
 
     @Override
-    public IIntegerArray newIntegerArray(final String id, final int size) {
-        final BufferIntegerArray array = new BufferIntegerArray(ByteBuffers.allocateDirect(size * Integer.BYTES));
+    public IDoublePrimitiveArray newDoubleArray(final String id, final int size) {
+        final BufferDoublePrimitiveArray array = new BufferDoublePrimitiveArray(
+                ByteBuffers.allocateDirect(size * Double.BYTES));
         clearBeforeUsage(array);
         return array;
     }
 
     @Override
-    public IBooleanArray newBooleanArray(final String id, final int size) {
-        final BufferBooleanArray array = new BufferBooleanArray(
+    public IIntegerPrimitiveArray newIntegerArray(final String id, final int size) {
+        final BufferIntegerPrimitiveArray array = new BufferIntegerPrimitiveArray(
+                ByteBuffers.allocateDirect(size * Integer.BYTES));
+        clearBeforeUsage(array);
+        return array;
+    }
+
+    @Override
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
+        final BufferBooleanPrimitiveArray array = new BufferBooleanPrimitiveArray(
+                LongArrayPrimitiveBitSet.DEFAULT_COPY_FACTORY,
                 ByteBuffers.allocateDirect((BitSets.wordIndex(size - 1) + 1) * Long.BYTES), size);
         clearBeforeUsage(array);
         return array;
     }
 
     @Override
-    public IBitSet newBitSet(final String id, final int size) {
-        final BufferBooleanArray booleanArray = (BufferBooleanArray) newBooleanArray(id, size);
+    public IPrimitiveBitSet newBitSet(final String id, final int size) {
+        final BufferBooleanPrimitiveArray booleanArray = (BufferBooleanPrimitiveArray) newBooleanArray(id, size);
         return booleanArray.getDelegate().getBitSet();
     }
 
     @Override
-    public ILongArray newLongArray(final String id, final int size) {
-        final BufferLongArray array = new BufferLongArray(ByteBuffers.allocateDirect(size * Long.BYTES));
+    public ILongPrimitiveArray newLongArray(final String id, final int size) {
+        final BufferLongPrimitiveArray array = new BufferLongPrimitiveArray(
+                ByteBuffers.allocateDirect(size * Long.BYTES));
         clearBeforeUsage(array);
         return array;
     }
 
-    protected void clearBeforeUsage(final IArrayAccessor array) {
+    protected void clearBeforeUsage(final IPrimitiveArrayAccessor array) {
         if (UninitializedDirectByteBuffers.isDirectByteBufferNoCleanerSupported()) {
             //make sure everything is clear since usage might sparsely fill
             array.clear();

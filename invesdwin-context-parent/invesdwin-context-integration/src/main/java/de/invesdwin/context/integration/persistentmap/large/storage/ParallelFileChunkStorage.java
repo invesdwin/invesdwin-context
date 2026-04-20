@@ -18,7 +18,9 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataInputStream;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
 /**
- * Values are deleted on the file system, so no problems with deletion.
+ * Values are deleted on the file system, so no problems with deletion. Each value is stored in a separate file.
+ * 
+ * This implementation is not suitable for flyweight pattern, which is better serve with memory mapped files.
  */
 @ThreadSafe
 public class ParallelFileChunkStorage<V> implements IChunkStorage<V> {
@@ -91,7 +93,7 @@ public class ParallelFileChunkStorage<V> implements IChunkStorage<V> {
             try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(file)) {
                 buffer.getBytesTo(0, (DataOutput) out, length);
                 final ChunkSummary summary = new ChunkSummary(file.getName(), -1, 0, length);
-                metadata.setSummary(summary);
+                metadata.putSummary(summary);
                 return summary;
             }
         } catch (final IOException e) {

@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.time.date.FDate;
 
 @NotThreadSafe
@@ -19,7 +20,7 @@ public class ChunkStorageMetadata {
         this.logFile = new File(dataDirectory, "memory.log");
     }
 
-    public void setSummary(final ChunkSummary summary) {
+    public void putSummary(final ChunkSummary summary) {
         final StringBuilder logEntry = new StringBuilder();
         logEntry.append("\n");
         logEntry.append(ChunkSummary.class.getSimpleName());
@@ -43,6 +44,10 @@ public class ChunkStorageMetadata {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void clear() {
+        Files.deleteQuietly(logFile);
     }
 
 }

@@ -1,9 +1,8 @@
-package de.invesdwin.context.system.array.bool;
+package de.invesdwin.context.system.array.base;
 
-import de.invesdwin.context.system.array.IPrimitiveArrayAllocator;
-import de.invesdwin.util.collections.array.IPrimitiveArrayId;
+import de.invesdwin.util.collections.array.base.IBaseArrayId;
 
-public interface IPrimitiveArrayInitializable extends IPrimitiveArrayId {
+public interface IBaseArrayInitializable extends IBaseArrayId {
 
     default boolean isInitialized() {
         if (isInitializedLocal()) {
@@ -30,7 +29,7 @@ public interface IPrimitiveArrayInitializable extends IPrimitiveArrayId {
 
     String getName();
 
-    IPrimitiveArrayAllocator getArrayAllocator();
+    IBaseArrayAllocator getArrayAllocator();
 
     default void setInitialized(final boolean initialized) {
         setInitializedShared(initialized);

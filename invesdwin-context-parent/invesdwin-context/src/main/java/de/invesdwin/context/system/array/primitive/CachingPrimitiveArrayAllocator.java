@@ -1,18 +1,20 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 import java.io.File;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.log.Log;
 import de.invesdwin.context.system.properties.IProperties;
-import de.invesdwin.util.collections.array.IBooleanArray;
-import de.invesdwin.util.collections.array.IDoubleArray;
-import de.invesdwin.util.collections.array.IIntegerArray;
-import de.invesdwin.util.collections.array.ILongArray;
-import de.invesdwin.util.collections.array.IPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
-import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.pool.MemoryLimit;
@@ -21,6 +23,8 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
 @ThreadSafe
 public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator {
+
+    private static final Log LOG = new Log(CachingPrimitiveArrayAllocator.class);
 
     private final IPrimitiveArrayAllocator delegate;
     private final Map<String, IPrimitiveArray> map = newMap();
@@ -61,9 +65,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public IDoubleArray getDoubleArray(final String id) {
+    public IDoublePrimitiveArray getDoubleArray(final String id) {
         maybeClearCache();
-        IDoubleArray cached = (IDoubleArray) map.get(id);
+        IDoublePrimitiveArray cached = (IDoublePrimitiveArray) map.get(id);
         if (cached != null) {
             return cached;
         }
@@ -76,9 +80,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public IIntegerArray getIntegerArray(final String id) {
+    public IIntegerPrimitiveArray getIntegerArray(final String id) {
         maybeClearCache();
-        IIntegerArray cached = (IIntegerArray) map.get(id);
+        IIntegerPrimitiveArray cached = (IIntegerPrimitiveArray) map.get(id);
         if (cached != null) {
             return cached;
         }
@@ -91,9 +95,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public IBooleanArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         maybeClearCache();
-        IBooleanArray cached = (IBooleanArray) map.get(id);
+        IBooleanPrimitiveArray cached = (IBooleanPrimitiveArray) map.get(id);
         if (cached != null) {
             return cached;
         }
@@ -106,9 +110,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public IBitSet getBitSet(final String id) {
+    public IPrimitiveBitSet getBitSet(final String id) {
         maybeClearCache();
-        IBitSet cached = (IBitSet) map.get(id);
+        IPrimitiveBitSet cached = (IPrimitiveBitSet) map.get(id);
         if (cached != null) {
             return cached;
         }
@@ -121,9 +125,9 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
     }
 
     @Override
-    public ILongArray getLongArray(final String id) {
+    public ILongPrimitiveArray getLongArray(final String id) {
         maybeClearCache();
-        ILongArray cached = (ILongArray) map.get(id);
+        ILongPrimitiveArray cached = (ILongPrimitiveArray) map.get(id);
         if (cached != null) {
             return cached;
         }
@@ -135,40 +139,63 @@ public class CachingPrimitiveArrayAllocator implements IPrimitiveArrayAllocator 
         return cached;
     }
 
+    @SuppressWarnings("unchecked")
+    private <T extends IPrimitiveArray> T computeIfAbsentSized(final Class<T> type, final String id, final int size,
+            final Function<String, T> mappingFunction) {
+        maybeClearCache();
+        ILock lock = null;
+        try {
+            for (int i = 0; i < 2; i++) {
+                final T computed = (T) map.computeIfAbsent(id, mappingFunction);
+                if (computed.size() == size) {
+                    return computed;
+                } else {
+                    LOG.warn(
+                            "%s: Removing from cache and trying again because [%s] is not expected size [%s] for id [%s] in: %s",
+                            type.getSimpleName(), computed.size(), size, id, this);
+                    lock = getLock(id);
+                    //make the retry thread safe if too many threads are trying to create the same array with different sizes
+                    lock.lock();
+                    map.remove(id);
+                }
+            }
+        } finally {
+            if (lock != null) {
+                lock.unlock();
+            }
+        }
+        throw new IllegalStateException(
+                "Failed to create " + type.getSimpleName() + " of size [" + size + "] for id [" + id + "]");
+    }
+
     @Override
     public IByteBuffer newByteBuffer(final String id, final int size) {
-        maybeClearCache();
-        return (IByteBuffer) map.computeIfAbsent(id, (t) -> delegate.newByteBuffer(id, size));
+        return computeIfAbsentSized(IByteBuffer.class, id, size, (t) -> delegate.newByteBuffer(id, size));
     }
 
     @Override
-    public IDoubleArray newDoubleArray(final String id, final int size) {
-        maybeClearCache();
-        return (IDoubleArray) map.computeIfAbsent(id, (t) -> delegate.newDoubleArray(id, size));
+    public IDoublePrimitiveArray newDoubleArray(final String id, final int size) {
+        return computeIfAbsentSized(IDoublePrimitiveArray.class, id, size, (t) -> delegate.newDoubleArray(id, size));
     }
 
     @Override
-    public IIntegerArray newIntegerArray(final String id, final int size) {
-        maybeClearCache();
-        return (IIntegerArray) map.computeIfAbsent(id, (t) -> delegate.newIntegerArray(id, size));
+    public IIntegerPrimitiveArray newIntegerArray(final String id, final int size) {
+        return computeIfAbsentSized(IIntegerPrimitiveArray.class, id, size, (t) -> delegate.newIntegerArray(id, size));
     }
 
     @Override
-    public IBooleanArray newBooleanArray(final String id, final int size) {
-        maybeClearCache();
-        return (IBooleanArray) map.computeIfAbsent(id, (t) -> delegate.newBooleanArray(id, size));
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
+        return computeIfAbsentSized(IBooleanPrimitiveArray.class, id, size, (t) -> delegate.newBooleanArray(id, size));
     }
 
     @Override
-    public IBitSet newBitSet(final String id, final int size) {
-        maybeClearCache();
-        return (IBitSet) map.computeIfAbsent(id, (t) -> delegate.newBitSet(id, size));
+    public IPrimitiveBitSet newBitSet(final String id, final int size) {
+        return computeIfAbsentSized(IPrimitiveBitSet.class, id, size, (t) -> delegate.newBitSet(id, size));
     }
 
     @Override
-    public ILongArray newLongArray(final String id, final int size) {
-        maybeClearCache();
-        return (ILongArray) map.computeIfAbsent(id, (t) -> delegate.newLongArray(id, size));
+    public ILongPrimitiveArray newLongArray(final String id, final int size) {
+        return computeIfAbsentSized(ILongPrimitiveArray.class, id, size, (t) -> delegate.newLongArray(id, size));
     }
 
     @Override

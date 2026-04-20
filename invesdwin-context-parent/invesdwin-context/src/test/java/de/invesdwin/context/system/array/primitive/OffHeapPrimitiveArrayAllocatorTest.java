@@ -1,4 +1,4 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.util.assertions.Assertions;
-import de.invesdwin.util.collections.array.IBooleanArray;
-import de.invesdwin.util.collections.array.IDoubleArray;
-import de.invesdwin.util.collections.bitset.IBitSet;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
 
 @NotThreadSafe
 public class OffHeapPrimitiveArrayAllocatorTest extends ATest {
@@ -19,11 +19,11 @@ public class OffHeapPrimitiveArrayAllocatorTest extends ATest {
         final OffHeapPrimitiveArrayAllocator offHeapAllocator = new OffHeapPrimitiveArrayAllocator();
         final int size = 1000;
 
-        final IBitSet onHeapBitSet = onHeapAllocator.newBitSet("onHeapBitSet", size);
-        final IBooleanArray onHeapBooleanArray = onHeapAllocator.newBooleanArray("onHeapBooleanArray", size);
+        final IPrimitiveBitSet onHeapBitSet = onHeapAllocator.newBitSet("onHeapBitSet", size);
+        final IBooleanPrimitiveArray onHeapBooleanArray = onHeapAllocator.newBooleanArray("onHeapBooleanArray", size);
 
-        final IBitSet offHeapBitSet = offHeapAllocator.newBitSet("offHeapBitSet", size);
-        final IBooleanArray offHeapBooleanArray = offHeapAllocator.newBooleanArray("offHeapBooleanArray", size);
+        final IPrimitiveBitSet offHeapBitSet = offHeapAllocator.newBitSet("offHeapBitSet", size);
+        final IBooleanPrimitiveArray offHeapBooleanArray = offHeapAllocator.newBooleanArray("offHeapBooleanArray", size);
 
         for (int i = 0; i < size; i++) {
             Assertions.checkFalse(onHeapBitSet.contains(i), "%s", i);
@@ -71,8 +71,8 @@ public class OffHeapPrimitiveArrayAllocatorTest extends ATest {
         final OffHeapPrimitiveArrayAllocator offHeapAllocator = new OffHeapPrimitiveArrayAllocator();
         final int size = 1000;
 
-        final IDoubleArray onHeapBooleanArray = onHeapAllocator.newDoubleArray("onHeapBooleanArray", size);
-        final IDoubleArray offHeapBooleanArray = offHeapAllocator.newDoubleArray("offHeapBooleanArray", size);
+        final IDoublePrimitiveArray onHeapBooleanArray = onHeapAllocator.newDoubleArray("onHeapBooleanArray", size);
+        final IDoublePrimitiveArray offHeapBooleanArray = offHeapAllocator.newDoubleArray("offHeapBooleanArray", size);
 
         for (int i = 0; i < size; i++) {
             Assertions.checkEquals(0D, onHeapBooleanArray.get(i), "%s", i);

@@ -8,6 +8,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.error.FastNoSuchElementException;
+import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 
@@ -177,8 +178,8 @@ public class AggregatingOhlcPointsCollection<E extends IOhlcPoint> extends APoin
         AggregatedOhlcPoint(final IOhlcPoint first, final IOhlcPoint second) {
             this.time = FDates.min(first.getTime(), second.getTime());
             this.open = first.getOpen();
-            this.high = Math.max(first.getHigh(), second.getHigh());
-            this.low = Math.min(first.getLow(), second.getLow());
+            this.high = Doubles.max(first.getHigh(), second.getHigh());
+            this.low = Doubles.min(first.getLow(), second.getLow());
             this.close = second.getClose();
             this.volume = first.getVolume() + second.getVolume();
         }

@@ -21,6 +21,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.integration.compression.lz4.output.ReusableLZ4BlockOutputStream;
 import de.invesdwin.util.error.FastEOFException;
 import de.invesdwin.util.math.Bytes;
+import de.invesdwin.util.math.Integers;
+import de.invesdwin.util.math.Longs;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.pool.APooledInputStream;
 import net.jpountz.lz4.LZ4Exception;
@@ -107,7 +109,7 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
         if (finished) {
             return -1;
         }
-        final int len = Math.min(pLen, originalLen - o);
+        final int len = Integers.min(pLen, originalLen - o);
         System.arraycopy(buffer, o, b, off, len);
         o += len;
         return len;
@@ -129,7 +131,7 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
         if (finished) {
             return 0;
         }
-        final int skipped = (int) Math.min(n, originalLen - o);
+        final int skipped = Integers.checkedCast(Longs.min(n, originalLen - o));
         o += skipped;
         return skipped;
     }
@@ -172,7 +174,7 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
             return;
         }
         if (buffer.length < originalLen) {
-            buffer = ByteBuffers.allocateByteArray(Math.max(originalLen, buffer.length * 3 / 2));
+            buffer = ByteBuffers.allocateByteArray(Integers.max(originalLen, buffer.length * 3 / 2));
         }
         switch (compressionMethod) {
         case ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_RAW:
@@ -181,7 +183,7 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
         case ReusableLZ4BlockOutputStream.COMPRESSION_METHOD_LZ4:
             if (compressedBuffer.length < compressedLen) {
                 compressedBuffer = ByteBuffers
-                        .allocateByteArray(Math.max(compressedLen, compressedBuffer.length * 3 / 2));
+                        .allocateByteArray(Integers.max(compressedLen, compressedBuffer.length * 3 / 2));
             }
             readFully(compressedBuffer, compressedLen);
             try {

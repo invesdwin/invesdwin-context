@@ -13,23 +13,23 @@ import javax.annotation.concurrent.ThreadSafe;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
-import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummaryByteBuffer;
+import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummaryMemoryBuffer;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.marshallers.serde.ISerdeLengthProvider;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
+import de.invesdwin.util.marshallers.serde.large.ILargeSerdeLengthProvider;
 import de.invesdwin.util.math.Integers;
 import de.invesdwin.util.math.Longs;
-import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
-import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
-import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.file.MemoryMappedFile;
 import de.invesdwin.util.streams.buffer.file.SegmentedMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.memory.DataOutputDelegateMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.ICloseableMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
+import de.invesdwin.util.streams.buffer.memory.MemoryBuffers;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 
 /**
@@ -41,16 +41,16 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
  * to support values larger than the segment size.
  */
 @ThreadSafe
-public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
+public class LargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
 
-    private static final int SEGMENT_SIZE = Integers
-            .checkedCast(Longs.min(LargeMappedFileChunkStorage.SEGMENT_SIZE, Integer.MAX_VALUE));
+    public static final long SEGMENT_SIZE = IMemoryMappedFile.MAX_SEGMENT_SIZE;
+
     private final File memoryDirectory;
     private final List<File> memoryFiles;
-    private final ISerde<V> valueSerde;
-    private final ISerdeLengthProvider<V> valueSerdeLengthProvider;
+    private final ILargeSerde<V> valueSerde;
+    private final ILargeSerdeLengthProvider<V> valueSerdeLengthProvider;
     private final IReadWriteLock lock = ILockCollectionFactory.getInstance(true)
-            .newReadWriteLock(MappedFileChunkStorage.class.getSimpleName() + "_lock");
+            .newReadWriteLock(LargeMappedFileChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
     private long precedingPosition;
     @GuardedBy("lock")
@@ -60,16 +60,16 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     private final boolean closeAllowed;
     private final ChunkStorageMetadata metadata;
 
-    private final Set<ChunkSummaryByteBuffer> readerBuffers;
+    private final Set<ChunkSummaryMemoryBuffer> readerBuffers;
 
     @SuppressWarnings("unchecked")
-    public MappedFileChunkStorage(final File memoryDirectory, final ISerde<V> valueSerde, final boolean readOnly,
-            final boolean closeAllowed) {
+    public LargeMappedFileChunkStorage(final File memoryDirectory, final ILargeSerde<V> valueSerde,
+            final boolean readOnly, final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFiles = new ArrayList<>();
         this.valueSerde = valueSerde;
-        if (valueSerde instanceof ISerdeLengthProvider) {
-            this.valueSerdeLengthProvider = (ISerdeLengthProvider<V>) valueSerde;
+        if (valueSerde instanceof ILargeSerdeLengthProvider) {
+            this.valueSerdeLengthProvider = (ILargeSerdeLengthProvider<V>) valueSerde;
         } else {
             this.valueSerdeLengthProvider = null;
         }
@@ -79,8 +79,8 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
         if (readOnly) {
             readerBuffers = null;
         } else {
-            readerBuffers = Collections
-                    .newSetFromMap(Caffeine.newBuilder().weakKeys().<ChunkSummaryByteBuffer, Boolean> build().asMap());
+            readerBuffers = Collections.newSetFromMap(
+                    Caffeine.newBuilder().weakKeys().<ChunkSummaryMemoryBuffer, Boolean> build().asMap());
         }
         initMemoryFiles();
     }
@@ -173,16 +173,16 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             if (reader == null) {
                 return null;
             }
-            final IByteBuffer buffer;
+            final IMemoryBuffer buffer;
             if (readerBuffers != null) {
-                final ChunkSummaryByteBuffer chunkBuffer = new ChunkSummaryByteBuffer(summary);
+                final ChunkSummaryMemoryBuffer chunkBuffer = new ChunkSummaryMemoryBuffer(summary);
                 chunkBuffer.init(reader);
                 readerBuffers.add(chunkBuffer);
                 buffer = chunkBuffer;
             } else {
-                final int length = ByteBuffers.checkedCast(summary.getMemoryLength());
+                final long length = summary.getMemoryLength();
                 final long memoryOffset = summary.getPrecedingMemoryOffset() + summary.getMemoryOffset();
-                buffer = reader.newByteBuffer(memoryOffset, length);
+                buffer = reader.newMemoryBuffer(memoryOffset, length);
             }
             final V value = valueSerde.fromBuffer(buffer);
             return value;
@@ -218,7 +218,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     private void clearReaderBuffers() {
         if (readerBuffers != null && !readerBuffers.isEmpty()) {
-            for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
+            for (final ChunkSummaryMemoryBuffer readerBuffer : readerBuffers) {
                 readerBuffer.close();
             }
             readerBuffers.clear();
@@ -235,12 +235,12 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     @Override
     public ChunkSummary put(final V value) {
         if (valueSerdeLengthProvider != null) {
-            final int length = valueSerdeLengthProvider.getLength(value);
+            final long length = valueSerdeLengthProvider.getLength(value);
             return writeValue(value, length);
         } else {
             //ystem.out.println("use a temp file instead of a memory mapped file");
-            try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
-                final int length = valueSerde.toBuffer(buffer, value);
+            try (ICloseableMemoryBuffer buffer = MemoryBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
+                final long length = valueSerde.toBuffer(buffer, value);
                 return writeBuffer(buffer, length);
             }
         }
@@ -277,7 +277,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             reader = null;
             if (!readerBuffers.isEmpty()) {
                 final IMemoryMappedFile newReader = getReader();
-                for (final ChunkSummaryByteBuffer readerBuffer : readerBuffers) {
+                for (final ChunkSummaryMemoryBuffer readerBuffer : readerBuffers) {
                     readerBuffer.init(newReader);
                 }
             }
@@ -286,7 +286,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
         }
     }
 
-    private ChunkSummary writeBuffer(final IByteBuffer buffer, final int length) {
+    private ChunkSummary writeBuffer(final IMemoryBuffer buffer, final long length) {
         if (length < 0) {
             throw new IllegalArgumentException("length must be non-negative: " + length);
         }
@@ -315,19 +315,19 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
         return writeBufferPrepared(buffer, length, startPrecedingPosition, startFilePosition, startFileIndex);
     }
 
-    private ChunkSummary writeBufferPrepared(final IByteBuffer buffer, final int length,
+    private ChunkSummary writeBufferPrepared(final IMemoryBuffer buffer, final long length,
             final long startPrecedingPosition, final long startFilePosition, final int startFileIndex) {
         // Write the data, potentially across multiple segments
-        int bufferRemainingLength = length;
-        int bufferPosition = 0;
+        long bufferRemainingLength = length;
+        long bufferPosition = 0;
         int curFileIndex = startFileIndex;
-        int curFilePosition = ByteBuffers.checkedCast(startFilePosition);
+        long curFilePosition = startFilePosition;
 
         lock.readLock().lock();
         try {
             while (bufferRemainingLength > 0) {
-                final int curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
-                final int segmentLength = Integers.min(bufferRemainingLength, curFileRemainingLength);
+                final long curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
+                final long segmentLength = Longs.min(bufferRemainingLength, curFileRemainingLength);
 
                 final File curMemoryFile = memoryFiles.get(curFileIndex);
                 try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(curMemoryFile)) {
@@ -357,7 +357,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
         }
     }
 
-    private ChunkSummary writeValue(final V value, final int length) {
+    private ChunkSummary writeValue(final V value, final long length) {
         if (length < 0) {
             throw new IllegalArgumentException("length must be non-negative: " + length);
         }
@@ -386,7 +386,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
         return writeValuePrepared(value, length, startPrecedingPosition, startFilePosition, startFileIndex);
     }
 
-    private ChunkSummary writeValuePrepared(final V value, final int length, final long startPrecedingPosition,
+    private ChunkSummary writeValuePrepared(final V value, final long length, final long startPrecedingPosition,
             final long startFilePosition, final int startFileIndex) {
         // Write the data, potentially across multiple segments
         final long startFileRemainingLength = SEGMENT_SIZE - startFilePosition;
@@ -397,8 +397,8 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
              * if value fits into the current segment
              */
             //ystem.out.println("use a temp file instead of a memory mapped file");
-            try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
-                final int bufferLength = valueSerde.toBuffer(buffer, value);
+            try (ICloseableMemoryBuffer buffer = MemoryBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
+                final long bufferLength = valueSerde.toBuffer(buffer, value);
                 if (bufferLength != length) {
                     throw new IllegalStateException("Expected buffer length " + length + " but got " + bufferLength);
                 }

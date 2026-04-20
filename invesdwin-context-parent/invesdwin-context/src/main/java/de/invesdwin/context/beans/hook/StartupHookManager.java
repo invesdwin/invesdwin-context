@@ -18,6 +18,7 @@ import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.future.Futures;
+import de.invesdwin.util.math.Integers;
 import jakarta.inject.Named;
 
 /**
@@ -128,7 +129,7 @@ public final class StartupHookManager implements ApplicationContextAware, Factor
                     .isFalse();
             StartupHookManager.alreadyStarted = true;
             final WrappedExecutorService executor = Executors.newFixedThreadPool(getClass().getSimpleName(),
-                    Math.max(10, Executors.getCpuThreadPoolCount() * 2));
+                    Integers.max(10, Executors.getCpuThreadPoolCount() * 2));
             final List<Future<?>> blockingHooks = new ArrayList<Future<?>>();
             for (final IStartupHook hook : REGISTERED_HOOKS) {
                 final Runnable task = new Runnable() {

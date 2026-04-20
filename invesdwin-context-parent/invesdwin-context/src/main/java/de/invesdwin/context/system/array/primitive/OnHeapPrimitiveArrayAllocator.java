@@ -1,4 +1,4 @@
-package de.invesdwin.context.system.array;
+package de.invesdwin.context.system.array.primitive;
 
 import java.io.File;
 
@@ -6,13 +6,13 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
-import de.invesdwin.util.collections.array.IBooleanArray;
-import de.invesdwin.util.collections.array.IDoubleArray;
-import de.invesdwin.util.collections.array.IIntegerArray;
-import de.invesdwin.util.collections.array.ILongArray;
+import de.invesdwin.util.collections.array.primitive.IBooleanPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IDoublePrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.IIntegerPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.ILongPrimitiveArray;
+import de.invesdwin.util.collections.array.primitive.bitset.IPrimitiveBitSet;
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
-import de.invesdwin.util.collections.bitset.IBitSet;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.Locks;
@@ -34,27 +34,27 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
     }
 
     @Override
-    public IDoubleArray getDoubleArray(final String id) {
+    public IDoublePrimitiveArray getDoubleArray(final String id) {
         return null;
     }
 
     @Override
-    public IIntegerArray getIntegerArray(final String id) {
+    public IIntegerPrimitiveArray getIntegerArray(final String id) {
         return null;
     }
 
     @Override
-    public IBooleanArray getBooleanArray(final String id) {
+    public IBooleanPrimitiveArray getBooleanArray(final String id) {
         return null;
     }
 
     @Override
-    public IBitSet getBitSet(final String id) {
+    public IPrimitiveBitSet getBitSet(final String id) {
         return null;
     }
 
     @Override
-    public ILongArray getLongArray(final String id) {
+    public ILongPrimitiveArray getLongArray(final String id) {
         return null;
     }
 
@@ -64,28 +64,28 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
     }
 
     @Override
-    public IDoubleArray newDoubleArray(final String id, final int size) {
-        return IDoubleArray.newInstance(size);
+    public IDoublePrimitiveArray newDoubleArray(final String id, final int size) {
+        return IDoublePrimitiveArray.newInstance(size);
     }
 
     @Override
-    public IIntegerArray newIntegerArray(final String id, final int size) {
-        return IIntegerArray.newInstance(size);
+    public IIntegerPrimitiveArray newIntegerArray(final String id, final int size) {
+        return IIntegerPrimitiveArray.newInstance(size);
     }
 
     @Override
-    public IBooleanArray newBooleanArray(final String id, final int size) {
-        return IBooleanArray.newInstance(ILockCollectionFactory.getInstance(false).newBitSet(size));
+    public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
+        return IBooleanPrimitiveArray.newInstance(ILockCollectionFactory.getInstance(false).newPrimitiveBitSet(size));
     }
 
     @Override
-    public IBitSet newBitSet(final String id, final int size) {
-        return ILockCollectionFactory.getInstance(false).newBitSet(size);
+    public IPrimitiveBitSet newBitSet(final String id, final int size) {
+        return ILockCollectionFactory.getInstance(false).newPrimitiveBitSet(size);
     }
 
     @Override
-    public ILongArray newLongArray(final String id, final int size) {
-        return ILongArray.newInstance(size);
+    public ILongPrimitiveArray newLongArray(final String id, final int size) {
+        return ILongPrimitiveArray.newInstance(size);
     }
 
     @Override
