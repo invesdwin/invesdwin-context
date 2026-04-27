@@ -1,5 +1,6 @@
 package de.invesdwin.context.integration.persistentmap.large.storage;
 
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import de.invesdwin.util.math.Longs;
 import de.invesdwin.util.streams.InputStreams;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.delegate.DataOutputDelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.delegate.ListByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
@@ -419,17 +421,43 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private ChunkSummary writeValue(final V value) {
-        prepareMemoryDirectory();
-        final File tempFile = new File(memoryDirectory, "temp_" + tempFileIndex.incrementAndGet() + ".part");
-        final int bufferLength;
-        try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(tempFile)) {
-            bufferLength = valueSerde.toBuffer(new DataOutputDelegateByteBuffer(out), value);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+        /*
+         * work around this by using memorymappedfile (which is always a single segment and can be converted to
+         * nioByteBuffer)
+         */
+        //        Caused by - java.lang.UnsupportedOperationException: Cannot read from output stream
+        //        * at de.invesdwin.util.streams.buffer.bytes.delegate.DataOutputDelegateByteBuffer.newUnsupportedOperationException(DataOutputDelegateByteBuffer.java:57) *
+        //        * at de.invesdwin.util.streams.buffer.bytes.delegate.DataOutputDelegateByteBuffer.asNioByteBuffer(DataOutputDelegateByteBuffer.java:506) *
+        //        * at de.invesdwin.util.streams.buffer.bytes.IByteBuffer.asNioByteBufferTo(IByteBuffer.java:307) *
+        //        * at de.invesdwin.util.streams.buffer.bytes.IByteBuffer.asNioByteBuffer(IByteBuffer.java:299) *
+        //        * at de.invesdwin.context.integration.compression.lz4.LZ4Streams.compress(LZ4Streams.java:191) *
+        //        * at de.invesdwin.context.integration.compression.lz4.FastLZ4CompressionFactory.compress(FastLZ4CompressionFactory.java:41) *
+        //        * at de.invesdwin.context.integration.compression.CompressionDelegateSerde.toBuffer(CompressionDelegateSerde.java:65) *
+        //        * at de.invesdwin.context.integration.persistentmap.large.storage.MappedFileChunkStorage.writeValue(MappedFileChunkStorage.java:426) *
+        //        * at de.invesdwin.context.integration.persistentmap.large.storage.MappedFileChunkStorage.put(MappedFileChunkStorage.java:250) *
+        //        * at de.invesdwin.context.integration.persistentmap.large.ALargePersistentMap.put(ALargePersistentMap.java:182) *
+        //        * at de.invesdwin.context.integration.persistentmap.APersistentMap.put(APersistentMap.java:511) *
+        //        * at de.invesdwin.trading.optimization.report.map.internal.PersistedInternalOptimizationReportResultMap. (PersistedInternalOptimizationReportResultMap.java:75) *
+        //        * at de.invesdwin.trading.optimization.report.map.internal.PersistedInternalOptimizationReportResultMap.maybeReplace(PersistedInternalOptimizationReportResultMap.java:166) *
+        //        * at de.invesdwin.trading.optimization.report.map.StrategyOptimizationReportResultMap$OptimizationReportResultMapCompressingSoftReference.toCompressed(StrategyOptimizationReportResultMap.java:59) *
+        //        * at de.invesdwin.trading.optimization.report.map.StrategyOptimizationReportResultMap$OptimizationReportResultMapCompressingSoftReference.toCompressed(StrategyOptimizationReportResultMap.java:1) *
+        //LZ4 compression does not work with DataOutputDelegateByteBuffer because it can not be converted into a nioByteBuffer
+        //        prepareMemoryDirectory();
+        //        final File tempFile = new File(memoryDirectory, "temp_" + tempFileIndex.incrementAndGet() + ".part");
+        //        final int bufferLength;
+        //        try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(tempFile)) {
+        //            bufferLength = valueSerde.toBuffer(new DataOutputDelegateByteBuffer(out), value);
+        //        } catch (final IOException e) {
+        //            throw new RuntimeException(e);
+        //        }
+        //        final ChunkSummary result = writeFile(tempFile, bufferLength);
+        //        Files.deleteQuietly(tempFile);
+        //        return result;
+        //MappedMemoryFile is fine here because it always only consists of a single segment so asNioByteBuffer can be used
+        try (ICloseableByteBuffer buffer = ByteBuffers.MAPPED_EXPANDABLE_POOL.borrowObject()) {
+            final int length = valueSerde.toBuffer(buffer, value);
+            return writeBuffer(buffer, length);
         }
-        final ChunkSummary result = writeFile(tempFile, bufferLength);
-        Files.deleteQuietly(tempFile);
-        return result;
     }
 
     private ChunkSummary writeFile(final File file, final int length) {
@@ -481,6 +509,77 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
                 }
 
                 bufferRemainingLength -= segmentLength;
+
+                //move to next segment if needed
+                if (bufferRemainingLength > 0) {
+                    curFilePosition = 0;
+                    curFileIndex++;
+                }
+            }
+
+            // Create ChunkSummary using the first segment's info
+            final ChunkSummary summary = new ChunkSummary(memoryFiles.get(startFileIndex).getName(),
+                    startPrecedingPosition, startFilePosition, length);
+            metadata.putSummary(summary);
+            return summary;
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private ChunkSummary writeBuffer(final IByteBuffer buffer, final int length) {
+        if (length < 0) {
+            throw new IllegalArgumentException("length must be non-negative: " + length);
+        }
+
+        long startPrecedingPosition;
+        long startFilePosition;
+        int startFileIndex;
+
+        lock.writeLock().lock();
+        try {
+            startPrecedingPosition = precedingPosition;
+            startFilePosition = position;
+            startFileIndex = Integers.max(0, memoryFiles.size() - 1);
+            final long startFileRemainingLength = SEGMENT_SIZE - startFilePosition;
+            if (startFileRemainingLength <= 0) {
+                //directly roll over to next segment, since last one is full
+                startPrecedingPosition += startFilePosition;
+                startFilePosition = 0;
+                startFileIndex++;
+            }
+            prepareSegmentsWriteLocked(length);
+        } finally {
+            lock.writeLock().unlock();
+        }
+
+        return writeBufferPrepared(buffer, length, startPrecedingPosition, startFilePosition, startFileIndex);
+    }
+
+    private ChunkSummary writeBufferPrepared(final IByteBuffer buffer, final int length,
+            final long startPrecedingPosition, final long startFilePosition, final int startFileIndex) {
+        // Write the data, potentially across multiple segments
+        int bufferRemainingLength = length;
+        int bufferPosition = 0;
+        int curFileIndex = startFileIndex;
+        int curFilePosition = ByteBuffers.checkedCast(startFilePosition);
+
+        lock.readLock().lock();
+        try {
+            while (bufferRemainingLength > 0) {
+                final int curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
+                final int segmentLength = Integers.min(bufferRemainingLength, curFileRemainingLength);
+
+                final File curMemoryFile = memoryFiles.get(curFileIndex);
+                try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(curMemoryFile)) {
+                    out.seek(curFilePosition);
+                    buffer.getBytesTo(bufferPosition, (DataOutput) out, segmentLength);
+                }
+
+                bufferRemainingLength -= segmentLength;
+                bufferPosition += segmentLength;
 
                 //move to next segment if needed
                 if (bufferRemainingLength > 0) {
