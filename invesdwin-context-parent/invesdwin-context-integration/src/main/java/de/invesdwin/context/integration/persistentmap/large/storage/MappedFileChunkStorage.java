@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -51,6 +52,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             .checkedCast(Longs.min(LargeMappedFileChunkStorage.SEGMENT_SIZE, Integer.MAX_VALUE));
     private final AtomicLong tempFileIndex = new AtomicLong();
     private final File memoryDirectory;
+    private final AtomicBoolean memoryDirectoryCreated = new AtomicBoolean();
     private final List<File> memoryFiles;
     private final ISerde<V> valueSerde;
     private final ISerdeLengthProvider<V> valueSerdeLengthProvider;
@@ -214,6 +216,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             clearReaderBuffers();
             closeReaderWriteLocked();
             Files.deleteQuietly(memoryDirectory);
+            memoryDirectoryCreated.set(false);
             precedingPosition = 0;
             position = 0;
             memoryFiles.clear();
@@ -250,13 +253,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     private void prepareSegmentsWriteLocked(final long length) {
         if (memoryFiles.isEmpty()) {
-            if (!memoryDirectory.exists()) {
-                try {
-                    Files.forceMkdir(memoryDirectory);
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            prepareMemoryDirectory();
             memoryFiles.add(nextMemoryFile());
         }
 
@@ -297,6 +294,17 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
             }
         } else {
             closeReaderWriteLocked();
+        }
+    }
+
+    private void prepareMemoryDirectory() {
+        if (!memoryDirectoryCreated.get() && !memoryDirectory.exists()) {
+            try {
+                Files.forceMkdir(memoryDirectory);
+                memoryDirectoryCreated.set(true);
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -411,6 +419,7 @@ public class MappedFileChunkStorage<V> implements IChunkStorage<V> {
     }
 
     private ChunkSummary writeValue(final V value) {
+        prepareMemoryDirectory();
         final File tempFile = new File(memoryDirectory, "temp_" + tempFileIndex.incrementAndGet() + ".part");
         final int bufferLength;
         try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(tempFile)) {
