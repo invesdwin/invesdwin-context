@@ -8,6 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.agrona.MutableDirectBuffer;
 
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
+import de.invesdwin.util.streams.buffer.bytes.delegate.MemoryDelegateByteBuffer;
 import de.invesdwin.util.streams.buffer.file.IMemoryMappedFile;
 import de.invesdwin.util.streams.buffer.memory.ClosedMemoryBuffer;
 import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
@@ -49,7 +50,7 @@ public class ChunkSummaryMemoryBuffer extends ADelegateMemoryBuffer implements C
 
     @Override
     public IByteBuffer asByteBuffer(final long index, final int length) {
-        throw new UnsupportedOperationException();
+        return new MemoryDelegateByteBuffer(newSlice(index, length));
     }
 
     @Override
