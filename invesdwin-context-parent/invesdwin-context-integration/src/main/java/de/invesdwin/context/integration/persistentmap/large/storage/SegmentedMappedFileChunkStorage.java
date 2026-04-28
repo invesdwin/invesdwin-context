@@ -393,8 +393,9 @@ public class SegmentedMappedFileChunkStorage<V> implements IChunkStorage<V> {
         lock.readLock().lock();
         try (ICloseableList<DataOutputDelegateByteBuffer> outs = PooledArrayList.getInstance()) {
             while (bufferRemainingLength > 0) {
-                final int curFileRemainingLength = ByteBuffers.checkedCast(SEGMENT_SIZE - curFilePosition);
-                final int segmentLength = Integers.min(bufferRemainingLength, curFileRemainingLength);
+                final long curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
+                final int segmentLength = ByteBuffers
+                        .checkedCast(Longs.min(bufferRemainingLength, curFileRemainingLength));
 
                 final File curMemoryFile = memoryFiles.get(curFileIndex);
                 try {
@@ -578,13 +579,14 @@ public class SegmentedMappedFileChunkStorage<V> implements IChunkStorage<V> {
         int bufferRemainingLength = length;
         int bufferPosition = 0;
         int curFileIndex = startFileIndex;
-        int curFilePosition = ByteBuffers.checkedCast(startFilePosition);
+        long curFilePosition = startFilePosition;
 
         lock.readLock().lock();
         try {
             while (bufferRemainingLength > 0) {
-                final int curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
-                final int segmentLength = Integers.min(bufferRemainingLength, curFileRemainingLength);
+                final long curFileRemainingLength = SEGMENT_SIZE - curFilePosition;
+                final int segmentLength = ByteBuffers
+                        .checkedCast(Longs.min(bufferRemainingLength, curFileRemainingLength));
 
                 final File curMemoryFile = memoryFiles.get(curFileIndex);
                 try (BufferedFileDataOutputStream out = new BufferedFileDataOutputStream(curMemoryFile)) {
