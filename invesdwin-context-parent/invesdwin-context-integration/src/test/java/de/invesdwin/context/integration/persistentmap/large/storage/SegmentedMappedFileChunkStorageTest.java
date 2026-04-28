@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.ContextProperties;
@@ -15,6 +16,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.marshallers.serde.basic.ByteSerde;
 
+@Disabled("manual test")
 @NotThreadSafe
 public class SegmentedMappedFileChunkStorageTest extends ATest {
 
