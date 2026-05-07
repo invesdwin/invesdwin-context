@@ -34,8 +34,7 @@ public final class NetworkUtil extends de.invesdwin.util.streams.SocketUtils {
      * If there is no local ip, just any ip of any local interface is returned.
      * 
      * @see <a href=
-     *      "http://www.java-tips.org/java-se-tips/java.net/how-to-detect-ip-address-and-name-of-host-machine-without-
-     *      using-socket- p r o g r a . h t m l > S o u r c e < / a >
+     *      "http://www.java-tips.org/java-se-tips/java.net/how-to-detect-ip-address-and-name-of-host-machine-without-using-socket-progra.html>Source</a>
      */
     public static InetAddress getLocalAddress() {
         Enumeration<NetworkInterface> netInterfaces = null;
