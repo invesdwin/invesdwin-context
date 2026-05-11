@@ -56,6 +56,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     private final PreventRecursiveLoad<K, V> preventRecursiveLoad = new PreventRecursiveLoad<K, V>();
 
     private final AtomicBoolean initializing = new AtomicBoolean();
+    private final AtomicBoolean deleteRequested = new AtomicBoolean();
 
     public APersistentMap(final String name) {
         super(name);
@@ -349,11 +350,14 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     @Override
     public void deleteTable() {
-        tableLock.writeLock().lock();
-        try {
-            innerDeleteTable();
-        } finally {
-            tableLock.writeLock().unlock();
+        if (tableLock.writeLock().tryLock()) {
+            try {
+                innerDeleteTable();
+            } finally {
+                tableLock.writeLock().unlock();
+            }
+        } else {
+            deleteRequested.set(true);
         }
     }
 
@@ -387,13 +391,14 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
     protected void onDeleteTableFinished() {}
 
     private void maybePurgeTable() {
-        if (!initializing.get() && shouldPurgeTable()) {
+        if (!initializing.get() && (deleteRequested.get() || shouldPurgeTable())) {
             //only purge if currently not used, might happen due to recursive computeIfAbsent with different loading functions
             if (tableLock.writeLock().tryLock()) {
                 try {
                     //condition could have changed since lock has been acquired
-                    if (!initializing.get() && shouldPurgeTable()) {
+                    if (!initializing.get() && (deleteRequested.get() || shouldPurgeTable())) {
                         innerDeleteTable();
+                        deleteRequested.set(false);
                     }
                 } finally {
                     tableLock.writeLock().unlock();
