@@ -3,7 +3,6 @@ package de.invesdwin.context.integration.persistentmap.large.summary;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.util.marshallers.serde.ISerde;
-import de.invesdwin.util.marshallers.serde.SerdeBaseMethods;
 import de.invesdwin.util.streams.buffer.bytes.ByteBuffers;
 import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 
@@ -27,16 +26,6 @@ public final class ChunkSummarySerde implements ISerde<ChunkSummary> {
     private static final int MEMORYRESOURCEURI_INDEX = MEMORYLENGTH_INDEX + MEMORYLENGTH_SIZE;
 
     private ChunkSummarySerde() {}
-
-    @Override
-    public ChunkSummary fromBytes(final byte[] bytes) {
-        return SerdeBaseMethods.fromBytes(this, bytes);
-    }
-
-    @Override
-    public byte[] toBytes(final ChunkSummary obj) {
-        return SerdeBaseMethods.toBytes(this, obj);
-    }
 
     @Override
     public ChunkSummary fromBuffer(final IByteBuffer buffer) {
