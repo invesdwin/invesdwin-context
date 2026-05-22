@@ -101,12 +101,12 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
 
     @Override
     protected FDate innerCalculatePreviousKey(final FDate key) {
-        return key.addSeconds(-getShiftKeyDuration().intValue(FTimeUnit.SECONDS));
+        return key.addSeconds(-getShiftKeyDuration().longValue(FTimeUnit.SECONDS));
     }
 
     @Override
     protected FDate innerCalculateNextKey(final FDate key) {
-        return key.addSeconds(getShiftKeyDuration().intValue(FTimeUnit.SECONDS));
+        return key.addSeconds(getShiftKeyDuration().longValue(FTimeUnit.SECONDS));
     }
 
     private List<E> getResponse() {
