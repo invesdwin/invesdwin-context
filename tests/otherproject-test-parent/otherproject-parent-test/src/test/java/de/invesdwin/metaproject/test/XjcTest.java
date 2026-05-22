@@ -40,7 +40,7 @@ public class XjcTest extends ATest {
         final byte[] byteArray = { 0, 1, 2, 3 };
         final Boolean bboolean = Boolean.TRUE;
         final Byte bbyte = 1;
-        final FDate date = new FDate();
+        final FDate date = FDate.now();
         final Decimal decimal = new Decimal("1");
         final Double ddouble = 1.0;
         final javax.xml.datatype.Duration duration = DatatypeFactory.newInstance().newDuration(1);

@@ -54,11 +54,10 @@ public class DelegateDailyRefreshingRequest<E> implements Callable<E> {
     }
 
     protected FDate getNow() {
-        return new FDate();
+        return FDate.now();
     }
 
-    protected void onResponse(final E response) {
-    }
+    protected void onResponse(final E response) {}
 
     public synchronized FDate getLastRequestTime() {
         return lastRequestTime;
