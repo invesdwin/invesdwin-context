@@ -15,6 +15,7 @@ import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
+import de.invesdwin.util.time.date.millis.FDateMillis;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe
@@ -71,8 +72,7 @@ public abstract class ACachedMarshalledDownloadListRequest<E> implements Callabl
      * Retry empty downloads once a day (might be a permission problem)
      */
     protected boolean isExpired(final File file) {
-        return file.length() == 0
-                && Duration.ONE_DAY.isLessThanMillis(System.currentTimeMillis() - file.lastModified());
+        return file.length() == 0 && Duration.ONE_DAY.isLessThanMillis(FDateMillis.nowMillis() - file.lastModified());
     }
 
     protected String toMarshalled(final List<E> downloaded) {

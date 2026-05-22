@@ -17,6 +17,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.lang.OperatingSystem;
+import de.invesdwin.util.time.date.millis.FDateMillis;
 
 /**
  * This class can be added as a private static final member in a class so that during initialization of the object the
@@ -290,14 +291,14 @@ public class NativeLibrary {
             if (args.length == 1) {
                 final File file = new File(args[0]);
                 if (file.exists()) {
-                    final long start = System.currentTimeMillis();
+                    final long start = FDateMillis.nowMillis();
                     while (!file.delete() && file.exists()) {
                         try {
                             Thread.sleep(10);
                         } catch (final InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
-                        if (System.currentTimeMillis() - start > 5000) {
+                        if (FDateMillis.nowMillis() - start > 5000) {
                             new Log(DeleteNativeLibrary.class)
                                     .error("Could not remove temp file: " + file.getAbsolutePath());
                             break;

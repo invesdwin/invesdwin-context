@@ -4,6 +4,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.time.Instant;
+import de.invesdwin.util.time.date.millis.FDateNanos;
 import de.invesdwin.util.time.duration.Duration;
 
 @ThreadSafe
@@ -44,10 +45,10 @@ public final class LoggingPreviousCause {
         if (!Err.isSameMeaning(newCause, previousCause)) {
             previousCause = newCause;
             previousCauseRetryCount = retryCount;
-            lastLogNanos = System.nanoTime();
+            lastLogNanos = FDateNanos.elapsedNanos();
             return LoggingReason.NEW_CAUSE;
         } else {
-            final long curNanos = System.nanoTime();
+            final long curNanos = FDateNanos.elapsedNanos();
             if (Duration.ONE_MINUTE.isLessThanOrEqualToNanos(curNanos - lastLogNanos)) {
                 previousCause = newCause;
                 previousCauseRetryCount = retryCount;
