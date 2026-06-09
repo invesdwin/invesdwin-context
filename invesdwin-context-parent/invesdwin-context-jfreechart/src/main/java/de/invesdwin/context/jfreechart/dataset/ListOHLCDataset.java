@@ -65,7 +65,7 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
     @Override
     public Number getX(final int series, final int item) {
         try {
-            return this.data.get(item).getStartTime().millisValue();
+            return this.data.get(item).getStartTime();
         } catch (final IndexOutOfBoundsException e) {
             return null;
         }

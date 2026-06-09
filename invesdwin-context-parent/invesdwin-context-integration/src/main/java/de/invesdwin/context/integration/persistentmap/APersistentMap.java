@@ -273,7 +273,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
                         throw Err.process(e);
                     }
                 }
-                tableCreationTime = new FDate();
+                tableCreationTime = FDate.now();
             }
             try {
                 tableFinalizer.table = getFactory().newPersistentMap(this);

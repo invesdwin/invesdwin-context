@@ -7,6 +7,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import de.invesdwin.context.beans.init.platform.DefaultPlatformInitializer;
 import de.invesdwin.context.beans.init.platform.IPlatformInitializer;
 import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.time.date.millis.FDateMillis;
+import de.invesdwin.util.time.date.millis.FDateNanos;
 
 /**
  * This is a separate class so that it can be used without initalizing the PreMergedContext.
@@ -14,8 +16,8 @@ import de.invesdwin.util.lang.string.Strings;
 @Immutable
 public final class PlatformInitializerProperties {
 
-    public static final long START_OF_APPLICATION_CPU_TIME_NANOS = System.nanoTime();
-    public static final long START_OF_APPLICATION_CLOCK_TIME_MILLIS = System.currentTimeMillis();
+    public static final long START_OF_APPLICATION_CPU_TIME_NANOS = FDateNanos.elapsedNanos();
+    public static final long START_OF_APPLICATION_CLOCK_TIME_MILLIS = FDateMillis.nowMillis();
 
     /**
      * Use literal constant here to ensure inlining of these properties key constants.

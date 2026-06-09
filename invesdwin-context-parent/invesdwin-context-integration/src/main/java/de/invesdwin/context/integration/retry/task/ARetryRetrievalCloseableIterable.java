@@ -29,7 +29,7 @@ public abstract class ARetryRetrievalCloseableIterable<T> implements ICloseableI
     public ICloseableIterator<T> iterator() {
         return new ICloseableIterator<T>() {
 
-            private FDate curDate = fromDate.addMilliseconds(-1);
+            private FDate curDate = fromDate.addPicoseconds(-1);
             private ICloseableIterator<? extends T> queryRetry = new ADelegateCloseableIterator<T>() {
                 @Override
                 protected ICloseableIterator<? extends T> newDelegate() {
@@ -79,7 +79,7 @@ public abstract class ARetryRetrievalCloseableIterable<T> implements ICloseableI
 
                     private ICloseableIterator<? extends T> getDelegate() {
                         if (delegate == null) {
-                            delegate = query(curDate.addMilliseconds(1), toDate);
+                            delegate = query(curDate.addPicoseconds(1), toDate);
                         }
                         return delegate;
                     }

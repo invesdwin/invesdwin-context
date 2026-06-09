@@ -51,7 +51,7 @@ public class DynamicReportData {
     }
 
     private Date toDate(final int year, final int month, final int day) {
-        final Calendar c = new FDate().calendarValue();
+        final Calendar c = FDate.now().calendarValue();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month - 1);
         c.set(Calendar.DAY_OF_MONTH, day);

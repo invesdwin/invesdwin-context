@@ -10,13 +10,12 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.iterable.ATransformingIterable;
 import de.invesdwin.util.collections.iterable.ICloseableIterable;
 import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
-import de.invesdwin.util.collections.iterable.skip.ASkippingIterable;
+import de.invesdwin.util.collections.iterable.skip.ATimeRangeSkippingIterable;
 import de.invesdwin.util.collections.loadingcache.historical.AGapHistoricalCache;
 import de.invesdwin.util.collections.loadingcache.historical.IHistoricalEntry;
 import de.invesdwin.util.collections.loadingcache.historical.interceptor.AHistoricalCacheRangeQueryInterceptor;
 import de.invesdwin.util.collections.loadingcache.historical.interceptor.IHistoricalCacheRangeQueryInterceptor;
 import de.invesdwin.util.collections.loadingcache.historical.key.APushingHistoricalCacheAdjustKeyProvider;
-import de.invesdwin.util.error.FastNoSuchElementException;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
@@ -71,9 +70,10 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
     protected List<? extends E> readAllValuesAscendingFrom(final FDate key) {
         final List<E> values = getResponse();
         final List<E> list = new ArrayList<E>();
-        for (final E e : values) {
+        for (int i = 0; i < values.size(); i++) {
+            final E e = values.get(i);
             final FDate eKey = innerExtractKey(e);
-            if (!eKey.isBefore(key)) {
+            if (!eKey.isBeforeNotNullSafe(key)) {
                 list.add(e);
             }
         }
@@ -84,12 +84,13 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
     protected E readLatestValueFor(final FDate key) {
         final List<E> values = getResponse();
         E previousE = null;
-        for (final E e : values) {
+        for (int i = 0; i < values.size(); i++) {
+            final E e = values.get(i);
             if (previousE == null) {
                 previousE = e;
             } else {
                 final FDate eKey = innerExtractKey(e);
-                if (key.isAfterOrEqualTo(eKey)) {
+                if (key.isAfterOrEqualToNotNullSafe(eKey)) {
                     previousE = e;
                 } else {
                     break;
@@ -101,12 +102,12 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
 
     @Override
     protected FDate innerCalculatePreviousKey(final FDate key) {
-        return key.addSeconds(-getShiftKeyDuration().intValue(FTimeUnit.SECONDS));
+        return key.addSeconds(-getShiftKeyDuration().longValue(FTimeUnit.SECONDS));
     }
 
     @Override
     protected FDate innerCalculateNextKey(final FDate key) {
-        return key.addSeconds(getShiftKeyDuration().intValue(FTimeUnit.SECONDS));
+        return key.addSeconds(getShiftKeyDuration().longValue(FTimeUnit.SECONDS));
     }
 
     private List<E> getResponse() {
@@ -120,19 +121,17 @@ public abstract class ATimeRefreshingRequestCache<E> extends AGapHistoricalCache
             protected ICloseableIterable<IHistoricalEntry<E>> innerGetEntries(final FDate from, final FDate to) {
                 final List<E> delegate = request.call();
                 final ICloseableIterable<E> closeableIterable = WrapperCloseableIterable.maybeWrap(delegate);
-                final ASkippingIterable<E> skippingIterable = new ASkippingIterable<E>(closeableIterable) {
+                final ATimeRangeSkippingIterable<E> skippingIterable = new ATimeRangeSkippingIterable<E>(
+                        closeableIterable, from, to) {
                     @Override
-                    protected boolean skip(final E element) {
-                        final FDate key = innerExtractKey(element);
-                        if (key.isBefore(from)) {
-                            return true;
-                        } else if (key.isAfter(to)) {
-                            throw FastNoSuchElementException
-                                    .getInstance("ATimeRefreshingRequestCache: innerGetEntries reached end");
-                        }
-                        return false;
+                    protected FDate extractEndTime(final E element) {
+                        return innerExtractKey(element);
                     }
 
+                    @Override
+                    protected String getName() {
+                        return "ATimeRefreshingRequestCache.innerGetEntries";
+                    }
                 };
                 return new ATransformingIterable<E, IHistoricalEntry<E>>(skippingIterable) {
 
