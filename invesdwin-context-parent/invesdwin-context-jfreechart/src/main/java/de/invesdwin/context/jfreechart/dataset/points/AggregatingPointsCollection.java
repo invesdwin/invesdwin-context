@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
 import de.invesdwin.util.error.FastNoSuchElementException;
@@ -22,15 +21,8 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     private static final int POINTS_IN_SQUARE = 4;
 
     private final int squaresMaxSize;
-
-    private List<Square> squares = new ArrayList<Square>();
-    /**
-     * Represents how many squares are aggregated in one square.
-     */
-    private int squaresAggregationCount = 1;
-
+    private final List<Square> squares = new ArrayList<Square>();
     private Square inProgressSquare;
-    private int inProgressSquareAggregationCount;
 
     /**
      * MaxSize will be rounded to an even number.
@@ -55,7 +47,7 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
 
     @Override
     public boolean isEmpty() {
-        return squares.isEmpty();
+        return squares.isEmpty() && inProgressSquare == null;
     }
 
     @Override
@@ -66,14 +58,13 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     @Override
     public Iterator<E> iterator() {
         return new Iterator<E>() {
-
             private final Iterator<Square> delegateSquares = WrapperCloseableIterable.maybeWrap(squares).iterator();
             private Square delegateInProgressSquare = inProgressSquare;
             private Iterator<E> curPointsIterator;
 
             @Override
             public boolean hasNext() {
-                return curPointsIterator != null && curPointsIterator.hasNext() || delegateSquares.hasNext()
+                return (curPointsIterator != null && curPointsIterator.hasNext()) || delegateSquares.hasNext()
                         || delegateInProgressSquare != null;
             }
 
@@ -82,7 +73,6 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
                 if (curPointsIterator != null && !curPointsIterator.hasNext()) {
                     curPointsIterator = null;
                 }
-
                 if (curPointsIterator == null) {
                     if (delegateSquares.hasNext()) {
                         curPointsIterator = delegateSquares.next().getPoints().iterator();
@@ -92,10 +82,9 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
                         curPointsIterator = ret.getPoints().iterator();
                     } else {
                         throw FastNoSuchElementException
-                                .getInstance("AggregatingPointsCollection: delegateInProgressSquare is null");
+                                .getInstance("AggregatingPointsCollection: Iterator is exhausted");
                     }
                 }
-
                 return curPointsIterator.next();
             }
 
@@ -110,8 +99,7 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     public Object[] toArray() {
         final List<IPoint> allPoints = new ArrayList<IPoint>();
         for (int i = 0; i < squares.size(); i++) {
-            final Square c = squares.get(i);
-            allPoints.addAll(c.getPoints());
+            allPoints.addAll(squares.get(i).getPoints());
         }
         if (inProgressSquare != null) {
             allPoints.addAll(inProgressSquare.getPoints());
@@ -123,8 +111,7 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     public <T> T[] toArray(final T[] a) {
         final List<IPoint> allPoints = new ArrayList<IPoint>();
         for (int i = 0; i < squares.size(); i++) {
-            final Square c = squares.get(i);
-            allPoints.addAll(c.getPoints());
+            allPoints.addAll(squares.get(i).getPoints());
         }
         if (inProgressSquare != null) {
             allPoints.addAll(inProgressSquare.getPoints());
@@ -135,86 +122,129 @@ public class AggregatingPointsCollection<E extends IPoint> extends APointsCollec
     @Override
     public boolean add(final E e) {
         aggregateInProgressSquare(e);
-        if (squares.size() >= squaresMaxSize && inProgressSquare == null) {
+        if (inProgressSquare == null) {
             aggregateSquares();
         }
         return true;
     }
 
     private void aggregateInProgressSquare(final E newPoint) {
+        // Look at the tail of the list to find the current minimum aggregation count
+        final int currentMinAggregationCount = squares.isEmpty() ? 1
+                : squares.get(squares.size() - 1).getAggregationCount();
+
         if (inProgressSquare == null) {
-            if (squaresAggregationCount <= 1) {
-                final Square square = new Square();
-                square.add(newPoint);
-                squares.add(square);
-            } else {
-                final Square square = new Square();
-                square.add(newPoint);
-                inProgressSquare = square;
-            }
+            inProgressSquare = new Square(newPoint);
         } else {
             inProgressSquare.add(newPoint);
-            inProgressSquareAggregationCount++;
-            if (inProgressSquareAggregationCount >= squaresAggregationCount) {
-                squares.add(inProgressSquare);
-                inProgressSquare = null;
-                inProgressSquareAggregationCount = 0;
-            }
+        }
+
+        final int size = inProgressSquare.getSize();
+        inProgressSquare.aggregationCount = AggregatingOhlcPointsCollection.newAggregationCount(size);
+        if (inProgressSquare.aggregationCount >= currentMinAggregationCount) {
+            squares.add(inProgressSquare);
+            inProgressSquare = null;
         }
     }
 
     private void aggregateSquares() {
-        Assertions.assertThat(squares.size() % 2)
-                .as("Size [%s] needs to be a factor of two when aggregating!", squares.size())
-                .isZero();
-        final List<Square> aggregatedSquares = new ArrayList<Square>(squares.size());
-        for (int i = 0; i < squares.size(); i += 2) {
-            final Square firstSquare = squares.get(i);
-            final Square secondSquare = squares.get(i + 1);
-            firstSquare.addAll(secondSquare.getPoints());
-            aggregatedSquares.add(firstSquare);
+        // Continue aggregating until the collection size is within limits
+        while (squares.size() >= squaresMaxSize) {
+
+            // Due to strictly descending order, the last element is guaranteed
+            // to hold the lowest aggregation count layer.
+            final int minAggregationCount = squares.get(squares.size() - 1).getAggregationCount();
+            int mergeIndex = -1;
+
+            // Scan backwards to find the LEFT-MOST pair matching the minAggregationCount.
+            // We look for the first occurrence from the left, which means the last pair
+            // we encounter while walking backwards.
+            for (int i = squares.size() - 1; i >= 1; i--) {
+                if (squares.get(i).getAggregationCount() == minAggregationCount
+                        && squares.get(i - 1).getAggregationCount() == minAggregationCount) {
+                    mergeIndex = i - 1; // Mark the chronologically earlier square
+                }
+            }
+
+            // If a valid pair within the smallest layer was found, merge them
+            if (mergeIndex != -1) {
+                final Square curPoint = squares.get(mergeIndex);
+                final int nextIndex = mergeIndex + 1;
+                final Square nextPoint = squares.get(nextIndex);
+
+                // Merge current into previous to preserve time order
+                curPoint.add(nextPoint);
+                curPoint.aggregationCount++;
+
+                // Remove the redundant right-side square
+                squares.remove(nextIndex);
+            } else {
+                // Guard rail: If no pairs exist in the lowest layer, we must break
+                // to prevent an infinite loop (e.g., all elements have unique counts)
+                break;
+            }
         }
-        squares = aggregatedSquares;
-        squaresAggregationCount *= 2;
     }
 
     @Override
     public void clear() {
         squares.clear();
-        squaresAggregationCount = 0;
         inProgressSquare = null;
-        inProgressSquareAggregationCount = 0;
     }
 
     private final class Square {
-        private E start;
+        private final E start;
         private E end;
         private E high;
         private E low;
+        private int aggregationCount;
+        private int size;
+
+        Square(final E point) {
+            this.start = point;
+            this.high = point;
+            this.low = point;
+            this.end = point;
+            this.aggregationCount = 1;
+            this.size = 1;
+        }
 
         public List<E> getPoints() {
             return Arrays.asList(start, low, high, end);
         }
 
         public void add(final E point) {
-            if (start == null) {
-                start = point;
+            internalAdd(point);
+            size++;
+        }
+
+        public void add(final Square square) {
+            if (square.high.getY() > this.high.getY()) {
+                this.high = square.high;
             }
-            if (high == null || point.getY() > high.getY()) {
+            if (square.low.getY() < this.low.getY()) {
+                this.low = square.low;
+            }
+            this.end = square.end;
+            this.size += square.size;
+        }
+
+        private void internalAdd(final E point) {
+            if (point.getY() > high.getY()) {
                 high = point;
             }
-            if (low == null || point.getY() < low.getY()) {
+            if (point.getY() < low.getY()) {
                 low = point;
             }
             end = point;
         }
 
-        public void addAll(final List<E> points) {
-            for (final E p : points) {
-                add(p);
-            }
+        public int getAggregationCount() {
+            return aggregationCount;
         }
 
+        public int getSize() {
+            return size;
+        }
     }
-
 }
