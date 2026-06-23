@@ -44,7 +44,7 @@ public abstract class ADelegateDailyDownloadIterableRequest<E> implements IClose
     }
 
     protected FDate getNow() {
-        return new FDate();
+        return FDate.now();
     }
 
     protected DailyDownloadCache newDailyDownloadCache() {

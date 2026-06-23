@@ -303,12 +303,12 @@ public abstract class AProperties implements IProperties {
     @Override
     public synchronized FDate getDate(final String key) {
         final String value = getString(key);
-        return FDate.valueOf(value, FDate.FORMAT_ISO_DATE_TIME_MS);
+        return FDate.valueOf(value, FDate.FORMAT_ISO_DATE_TIME_PS);
     }
 
     @Override
     public synchronized void setDate(final String key, final FDate value) {
-        setProperty(key, FDates.toString(value, FDate.FORMAT_ISO_DATE_TIME_MS));
+        setProperty(key, FDates.toString(value, FDate.FORMAT_ISO_DATE_TIME_PS));
     }
 
     @Override

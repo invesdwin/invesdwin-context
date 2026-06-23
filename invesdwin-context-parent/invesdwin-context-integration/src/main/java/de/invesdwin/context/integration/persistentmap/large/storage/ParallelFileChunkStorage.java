@@ -16,6 +16,7 @@ import de.invesdwin.util.streams.buffer.bytes.IByteBuffer;
 import de.invesdwin.util.streams.buffer.bytes.ICloseableByteBuffer;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataInputStream;
 import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
+import de.invesdwin.util.time.date.millis.FDateMillis;
 
 /**
  * Values are deleted on the file system, so no problems with deletion. Each value is stored in a separate file.
@@ -25,7 +26,7 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 @ThreadSafe
 public class ParallelFileChunkStorage<V> implements IChunkStorage<V> {
 
-    private long fileIndex = System.currentTimeMillis();
+    private long fileIndex = FDateMillis.nowMillis();
 
     private final File memoryDirectory;
     private final ISerde<V> valueSerde;

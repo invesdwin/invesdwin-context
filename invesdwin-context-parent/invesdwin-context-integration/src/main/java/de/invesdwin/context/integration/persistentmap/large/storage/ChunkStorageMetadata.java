@@ -25,7 +25,7 @@ public class ChunkStorageMetadata {
         logEntry.append("\n");
         logEntry.append(ChunkSummary.class.getSimpleName());
         logEntry.append("\nREAL_TIME=");
-        logEntry.append(new FDate());
+        logEntry.append(FDate.now());
         logEntry.append("\nMEMORY_RESOURCE_URI=");
         logEntry.append(summary.getMemoryResourceUri());
         logEntry.append("\nPRECEDING_MEMORY_OFFSET=");

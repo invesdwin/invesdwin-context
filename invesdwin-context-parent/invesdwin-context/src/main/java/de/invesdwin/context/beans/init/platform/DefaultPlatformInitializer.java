@@ -47,7 +47,10 @@ import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.LocalFastSerializingSerde;
 import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
+import de.invesdwin.util.time.date.clock.FDateClockNanos;
+import de.invesdwin.util.time.date.clock.FDateClockNanosInternal;
 import de.invesdwin.util.time.duration.Duration;
 
 /**
@@ -375,6 +378,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     @Override
     public void initDisableJavaModuleSystemRestrictions() {
         Reflections.disableJavaModuleSystemRestrictions();
+        if (FDates.getDefaultClock() == FDateClockNanos.INSTANCE) {
+            FDates.setDefaultClock(FDateClockNanosInternal.INSTANCE);
+        }
     }
 
 }

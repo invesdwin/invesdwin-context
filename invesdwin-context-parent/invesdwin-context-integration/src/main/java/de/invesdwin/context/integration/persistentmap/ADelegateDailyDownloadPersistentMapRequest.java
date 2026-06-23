@@ -146,7 +146,7 @@ public abstract class ADelegateDailyDownloadPersistentMapRequest<K, V> implement
     protected abstract APersistentMap<K, V> newPersistentMap(boolean readOnly);
 
     protected FDate getNow() {
-        return new FDate();
+        return FDate.now();
     }
 
     protected DailyDownloadCache newDailyDownloadCache() {

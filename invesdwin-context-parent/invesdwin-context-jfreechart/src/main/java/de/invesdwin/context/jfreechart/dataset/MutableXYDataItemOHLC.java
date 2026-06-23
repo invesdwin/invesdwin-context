@@ -53,13 +53,13 @@ public class MutableXYDataItemOHLC extends XYDataItem {
     }
 
     public MutableXYDataItemOHLC(final TimeRangedOHLCDataItem ohlc) {
-        super(ohlc.getStartTime().millisValue(), ohlc.getClose());
+        super(ohlc.getStartTime(), ohlc.getClose());
         this.ohlc = ohlc;
     }
 
     public void setOHLC(final TimeRangedOHLCDataItem ohlc) {
         if (ohlc != null) {
-            setX(ohlc.getStartTime().millisValue());
+            setX(ohlc.getStartTime());
             setY(ohlc.getClose());
         }
         this.ohlc = ohlc;

@@ -70,7 +70,7 @@ public abstract class ADelegateDailyDownloadListRequest<E> implements Callable<L
     }
 
     protected FDate getNow() {
-        return new FDate();
+        return FDate.now();
     }
 
     protected DailyDownloadCache newDailyDownloadCache() {

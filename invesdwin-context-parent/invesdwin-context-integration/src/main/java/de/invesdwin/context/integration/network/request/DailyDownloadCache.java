@@ -35,7 +35,7 @@ public class DailyDownloadCache {
     }
 
     public String downloadString(final String name, final Callable<String> request) throws Exception {
-        return downloadString(name, request, new FDate());
+        return downloadString(name, request, FDate.now());
     }
 
     public String downloadString(final String name, final Callable<String> request, final FDate now) throws Exception {
@@ -54,7 +54,7 @@ public class DailyDownloadCache {
     }
 
     public InputStream downloadStream(final String name, final Consumer<OutputStream> request) throws Exception {
-        return downloadStream(name, request, new FDate());
+        return downloadStream(name, request, FDate.now());
     }
 
     public InputStream downloadStream(final String name, final Consumer<OutputStream> request, final FDate now)

@@ -16,7 +16,7 @@ public abstract class AHourlyExpiringPersistentMap<K, V> extends APersistentMap<
     @Override
     protected boolean shouldPurgeTable() {
         final FDate tableCreationTime = getTableCreationTime();
-        return tableCreationTime != null && !FDates.isSameJulianHour(tableCreationTime, new FDate());
+        return tableCreationTime != null && !FDates.isSameJulianHour(tableCreationTime, FDate.now());
     }
 
 }
