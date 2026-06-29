@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,14 +16,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummaryMemoryBuffer;
-import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.factory.pool.list.ICloseableList;
 import de.invesdwin.util.collections.factory.pool.list.PooledArrayList;
-import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.readwrite.IReadWriteLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.marshallers.serde.large.ILargeSerde;
@@ -50,8 +46,6 @@ import de.invesdwin.util.streams.pool.buffered.BufferedFileDataOutputStream;
 public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChunkStorage<V> {
 
     public static final long SEGMENT_SIZE = IMemoryMappedFile.MAX_SEGMENT_SIZE_WINDOWS;
-    private static final WrappedExecutorService PREALLOCATOR_EXECUTOR = Executors.newFixedThreadPool(
-            PreallocatedLargeSegmentedMappedFileChunkStorage.class.getSimpleName() + "_PREALLOCATOR", 1);
 
     private final AtomicLong tempFileIndex = new AtomicLong();
     private final File memoryDirectory;
@@ -72,10 +66,6 @@ public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChu
     private IMemoryMappedFile positionMappedFile;
     private IByteBuffer positionBuffer;
 
-    // Asynchronous Pre-allocation
-    private Future<?> preallocFuture;
-    private final File preallocFile;
-
     private volatile IMemoryMappedFile reader;
     private final boolean readOnly;
     private final boolean closeAllowed;
@@ -85,14 +75,9 @@ public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChu
 
     @SuppressWarnings("unchecked")
     public PreallocatedLargeSegmentedMappedFileChunkStorage(final File memoryDirectory, final ILargeSerde<V> valueSerde,
-            final boolean readOnly, final boolean closeAllowed, final boolean preallocateAsync) {
+            final boolean readOnly, final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFiles = new ArrayList<>();
-        if (preallocateAsync) {
-            this.preallocFile = new File(memoryDirectory, "memory_prealloc.tmp");
-        } else {
-            this.preallocFile = null;
-        }
         this.valueSerde = valueSerde;
         if (valueSerde instanceof ILargeSerdeLengthProvider) {
             this.valueSerdeLengthProvider = (ILargeSerdeLengthProvider<V>) valueSerde;
@@ -131,54 +116,13 @@ public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChu
                 memoryFiles.add(f);
             }
         }
-
-        triggerPreallocation();
-    }
-
-    private void triggerPreallocation() {
-        if (readOnly) {
-            return;
-        }
-        if (preallocFile == null) {
-            return;
-        }
-        final Future<?> preallocFutureCopy = preallocFuture;
-        if (preallocFutureCopy != null && !preallocFuture.isDone()) {
-            return; // Already preallocating
-        }
-        preallocFuture = PREALLOCATOR_EXECUTOR.submit(() -> {
-            try {
-                if (!preallocFile.exists() || preallocFile.length() != SEGMENT_SIZE) {
-                    Files.setLength(preallocFile, SEGMENT_SIZE);
-                }
-            } catch (final Exception e) {
-                Err.process(e);
-            }
-        });
     }
 
     public File nextMemoryFile() {
         final int nextIndex = memoryFiles.size();
         final File targetFile = new File(memoryDirectory, newMemoryFileName(nextIndex));
-
         if (!readOnly) {
-            try {
-                // Ensure the background zero-out process is completely finished
-                if (preallocFuture != null) {
-                    preallocFuture.get();
-                }
-
-                // Swap it seamlessly
-                if (preallocFile != null && preallocFile.exists() && preallocFile.length() == SEGMENT_SIZE) {
-                    preallocFile.renameTo(targetFile);
-                } else {
-                    // Fallback just in case prealloc failed or was deleted
-                    Files.setLength(targetFile, SEGMENT_SIZE);
-                }
-                triggerPreallocation(); // Kick off the next file build instantly
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
-            }
+            Files.setLength(targetFile, SEGMENT_SIZE);
         }
         return targetFile;
     }
@@ -279,7 +223,6 @@ public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChu
             positionBuffer.putLong(0, 0L);
             memoryFiles.clear();
             memoryMappedFiles.clear();
-            triggerPreallocation(); // reset prealloc loop
         } finally {
             lock.writeLock().unlock();
         }
@@ -360,14 +303,18 @@ public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChu
             try {
                 Files.forceMkdir(memoryDirectory);
                 memoryDirectoryCreated.set(true);
-                if (positionMappedFile != null) {
-                    positionMappedFile.close();
-                }
-                this.positionMappedFile = newPositionMappedFile();
-                this.positionBuffer = positionMappedFile.newByteBuffer(0, Long.BYTES);
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
+            if (positionMappedFile != null) {
+                positionMappedFile.close();
+                positionMappedFile = null;
+                positionBuffer = null;
+            }
+        }
+        if (positionMappedFile == null) {
+            this.positionMappedFile = newPositionMappedFile();
+            this.positionBuffer = positionMappedFile.newByteBuffer(0, Long.BYTES);
         }
     }
 
@@ -571,11 +518,6 @@ public class PreallocatedLargeSegmentedMappedFileChunkStorage<V> implements IChu
     public void close() {
         lock.writeLock().lock();
         try {
-            final Future<?> preallocFutureCopy = preallocFuture;
-            if (preallocFutureCopy != null && !preallocFutureCopy.isDone()) {
-                preallocFuture.cancel(true); // Halt pre-allocation tasks
-                preallocFuture = null;
-            }
             positionMappedFile.close();
             clearReaderBuffers();
             closeReaderWriteLocked();

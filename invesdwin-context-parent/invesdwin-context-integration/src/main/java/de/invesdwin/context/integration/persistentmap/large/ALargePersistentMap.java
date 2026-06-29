@@ -16,6 +16,7 @@ import de.invesdwin.context.integration.persistentmap.IPersistentMapFactory;
 import de.invesdwin.context.integration.persistentmap.large.storage.IChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.LargeSegmentedMappedFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.ListMappedFileChunkStorage;
+import de.invesdwin.context.integration.persistentmap.large.storage.PreallocatedLargeSegmentedMappedFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.storage.SequentialFileChunkStorage;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummary;
 import de.invesdwin.context.integration.persistentmap.large.summary.ChunkSummarySerde;
@@ -125,12 +126,12 @@ public abstract class ALargePersistentMap<K, V> extends APersistentMapConfig<K, 
 
     public static <V> IChunkStorage<V> newDefaultLargeChunkStorage(final File directory,
             final ILargeSerde<V> valueSerde, final boolean readOnly, final boolean closeAllowed) {
-        //        if (OperatingSystem.isWindows()) {
-        //            return new PreallocatedLargeSegmentedMappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed,
-        //                    false);
-        //        } else {
-        return new LargeSegmentedMappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
-        //        }
+        if (OperatingSystem.isWindows()) {
+            return new PreallocatedLargeSegmentedMappedFileChunkStorage<>(directory, valueSerde, readOnly,
+                    closeAllowed);
+        } else {
+            return new LargeSegmentedMappedFileChunkStorage<>(directory, valueSerde, readOnly, closeAllowed);
+        }
     }
 
     @Override
