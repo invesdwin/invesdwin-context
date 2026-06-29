@@ -30,13 +30,10 @@ import net.openhft.chronicle.core.OS;
  */
 @Deprecated
 @NotThreadSafe
-public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
+public class SingleChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V> {
 
-    /**
-     * 1 GB
-     */
     @Deprecated
-    public static final long DEFAULT_CHUNK_SIZE = 1024 * 1024 * 1024;
+    public static final long DEFAULT_CHUNK_SIZE = ThreadLocalChronicleLargeMappedFileChunkStorage.DEFAULT_CHUNK_SIZE;
 
     private final File memoryDirectory;
     private final File memoryFile;
@@ -44,7 +41,7 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
     private final ILargeSerde<V> valueSerde;
     private final ILargeSerdeLengthProvider<V> valueSerdeLengthProvider;
     private final IReadWriteLock lock = ILockCollectionFactory.getInstance(true)
-            .newReadWriteLock(ChronicleLargeMappedFileChunkStorage.class.getSimpleName() + "_lock");
+            .newReadWriteLock(SingleChronicleLargeMappedFileChunkStorage.class.getSimpleName() + "_lock");
     @GuardedBy("lock")
     private long position;
     private volatile ChronicleMappedExpandableMemoryBuffer mappedFile;
@@ -54,8 +51,8 @@ public class ChronicleLargeMappedFileChunkStorage<V> implements IChunkStorage<V>
 
     @Deprecated
     @SuppressWarnings("unchecked")
-    public ChronicleLargeMappedFileChunkStorage(final File memoryDirectory, final ILargeSerde<V> valueSerde,
-            final boolean readOnly, final boolean closeAllowed) {
+    public SingleChronicleLargeMappedFileChunkStorage(final File memoryDirectory,
+            final ILargeSerde<V> valueSerde, final boolean readOnly, final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFile = new File(memoryDirectory, "memory.bin");
         this.positionFile = new File(memoryDirectory, "memory.pos");
