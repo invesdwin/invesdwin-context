@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.system.array.base.ArrayAllocators;
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
 import de.invesdwin.util.collections.array.large.IBooleanLargeArray;
@@ -19,11 +20,8 @@ import de.invesdwin.util.collections.array.large.buffer.BufferIntegerLargeArray;
 import de.invesdwin.util.collections.array.large.buffer.BufferLongLargeArray;
 import de.invesdwin.util.collections.attributes.AttributesMap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
-import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.Locks;
-import de.invesdwin.util.concurrent.nested.ANestedExecutor;
 import de.invesdwin.util.concurrent.nested.INestedExecutor;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.finalizer.AFinalizer;
@@ -214,12 +212,7 @@ public final class OffHeapLargeArrayAllocator implements ILargeArrayAllocator {
         private INestedExecutor executor;
 
         private OffHeapLargeArrayAllocatorFinalizer() {
-            this.executor = new ANestedExecutor(OffHeapLargeArrayAllocator.class.getSimpleName()) {
-                @Override
-                protected WrappedExecutorService newNestedExecutor(final String nestedName) {
-                    return Executors.newFixedCallerRunsThreadPool(nestedName, Executors.getCpuThreadPoolCount());
-                }
-            };
+            this.executor = ArrayAllocators.newDefaultExecutor(OffHeapLargeArrayAllocator.class.getSimpleName());
         }
 
         @Override
