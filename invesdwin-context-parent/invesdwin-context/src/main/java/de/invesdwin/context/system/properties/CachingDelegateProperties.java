@@ -124,7 +124,7 @@ public final class CachingDelegateProperties implements IProperties {
         } else {
             try {
                 final T newValue = getter.call();
-                Assertions.assertThat(cache.put(key, Optional.ofNullable(newValue))).isNull();
+                cache.put(key, Optional.ofNullable(newValue));
                 return newValue;
             } catch (final Exception e) {
                 throw new RuntimeException(e);
