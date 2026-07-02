@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 import org.apache.commons.configuration2.MapConfiguration;
@@ -25,7 +25,7 @@ import de.invesdwin.util.collections.factory.ILockCollectionFactory;
  * @author subes
  * 
  */
-@NotThreadSafe
+@ThreadSafe
 public class SystemProperties extends AProperties {
 
     //CHECKSTYLE:OFF Properties

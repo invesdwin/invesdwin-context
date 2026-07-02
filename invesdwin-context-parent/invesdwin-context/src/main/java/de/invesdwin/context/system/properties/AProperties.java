@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.ThreadSafe;
+import javax.annotation.concurrent.NotThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 
@@ -33,34 +33,38 @@ import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.duration.Duration;
 
-@ThreadSafe
+@NotThreadSafe
 public abstract class AProperties implements IProperties {
 
     public static final char LIST_DELIMITER = ',';
 
     private final Log log = new Log(this);
 
-    @GuardedBy("this")
+    @GuardedBy("none")
     private AbstractConfiguration delegate;
     @GuardedBy("none")
     private PropertiesAsMap asMap;
 
     protected abstract AbstractConfiguration createDelegate();
 
-    public synchronized AbstractConfiguration getDelegate() {
+    public AbstractConfiguration getDelegate() {
         if (delegate == null) {
-            delegate = createDelegate();
+            synchronized (this) {
+                if (delegate == null) {
+                    delegate = createDelegate();
+                }
+            }
         }
         return delegate;
     }
 
     @Override
-    public synchronized List<String> getKeys() {
+    public List<String> getKeys() {
         return Lists.toListWithoutHasNext(getDelegate().getKeys());
     }
 
     @Override
-    public synchronized void remove(final String key) {
+    public void remove(final String key) {
         final String keyPath = prefix(key);
         getDelegate().clearProperty(keyPath);
     }
@@ -70,13 +74,13 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized boolean containsKey(final String key) {
+    public boolean containsKey(final String key) {
         final String keyPath = prefix(key);
         return getDelegate().containsKey(keyPath);
     }
 
     @Override
-    public synchronized boolean containsValue(final String key) {
+    public boolean containsValue(final String key) {
         if (containsKey(key)) {
             final Object property = getDelegate().getProperty(prefix(key));
             return !Strings.isBlank(Strings.asString(property));
@@ -86,107 +90,107 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized Boolean getBoolean(final String key) {
+    public Boolean getBoolean(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getBoolean(keyPath, null));
     }
 
     @Override
-    public synchronized void setBoolean(final String key, final Boolean value) {
+    public void setBoolean(final String key, final Boolean value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized Byte getByte(final String key) {
+    public Byte getByte(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getByte(keyPath, null));
     }
 
     @Override
-    public synchronized void setByte(final String key, final Byte value) {
+    public void setByte(final String key, final Byte value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized Double getDouble(final String key) {
+    public Double getDouble(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getDouble(keyPath, null));
     }
 
     @Override
-    public synchronized void setDouble(final String key, final Double value) {
+    public void setDouble(final String key, final Double value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized Float getFloat(final String key) {
+    public Float getFloat(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getFloat(keyPath, null));
     }
 
     @Override
-    public synchronized void setFloat(final String key, final Float value) {
+    public void setFloat(final String key, final Float value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized Integer getInteger(final String key) {
+    public Integer getInteger(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getInteger(keyPath, null));
     }
 
     @Override
-    public synchronized void setInteger(final String key, final Integer value) {
+    public void setInteger(final String key, final Integer value) {
         final String keyPath = prefix(key);
         setProperty(keyPath, Strings.asString(value));
     }
 
     @Override
-    public synchronized Long getLong(final String key) {
+    public Long getLong(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getLong(keyPath, null));
     }
 
     @Override
-    public synchronized void setLong(final String key, final Long value) {
+    public void setLong(final String key, final Long value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized Short getShort(final String key) {
+    public Short getShort(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getShort(keyPath, null));
     }
 
     @Override
-    public synchronized void setShort(final String key, final Short value) {
+    public void setShort(final String key, final Short value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized BigDecimal getBigDecimal(final String key) {
+    public BigDecimal getBigDecimal(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getBigDecimal(keyPath));
     }
 
     @Override
-    public synchronized void setBigDecimal(final String key, final BigDecimal value) {
+    public void setBigDecimal(final String key, final BigDecimal value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized BigInteger getBigInteger(final String key) {
+    public BigInteger getBigInteger(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getBigInteger(keyPath));
     }
 
     @Override
-    public synchronized void setBigInteger(final String key, final BigInteger value) {
+    public void setBigInteger(final String key, final BigInteger value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized Decimal getDecimal(final String key) {
+    public Decimal getDecimal(final String key) {
         return Decimal.valueOf(getDouble(key));
     }
 
@@ -196,19 +200,19 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized String getString(final String key) {
+    public String getString(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
     }
 
     @Override
-    public synchronized Object getProperty(final String key) {
+    public Object getProperty(final String key) {
         final String keyPath = prefix(key);
         return maybeThrowIfMissing(keyPath, getDelegate().getProperty(keyPath));
     }
 
     @Override
-    public synchronized String getStringWithSecurityWarning(final String key, final String defaultValueWarning) {
+    public String getStringWithSecurityWarning(final String key, final String defaultValueWarning) {
         final String keyPath = prefix(key);
         final String actualValue = maybeThrowIfMissing(keyPath, getDelegate().getString(keyPath));
         maybeLogSecurityWarning(keyPath, actualValue, defaultValueWarning);
@@ -227,7 +231,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized <T extends Enum<T>> T getEnum(final Class<T> enumType, final String key) {
+    public <T extends Enum<T>> T getEnum(final Class<T> enumType, final String key) {
         final String value = getString(key);
         if (value == null) {
             return null;
@@ -241,17 +245,17 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized void setEnum(final String key, final Enum<?> value) {
+    public void setEnum(final String key, final Enum<?> value) {
         setProperty(key, value.name());
     }
 
     @Override
-    public synchronized void setString(final String key, final String value) {
+    public void setString(final String key, final String value) {
         setProperty(key, value);
     }
 
     @Override
-    public synchronized String[] getStringArray(final String key) {
+    public String[] getStringArray(final String key) {
         final String keyPath = prefix(key);
         //provoke exception if something is not set
         if (getString(keyPath) == null) {
@@ -262,19 +266,19 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized List<String> getList(final String key) {
+    public List<String> getList(final String key) {
         return Strings.asList(getStringArray(key));
     }
 
     @Override
-    public synchronized void setList(final String key, final List<String> value) {
+    public void setList(final String key, final List<String> value) {
         final String keyPath = prefix(key);
         final String valueStr = Strings.asString(value, LIST_DELIMITER);
         getDelegate().setProperty(keyPath, valueStr);
     }
 
     @Override
-    public synchronized Set<String> getSet(final String key) {
+    public Set<String> getSet(final String key) {
         final List<String> list = getList(key);
         if (list == null) {
             return null;
@@ -284,7 +288,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized void setSet(final String key, final Set<String> value) {
+    public void setSet(final String key, final Set<String> value) {
         if (value == null) {
             setList(key, null);
         } else {
@@ -301,23 +305,23 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized FDate getDate(final String key) {
+    public FDate getDate(final String key) {
         final String value = getString(key);
         return FDate.valueOf(value, FDate.FORMAT_ISO_DATE_TIME_PS);
     }
 
     @Override
-    public synchronized void setDate(final String key, final FDate value) {
+    public void setDate(final String key, final FDate value) {
         setProperty(key, FDates.toString(value, FDate.FORMAT_ISO_DATE_TIME_PS));
     }
 
     @Override
-    public synchronized void setDuration(final String key, final Duration value) {
+    public void setDuration(final String key, final Duration value) {
         setProperty(key, Duration.toStringValue(value));
     }
 
     @Override
-    public synchronized Duration getDuration(final String key) {
+    public Duration getDuration(final String key) {
         final String value = getString(key);
         if (value == null) {
             return null;
@@ -332,7 +336,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized URL getURL(final String key, final boolean validatePort) {
+    public URL getURL(final String key, final boolean validatePort) {
         try {
             return getURI(key, validatePort).toURL();
         } catch (final Throwable t) {
@@ -342,12 +346,12 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized void setURL(final String key, final URL value) {
+    public void setURL(final String key, final URL value) {
         setProperty(key, Strings.asString(value));
     }
 
     @Override
-    public synchronized URI getURI(final String key, final boolean validatePort) {
+    public URI getURI(final String key, final boolean validatePort) {
         final String str = getString(key);
         try {
             URI uri = URIs.asUri(str);
@@ -380,7 +384,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized void setURI(final String key, final URI value) {
+    public void setURI(final String key, final URI value) {
         setProperty(key, Strings.asString(value));
     }
 
@@ -394,12 +398,12 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized InetAddress getInetAddress(final String key) {
+    public InetAddress getInetAddress(final String key) {
         return Addresses.asAddress(getString(key));
     }
 
     @Override
-    public synchronized InetSocketAddress getInetSocketAddress(final String key, final boolean validatePort) {
+    public InetSocketAddress getInetSocketAddress(final String key, final boolean validatePort) {
         final String value = getString(key);
         final String[] split = Strings.splitPreserveAllTokens(value, ":");
         Throwable cause = null;
@@ -427,7 +431,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized File getFile(final String key) {
+    public File getFile(final String key) {
         final String str = getString(key);
         if (str == null) {
             return null;
@@ -437,7 +441,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized void setFile(final String key, final File value) {
+    public void setFile(final String key, final File value) {
         if (value == null) {
             setString(key, null);
         } else {
@@ -461,7 +465,7 @@ public abstract class AProperties implements IProperties {
     }
 
     @Override
-    public synchronized String getErrorMessage(final String key, final Object value, final Class<?> expectedType,
+    public String getErrorMessage(final String key, final Object value, final Class<?> expectedType,
             final String message) {
         return newErrorMessage(prefix(key), value, expectedType, message);
     }
@@ -511,7 +515,11 @@ public abstract class AProperties implements IProperties {
     @Override
     public Map<String, String> asMap() {
         if (asMap == null) {
-            asMap = new PropertiesAsMap(this);
+            synchronized (this) {
+                if (asMap == null) {
+                    asMap = new PropertiesAsMap(this);
+                }
+            }
         }
         return asMap;
     }

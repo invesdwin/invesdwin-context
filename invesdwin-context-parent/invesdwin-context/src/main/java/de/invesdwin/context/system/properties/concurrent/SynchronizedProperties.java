@@ -1,4 +1,4 @@
-package de.invesdwin.context.system.properties;
+package de.invesdwin.context.system.properties.concurrent;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -11,499 +11,420 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.concurrent.GuardedBy;
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.context.system.properties.IProperties;
+import de.invesdwin.util.collections.fast.concurrent.SynchronizedMap;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
 
-@Immutable
-public final class IgnoreExceptionsDelegateProperties implements IProperties {
+@ThreadSafe
+public class SynchronizedProperties implements IProperties {
 
     private final IProperties delegate;
-    @GuardedBy("none")
-    private PropertiesAsMap asMap;
+    private final Object lock;
+    private SynchronizedMap<String, String> asMap;
 
-    public IgnoreExceptionsDelegateProperties(final IProperties delegate) {
-        Assertions.assertThat(delegate).isNotInstanceOf(getClass());
+    public SynchronizedProperties(final IProperties delegate) {
         this.delegate = delegate;
+        this.lock = this;
     }
 
-    public IProperties getDelegate() {
-        return delegate;
+    public SynchronizedProperties(final IProperties delegate, final Object lock) {
+        this.delegate = delegate;
+        this.lock = lock;
     }
 
     @Override
     public List<String> getKeys() {
-        return delegate.getKeys();
+        synchronized (lock) {
+            return delegate.getKeys();
+        }
     }
 
     @Override
     public void remove(final String key) {
-        try {
+        synchronized (lock) {
             delegate.remove(key);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public boolean containsKey(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.containsKey(key);
-        } catch (final Throwable t) {
-            return false;
         }
     }
 
     @Override
     public boolean containsValue(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.containsValue(key);
-        } catch (final Throwable t) {
-            return false;
         }
     }
 
     @Override
     public Boolean getBoolean(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getBoolean(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setBoolean(final String key, final Boolean value) {
-        try {
+        synchronized (lock) {
             delegate.setBoolean(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Byte getByte(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getByte(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setByte(final String key, final Byte value) {
-        try {
+        synchronized (lock) {
             delegate.setByte(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Double getDouble(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getDouble(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setDouble(final String key, final Double value) {
-        try {
+        synchronized (lock) {
             delegate.setDouble(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Float getFloat(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getFloat(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setFloat(final String key, final Float value) {
-        try {
+        synchronized (lock) {
             delegate.setFloat(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Integer getInteger(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getInteger(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setInteger(final String key, final Integer value) {
-        try {
+        synchronized (lock) {
             delegate.setInteger(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Long getLong(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getLong(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setLong(final String key, final Long value) {
-        try {
+        synchronized (lock) {
             delegate.setLong(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Short getShort(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getShort(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setShort(final String key, final Short value) {
-        try {
+        synchronized (lock) {
             delegate.setShort(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public BigDecimal getBigDecimal(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getBigDecimal(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setBigDecimal(final String key, final BigDecimal value) {
-        try {
+        synchronized (lock) {
             delegate.setBigDecimal(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public BigInteger getBigInteger(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getBigInteger(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setBigInteger(final String key, final BigInteger value) {
-        try {
+        synchronized (lock) {
             delegate.setBigInteger(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Decimal getDecimal(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getDecimal(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setDecimal(final String key, final Decimal value) {
-        try {
+        synchronized (lock) {
             delegate.setDecimal(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public String getString(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getString(key);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
-    @Override
-    public Object getProperty(final String key) {
-        try {
-            return delegate.getProperty(key);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
-    @Override
-    public String getStringWithSecurityWarning(final String key, final String defaultPasswordWarning) {
-        try {
-            return delegate.getStringWithSecurityWarning(key, defaultPasswordWarning);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
-    @Override
-    public <T extends Enum<T>> T getEnum(final Class<T> enumType, final String key) {
-        try {
-            return delegate.getEnum(enumType, key);
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
-    @Override
-    public void setEnum(final String key, final Enum<?> value) {
-        try {
-            delegate.setEnum(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public void setString(final String key, final String value) {
-        try {
+        synchronized (lock) {
             delegate.setString(key, value);
-        } catch (final Throwable t) {
-            //noop
+        }
+    }
+
+    @Override
+    public Object getProperty(final String key) {
+        synchronized (lock) {
+            return delegate.getProperty(key);
         }
     }
 
     @Override
     public String[] getStringArray(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getStringArray(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public List<String> getList(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getList(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setList(final String key, final List<String> value) {
-        try {
+        synchronized (lock) {
             delegate.setList(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Set<String> getSet(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getSet(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setSet(final String key, final Set<String> value) {
-        try {
+        synchronized (lock) {
             delegate.setSet(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public FDate getDate(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getDate(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setDate(final String key, final FDate value) {
-        try {
+        synchronized (lock) {
             delegate.setDate(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public Duration getDuration(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getDuration(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setDuration(final String key, final Duration value) {
-        try {
+        synchronized (lock) {
             delegate.setDuration(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public URL getURL(final String key, final boolean validatePort) {
-        try {
+        synchronized (lock) {
             return delegate.getURL(key, validatePort);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setURL(final String key, final URL value) {
-        try {
+        synchronized (lock) {
             delegate.setURL(key, value);
-        } catch (final Throwable t) {
-            //noop
         }
     }
 
     @Override
     public URI getURI(final String key, final boolean validatePort) {
-        try {
+        synchronized (lock) {
             return delegate.getURI(key, validatePort);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setURI(final String key, final URI value) {
-        try {
+        synchronized (lock) {
             delegate.setURI(key, value);
-        } catch (final Throwable t) {
-            //noop
-        }
-    }
-
-    @Override
-    public InetAddress getInetAddress(final String key) {
-        try {
-            return delegate.getInetAddress(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public Integer getPort(final String key, final boolean validatePort) {
-        try {
+        synchronized (lock) {
             return delegate.getPort(key, validatePort);
-        } catch (final Throwable t) {
-            return null;
+        }
+    }
+
+    @Override
+    public InetAddress getInetAddress(final String key) {
+        synchronized (lock) {
+            return delegate.getInetAddress(key);
         }
     }
 
     @Override
     public InetSocketAddress getInetSocketAddress(final String key, final boolean validatePort) {
-        try {
+        synchronized (lock) {
             return delegate.getInetSocketAddress(key, validatePort);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public File getFile(final String key) {
-        try {
+        synchronized (lock) {
             return delegate.getFile(key);
-        } catch (final Throwable t) {
-            return null;
         }
     }
 
     @Override
     public void setFile(final String key, final File value) {
-        try {
+        synchronized (lock) {
             delegate.setFile(key, value);
-        } catch (final Throwable t) {
-            //noop
+        }
+    }
+
+    @Override
+    public <T extends Enum<T>> T getEnum(final Class<T> enumType, final String key) {
+        synchronized (lock) {
+            return delegate.getEnum(enumType, key);
+        }
+    }
+
+    @Override
+    public void setEnum(final String key, final Enum<?> value) {
+        synchronized (lock) {
+            delegate.setEnum(key, value);
         }
     }
 
     @Override
     public String getEnumFormat(final Class<? extends Enum<?>> enumType) {
-        return delegate.getEnumFormat(enumType);
+        synchronized (lock) {
+            return delegate.getEnumFormat(enumType);
+        }
+    }
+
+    @Override
+    public String getStringWithSecurityWarning(final String key, final String defaultValueWarning) {
+        synchronized (lock) {
+            return delegate.getStringWithSecurityWarning(key, defaultValueWarning);
+        }
     }
 
     @Override
     public String getErrorMessage(final String key, final Object value, final Class<?> expectedType,
             final String message) {
-        return delegate.getErrorMessage(key, value, expectedType, message);
+        synchronized (lock) {
+            return delegate.getErrorMessage(key, value, expectedType, message);
+        }
     }
 
     @Override
     public void maybeLogSecurityWarning(final String key, final String actualValue, final String defaultValueWarning) {
-        delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
-    }
-
-    @Override
-    public int size() {
-        return delegate.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return delegate.isEmpty();
-    }
-
-    @Override
-    public void clear() {
-        delegate.clear();
+        synchronized (lock) {
+            delegate.maybeLogSecurityWarning(key, actualValue, defaultValueWarning);
+        }
     }
 
     @Override
     public Map<String, String> asMap() {
         if (asMap == null) {
-            synchronized (this) {
+            synchronized (lock) {
                 if (asMap == null) {
-                    asMap = new PropertiesAsMap(this);
+                    asMap = new SynchronizedMap<>(delegate.asMap(), lock);
                 }
             }
         }
         return asMap;
+    }
+
+    @Override
+    public int size() {
+        synchronized (lock) {
+            return delegate.size();
+        }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        synchronized (lock) {
+            return delegate.isEmpty();
+        }
+    }
+
+    @Override
+    public void clear() {
+        synchronized (lock) {
+            delegate.clear();
+        }
     }
 
 }
