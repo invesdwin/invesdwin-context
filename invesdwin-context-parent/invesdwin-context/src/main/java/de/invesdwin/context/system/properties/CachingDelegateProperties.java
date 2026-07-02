@@ -124,8 +124,12 @@ public final class CachingDelegateProperties implements IProperties {
         } else {
             try {
                 final T newValue = getter.call();
-                cache.putIfAbsent(key, Optional.ofNullable(newValue));
-                return newValue;
+                final Optional<T> oldValue = (Optional<T>) cache.putIfAbsent(key, Optional.ofNullable(newValue));
+                if (oldValue != null) {
+                    return oldValue.orElse(null);
+                } else {
+                    return newValue;
+                }
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
