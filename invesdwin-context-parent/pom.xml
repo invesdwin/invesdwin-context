@@ -67,8 +67,6 @@
 		<version.jarchivelib>1.2.0</version.jarchivelib>
 		<version.sevenzipjbinding>16.02-2.01</version.sevenzipjbinding>
 
-		<version.logback>1.5.22</version.logback>
-
 		<!-- reports -->
 		<version.jfreechart>1.5.4</version.jfreechart>
 		<version.dynamicreports>6.12.1-inv</version.dynamicreports>
@@ -180,16 +178,6 @@
 			    <version>${version.sevenzipjbinding}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${version.logback}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${version.logback}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.puppycrawl.tools</groupId>
 				<artifactId>checkstyle</artifactId>
