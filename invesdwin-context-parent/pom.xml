@@ -147,23 +147,11 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-configuration2</artifactId>
 				<version>${version.commons-configuration2}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>${version.commons-configuration}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -207,10 +195,6 @@
 				<artifactId>checkstyle</artifactId>
 				<version>${version.checkstyle}</version>
 				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
 					<exclusion>
 						<artifactId>tools</artifactId>
 						<groupId>com.sun</groupId>
@@ -348,10 +332,6 @@
 						<groupId>org.codehaus.castor</groupId>
 					</exclusion>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
 						<artifactId>olap4j</artifactId>
 						<groupId>org.olap4j</groupId>
 					</exclusion>
@@ -408,10 +388,6 @@
 				<classifier>jakarta</classifier>
 				<exclusions>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
 						<artifactId>jdtcore</artifactId>
 						<groupId>eclipse</groupId>
 					</exclusion>
@@ -463,10 +439,6 @@
 					<exclusion>
 						<artifactId>xalan</artifactId>
 						<groupId>xalan</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -527,10 +499,6 @@
 				<version>${version.spring-integration}</version>
 				<exclusions>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
 						<artifactId>stax-api</artifactId>
 						<groupId>javax.xml.stream</groupId>
 					</exclusion>
@@ -540,12 +508,6 @@
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-xml</artifactId>
 				<version>${version.spring-ws}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -53,7 +52,7 @@ public final class LogbackConfigurationLoader {
                 configurator.doConfigure(new LogbackConfigurationMerger(orderedConfigs).getInputStream());
                 //http://stackoverflow.com/questions/2533227/how-can-i-disable-the-default-console-handler-while-using-the-java-logging-api
                 java.util.logging.LogManager.getLogManager().reset();
-                SLF4JBridgeHandler.install();
+                //SLF4JBridgeHandler.install();
                 logLogbackBeingConfigured(orderedConfigs);
                 StatusPrinter.printIfErrorsOccured(lc);
             } catch (final JoranException e) {
