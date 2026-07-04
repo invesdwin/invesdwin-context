@@ -21,11 +21,11 @@ public final class Log4j2Properties {
 
     static {
         // 1. Date formatting (Using .SSS to match the comment, but .nnnnnnnnn is fully supported in Log4j2)
-        final StringBuilder sb = new StringBuilder("%d{yyyy-MM-dd HH:mm:ss.nnnnnnnnn");
+        final StringBuilder sb = new StringBuilder("%d{yyyy-MM-dd HH:mm:ss");
 
         if (!isKeepDefaultTimezone()) {
             // Log4j2 timezone syntax: %d{yyyy-MM-dd HH:mm:ss.SSS}{GMT+1}
-            sb.append("}{").append(TIME_ZONE_OVERRIDE.getID());
+            sb.append("}.%nanoTime{").append(TIME_ZONE_OVERRIDE.getID());
         }
         sb.append("}");
 
