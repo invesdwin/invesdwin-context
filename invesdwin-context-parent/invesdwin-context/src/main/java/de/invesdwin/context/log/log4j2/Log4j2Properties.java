@@ -21,20 +21,23 @@ public final class Log4j2Properties {
 
     static {
         // 1. Date formatting (Using .SSS to match the comment, but .nnnnnnnnn is fully supported in Log4j2)
-        final StringBuilder sb = new StringBuilder("%d{yyyy-MM-dd HH:mm:ss");
+        //logback: final StringBuilder sb = new StringBuilder("%-46(%date{yyyy-MM-dd HH:mm:ss.SSS");
+        final StringBuilder sb = new StringBuilder("%d{yyyy-MM-ddTHH:mm:ss}.%nanoTime");
 
         if (!isKeepDefaultTimezone()) {
             // Log4j2 timezone syntax: %d{yyyy-MM-dd HH:mm:ss.SSS}{GMT+1}
-            sb.append("}.%nanoTime{").append(TIME_ZONE_OVERRIDE.getID());
+            sb.append("{");
+            sb.append(TIME_ZONE_OVERRIDE.getID());
+            sb.append("}");
         }
-        sb.append("}");
 
+        //logback: sb.append("} [%.-21(%1X{transactions}|%thread))] %-5level %-60.-60(%logger{45}.%method) - %msg%n");
         // 2. Thread, MDC, Level, Logger, and Method
         // - [%X{transactions}|%.-21t]: Gets MDC map, truncates Thread to max 21 chars from the left
         // - %-5level: 5-character left-aligned log level
         // - %-45logger{45}.%-14.14M: Emulates the %-60.-60() grouping by splitting the 60
         //   characters between the logger (45) and the method name (max 14).
-        sb.append(" [%X{transactions}|%.-21t] %-5level %-45logger{45}.%-14.14M - %msg%n");
+        sb.append(" [%1X{transactions}|%.-21t] %-5level %fixedLen{%logbackLogger{45}.%-14.14M}{60} - %msg%n");
 
         LAYOUT_PATTERN = sb.toString();
     }

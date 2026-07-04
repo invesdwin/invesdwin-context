@@ -1,4 +1,4 @@
-<Configuration status="TRACE">
+<Configuration status="ERROR">
 	<!-- Configuration for Log4j2 before bootstrap has been done -->
 
 	<Appenders>
