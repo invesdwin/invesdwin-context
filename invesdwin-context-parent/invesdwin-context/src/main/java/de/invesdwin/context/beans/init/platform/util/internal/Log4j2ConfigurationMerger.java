@@ -25,16 +25,16 @@ import de.invesdwin.util.lang.string.Strings;
 import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 
 @NotThreadSafe
-public class LogbackConfigurationMerger {
+public class Log4j2ConfigurationMerger {
 
-    private static final String CONFIGURATION_OPEN = "<configuration>";
-    private static final String CONFIGURATION_CLOSE = "</configuration>";
+    private static final String CONFIGURATION_OPEN = "<Configuration status=\"WARN\">";
+    private static final String CONFIGURATION_CLOSE = "</Configuration>";
 
     private final List<String> appenders = new ArrayList<String>();
     private final List<String> loggers = new ArrayList<String>();
     private final List<String> miscs = new ArrayList<String>();
 
-    public LogbackConfigurationMerger(final List<Resource> resources) {
+    public Log4j2ConfigurationMerger(final List<Resource> resources) {
         for (final Resource r : resources) {
             try {
                 extractComponents(r);
@@ -69,9 +69,9 @@ public class LogbackConfigurationMerger {
             final StringWriter res = new StringWriter();
             t.transform(new StAXSource(xsr), new StreamResult(res));
             final String element = Strings.substringAfter(res.toString(), "?>");
-            if (element.startsWith("<appender")) {
+            if (element.startsWith("<Appender")) {
                 appenders.add(element);
-            } else if (element.startsWith("<logger")) {
+            } else if (element.startsWith("<Logger")) {
                 loggers.add(element);
             } else {
                 miscs.add(element);

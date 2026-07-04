@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- JUL bridge for java.util.logging -->
+    <Properties>
+        <Property name="log4j2.jul.to.slf4j.bridge">true</Property>
+    </Properties>
+
+    <Appenders>
+        <ConfiguredConsole name="stdout" target="SYSTEM_OUT">
+            <StdoutExpression onMatch="ACCEPT" onMismatch="DENY"/>
+        </ConfiguredConsole>
+
+        <ConfiguredConsole name="stderr" target="SYSTEM_ERR">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+        </ConfiguredConsole>
+
+        <ConfiguredFile name="error">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+        </ConfiguredFile>
+
+        <ConfiguredFile name="common"/>
+    </Appenders>
+
+    <Loggers>
+        <!-- ERROR only gets logged on console shortened -->
+        <Logger name="de.invesdwin.ERROR" level="WARN" additivity="false">
+            <AppenderRef ref="stderr"/>
+            <AppenderRef ref="common"/>
+        </Logger>
+
+        <!-- ERROR_DETAIL only gets logged into file -->
+        <Logger name="de.invesdwin.ERROR_DETAIL" level="WARN" additivity="false">
+            <AppenderRef ref="error"/>
+        </Logger>
+
+        <Logger name="de.invesdwin" level="INFO" additivity="false">
+            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="stderr"/>
+            <AppenderRef ref="common"/>
+            <AppenderRef ref="error"/>
+        </Logger>
+
+        <!-- Error when creating PropertyDescriptor for ... -->
+        <Logger name="org.apache.commons.beanutils" level="ERROR" additivity="false">
+            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="stderr"/>
+            <AppenderRef ref="common"/>
+            <AppenderRef ref="error"/>
+        </Logger>
+
+        <!-- could not create Dir using jarFile from url -->
+        <Logger name="org.reflections.Reflections" level="ERROR" additivity="false">
+            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="stderr"/>
+            <AppenderRef ref="common"/>
+            <AppenderRef ref="error"/>
+        </Logger>
+
+        <!-- not interesting if aspectj fails to identify some interface or so; unit tests should show if something is wrong anyway -->
+        <Logger name="AspectJ Weaver" level="OFF" additivity="false"/>
+
+        <Root level="WARN">
+            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="stderr"/>
+            <AppenderRef ref="common"/>
+            <AppenderRef ref="error"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
