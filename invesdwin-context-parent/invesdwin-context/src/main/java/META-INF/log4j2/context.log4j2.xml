@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
 
-    <!-- JUL bridge for java.util.logging -->
-    <Properties>
-        <Property name="log4j2.jul.to.slf4j.bridge">true</Property>
-    </Properties>
-
     <Appenders>
         <ConfiguredConsole name="stdout" target="SYSTEM_OUT">
             <StdoutExpression onMatch="ACCEPT" onMismatch="DENY"/>
