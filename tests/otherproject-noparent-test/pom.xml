@@ -78,11 +78,6 @@
 		</dependency>
 		<dependency>
 			<groupId>de.invesdwin</groupId>
-			<artifactId>invesdwin-context-integration-hadoop</artifactId>
-			<version>${project.version.invesdwin-context-integration}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.invesdwin</groupId>
 			<artifactId>invesdwin-context-integration-jms</artifactId>
 			<version>${project.version.invesdwin-context-integration}</version>
 		</dependency>
