@@ -7,7 +7,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 
-import de.invesdwin.util.time.date.millis.FDatePicos;
+import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
 @Plugin(name = "NanoTimestampConverter", category = "Converter")
@@ -24,24 +24,29 @@ public class NanoTimestampConverter extends LogEventPatternConverter {
 
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
+        // Instant.getNanoOfSecond() always returns a 9-digit value (0 to 999,999,999)
         final int nanos = event.getInstant().getNanoOfSecond();
-        final int nanosecond = FDatePicos.getPicosecond(nanos);
-        final int microsecond = FDatePicos.getNanosecond(nanos);
-        final int millisecond = FDatePicos.getMicrosecond(nanos);
 
-        appendFraction(toAppendTo, nanosecond);
-        toAppendTo.append(".");
-        appendFraction(toAppendTo, microsecond);
-        toAppendTo.append(".");
-        appendFraction(toAppendTo, millisecond);
+        // Inlining the math avoids the method invocation overhead of FDatePicos
+        final int millisecond = nanos / FTimeUnit.NANOSECONDS_IN_MILLISECOND;
+        final int microsecond = (nanos / FTimeUnit.NANOSECONDS_IN_MICROSECOND) % FTimeUnit.NANOSECONDS_IN_MICROSECOND;
+        final int nanosecond = nanos % FTimeUnit.NANOSECONDS_IN_MICROSECOND;
+
+        // Maintains the same formatting order as the original code
+        append3Digits(toAppendTo, nanosecond);
+        toAppendTo.append('.');
+        append3Digits(toAppendTo, microsecond);
+        toAppendTo.append('.');
+        append3Digits(toAppendTo, millisecond);
     }
 
-    private void appendFraction(final StringBuilder toAppendTo, final int fraction) {
-        if (fraction < 10) {
-            toAppendTo.append("00");
-        } else if (fraction < 100) {
-            toAppendTo.append("0");
-        }
-        toAppendTo.append(fraction);
+    /**
+     * Extracts digits directly using character arithmetic. This avoids CPU branching, Integer.toString(), and heavy
+     * StringBuilder.append(int) methods.
+     */
+    private void append3Digits(final StringBuilder sb, final int val) {
+        sb.append((char) ('0' + (val / 100)));
+        sb.append((char) ('0' + ((val / 10) % 10)));
+        sb.append((char) ('0' + (val % 10)));
     }
 }
