@@ -1,0 +1,36 @@
+<Configuration>
+
+	<Appenders>
+		<ConfiguredFileAppender name="integration" />
+	</Appenders>
+
+	<Loggers>
+		<Logger
+			name="org.springframework.batch.item.file.FlatFileItemReader"
+			level="OFF" additivity="false" />
+
+		<Logger name="org.springframework.integration" level="ERROR"
+			additivity="false">
+			<AppenderRef ref="stderr" />
+			<AppenderRef ref="error" />
+			<AppenderRef ref="integration" />
+		</Logger>
+
+		<Logger name="de.invesdwin.MESSAGES" level="INFO"
+			additivity="false">
+			<AppenderRef ref="integration" />
+		</Logger>
+
+		<!-- disable kotlin warning -->
+		<Logger
+			name="org.springframework.http.converter.json.Jackson2ObjectMapperBuilder"
+			level="ERROR" additivity="true" />
+
+		<!-- disable xerces warnings: http://javax.xml.XMLConstants/property/accessExternalDTD 
+			property not supported by org.apache.xerces.jaxp.DocumentBuilderFactoryImpl -->
+		<Logger
+			name="org.springframework.xml.DocumentBuilderFactoryUtils"
+			level="ERROR" additivity="true" />
+	</Loggers>
+
+</Configuration>

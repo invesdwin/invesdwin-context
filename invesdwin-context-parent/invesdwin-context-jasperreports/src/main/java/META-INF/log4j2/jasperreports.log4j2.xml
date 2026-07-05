@@ -1,0 +1,14 @@
+<Configuration>
+
+    <Loggers>
+        <Logger name="net.sf.jasperreports" 
+                level="ERROR" 
+                additivity="false">
+            <AppenderRef ref="stdout" />
+            <AppenderRef ref="stderr" />
+            <AppenderRef ref="error" />
+            <AppenderRef ref="common" />
+        </Logger>
+    </Loggers>
+
+</Configuration>

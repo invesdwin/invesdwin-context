@@ -1,0 +1,13 @@
+<Configuration>
+
+	<!-- could not create Dir using jarFile from url -->
+	<Loggers>
+		<Logger name="org.eclipse.jetty" additivity="false" level="ERROR">
+			<AppenderRef ref="stdout" />
+			<AppenderRef ref="stderr" />
+			<AppenderRef ref="common" />
+			<AppenderRef ref="error" />
+		</Logger>
+	</Loggers>
+
+</Configuration>
