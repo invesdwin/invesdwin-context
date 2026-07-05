@@ -37,7 +37,8 @@ public final class Log4j2Properties {
         // - %-5level: 5-character left-aligned log level
         // - %-45logger{45}.%-14.14M: Emulates the %-60.-60() grouping by splitting the 60
         //   characters between the logger (45) and the method name (max 14).
-        sb.append(" [%1X{transactions}|%.-21t] %-5level %fixedLen{%logbackLogger{45}.%-14.14M}{60} - %msg%n");
+        sb.append(
+                " [%fixedLen{%1X{transactions}|%t}{21}] %-5level %fixedLen{%logbackLogger{45}.%-14.14M}{60} - %msg%n");
 
         LAYOUT_PATTERN = sb.toString();
     }
