@@ -3,7 +3,6 @@ package de.invesdwin.context.log;
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
@@ -41,7 +40,7 @@ public final class Log implements ILog {
     }
 
     public Log(final String name) {
-        super(LogManager.getLogger(name));
+        this.delegate = LogManager.getLogger(name);
     }
 
     public Log(final Class<?> clazz) {
@@ -53,174 +52,99 @@ public final class Log implements ILog {
     }
 
     @Override
-    public void trace(final String format, final Object... args) {
-        super.trace(format(LogLevel.TRACE, format, args), args);
+    public void trace(final String format, final Object... params) {
+        super.trace(format(LogLevel.TRACE, format, params), params);
     }
 
     @Override
-    public void trace(final Marker marker, final String format, final Object... args) {
-        super.trace(marker, format(LogLevel.TRACE, format, args), args);
+    public void debug(final String format, final Object... params) {
+        super.debug(format(LogLevel.DEBUG, format, params), params);
     }
 
     @Override
-    public void debug(final String format, final Object... args) {
-        super.debug(format(LogLevel.DEBUG, format, args), args);
+    public void info(final String format, final Object... params) {
+        super.info(format(LogLevel.INFO, format, params), params);
     }
 
     @Override
-    public void debug(final Marker marker, final String format, final Object... args) {
-        super.debug(marker, format(LogLevel.DEBUG, format, args), args);
+    public void warn(final String format, final Object... params) {
+        super.warn(format(LogLevel.WARN, format, params), params);
     }
 
     @Override
-    public void info(final String format, final Object... args) {
-        super.info(format(LogLevel.INFO, format, args), args);
+    public void error(final String format, final Object... params) {
+        super.error(format(LogLevel.ERROR, format, params), params);
     }
 
     @Override
-    public void info(final Marker marker, final String format, final Object... args) {
-        super.info(marker, format(LogLevel.INFO, format, args), args);
+    public void debug(final String format, final Object p0) {
+        super.debug(format(LogLevel.DEBUG, format, p0), p0);
     }
 
     @Override
-    public void warn(final String format, final Object... args) {
-        super.warn(format(LogLevel.WARN, format, args), args);
+    public void debug(final String format, final Object p0, final Object p1) {
+        super.debug(format(LogLevel.DEBUG, format, p0, p1), p0, p1);
     }
 
     @Override
-    public void warn(final Marker marker, final String format, final Object... args) {
-        super.warn(marker, format(LogLevel.WARN, format, args), args);
+    public void error(final String format, final Object p0) {
+        super.error(format(LogLevel.ERROR, format, p0), p0);
     }
 
     @Override
-    public void error(final String format, final Object... args) {
-        super.error(format(LogLevel.ERROR, format, args), args);
+    public void error(final String format, final Object p0, final Object p1) {
+        super.error(format(LogLevel.ERROR, format, p0, p1), p0, p1);
     }
 
     @Override
-    public void error(final Marker marker, final String format, final Object... args) {
-        super.error(marker, format(LogLevel.ERROR, format, args), args);
+    public void info(final String format, final Object p0) {
+        super.info(format(LogLevel.INFO, format, p0), p0);
     }
 
     @Override
-    public void debug(final Marker marker, final String format, final Object arg) {
-        super.debug(marker, format(LogLevel.DEBUG, format, arg), arg);
+    public void info(final String format, final Object p0, final Object p1) {
+        super.info(format(LogLevel.INFO, format, p0, p1), p0, p1);
     }
 
     @Override
-    public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.debug(marker, format(LogLevel.DEBUG, format, arg1, arg2), arg1, arg2);
+    public void trace(final String format, final Object p0) {
+        super.trace(format(LogLevel.TRACE, format, p0), p0);
     }
 
     @Override
-    public void debug(final String format, final Object arg) {
-        super.debug(format(LogLevel.DEBUG, format, arg), arg);
+    public void trace(final String format, final Object p0, final Object p1) {
+        super.trace(format(LogLevel.TRACE, format, p0, p1), p0, p1);
     }
 
     @Override
-    public void debug(final String format, final Object arg1, final Object arg2) {
-        super.debug(format(LogLevel.DEBUG, format, arg1, arg2), arg1, arg2);
+    public void warn(final String format, final Object p0) {
+        super.warn(format(LogLevel.WARN, format, p0), p0);
     }
 
     @Override
-    public void error(final Marker marker, final String format, final Object arg) {
-        super.error(marker, format(LogLevel.ERROR, format, arg), arg);
+    public void warn(final String format, final Object p0, final Object p1) {
+        super.warn(format(LogLevel.WARN, format, p0, p1), p0, p1);
     }
 
-    @Override
-    public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.error(marker, format(LogLevel.ERROR, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void error(final String format, final Object arg) {
-        super.error(format(LogLevel.ERROR, format, arg), arg);
-    }
-
-    @Override
-    public void error(final String format, final Object arg1, final Object arg2) {
-        super.error(format(LogLevel.ERROR, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void info(final Marker marker, final String format, final Object arg) {
-        super.info(marker, format(LogLevel.INFO, format, arg), arg);
-    }
-
-    @Override
-    public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.info(marker, format(LogLevel.INFO, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void info(final String format, final Object arg) {
-        super.info(format(LogLevel.INFO, format, arg), arg);
-    }
-
-    @Override
-    public void info(final String format, final Object arg1, final Object arg2) {
-        super.info(format(LogLevel.INFO, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void trace(final Marker marker, final String format, final Object arg) {
-        super.trace(marker, format(LogLevel.TRACE, format, arg), arg);
-    }
-
-    @Override
-    public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.trace(marker, format(LogLevel.TRACE, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void trace(final String format, final Object arg) {
-        super.trace(format(LogLevel.TRACE, format, arg), arg);
-    }
-
-    @Override
-    public void trace(final String format, final Object arg1, final Object arg2) {
-        super.trace(format(LogLevel.TRACE, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void warn(final Marker marker, final String format, final Object arg) {
-        super.warn(marker, format(LogLevel.WARN, format, arg), arg);
-    }
-
-    @Override
-    public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.warn(marker, format(LogLevel.WARN, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void warn(final String format, final Object arg) {
-        super.warn(format(LogLevel.WARN, format, arg), arg);
-    }
-
-    @Override
-    public void warn(final String format, final Object arg1, final Object arg2) {
-        super.warn(format(LogLevel.WARN, format, arg1, arg2), arg1, arg2);
-    }
-
-    private String format(final LogLevel level, final String messagePattern, final Object arg) {
+    private String format(final LogLevel level, final String messagePattern, final Object p0) {
         if (!level.isEnabled(logger)) {
             return messagePattern;
         }
-        return FormattedDelegateLog.format(messagePattern, new Object[] { arg });
+        return FormattedDelegateLog.format(messagePattern, new Object[] { p0 });
     }
 
-    private String format(final LogLevel level, final String messagePattern, final Object arg1, final Object arg2) {
+    private String format(final LogLevel level, final String messagePattern, final Object p0, final Object p1) {
         if (!level.isEnabled(logger)) {
             return messagePattern;
         }
-        return FormattedDelegateLog.format(messagePattern, new Object[] { arg1, arg2 });
+        return FormattedDelegateLog.format(messagePattern, new Object[] { p0, p1 });
     }
 
-    private String format(final LogLevel level, final String messagePattern, final Object[] argArray) {
+    private String format(final LogLevel level, final String messagePattern, final Object[] params) {
         if (!level.isEnabled(logger)) {
             return messagePattern;
         }
-        return FormattedDelegateLog.format(messagePattern, argArray);
+        return FormattedDelegateLog.format(messagePattern, params);
     }
 
 }
