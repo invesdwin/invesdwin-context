@@ -7,6 +7,9 @@ import java.util.Set;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.invesdwin.context.IBasePackageDefinition;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.collections.Arrays;
@@ -16,8 +19,7 @@ import de.invesdwin.util.lang.string.Strings;
 @ThreadSafe
 public final class BasePackagesConfigurer {
 
-    private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory
-            .getXLogger(BasePackagesConfigurer.class);
+    private static final Logger LOG = LogManager.getLogger(BasePackagesConfigurer.class);
     @GuardedBy("BasePackagesConfigurer.class")
     private static Set<String> basePackages;
     private static String[] basePackagesArray;

@@ -2,7 +2,8 @@ package de.invesdwin.context.log;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.slf4j.Marker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
@@ -27,7 +28,7 @@ import de.invesdwin.util.log.modify.FormattedDelegateLog;
  * 
  */
 @ThreadSafe
-public final class Log extends org.slf4j.ext.XLogger implements ILog {
+public final class Log implements ILog {
 
     static {
         if (PlatformInitializerProperties.isAllowed()) {
@@ -40,7 +41,7 @@ public final class Log extends org.slf4j.ext.XLogger implements ILog {
     }
 
     public Log(final String name) {
-        super(org.slf4j.LoggerFactory.getLogger(name));
+        super(LogManager.getLogger(name));
     }
 
     public Log(final Class<?> clazz) {
