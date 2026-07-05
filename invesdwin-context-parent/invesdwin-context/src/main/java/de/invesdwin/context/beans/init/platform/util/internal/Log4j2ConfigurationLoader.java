@@ -18,7 +18,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
-import de.invesdwin.context.log.log4j2.LowGcPreciseClock;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.streams.resource.Resources;
 
@@ -45,10 +44,6 @@ public final class Log4j2ConfigurationLoader {
                     orderedConfigs.addAll(
                             Arrays.asList(resolver.getResources("classpath*:" + META_INF_LOG4J + "*log4j2-dist.xml")));
                 }
-
-                //CHECKSTYLE:OFF
-                System.setProperty("log4j.Clock", LowGcPreciseClock.class.getName());
-                //CHECKSTYLE:ON
 
                 final ConfigurationSource configSource = new ConfigurationSource(
                         new Log4j2ConfigurationMerger(orderedConfigs).getInputStream());
