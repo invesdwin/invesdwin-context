@@ -26,7 +26,7 @@ import de.invesdwin.context.beans.init.platform.util.TempDirectoryLockConfigurer
 import de.invesdwin.context.beans.init.platform.util.WildflyOpenSslSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
 import de.invesdwin.context.beans.init.platform.util.internal.InstrumentationHookLoader;
-import de.invesdwin.context.beans.init.platform.util.internal.LogbackConfigurationLoader;
+import de.invesdwin.context.beans.init.platform.util.internal.Log4j2ConfigurationLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.SystemPropertiesLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
@@ -121,7 +121,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initLogbackConfigurationLoader() {
-        LogbackConfigurationLoader.loadLogbackConfiguration();
+        Log4j2ConfigurationLoader.loadLog4jConfiguration();
     }
 
     @Override

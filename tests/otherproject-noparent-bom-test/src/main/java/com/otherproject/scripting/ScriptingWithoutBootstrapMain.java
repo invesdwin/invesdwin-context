@@ -41,12 +41,12 @@ public class ScriptingWithoutBootstrapMain {
 
 	private static void customizeInvesdwinBootstrap() {
 		/*
-		 * alternatively only disable e.g. logback configuration so that you can use
+		 * alternatively only disable e.g. log4j configuration so that you can use
 		 * your existing logger configuration
 		 * 
-		 * if you want to use log4j2 instead of logback, just exclude the maven
-		 * artifact, include the slf4j redirect for logback and add the dependency for
-		 * slf4j-log4j2
+		 * if you want to use logback instead of log4j2, just exclude the maven
+		 * artifact, include the slf4j redirect for log4j2 and add the dependency for
+		 * logback-classic
 		 */
 		PlatformInitializerProperties
 				.setInitializer(new DelegatePlatformInitializer(PlatformInitializerProperties.getInitializer()) {
