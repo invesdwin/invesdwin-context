@@ -22,8 +22,9 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @PerformanceSensitive("allocation")
 public final class FixedLengthConverter extends LogEventPatternConverter {
 
-    private final List<PatternFormatter> formatters;
+    private final PatternFormatter[] formatters;
     private final int fixedLength;
+    private final boolean handlesThrowable;
 
     /**
      * Construct the converter.
@@ -37,7 +38,21 @@ public final class FixedLengthConverter extends LogEventPatternConverter {
     private FixedLengthConverter(final List<PatternFormatter> formatters, final int fixedLength) {
         super("FixedLength", "fixedLength");
         this.fixedLength = fixedLength;
-        this.formatters = formatters;
+        // Optimized: Convert to a native array for faster traversal in the hot path
+        this.formatters = formatters.toArray(new PatternFormatter[0]);
+
+        // Optimized: Pre-calculate handlesThrowable strictly once at startup
+        boolean handles = false;
+        for (final PatternFormatter formatter : this.formatters) {
+            if (formatter.getConverter() instanceof LogEventPatternConverter) {
+                if (formatter.getConverter().handlesThrowable()) {
+                    handles = true;
+                    break;
+                }
+            }
+        }
+        this.handlesThrowable = handles;
+
         //CHECKSTYLE:OFF
         LOGGER.trace("new MaxLengthConverter with {}", fixedLength);
         //CHECKSTYLE:ON
@@ -67,26 +82,30 @@ public final class FixedLengthConverter extends LogEventPatternConverter {
     @Override
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         final int initialLength = toAppendTo.length();
-        for (int i = 0; i < formatters.size(); i++) {
-            final PatternFormatter formatter = formatters.get(i);
-            formatter.format(event, toAppendTo);
-            if (toAppendTo.length() > initialLength + fixedLength) { // stop early
+        // Optimized: Cache the target math arithmetic outside the hot loop
+        final int targetLength = initialLength + fixedLength;
+
+        for (int i = 0; i < formatters.length; i++) {
+            formatters[i].format(event, toAppendTo);
+            if (toAppendTo.length() >= targetLength) { // stop early
                 break;
             }
         }
-        if (toAppendTo.length() > initialLength + fixedLength) {
-            toAppendTo.setLength(initialLength + fixedLength);
-        } else {
-            while (toAppendTo.length() < initialLength + fixedLength) {
-                toAppendTo.append(" ");
+
+        final int currentLength = toAppendTo.length();
+        if (currentLength > targetLength) {
+            toAppendTo.setLength(targetLength);
+        } else if (currentLength < targetLength) {
+            // Optimized: Calculate exact missing characters and append primitive chars
+            final int paddingNeeded = targetLength - currentLength;
+            for (int i = 0; i < paddingNeeded; i++) {
+                toAppendTo.append(' ');
             }
         }
     }
 
     @Override
     public boolean handlesThrowable() {
-        return formatters.stream()
-                .map(PatternFormatter::getConverter)
-                .anyMatch(LogEventPatternConverter::handlesThrowable);
+        return handlesThrowable;
     }
 }
