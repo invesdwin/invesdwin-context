@@ -16,8 +16,8 @@ import de.invesdwin.util.lang.string.Strings;
 @ThreadSafe
 public final class BasePackagesConfigurer {
 
-    private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory
-            .getXLogger(BasePackagesConfigurer.class);
+    private static final org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager
+            .getLogger(BasePackagesConfigurer.class);
     @GuardedBy("BasePackagesConfigurer.class")
     private static Set<String> basePackages;
     private static String[] basePackagesArray;

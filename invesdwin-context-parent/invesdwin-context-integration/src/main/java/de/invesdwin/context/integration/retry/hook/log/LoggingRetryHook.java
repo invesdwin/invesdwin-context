@@ -2,8 +2,6 @@ package de.invesdwin.context.integration.retry.hook.log;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.slf4j.ext.XLogger.Level;
-
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
@@ -13,6 +11,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.reference.IMutableReference;
 import de.invesdwin.util.concurrent.reference.ThreadLocalReference;
 import de.invesdwin.util.error.Throwables;
+import de.invesdwin.util.log.LogLevel;
 import de.invesdwin.util.math.Booleans;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.duration.Duration;
@@ -83,7 +82,7 @@ public class LoggingRetryHook implements IRetryHook {
 
     public static void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
             final LoggingReason reason, final Instant waitingSince) {
-        LOG.catching(Level.ERROR, new FastRetryLaterRuntimeException(
+        LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(
                 createFailureMessage(originator, retryCount, reason, waitingSince), cause));
     }
 
