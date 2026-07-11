@@ -1,4 +1,4 @@
-<Configuration status="WARN">
+<Configuration status="ERROR" packages="de.invesdwin.context.log.log4j2">
 	<!-- Configuration for Log4j2 before bootstrap has been done -->
 
 	<Appenders>

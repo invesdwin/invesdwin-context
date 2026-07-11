@@ -31,7 +31,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 @NotThreadSafe
 public class Log4j2ConfigurationMerger {
 
-    private static final String CONFIGURATION_OPEN = "<Configuration status=\"WARN\">";
+    private static final String CONFIGURATION_OPEN = "<Configuration status=\"ERROR\" packages=\"de.invesdwin.context.log.log4j2\">";
     private static final String CONFIGURATION_CLOSE = "</Configuration>";
 
     // LinkedHashMap preserves the order of wrapper tags as they are encountered,
