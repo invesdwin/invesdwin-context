@@ -2,14 +2,13 @@ package de.invesdwin.context.beans.init;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.test.ATest;
 import de.invesdwin.context.test.ITestContextSetup;
 import jakarta.inject.Inject;
 
-@Disabled("needs to be called manually since not working reliably in suite")
+// @Disabled("needs to be called manually since not working reliably in suite")
 @ThreadSafe
 public class ScheduledTest extends ATest {
 

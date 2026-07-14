@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import org.assertj.core.api.Fail;
-import org.opentest4j.AssertionFailedError;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import de.invesdwin.aspects.annotation.SkipParallelExecution;
@@ -18,7 +17,7 @@ class ScheduledTestBean {
     private volatile boolean scheduleOnceCalled;
     private volatile boolean blockingCalled;
     private volatile boolean synchronizedCalled;
-    private final AtomicInteger scheduleOftenParalel = new AtomicInteger();
+    private final AtomicInteger scheduleOftenParallel = new AtomicInteger();
     private final AtomicInteger scheduleOftenCount = new AtomicInteger();
 
     public void testScheduled() throws InterruptedException {
@@ -28,13 +27,13 @@ class ScheduledTestBean {
         scheduleBlocking(); //not throwing assetion, because execution is skipped
         Assertions.assertThat(scheduleOnceCalled).isTrue();
         Thread.sleep(1);
-        Assertions.assertThat(scheduleOftenParalel.get()).isEqualTo(1);
+        Assertions.assertThat(scheduleOftenParallel.get()).isEqualTo(1);
         Thread.sleep(300);
         Assertions.assertThat(scheduleOftenCount.get()).isGreaterThan(2);
         try {
             scheduleSynchronized();
             Fail.fail("Exception expected");
-        } catch (final AssertionFailedError e) {
+        } catch (final IllegalStateException e) {
             Assertions.assertThat(e.getMessage())
                     .contains("@" + Scheduled.class.getSimpleName())
                     .contains("@" + SkipParallelExecution.class.getSimpleName());
@@ -51,9 +50,9 @@ class ScheduledTestBean {
     @Scheduled(fixedRate = 10)
     private void scheduleOftenSequencial() throws InterruptedException {
         scheduleOftenCount.incrementAndGet();
-        Assertions.assertThat(scheduleOftenParalel.incrementAndGet()).isEqualTo(1);
+        Assertions.assertThat(scheduleOftenParallel.incrementAndGet()).isEqualTo(1);
         TimeUnit.MILLISECONDS.sleep(100);
-        Assertions.assertThat(scheduleOftenParalel.decrementAndGet()).isEqualTo(0);
+        Assertions.assertThat(scheduleOftenParallel.decrementAndGet()).isEqualTo(0);
     }
 
     @SuppressWarnings("unused" /* called by scheduler */)
