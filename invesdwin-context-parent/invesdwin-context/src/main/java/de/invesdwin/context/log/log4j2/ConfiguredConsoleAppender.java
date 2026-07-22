@@ -28,6 +28,7 @@ public final class ConfiguredConsoleAppender extends AbstractOutputStreamAppende
                 delegate.getImmediateFlush(), delegate.getPropertyArray(), delegate.getManager());
     }
 
+    @SuppressWarnings("deprecation")
     @PluginFactory
     public static Appender createAppender(@PluginAttribute("name") final String name,
             @PluginAttribute("target") final String target, @PluginAttribute("ignoreExceptions") final String ignore,
@@ -41,8 +42,8 @@ public final class ConfiguredConsoleAppender extends AbstractOutputStreamAppende
         final Layout<? extends Serializable> layout;
         if (pLayout == null) {
             layout = PatternLayout.newBuilder()
-                    .setPattern(Log4j2Properties.LAYOUT_PATTERN)
-                    .setConfiguration(config)
+                    .withPattern(Log4j2Properties.LAYOUT_PATTERN)
+                    .withConfiguration(config)
                     .build();
         } else {
             layout = pLayout;

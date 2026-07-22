@@ -32,6 +32,7 @@ public final class ConfiguredFileAppender extends AbstractOutputStreamAppender<R
                 delegate.getImmediateFlush(), delegate.getPropertyArray(), delegate.getManager());
     }
 
+    @SuppressWarnings("deprecation")
     @PluginFactory
     public static Appender createAppender(@PluginAttribute("name") final String name,
             @PluginAttribute("ignoreExceptions") final String ignore,
@@ -45,8 +46,8 @@ public final class ConfiguredFileAppender extends AbstractOutputStreamAppender<R
         final Layout<? extends Serializable> layout;
         if (pLayout == null) {
             layout = PatternLayout.newBuilder()
-                    .setPattern(Log4j2Properties.LAYOUT_PATTERN)
-                    .setConfiguration(config)
+                    .withPattern(Log4j2Properties.LAYOUT_PATTERN)
+                    .withConfiguration(config)
                     .build();
         } else {
             layout = pLayout;
@@ -61,18 +62,18 @@ public final class ConfiguredFileAppender extends AbstractOutputStreamAppender<R
 
         // Create default rollover strategy (max 9 files as in logback)
         final DefaultRolloverStrategy rolloverStrategy = DefaultRolloverStrategy.newBuilder()
-                .setMax("9")
-                .setConfig(config)
+                .withMax("9")
+                .withConfig(config)
                 .build();
 
         return RollingFileAppender.newBuilder()
                 .setName(name)
                 .setLayout(layout)
                 .setFilter(filter)
-                .setFileName(fileName)
-                .setFilePattern(filePattern)
-                .setPolicy(SizeBasedTriggeringPolicy.createPolicy("20MB"))
-                .setStrategy(rolloverStrategy)
+                .withFileName(fileName)
+                .withFilePattern(filePattern)
+                .withPolicy(SizeBasedTriggeringPolicy.createPolicy("20MB"))
+                .withStrategy(rolloverStrategy)
                 .setIgnoreExceptions(ignoreExceptions)
                 .setConfiguration(config)
                 .build();
