@@ -9,6 +9,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.OptionHandler;
 
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
@@ -71,7 +72,19 @@ public abstract class AMain implements Runnable {
     protected CmdLineParser newCmdLineParser() {
         final CmdLineParser parser = new CmdLineParser(this);
         parser.getProperties().withUsageWidth(120);
+        validateNoRequiredHelpOption(parser);
         return parser;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void validateNoRequiredHelpOption(final CmdLineParser parser) {
+        final List<OptionHandler> options = parser.getOptions();
+        for (int i = 0; i < options.size(); i++) {
+            final OptionHandler option = options.get(i);
+            if (option.option.required() && option.option.help()) {
+                throw new IllegalArgumentException("Option [" + option.option + "] cannot be both required and help.");
+            }
+        }
     }
 
     /**
