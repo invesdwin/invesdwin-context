@@ -3,6 +3,7 @@ package de.invesdwin.context.beans.init;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.annotation.concurrent.Immutable;
@@ -141,6 +142,7 @@ public abstract class AMain implements Runnable {
     }
 
     protected final void printHelp(final CmdLineParser parser) {
+        forceEnglishLocaleForHelp();
         final String helpStr = createHelpString(parser);
         try {
             new Log(this).error(helpStr);
@@ -151,6 +153,10 @@ public abstract class AMain implements Runnable {
             System.err.println(helpStr);
             //CHECKSTYLE:ON
         }
+    }
+
+    protected void forceEnglishLocaleForHelp() {
+        Locale.setDefault(Locale.ENGLISH);
     }
 
     protected String createHelpString(final CmdLineParser parser) {
