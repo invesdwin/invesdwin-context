@@ -48,6 +48,7 @@ public abstract class AMain implements Runnable {
     private void parseCommandline() {
         final CmdLineParser parser = newCmdLineParser();
         try {
+            validateNoRequiredHelpOption(parser);
             final String[] filteredArgs = parseSystemProperties(args);
             parser.parseArgument(filteredArgs);
             if (help) {
@@ -72,12 +73,11 @@ public abstract class AMain implements Runnable {
     protected CmdLineParser newCmdLineParser() {
         final CmdLineParser parser = new CmdLineParser(this);
         parser.getProperties().withUsageWidth(120);
-        validateNoRequiredHelpOption(parser);
         return parser;
     }
 
     @SuppressWarnings("rawtypes")
-    private void validateNoRequiredHelpOption(final CmdLineParser parser) {
+    protected void validateNoRequiredHelpOption(final CmdLineParser parser) {
         final List<OptionHandler> options = parser.getOptions();
         for (int i = 0; i < options.size(); i++) {
             final OptionHandler option = options.get(i);
