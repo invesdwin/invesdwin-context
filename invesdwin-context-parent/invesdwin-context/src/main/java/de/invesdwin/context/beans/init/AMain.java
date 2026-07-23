@@ -142,7 +142,6 @@ public abstract class AMain implements Runnable {
     }
 
     protected final void printHelp(final CmdLineParser parser) {
-        forceEnglishLocaleForHelp();
         final String helpStr = createHelpString(parser);
         try {
             new Log(this).error(helpStr);
@@ -160,6 +159,7 @@ public abstract class AMain implements Runnable {
     }
 
     protected String createHelpString(final CmdLineParser parser) {
+        forceEnglishLocaleForHelp();
         final StringWriter writer = new StringWriter();
         final ResourceBundle rb = ResourceBundles.getResourceBundle(getClass());
         writer.append("\nUsage:\tjava ");
