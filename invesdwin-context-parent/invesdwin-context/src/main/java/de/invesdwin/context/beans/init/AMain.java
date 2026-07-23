@@ -22,8 +22,6 @@ import de.invesdwin.util.time.date.FTimeUnit;
 @Immutable
 public abstract class AMain implements Runnable {
 
-    protected final Log log = new Log(this);
-
     @Option(help = true, name = "-h", aliases = "--help", usage = "Shows this help text")
     protected boolean help;
 
@@ -129,7 +127,7 @@ public abstract class AMain implements Runnable {
     }
 
     protected final void printHelp(final CmdLineParser parser) {
-        log.error(createHelpString(parser));
+        new Log(this).error(createHelpString(parser));
     }
 
     protected String createHelpString(final CmdLineParser parser) {
