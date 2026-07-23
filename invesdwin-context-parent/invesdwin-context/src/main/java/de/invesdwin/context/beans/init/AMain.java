@@ -16,6 +16,7 @@ import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.context.system.properties.ResourceBundles;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
@@ -127,7 +128,16 @@ public abstract class AMain implements Runnable {
     }
 
     protected final void printHelp(final CmdLineParser parser) {
-        new Log(this).error(createHelpString(parser));
+        final String helpStr = createHelpString(parser);
+        try {
+            new Log(this).error(helpStr);
+        } catch (final Throwable t) {
+            //CHECKSTYLE:OFF
+            final String fullStackTrace = Throwables.getFullStackTrace(t);
+            System.err.println("Failed to print help text: " + fullStackTrace);
+            System.err.println(helpStr);
+            //CHECKSTYLE:ON
+        }
     }
 
     protected String createHelpString(final CmdLineParser parser) {
