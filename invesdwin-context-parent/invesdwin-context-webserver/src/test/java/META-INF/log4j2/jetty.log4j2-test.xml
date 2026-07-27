@@ -2,7 +2,7 @@
 
 	<!-- could not create Dir using jarFile from url -->
 	<Loggers>
-		<Logger name="org.eclipse.jetty" additivity="false" level="WARN">
+		<Logger name="org.eclipse.jetty" additivity="false" level="TRACE">
 			<AppenderRef ref="stdout" />
 			<AppenderRef ref="stderr" />
 			<AppenderRef ref="common" />

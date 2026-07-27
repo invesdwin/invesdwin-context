@@ -120,6 +120,12 @@
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-webserver</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jasperreports</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
