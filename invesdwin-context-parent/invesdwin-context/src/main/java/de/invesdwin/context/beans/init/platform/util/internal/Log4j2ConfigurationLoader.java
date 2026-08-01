@@ -30,9 +30,10 @@ public final class Log4j2ConfigurationLoader {
     private Log4j2ConfigurationLoader() {}
 
     public static void loadLog4jConfiguration() {
-        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
-        if (loggerContext != null) {
+        final org.apache.logging.log4j.spi.LoggerContext loggerContext = LogManager.getContext(false);
+        if (loggerContext instanceof LoggerContext) {
             try {
+                final LoggerContext cLoggerContext = (LoggerContext) LogManager.getContext(false);
                 final List<Resource> orderedConfigs = new ArrayList<Resource>();
                 final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
                 orderedConfigs
@@ -47,8 +48,8 @@ public final class Log4j2ConfigurationLoader {
 
                 final ConfigurationSource configSource = new ConfigurationSource(
                         new Log4j2ConfigurationMerger(orderedConfigs).getInputStream());
-                final Configuration configuration = new XmlConfiguration(loggerContext, configSource);
-                loggerContext.setConfiguration(configuration);
+                final Configuration configuration = new XmlConfiguration(cLoggerContext, configSource);
+                cLoggerContext.setConfiguration(configuration);
 
                 //http://stackoverflow.com/questions/2533227/how-can-i-disable-the-default-console-handler-while-using-the-java-logging-api
                 java.util.logging.LogManager.getLogManager().reset();

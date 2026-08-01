@@ -51,7 +51,11 @@ public class TestContextLoader implements ContextLoader {
     private static final FastThreadLocal<TestContextState> TEST_CONTEXT_STATE_HOLDER = new FastThreadLocal<>();
 
     static {
-        Assertions.checkNotNull(PreMergedContext.getInstance());
+        try {
+            Assertions.checkNotNull(PreMergedContext.getInstance());
+        } catch (final Throwable t) {
+            throw Err.process(t);
+        }
     }
 
     private static final GenericXmlContextLoader PARENT = new GenericXmlContextLoader() {
