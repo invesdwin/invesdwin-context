@@ -20,7 +20,7 @@ import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.UUIDs;
-import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.closeable.Closeables;
 import de.invesdwin.util.time.date.FDate;
@@ -29,78 +29,88 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 @NotThreadSafe
 public class IoFileChannel implements IFileChannel {
 
-    public static final String DEFAULT_SERVER_URI = "file://";
+    public static final String DEFAULT_SERVER_URI_STR = "file://";
+    public static final URI DEFAULT_SERVER_URI = URI.create(DEFAULT_SERVER_URI_STR);
 
-    private final String serverUri;
-    private String directory;
+    private final URI serverUri;
+    private final URI baseServerUri;
+    private final String baseDirectory;
+    private String subDirectory = "";
     private String filename;
     private byte[] emptyFileContent = Bytes.EMPTY_ARRAY;
     private boolean connected = false;
+
+    public IoFileChannel(final File file) {
+        this(DEFAULT_SERVER_URI);
+        if (file != null) {
+            if (file.getParent() != null) {
+                setSubDirectory(file.getParent());
+            }
+            setFilename(file.getName());
+        }
+    }
 
     public IoFileChannel() {
         this(DEFAULT_SERVER_URI);
     }
 
     public IoFileChannel(final URI serverUri) {
-        this(serverUri != null ? serverUri.toString() : DEFAULT_SERVER_URI);
+        this.serverUri = serverUri != null ? serverUri : DEFAULT_SERVER_URI;
+        this.baseServerUri = FileChannelInfos.extractBaseServerUri(this.serverUri, DEFAULT_SERVER_URI);
+        this.baseDirectory = FileChannelInfos.extractBaseDirectory(this.serverUri);
     }
 
     public IoFileChannel(final String serverUri) {
-        if (serverUri == null) {
-            this.serverUri = DEFAULT_SERVER_URI;
-        } else {
-            this.serverUri = Strings.removeEnd(serverUri, "/");
-        }
-    }
-
-    public IoFileChannel(final URI serverUri, final String directory) {
-        this(serverUri != null ? serverUri.toString() : DEFAULT_SERVER_URI, directory);
-    }
-
-    public IoFileChannel(final String serverUri, final String directory) {
-        this(serverUri);
-        if (directory != null) {
-            setDirectory(directory);
-        }
+        this(serverUri == null ? null : URIs.asUri(serverUri));
     }
 
     //CHECKSTYLE:OFF
     @Override
-    public IFileChannel withDirectory(final String directory) {
+    public IFileChannel withSubDirectory(final String subDirectory) {
         //CHECKSTYLE:ON
-        final IoFileChannel instance = new IoFileChannel(getServerUri(), directory);
+        final IoFileChannel instance = new IoFileChannel(serverUri);
         instance.emptyFileContent = emptyFileContent;
         instance.filename = filename;
+        instance.setSubDirectory(subDirectory);
         return instance;
     }
 
     @Override
-    public String getServerUri() {
+    public URI getServerUri() {
         return serverUri;
     }
 
     @Override
-    public String getDirectory() {
-        if (directory == null) {
-            throw new NullPointerException("please call setDirectory(...) first");
-        }
-        return directory;
+    public URI getBaseServerUri() {
+        return baseServerUri;
     }
 
     @Override
-    public void setDirectory(final String directory) {
-        if (directory == null) {
-            this.directory = null;
-        } else {
-            this.directory = Strings
-                    .putSuffix(Strings.putPrefix(directory.replace("\\", "/").replaceAll("[/]+", "/"), "/"), "/");
-            createDirectoryIfNotExists();
-        }
+    public String getBaseDirectory() {
+        return baseDirectory;
     }
 
     @Override
-    public void setFilename(final String filename) {
+    public String getSubDirectory() {
+        return subDirectory;
+    }
+
+    @Override
+    public String getAbsoluteDirectory() {
+        return FileChannelInfos.combinePath(baseDirectory, subDirectory);
+    }
+
+    @Override
+    public IoFileChannel setSubDirectory(final String subDirectory) {
+        this.subDirectory = subDirectory != null ? subDirectory : "";
+        createDirectoryIfNotExists();
+        return this;
+    }
+
+    @Override
+    public IoFileChannel setFilename(final String filename) {
         this.filename = filename;
+        return this;
     }
 
     @Override
@@ -117,17 +127,18 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public void setEmptyFileContent(final byte[] emptyFileContent) {
+    public IoFileChannel setEmptyFileContent(final byte[] emptyFileContent) {
         this.emptyFileContent = emptyFileContent;
+        return this;
     }
 
     @Override
-    public void createUniqueFile() {
-        createUniqueFile(IoFileChannel.class.getSimpleName() + "_", ".channel");
+    public IoFileChannel createUniqueFile() {
+        return createUniqueFile(IoFileChannel.class.getSimpleName() + "_", ".channel");
     }
 
     @Override
-    public void createUniqueFile(final String filenamePrefix, final String filenameSuffix) {
+    public IoFileChannel createUniqueFile(final String filenamePrefix, final String filenameSuffix) {
         assertConnected();
         while (true) {
             final String filename = filenamePrefix + UUIDs.newPseudoRandomUUID() + filenameSuffix;
@@ -138,12 +149,14 @@ public class IoFileChannel implements IFileChannel {
                 break;
             }
         }
+        return this;
     }
 
     @Override
-    public void connect() {
+    public IoFileChannel connect() {
         connected = true;
         createDirectoryIfNotExists();
+        return this;
     }
 
     @Override
@@ -182,7 +195,7 @@ public class IoFileChannel implements IFileChannel {
         assertConnected();
         final File file = resolveFile();
         if (file.exists()) {
-            return IoFileInfo.valueOf(getServerUri(), getDirectory(), file);
+            return IoFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory, file);
         }
         return null;
     }
@@ -201,7 +214,7 @@ public class IoFileChannel implements IFileChannel {
         }
 
         return Arrays.stream(files)
-                .map(file -> IoFileInfo.valueOf(getServerUri(), getDirectory(), file))
+                .map(file -> IoFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory, file))
                 .collect(Collectors.toList());
     }
 
@@ -222,7 +235,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     private void createDirectoryIfNotExists() {
-        if (this.directory != null && isConnected()) {
+        if (isConnected()) {
             try {
                 Files.forceMkdir(resolveDirectory());
             } catch (final IOException e) {
@@ -232,9 +245,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     private File resolveDirectory() {
-        final String uriStr = FileChannelInfos.newDirectoryUri(getServerUri(), getDirectory())
-                .replaceAll("(?<!:)/{3,}", "///");
-        return new File(URI.create(uriStr));
+        return new File(FileChannelInfos.newDirectoryUri(baseServerUri, getAbsoluteDirectory()));
     }
 
     private File resolveFile() {
@@ -242,7 +253,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public void rename(final String filename) {
+    public IoFileChannel rename(final String filename) {
         assertConnected();
         final File source = resolveFile();
         final File target = new File(resolveDirectory(), filename);
@@ -250,33 +261,37 @@ public class IoFileChannel implements IFileChannel {
             throw new RuntimeException("Failed to rename file from " + source + " to " + target);
         }
         setFilename(filename);
+        return this;
     }
 
     @Override
-    public void upload(final File file) {
+    public IoFileChannel upload(final File file) {
         assertConnected();
         try (InputStream in = new FileInputStream(file); OutputStream out = new FileOutputStream(resolveFile())) {
             copyStream(in, out);
+            return this;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void upload(final byte[] bytes) {
+    public IoFileChannel upload(final byte[] bytes) {
         assertConnected();
         try (FileOutputStream out = new FileOutputStream(resolveFile())) {
             out.write(bytes);
+            return this;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void upload(final InputStream input) {
+    public IoFileChannel upload(final InputStream input) {
         assertConnected();
         try (OutputStream out = new FileOutputStream(resolveFile())) {
             copyStream(input, out);
+            return this;
         } catch (final IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -285,7 +300,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public void download(final File destination) {
+    public IoFileChannel download(final File destination) {
         assertConnected();
         final File source = resolveFile();
         if (source.exists()) {
@@ -299,6 +314,7 @@ public class IoFileChannel implements IFileChannel {
                 throw new RuntimeException(e);
             }
         }
+        return this;
     }
 
     @Override
@@ -326,9 +342,10 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public void delete() {
+    public IoFileChannel delete() {
         assertConnected();
         Files.deleteQuietly(resolveFile());
+        return this;
     }
 
     @Override
@@ -365,7 +382,7 @@ public class IoFileChannel implements IFileChannel {
         try {
             return resolveFile();
         } catch (final UnsupportedOperationException | IllegalArgumentException e) {
-            final File directory = new File(ContextProperties.TEMP_DIRECTORY, getDirectory());
+            final File directory = new File(ContextProperties.TEMP_DIRECTORY, getAbsoluteDirectory());
             try {
                 Files.forceMkdir(directory);
             } catch (final IOException ex) {
@@ -378,9 +395,10 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public void reconnect() {
+    public IoFileChannel reconnect() {
         close();
         connect();
+        return this;
     }
 
     @Override

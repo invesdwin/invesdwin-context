@@ -16,14 +16,11 @@ import de.invesdwin.util.time.date.FDate;
 @Immutable
 public class NioFileInfo implements IFileInfo {
 
-    private final String serverUri;
-    private final String directory;
-
-    // Extracted the filename as a native String to ensure safe serialization
+    private final URI serverUri;
+    private final URI baseServerUri;
+    private final String baseDirectory;
+    private final String subDirectory;
     private final String filename;
-
-    // Marked transient because java.nio.file.Path is not Serializable
-    // Removed the 'final' modifier so it can be lazily reconstructed
     private transient Path delegate;
 
     private final boolean isDirectory;
@@ -31,9 +28,12 @@ public class NioFileInfo implements IFileInfo {
     private final long length;
     private final FDate lastModified;
 
-    public NioFileInfo(final String serverUri, final String directory, final Path delegate) {
+    public NioFileInfo(final URI serverUri, final URI baseServerUri, final String baseDirectory,
+            final String subDirectory, final Path delegate) {
         this.serverUri = serverUri;
-        this.directory = directory;
+        this.baseServerUri = baseServerUri;
+        this.baseDirectory = baseDirectory;
+        this.subDirectory = subDirectory;
         this.delegate = delegate;
         this.filename = delegate.getFileName().toString();
 
@@ -49,13 +49,28 @@ public class NioFileInfo implements IFileInfo {
     }
 
     @Override
-    public String getServerUri() {
+    public URI getServerUri() {
         return serverUri;
     }
 
     @Override
-    public String getDirectory() {
-        return directory;
+    public URI getBaseServerUri() {
+        return baseServerUri;
+    }
+
+    @Override
+    public String getBaseDirectory() {
+        return baseDirectory;
+    }
+
+    @Override
+    public String getSubDirectory() {
+        return subDirectory;
+    }
+
+    @Override
+    public String getAbsoluteDirectory() {
+        return FileChannelInfos.combinePath(baseDirectory, subDirectory);
     }
 
     @Override
@@ -85,11 +100,8 @@ public class NioFileInfo implements IFileInfo {
 
     @Override
     public Path unwrap() {
-        // Lazily reconstruct the Path if this object was sent over the wire
         if (delegate == null) {
-            final String uriStr = FileChannelInfos.newFileUri(getServerUri(), getDirectory(), getFilename())
-                    .replaceAll("(?<!:)/{3,}", "///");
-            delegate = Paths.get(URI.create(uriStr));
+            delegate = Paths.get(getFileUri());
         }
         return delegate;
     }
@@ -99,10 +111,11 @@ public class NioFileInfo implements IFileInfo {
         return FileChannelInfos.toString(this);
     }
 
-    public static NioFileInfo valueOf(final String serverUri, final String path, final Path file) {
+    public static NioFileInfo valueOf(final URI serverUri, final URI baseServerUri, final String baseDirectory,
+            final String subDirectory, final Path file) {
         if (file == null) {
             return null;
         }
-        return new NioFileInfo(serverUri, path, file);
+        return new NioFileInfo(serverUri, baseServerUri, baseDirectory, subDirectory, file);
     }
 }

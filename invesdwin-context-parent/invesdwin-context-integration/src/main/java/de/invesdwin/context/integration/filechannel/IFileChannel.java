@@ -12,19 +12,22 @@ import de.invesdwin.util.streams.closeable.ISafeCloseable;
 
 public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
-    void setFilename(String filename);
+    IFileChannel setFilename(String filename);
 
-    void setDirectory(String directory);
+    /**
+     * Sets the relative sub-directory within the base path.
+     */
+    IFileChannel setSubDirectory(String subDirectory);
 
     byte[] getEmptyFileContent();
 
-    void setEmptyFileContent(byte[] emptyFileContent);
+    IFileChannel setEmptyFileContent(byte[] emptyFileContent);
 
-    void createUniqueFile();
+    IFileChannel createUniqueFile();
 
-    void createUniqueFile(String filenamePrefix, String filenameSuffix);
+    IFileChannel createUniqueFile(String filenamePrefix, String filenameSuffix);
 
-    void connect();
+    IFileChannel connect();
 
     boolean isConnected();
 
@@ -58,35 +61,31 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         return directories;
     }
 
-    void upload(File file);
+    IFileChannel upload(File file);
 
-    void upload(byte[] bytes);
+    IFileChannel upload(byte[] bytes);
 
-    void upload(InputStream input);
+    IFileChannel upload(InputStream input);
 
-    void download(File destination);
+    IFileChannel download(File destination);
 
-    /**
-     * Actually moves the file and overwrites if it already exists, though might use a safe rename if target file does
-     * not exist.
-     */
-    void rename(String filename);
+    IFileChannel rename(String filename);
 
     byte[] download();
 
-    void delete();
+    IFileChannel delete();
 
     OutputStream uploadOutputStream();
 
     File getLocalTempFile();
 
-    void reconnect();
+    IFileChannel reconnect();
 
     InputStream downloadInputStream();
 
     /**
-     * Creates a new instance with the given directory
+     * Creates a new instance with the given relative sub-directory.
      */
-    IFileChannel withDirectory(String directory);
+    IFileChannel withSubDirectory(String subDirectory);
 
 }

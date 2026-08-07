@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.filechannel.io;
 
 import java.io.File;
+import java.net.URI;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -11,19 +12,23 @@ import de.invesdwin.util.time.date.FDate;
 @Immutable
 public class IoFileInfo implements IFileInfo {
 
-    private final String serverUri;
-    private final String directory;
+    private final URI serverUri;
+    private final URI baseServerUri;
+    private final String baseDirectory;
+    private final String subDirectory;
     private final File delegate;
 
-    // Cached attributes retrieved natively from java.io.File
     private final boolean isDirectory;
     private final boolean isFile;
     private final long length;
     private final FDate lastModified;
 
-    public IoFileInfo(final String serverUri, final String directory, final File delegate) {
+    public IoFileInfo(final URI serverUri, final URI baseServerUri, final String baseDirectory,
+            final String subDirectory, final File delegate) {
         this.serverUri = serverUri;
-        this.directory = directory;
+        this.baseServerUri = baseServerUri;
+        this.baseDirectory = baseDirectory;
+        this.subDirectory = subDirectory;
         this.delegate = delegate;
 
         this.isDirectory = delegate.isDirectory();
@@ -33,13 +38,28 @@ public class IoFileInfo implements IFileInfo {
     }
 
     @Override
-    public String getServerUri() {
+    public URI getServerUri() {
         return serverUri;
     }
 
     @Override
-    public String getDirectory() {
-        return directory;
+    public URI getBaseServerUri() {
+        return baseServerUri;
+    }
+
+    @Override
+    public String getBaseDirectory() {
+        return baseDirectory;
+    }
+
+    @Override
+    public String getSubDirectory() {
+        return subDirectory;
+    }
+
+    @Override
+    public String getAbsoluteDirectory() {
+        return FileChannelInfos.combinePath(baseDirectory, subDirectory);
     }
 
     @Override
@@ -77,10 +97,11 @@ public class IoFileInfo implements IFileInfo {
         return FileChannelInfos.toString(this);
     }
 
-    public static IoFileInfo valueOf(final String serverUri, final String path, final File file) {
+    public static IoFileInfo valueOf(final URI serverUri, final URI baseServerUri, final String baseDirectory,
+            final String subDirectory, final File file) {
         if (file == null) {
             return null;
         }
-        return new IoFileInfo(serverUri, path, file);
+        return new IoFileInfo(serverUri, baseServerUri, baseDirectory, subDirectory, file);
     }
 }
