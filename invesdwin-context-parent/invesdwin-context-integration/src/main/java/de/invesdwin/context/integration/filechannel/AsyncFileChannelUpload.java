@@ -1,7 +1,6 @@
 package de.invesdwin.context.integration.filechannel;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -12,6 +11,7 @@ import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
+import de.invesdwin.util.streams.closeable.Closeables;
 
 @NotThreadSafe
 public class AsyncFileChannelUpload implements Runnable {
@@ -23,12 +23,12 @@ public class AsyncFileChannelUpload implements Runnable {
     private static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelUpload.class.getSimpleName(), MAX_PARALLEL_UPLOADS);
 
-    private final IFileChannel<?> channel;
+    private final IFileChannel channel;
     private final String channelFileName;
     private final File localTempFile;
     private int tries = 0;
 
-    public AsyncFileChannelUpload(final IFileChannel<?> channel, final File localTempFile) {
+    public AsyncFileChannelUpload(final IFileChannel channel, final File localTempFile) {
         Assertions.checkNotNull(channel);
         this.channel = channel;
         this.localTempFile = localTempFile;
@@ -95,11 +95,7 @@ public class AsyncFileChannelUpload implements Runnable {
     }
 
     private RuntimeException handleRetry(final Throwable t) {
-        try {
-            channel.close();
-        } catch (final IOException e) {
-            //ignore
-        }
+        Closeables.closeQuietly(channel);
         tries++;
         if (tries >= MAX_TRIES) {
             return new RetryDisabledRuntimeException(
@@ -114,11 +110,7 @@ public class AsyncFileChannelUpload implements Runnable {
     }
 
     protected void closeChannelAutomatically() {
-        try {
-            channel.close();
-        } catch (final IOException e) {
-            //ignore
-        }
+        Closeables.closeQuietly(channel);
     }
 
 }
