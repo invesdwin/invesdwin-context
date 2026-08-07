@@ -29,7 +29,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 @NotThreadSafe
 public class IoFileChannel implements IFileChannel {
 
-    public static final String DEFAULT_SERVER_URI_STR = "file://";
+    public static final String DEFAULT_SERVER_URI_STR = "file:///";
     public static final URI DEFAULT_SERVER_URI = URI.create(DEFAULT_SERVER_URI_STR);
 
     private final URI serverUri;

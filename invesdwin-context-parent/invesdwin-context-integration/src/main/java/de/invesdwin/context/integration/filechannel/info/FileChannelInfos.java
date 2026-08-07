@@ -21,8 +21,10 @@ public final class FileChannelInfos {
         } else {
             return defaultServerUri;
         }
-        if (uri.getAuthority() != null) {
+        if (Strings.isNotBlank(uri.getAuthority())) {
             sb.append(uri.getAuthority());
+        } else {
+            sb.append("/");
         }
         return URI.create(sb.toString());
     }
