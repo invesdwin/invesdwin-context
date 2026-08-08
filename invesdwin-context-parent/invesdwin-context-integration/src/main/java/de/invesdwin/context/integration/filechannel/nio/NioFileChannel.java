@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
@@ -493,24 +492,6 @@ public class NioFileChannel implements IFileChannel {
             return null;
         } catch (final IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public File getLocalTempFile() {
-        final Path path = resolveFilePath();
-        try {
-            return path.toFile();
-        } catch (final UnsupportedOperationException e) {
-            final File directory = new File(ContextProperties.TEMP_DIRECTORY, getAbsoluteDirectory());
-            try {
-                de.invesdwin.util.lang.Files.forceMkdir(directory);
-            } catch (final IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            final File file = new File(directory, getFilename());
-            de.invesdwin.util.lang.Files.deleteQuietly(file);
-            return file;
         }
     }
 

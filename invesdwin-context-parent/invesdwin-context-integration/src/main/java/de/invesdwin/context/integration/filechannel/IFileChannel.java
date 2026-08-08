@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.filechannel;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -9,10 +10,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
 import de.invesdwin.context.integration.filechannel.info.IFileChannelInfo;
 import de.invesdwin.context.integration.filechannel.info.IFileInfo;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
+import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.streams.closeable.ISafeCloseable;
@@ -304,7 +307,21 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     OutputStream newUpload();
 
-    File getLocalTempFile();
+    default File downloadLocalTempFile() {
+        final File directory = new File(ContextProperties.TEMP_DIRECTORY, getAbsoluteDirectory());
+        try {
+            Files.forceMkdir(directory);
+        } catch (final IOException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        final File file = new File(directory, getFilename());
+        Files.deleteQuietly(file);
+        if (exists()) {
+            download(file);
+        }
+        return file;
+    }
 
     IFileChannel reconnect();
 
