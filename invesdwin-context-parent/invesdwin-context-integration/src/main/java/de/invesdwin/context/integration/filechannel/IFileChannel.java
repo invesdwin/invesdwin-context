@@ -336,4 +336,46 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      */
     IFileChannel withSubDirectory(String subDirectory);
 
+    default IFileChannel copy(final String targetAbsolutePath) {
+        return copy(withAbsolutePath(targetAbsolutePath));
+    }
+
+    default IFileChannel copy(final Path targetPath) {
+        return copy(withAbsolutePath(targetPath));
+    }
+
+    default IFileChannel copy(final IFileChannel targetChannel) {
+        connect(false);
+        try (InputStream in = newDownload()) {
+            if (in == null) {
+                throw new RuntimeException("Source file not found: " + this);
+            }
+            targetChannel.upload(in);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        return targetChannel;
+    }
+
+    default IFileChannel move(final String targetAbsolutePath) {
+        return move(withAbsolutePath(targetAbsolutePath));
+    }
+
+    default IFileChannel move(final Path targetPath) {
+        return move(withAbsolutePath(targetPath));
+    }
+
+    default IFileChannel move(final IFileChannel targetChannel) {
+        connect(false);
+        if (getClass().isInstance(targetChannel)) {
+            moveSameType(targetChannel);
+        } else {
+            copy(targetChannel);
+            delete();
+        }
+        return targetChannel;
+    }
+
+    void moveSameType(IFileChannel targetChannel);
+
 }

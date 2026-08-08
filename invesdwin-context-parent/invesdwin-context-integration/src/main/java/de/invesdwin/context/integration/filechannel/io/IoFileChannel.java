@@ -271,9 +271,14 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
+    public IoFileChannel connect() {
+        return connect(true);
+    }
+
+    @Override
     public IoFileChannel connect(final boolean createDirectory) {
         connected = true;
-        if (createDirectory) {
+        if (createDirectory && !directoryCreated) {
             createDirectory();
         }
         return this;
@@ -286,7 +291,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public boolean exists() {
-        assertConnected();
+        connect(false);
         if (filename == null) {
             return resolveDirectory().exists();
         }
@@ -295,7 +300,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public long length() {
-        assertConnected();
+        connect(false);
         final File file = resolveFile();
         if (file.exists()) {
             return file.length();
@@ -305,7 +310,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public FDate lastModified() {
-        assertConnected();
+        connect(false);
         final File file = resolveFile();
         if (file.exists()) {
             return new FDate(file.lastModified());
@@ -315,7 +320,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileInfo info() {
-        assertConnected();
+        connect(false);
         final File file = resolveFile();
         if (file.exists()) {
             return IoFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory, file);
@@ -325,7 +330,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public List<IoFileInfo> list() {
-        assertConnected();
+        connect(false);
         final File dir = resolveDirectory();
         if (!dir.exists() || !dir.isDirectory()) {
             return Collections.emptyList();
@@ -353,14 +358,8 @@ public class IoFileChannel implements IFileChannel {
         return (List<IoFileInfo>) IFileChannel.super.listDirectories();
     }
 
-    private void assertConnected() {
-        if (!isConnected()) {
-            connect(false);
-        }
-    }
-
     private void ensureDirectoryCreated() {
-        assertConnected();
+        connect(false);
         if (!directoryCreated) {
             createDirectory();
         }
@@ -368,7 +367,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel createDirectory() {
-        assertConnected();
+        connect(false);
         try {
             Files.forceMkdir(resolveDirectory());
             directoryCreated = true;
@@ -388,7 +387,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel rename(final String filename) {
-        assertConnected();
+        connect(false);
         final File source = resolveFile();
         final File target = new File(resolveDirectory(), filename);
         if (!source.renameTo(target)) {
@@ -396,6 +395,25 @@ public class IoFileChannel implements IFileChannel {
         }
         setFilename(filename);
         return this;
+    }
+
+    @Override
+    public void moveSameType(final IFileChannel targetChannel) {
+        final IoFileChannel targetIo = (IoFileChannel) targetChannel;
+        targetIo.ensureDirectoryCreated();
+        final File source = resolveFile();
+        final File target = targetIo.resolveFile();
+        try {
+            Files.forceMkdirParent(target);
+            if (!source.renameTo(target)) {
+                Files.copyFile(source, target);
+                Files.deleteQuietly(source);
+            }
+        } catch (final IOException e) {
+            throw new RuntimeException("Failed to move file from " + source + " to " + target, e);
+        }
+        setSubDirectory(targetIo.getSubDirectory());
+        setFilename(targetIo.getFilename());
     }
 
     @Override
@@ -435,7 +453,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel download(final File destination) {
-        assertConnected();
+        connect(false);
         final File source = resolveFile();
         if (source.exists()) {
             try {
@@ -453,7 +471,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public byte[] download() {
-        assertConnected();
+        connect(false);
         final File source = resolveFile();
         if (!source.exists()) {
             return null;
@@ -477,7 +495,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel delete() {
-        assertConnected();
+        connect(false);
         Files.deleteQuietly(resolveFile());
         return this;
     }
@@ -500,7 +518,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public InputStream newDownload() {
-        assertConnected();
+        connect(false);
         final File source = resolveFile();
         if (source.exists()) {
             try {

@@ -261,9 +261,14 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
+    public NioFileChannel connect() {
+        return connect(true);
+    }
+
+    @Override
     public NioFileChannel connect(final boolean createDirectory) {
         connected = true;
-        if (createDirectory) {
+        if (createDirectory && !directoryCreated) {
             createDirectory();
         }
         return this;
@@ -276,7 +281,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public boolean exists() {
-        assertConnected();
+        connect(false);
         if (filename == null) {
             return Files.exists(resolveDirectoryPath());
         }
@@ -285,7 +290,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public long length() {
-        assertConnected();
+        connect(false);
         try {
             final Path path = resolveFilePath();
             if (Files.exists(path)) {
@@ -299,7 +304,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public FDate lastModified() {
-        assertConnected();
+        connect(false);
         try {
             final Path path = resolveFilePath();
             if (Files.exists(path)) {
@@ -313,7 +318,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public NioFileInfo info() {
-        assertConnected();
+        connect(false);
         final Path path = resolveFilePath();
         if (Files.exists(path)) {
             return NioFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory, path);
@@ -323,7 +328,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public List<NioFileInfo> list() {
-        assertConnected();
+        connect(false);
         final Path dirPath = resolveDirectoryPath();
         if (!Files.exists(dirPath)) {
             return java.util.Collections.emptyList();
@@ -349,14 +354,8 @@ public class NioFileChannel implements IFileChannel {
         return (List<NioFileInfo>) IFileChannel.super.listDirectories();
     }
 
-    private void assertConnected() {
-        if (!isConnected()) {
-            connect(false);
-        }
-    }
-
     private void ensureDirectoryCreated() {
-        assertConnected();
+        connect(false);
         if (!directoryCreated) {
             createDirectory();
         }
@@ -364,7 +363,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public NioFileChannel createDirectory() {
-        assertConnected();
+        connect(false);
         try {
             Files.createDirectories(resolveDirectoryPath());
             directoryCreated = true;
@@ -384,13 +383,28 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public NioFileChannel rename(final String filename) {
-        assertConnected();
+        connect(false);
         try {
             final Path source = resolveFilePath();
             final Path target = Paths.get(FileChannelInfos.newFileUri(baseServerUri, getAbsoluteDirectory(), filename));
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
             setFilename(filename);
             return this;
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void moveSameType(final IFileChannel targetChannel) {
+        try {
+            final NioFileChannel targetNio = (NioFileChannel) targetChannel;
+            targetNio.ensureDirectoryCreated();
+            final Path source = resolveFilePath();
+            final Path target = targetNio.resolveFilePath();
+            java.nio.file.Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+            setSubDirectory(targetNio.getSubDirectory());
+            setFilename(targetNio.getFilename());
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -427,7 +441,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public NioFileChannel download(final File destination) {
-        assertConnected();
+        connect(false);
         try {
             final Path source = resolveFilePath();
             if (Files.exists(source)) {
@@ -442,7 +456,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public byte[] download() {
-        assertConnected();
+        connect(false);
         try {
             final Path source = resolveFilePath();
             if (Files.exists(source)) {
@@ -456,7 +470,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public NioFileChannel delete() {
-        assertConnected();
+        connect(false);
         try {
             Files.deleteIfExists(resolveFilePath());
             return this;
@@ -483,7 +497,7 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public InputStream newDownload() {
-        assertConnected();
+        connect(false);
         try {
             final Path source = resolveFilePath();
             if (Files.exists(source)) {
