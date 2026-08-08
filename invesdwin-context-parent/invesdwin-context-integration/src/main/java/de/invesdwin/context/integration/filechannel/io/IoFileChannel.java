@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,11 +16,13 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
+import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.UUIDs;
+import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.closeable.Closeables;
@@ -39,6 +42,7 @@ public class IoFileChannel implements IFileChannel {
     private String filename;
     private byte[] emptyFileContent = Bytes.EMPTY_ARRAY;
     private boolean connected = false;
+    private boolean directoryCreated = false;
 
     public IoFileChannel(final File file) {
         this(DEFAULT_SERVER_URI);
@@ -66,13 +70,125 @@ public class IoFileChannel implements IFileChannel {
 
     //CHECKSTYLE:OFF
     @Override
-    public IFileChannel withSubDirectory(final String subDirectory) {
+    public IoFileChannel withSubDirectory(final String subDirectory) {
         //CHECKSTYLE:ON
         final IoFileChannel instance = new IoFileChannel(serverUri);
         instance.emptyFileContent = emptyFileContent;
         instance.filename = filename;
         instance.setSubDirectory(subDirectory);
         return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withBaseServerUri(final URI baseServerUri) {
+        //CHECKSTYLE:ON
+        final URI newServerUri = FileChannelInfos.newDirectoryUri(baseServerUri, getBaseDirectory());
+        final IoFileChannel instance = new IoFileChannel(newServerUri);
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubDirectory(getSubDirectory());
+        try {
+            instance.setFilename(getFilename());
+        } catch (final Exception e) {
+            // filename not set
+        }
+        return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withBaseServerUri(final String baseServerUri) {
+        //CHECKSTYLE:ON
+        return withBaseServerUri(URIs.asUri(baseServerUri));
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withBaseDirectory(final String baseDirectory) {
+        //CHECKSTYLE:ON
+        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), baseDirectory);
+        final IoFileChannel instance = new IoFileChannel(newServerUri);
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubDirectory(getSubDirectory());
+        try {
+            instance.setFilename(getFilename());
+        } catch (final Exception e) {
+            // filename not set
+        }
+        return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
+        //CHECKSTYLE:ON
+        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
+        final IoFileChannel instance = new IoFileChannel(newServerUri);
+        instance.emptyFileContent = emptyFileContent;
+        try {
+            instance.setFilename(getFilename());
+        } catch (final Exception e) {
+            // filename not set
+        }
+        return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withSubPath(final String subPath) {
+        //CHECKSTYLE:ON
+        final IoFileChannel instance = new IoFileChannel(serverUri);
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubPath(subPath);
+        return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withSubPath(final Path path) {
+        //CHECKSTYLE:ON
+        final IoFileChannel instance = new IoFileChannel(serverUri);
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubPath(path);
+        return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withFilename(final String filename) {
+        //CHECKSTYLE:ON
+        final IoFileChannel instance = new IoFileChannel(serverUri);
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubDirectory(getSubDirectory());
+        instance.setFilename(filename);
+        return instance;
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withAbsolutePath(final String path) {
+        //CHECKSTYLE:ON
+        if (Strings.isBlank(path)) {
+            final IoFileChannel instance = new IoFileChannel(getBaseServerUri());
+            instance.emptyFileContent = emptyFileContent;
+            instance.setSubPath((String) null);
+            return instance;
+        }
+        if (path.contains("://")) {
+            return (IoFileChannel) FileChannelRegistry.newInstance(path);
+        } else {
+            final IoFileChannel instance = new IoFileChannel(getBaseServerUri());
+            instance.emptyFileContent = emptyFileContent;
+            instance.setSubPath(path);
+            return instance;
+        }
+    }
+
+    //CHECKSTYLE:OFF
+    @Override
+    public IoFileChannel withAbsolutePath(final Path path) {
+        //CHECKSTYLE:ON
+        return withAbsolutePath(path != null ? path.toString() : null);
     }
 
     @Override
@@ -102,8 +218,11 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel setSubDirectory(final String subDirectory) {
-        this.subDirectory = subDirectory != null ? subDirectory : "";
-        createDirectoryIfNotExists();
+        final String newSubDirectory = subDirectory != null ? subDirectory : "";
+        if (!this.subDirectory.equals(newSubDirectory)) {
+            this.subDirectory = newSubDirectory;
+            this.directoryCreated = false;
+        }
         return this;
     }
 
@@ -139,7 +258,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel createUniqueFile(final String filenamePrefix, final String filenameSuffix) {
-        assertConnected();
+        ensureDirectoryCreated();
         while (true) {
             final String filename = filenamePrefix + UUIDs.newPseudoRandomUUID() + filenameSuffix;
             setFilename(filename);
@@ -153,9 +272,11 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public IoFileChannel connect() {
+    public IoFileChannel connect(final boolean createDirectory) {
         connected = true;
-        createDirectoryIfNotExists();
+        if (createDirectory) {
+            createDirectory();
+        }
         return this;
     }
 
@@ -231,17 +352,28 @@ public class IoFileChannel implements IFileChannel {
     }
 
     private void assertConnected() {
-        Assertions.checkTrue(isConnected(), "Please call connect() first");
+        if (!isConnected()) {
+            connect(false);
+        }
     }
 
-    private void createDirectoryIfNotExists() {
-        if (isConnected()) {
-            try {
-                Files.forceMkdir(resolveDirectory());
-            } catch (final IOException e) {
-                throw new RuntimeException("Failed to create directory structure at " + resolveDirectory(), e);
-            }
+    private void ensureDirectoryCreated() {
+        assertConnected();
+        if (!directoryCreated) {
+            createDirectory();
         }
+    }
+
+    @Override
+    public IoFileChannel createDirectory() {
+        assertConnected();
+        try {
+            Files.forceMkdir(resolveDirectory());
+            directoryCreated = true;
+        } catch (final IOException e) {
+            throw new RuntimeException("Failed to create directory structure at " + resolveDirectory(), e);
+        }
+        return this;
     }
 
     private File resolveDirectory() {
@@ -266,7 +398,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel upload(final File file) {
-        assertConnected();
+        ensureDirectoryCreated();
         try (InputStream in = new FileInputStream(file); OutputStream out = new FileOutputStream(resolveFile())) {
             copyStream(in, out);
             return this;
@@ -277,7 +409,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel upload(final byte[] bytes) {
-        assertConnected();
+        ensureDirectoryCreated();
         try (FileOutputStream out = new FileOutputStream(resolveFile())) {
             out.write(bytes);
             return this;
@@ -288,7 +420,7 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public IoFileChannel upload(final InputStream input) {
-        assertConnected();
+        ensureDirectoryCreated();
         try (OutputStream out = new FileOutputStream(resolveFile())) {
             copyStream(input, out);
             return this;
@@ -351,11 +483,12 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public void close() {
         connected = false;
+        directoryCreated = false;
     }
 
     @Override
     public OutputStream newUpload() {
-        assertConnected();
+        ensureDirectoryCreated();
         try {
             return new FileOutputStream(resolveFile());
         } catch (final IOException e) {
