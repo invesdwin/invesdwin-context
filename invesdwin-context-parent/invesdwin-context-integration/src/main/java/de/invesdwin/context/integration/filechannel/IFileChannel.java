@@ -323,7 +323,11 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         return file;
     }
 
-    IFileChannel reconnect();
+    default IFileChannel reconnect() {
+        return reconnect(true);
+    }
+
+    IFileChannel reconnect(boolean createDirectory);
 
     InputStream newDownload();
 

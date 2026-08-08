@@ -496,9 +496,9 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
-    public NioFileChannel reconnect() {
+    public NioFileChannel reconnect(final boolean createDirectory) {
         close();
-        connect();
+        connect(createDirectory);
         return this;
     }
 

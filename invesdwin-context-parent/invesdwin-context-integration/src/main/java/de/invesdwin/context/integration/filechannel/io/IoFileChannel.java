@@ -513,9 +513,9 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public IoFileChannel reconnect() {
+    public IoFileChannel reconnect(final boolean createDirectory) {
         close();
-        connect();
+        connect(createDirectory);
         return this;
     }
 
