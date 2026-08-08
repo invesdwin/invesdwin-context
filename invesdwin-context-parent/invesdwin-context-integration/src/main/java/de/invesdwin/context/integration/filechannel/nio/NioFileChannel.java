@@ -278,6 +278,9 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public boolean exists() {
         assertConnected();
+        if (filename == null) {
+            return Files.exists(resolveDirectoryPath());
+        }
         return Files.exists(resolveFilePath());
     }
 

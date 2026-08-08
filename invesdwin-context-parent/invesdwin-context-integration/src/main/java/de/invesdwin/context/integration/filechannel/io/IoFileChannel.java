@@ -288,6 +288,9 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public boolean exists() {
         assertConnected();
+        if (filename == null) {
+            return resolveDirectory().exists();
+        }
         return resolveFile().exists();
     }
 
