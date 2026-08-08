@@ -98,7 +98,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     }
 
     protected InputStream download() {
-        return channel.downloadInputStream();
+        return channel.newDownload();
     }
 
     private RuntimeException handleRetry(final Throwable t) {

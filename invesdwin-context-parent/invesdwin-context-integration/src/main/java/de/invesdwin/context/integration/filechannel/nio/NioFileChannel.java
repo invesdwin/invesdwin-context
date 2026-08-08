@@ -338,7 +338,7 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
-    public OutputStream uploadOutputStream() {
+    public OutputStream newUpload() {
         assertConnected();
         try {
             return Files.newOutputStream(resolveFilePath());
@@ -348,7 +348,7 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
-    public InputStream downloadInputStream() {
+    public InputStream newDownload() {
         assertConnected();
         try {
             final Path source = resolveFilePath();

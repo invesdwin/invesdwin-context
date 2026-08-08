@@ -75,13 +75,13 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     IFileChannel delete();
 
-    OutputStream uploadOutputStream();
+    OutputStream newUpload();
 
     File getLocalTempFile();
 
     IFileChannel reconnect();
 
-    InputStream downloadInputStream();
+    InputStream newDownload();
 
     /**
      * Creates a new instance with the given relative sub-directory.

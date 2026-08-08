@@ -354,7 +354,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public OutputStream uploadOutputStream() {
+    public OutputStream newUpload() {
         assertConnected();
         try {
             return new FileOutputStream(resolveFile());
@@ -364,7 +364,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public InputStream downloadInputStream() {
+    public InputStream newDownload() {
         assertConnected();
         final File source = resolveFile();
         if (source.exists()) {
