@@ -2,16 +2,20 @@ package de.invesdwin.context.integration.filechannel.io;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.concurrent.NotThreadSafe;
+
+import org.apache.commons.io.IOUtils;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
@@ -86,10 +90,8 @@ public class IoFileChannel implements IFileChannel {
         final IoFileChannel instance = new IoFileChannel(newServerUri);
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        try {
+        if (getFilename() != null) {
             instance.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
         }
         return instance;
     }
@@ -109,10 +111,8 @@ public class IoFileChannel implements IFileChannel {
         final IoFileChannel instance = new IoFileChannel(newServerUri);
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        try {
+        if (getFilename() != null) {
             instance.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
         }
         return instance;
     }
@@ -124,10 +124,8 @@ public class IoFileChannel implements IFileChannel {
         final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         final IoFileChannel instance = new IoFileChannel(newServerUri);
         instance.emptyFileContent = emptyFileContent;
-        try {
+        if (getFilename() != null) {
             instance.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
         }
         return instance;
     }
@@ -233,9 +231,6 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public String getFilename() {
-        if (filename == null) {
-            throw new NullPointerException("please call setFilename(...) first");
-        }
         return filename;
     }
 
@@ -372,7 +367,7 @@ public class IoFileChannel implements IFileChannel {
             Files.forceMkdir(resolveDirectory());
             directoryCreated = true;
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to create directory structure at " + resolveDirectory(), e);
+            throw new UncheckedIOException("Failed to create directory structure at " + resolveDirectory(), e);
         }
         return this;
     }
@@ -391,7 +386,7 @@ public class IoFileChannel implements IFileChannel {
         final File source = resolveFile();
         final File target = new File(resolveDirectory(), filename);
         if (!source.renameTo(target)) {
-            throw new RuntimeException("Failed to rename file from " + source + " to " + target);
+            throw new IllegalStateException("Failed to rename file from " + source + " to " + target);
         }
         setFilename(filename);
         return this;
@@ -410,7 +405,7 @@ public class IoFileChannel implements IFileChannel {
                 Files.deleteQuietly(source);
             }
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to move file from " + source + " to " + target, e);
+            throw new UncheckedIOException("Failed to move file from " + source + " to " + target, e);
         }
         setSubDirectory(targetIo.getSubDirectory());
         setFilename(targetIo.getFilename());
@@ -420,10 +415,10 @@ public class IoFileChannel implements IFileChannel {
     public IoFileChannel upload(final File file) {
         ensureDirectoryCreated();
         try (InputStream in = new FileInputStream(file); OutputStream out = new FileOutputStream(resolveFile())) {
-            copyStream(in, out);
+            IOUtils.copyLarge(in, out);
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -434,7 +429,7 @@ public class IoFileChannel implements IFileChannel {
             out.write(bytes);
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -442,10 +437,10 @@ public class IoFileChannel implements IFileChannel {
     public IoFileChannel upload(final InputStream input) {
         ensureDirectoryCreated();
         try (OutputStream out = new FileOutputStream(resolveFile())) {
-            copyStream(input, out);
+            IOUtils.copyLarge(input, out);
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         } finally {
             Closeables.close(input);
         }
@@ -454,17 +449,15 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public IoFileChannel download(final File destination) {
         connect(false);
-        final File source = resolveFile();
-        if (source.exists()) {
-            try {
-                Files.forceMkdirParent(destination);
-                try (InputStream in = new FileInputStream(source);
-                        OutputStream out = new FileOutputStream(destination)) {
-                    copyStream(in, out);
-                }
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
+        try (InputStream in = new FileInputStream(resolveFile())) {
+            Files.forceMkdirParent(destination);
+            try (OutputStream out = new FileOutputStream(destination)) {
+                IOUtils.copyLarge(in, out);
             }
+        } catch (final FileNotFoundException e) {
+            // Do nothing if source does not exist
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
         }
         return this;
     }
@@ -472,24 +465,12 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public byte[] download() {
         connect(false);
-        final File source = resolveFile();
-        if (!source.exists()) {
+        try (FileInputStream in = new FileInputStream(resolveFile())) {
+            return IOUtils.toByteArray(in);
+        } catch (final FileNotFoundException e) {
             return null;
-        }
-
-        try (FileInputStream in = new FileInputStream(source)) {
-            final byte[] data = new byte[(int) source.length()];
-            int bytesRead = 0;
-            while (bytesRead < data.length) {
-                final int result = in.read(data, bytesRead, data.length - bytesRead);
-                if (result == -1) {
-                    break;
-                }
-                bytesRead += result;
-            }
-            return data;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -512,22 +493,18 @@ public class IoFileChannel implements IFileChannel {
         try {
             return new FileOutputStream(resolveFile());
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
     @Override
     public InputStream newDownload() {
         connect(false);
-        final File source = resolveFile();
-        if (source.exists()) {
-            try {
-                return new FileInputStream(source);
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            return new FileInputStream(resolveFile());
+        } catch (final FileNotFoundException e) {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -540,13 +517,5 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public String toString() {
         return FileChannelInfos.toString(this);
-    }
-
-    private void copyStream(final InputStream in, final OutputStream out) throws IOException {
-        final byte[] buffer = new byte[8192];
-        int read;
-        while ((read = in.read(buffer)) != -1) {
-            out.write(buffer, 0, read);
-        }
     }
 }

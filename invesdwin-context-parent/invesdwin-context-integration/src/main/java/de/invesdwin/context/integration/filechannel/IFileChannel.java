@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,8 @@ import de.invesdwin.util.streams.closeable.ISafeCloseable;
 
 public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
+    Path DOT_DOT = Paths.get("..");
+
     IFileChannel setFilename(String filename);
 
     /**
@@ -30,77 +34,90 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
     IFileChannel setSubDirectory(String subDirectory);
 
     /**
-     * Sets both the sub-directory and filename from a single path string, validating that it does not attempt to modify
-     * or escape outside the base directory.
+     * Sets both the sub-directory and filename from a single path string, delegating safe path normalization to
+     * standard NIO while validating it does not escape the base directory.
      */
+    //CHECKSTYLE:OFF
     default IFileChannel setSubPath(final String path) {
+        //CHECKSTYLE:ON
         if (Strings.isBlank(path)) {
             setSubDirectory("");
             setFilename(null);
             return this;
         }
 
-        String cleanPath = path.replace("\\", "/");
+        int start = 0;
 
-        // Handle full URIs if present
-        if (cleanPath.contains("://")) {
-            try {
-                final URI uri = URIs.asUri(cleanPath);
-                final String uriPath = uri.getPath();
-                if (Strings.isNotBlank(uriPath)) {
-                    cleanPath = uriPath;
-                }
-            } catch (final Exception e) {
-                final int schemeIndex = cleanPath.indexOf("://");
-                final int pathIndex = cleanPath.indexOf('/', schemeIndex + 3);
-                if (pathIndex >= 0) {
-                    cleanPath = cleanPath.substring(pathIndex);
-                }
+        // Handle full URIs if present without heavy URI object allocation
+        final int schemeIndex = path.indexOf("://");
+        if (schemeIndex >= 0) {
+            final int slashAfterScheme = path.indexOf('/', schemeIndex + 3);
+            if (slashAfterScheme >= 0) {
+                start = slashAfterScheme;
+            } else {
+                setSubDirectory("");
+                setFilename(null);
+                return this;
             }
         }
 
-        cleanPath = cleanPath.replaceAll("[/]+", "/");
+        // Delegate normalization to NIO Paths to securely resolve internal '.' and '..' segments
+        final Path normalizedPath = Paths.get(start > 0 ? path.substring(start) : path).normalize();
 
-        // Guard against traversal attempts escaping the base directory
-        if (cleanPath.contains("..")) {
-            throw new IllegalArgumentException("Path traversal with '..' is not allowed: " + path);
+        // Verify normalization didn't leave unresolved traversal segments escaping the root (zero-allocation check)
+        for (final Path segment : normalizedPath) {
+            if (segment.equals(DOT_DOT)) {
+                throw new IllegalArgumentException("Path traversal escaping the base is not allowed: " + path);
+            }
         }
+
+        final String normalizedPathStr = normalizedPath.toString();
+        final String cleanPath = normalizedPathStr.indexOf('\\') >= 0 ? normalizedPathStr.replace('\\', '/')
+                : normalizedPathStr;
+        final int cleanLen = cleanPath.length();
+        int cleanStart = 0;
 
         final String baseDir = getBaseDirectory();
         if (baseDir != null && !"/".equals(baseDir)) {
-            final String normalizedBase = baseDir.replace("\\", "/").replaceAll("[/]+", "/");
-            if (cleanPath.startsWith("/")) {
-                if (!cleanPath.startsWith(normalizedBase) && !cleanPath.startsWith("/" + normalizedBase)) {
+            final String normalizedBaseRaw = Paths.get(baseDir).normalize().toString();
+            final String normalizedBase = normalizedBaseRaw.indexOf('\\') >= 0 ? normalizedBaseRaw.replace('\\', '/')
+                    : normalizedBaseRaw;
+            final int baseLen = normalizedBase.length();
+
+            if (cleanLen > 0 && cleanPath.charAt(0) == '/') {
+                final boolean startsWithBase = cleanPath.startsWith(normalizedBase, 0);
+                final boolean startsWithBaseAfterSlash = cleanPath.startsWith(normalizedBase, 1);
+                if (!startsWithBase && !startsWithBaseAfterSlash) {
                     throw new IllegalArgumentException("Path [" + path
                             + "] attempts to modify or escape outside the base directory [" + baseDir + "]");
                 }
-                if (cleanPath.startsWith(normalizedBase)) {
-                    cleanPath = cleanPath.substring(normalizedBase.length());
-                } else if (cleanPath.startsWith("/" + normalizedBase)) {
-                    cleanPath = cleanPath.substring(normalizedBase.length() + 1);
+                if (startsWithBase) {
+                    cleanStart = baseLen;
+                } else {
+                    cleanStart = 1 + baseLen;
                 }
             } else {
-                if (cleanPath.startsWith(normalizedBase)) {
-                    cleanPath = cleanPath.substring(normalizedBase.length());
+                if (cleanPath.startsWith(normalizedBase, 0)) {
+                    cleanStart = baseLen;
                 }
             }
         } else {
-            if (cleanPath.startsWith("/")) {
-                cleanPath = cleanPath.substring(1);
+            if (cleanLen > 0 && cleanPath.charAt(0) == '/') {
+                cleanStart = 1;
             }
         }
 
-        while (cleanPath.startsWith("/")) {
-            cleanPath = cleanPath.substring(1);
+        while (cleanStart < cleanLen && cleanPath.charAt(cleanStart) == '/') {
+            cleanStart++;
         }
 
         final int lastSlashIndex = cleanPath.lastIndexOf('/');
-        if (lastSlashIndex >= 0) {
-            setSubDirectory(cleanPath.substring(0, lastSlashIndex));
+        if (lastSlashIndex >= cleanStart) {
+            setSubDirectory(cleanPath.substring(cleanStart, lastSlashIndex));
             setFilename(cleanPath.substring(lastSlashIndex + 1));
         } else {
             setSubDirectory("");
-            setFilename(cleanPath);
+            setFilename(cleanStart < cleanLen ? cleanPath.substring(cleanStart) : cleanPath);
         }
         return this;
     }
@@ -123,11 +140,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
-        try {
-            clone.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
-        }
+        clone.setFilename(getFilename());
         return clone;
     }
 
@@ -146,11 +159,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
-        try {
-            clone.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
-        }
+        clone.setFilename(getFilename());
         return clone;
     }
 
@@ -161,11 +170,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
-        try {
-            clone.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
-        }
+        clone.setFilename(getFilename());
         return clone;
     }
 
@@ -257,7 +262,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     default List<? extends IFileInfo> listFiles() {
         final List<? extends IFileInfo> list = list();
-        final List<IFileInfo> files = new ArrayList<>();
+        final List<IFileInfo> files = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             final IFileInfo file = list.get(i);
             if (file.isFile()) {
@@ -269,7 +274,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     default List<? extends IFileInfo> listDirectories() {
         final List<? extends IFileInfo> list = list();
-        final List<IFileInfo> directories = new ArrayList<>();
+        final List<IFileInfo> directories = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             final IFileInfo directory = list.get(i);
             if (directory.isDirectory()) {
@@ -312,7 +317,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         try {
             Files.forceMkdir(directory);
         } catch (final IOException ex) {
-            throw new RuntimeException(ex);
+            throw new UncheckedIOException(ex);
         }
 
         final File file = new File(directory, getFilename());
@@ -348,11 +353,11 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         connect(false);
         try (InputStream in = newDownload()) {
             if (in == null) {
-                throw new RuntimeException("Source file not found: " + this);
+                throw new IllegalStateException("Source file not found: " + this);
             }
             targetChannel.upload(in);
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         return targetChannel;
     }
@@ -377,5 +382,4 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
     }
 
     void moveSameType(IFileChannel targetChannel);
-
 }

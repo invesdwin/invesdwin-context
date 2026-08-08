@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -75,10 +77,8 @@ public class NioFileChannel implements IFileChannel {
         final NioFileChannel instance = new NioFileChannel(newServerUri);
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        try {
+        if (getFilename() != null) {
             instance.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
         }
         return instance;
     }
@@ -98,10 +98,8 @@ public class NioFileChannel implements IFileChannel {
         final NioFileChannel instance = new NioFileChannel(newServerUri);
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        try {
+        if (getFilename() != null) {
             instance.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
         }
         return instance;
     }
@@ -113,10 +111,8 @@ public class NioFileChannel implements IFileChannel {
         final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         final NioFileChannel instance = new NioFileChannel(newServerUri);
         instance.emptyFileContent = emptyFileContent;
-        try {
+        if (getFilename() != null) {
             instance.setFilename(getFilename());
-        } catch (final Exception e) {
-            // filename not set
         }
         return instance;
     }
@@ -222,9 +218,6 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public String getFilename() {
-        if (filename == null) {
-            throw new NullPointerException("please call setFilename(...) first");
-        }
         return filename;
     }
 
@@ -292,13 +285,11 @@ public class NioFileChannel implements IFileChannel {
     public long length() {
         connect(false);
         try {
-            final Path path = resolveFilePath();
-            if (Files.exists(path)) {
-                return Files.size(path);
-            }
+            return Files.size(resolveFilePath());
+        } catch (final NoSuchFileException e) {
             return -1;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -306,13 +297,11 @@ public class NioFileChannel implements IFileChannel {
     public FDate lastModified() {
         connect(false);
         try {
-            final Path path = resolveFilePath();
-            if (Files.exists(path)) {
-                return new FDate(Files.getLastModifiedTime(path).toMillis());
-            }
+            return new FDate(Files.getLastModifiedTime(resolveFilePath()).toMillis());
+        } catch (final NoSuchFileException e) {
             return null;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -338,7 +327,7 @@ public class NioFileChannel implements IFileChannel {
             return stream.map(path -> NioFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory, path))
                     .collect(Collectors.toList());
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -368,7 +357,7 @@ public class NioFileChannel implements IFileChannel {
             Files.createDirectories(resolveDirectoryPath());
             directoryCreated = true;
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to create directory structure at " + resolveDirectoryPath(), e);
+            throw new UncheckedIOException("Failed to create directory structure at " + resolveDirectoryPath(), e);
         }
         return this;
     }
@@ -391,7 +380,7 @@ public class NioFileChannel implements IFileChannel {
             setFilename(filename);
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -406,7 +395,7 @@ public class NioFileChannel implements IFileChannel {
             setSubDirectory(targetNio.getSubDirectory());
             setFilename(targetNio.getFilename());
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -417,7 +406,7 @@ public class NioFileChannel implements IFileChannel {
             Files.copy(file.toPath(), resolveFilePath(), StandardCopyOption.REPLACE_EXISTING);
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -433,7 +422,7 @@ public class NioFileChannel implements IFileChannel {
             Files.copy(input, resolveFilePath(), StandardCopyOption.REPLACE_EXISTING);
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         } finally {
             Closeables.close(input);
         }
@@ -442,29 +431,26 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public NioFileChannel download(final File destination) {
         connect(false);
-        try {
-            final Path source = resolveFilePath();
-            if (Files.exists(source)) {
-                de.invesdwin.util.lang.Files.forceMkdirParent(destination);
-                Files.copy(source, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-            return this;
+        try (InputStream in = Files.newInputStream(resolveFilePath())) {
+            de.invesdwin.util.lang.Files.forceMkdirParent(destination);
+            Files.copy(in, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (final NoSuchFileException e) {
+            // Do nothing if source does not exist
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
+        return this;
     }
 
     @Override
     public byte[] download() {
         connect(false);
         try {
-            final Path source = resolveFilePath();
-            if (Files.exists(source)) {
-                return Files.readAllBytes(source);
-            }
+            return Files.readAllBytes(resolveFilePath());
+        } catch (final NoSuchFileException e) {
             return null;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -475,7 +461,7 @@ public class NioFileChannel implements IFileChannel {
             Files.deleteIfExists(resolveFilePath());
             return this;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -491,7 +477,7 @@ public class NioFileChannel implements IFileChannel {
         try {
             return Files.newOutputStream(resolveFilePath());
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -499,13 +485,11 @@ public class NioFileChannel implements IFileChannel {
     public InputStream newDownload() {
         connect(false);
         try {
-            final Path source = resolveFilePath();
-            if (Files.exists(source)) {
-                return Files.newInputStream(source);
-            }
+            return Files.newInputStream(resolveFilePath());
+        } catch (final NoSuchFileException e) {
             return null;
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
