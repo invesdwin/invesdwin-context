@@ -32,9 +32,9 @@ public final class FileChannelRegistry {
             final String scheme = factory.getScheme().toLowerCase();
             final IFileChannelFactory existing = FACTORIES.put(scheme, factory);
             if (existing != null) {
-                LOG.info("Overwrote IFileChannelFactory for scheme [%s] with higher priority implementation", scheme);
+                LOG.trace("Overwrote IFileChannelFactory for scheme [%s] with higher priority implementation", scheme);
             } else {
-                LOG.info("Registered IFileChannelFactory for scheme [%s]", scheme);
+                LOG.trace("Registered IFileChannelFactory for scheme [%s]", scheme);
             }
         }
     }
