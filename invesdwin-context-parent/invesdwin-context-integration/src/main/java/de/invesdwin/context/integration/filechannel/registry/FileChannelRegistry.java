@@ -27,6 +27,19 @@ public final class FileChannelRegistry {
 
     private FileChannelRegistry() {}
 
+    public static void register(final IFileChannelFactoryProvider provider) {
+        if (provider == null) {
+            return;
+        }
+        final Collection<IFileChannelFactory> factories = provider.newFactories();
+        if (factories == null || factories.isEmpty()) {
+            return;
+        }
+        for (final IFileChannelFactory factory : factories) {
+            register(factory);
+        }
+    }
+
     public static void register(final IFileChannelFactory factory) {
         if (factory != null && factory.getScheme() != null) {
             final String scheme = factory.getScheme().toLowerCase();
