@@ -22,6 +22,8 @@ public class IoFileChannelFactory implements IFileChannelFactory {
 
     @Override
     public IFileChannel newInstance(final URI serverUri) {
+        //CHECKSTYLE:OFF
         return new IoFileChannel(serverUri);
+        //CHECKSTYLE:ON
     }
 }

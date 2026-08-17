@@ -74,8 +74,8 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withSubDirectory(final String subDirectory) {
-        //CHECKSTYLE:ON
         final IoFileChannel instance = new IoFileChannel(serverUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.filename = filename;
         instance.setSubDirectory(subDirectory);
@@ -87,7 +87,9 @@ public class IoFileChannel implements IFileChannel {
     public IoFileChannel withBaseServerUri(final URI baseServerUri) {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelInfos.newDirectoryUri(baseServerUri, getBaseDirectory());
+        //CHECKSTYLE:OFF
         final IoFileChannel instance = new IoFileChannel(newServerUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
         if (getFilename() != null) {
@@ -108,7 +110,9 @@ public class IoFileChannel implements IFileChannel {
     public IoFileChannel withBaseDirectory(final String baseDirectory) {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), baseDirectory);
+        //CHECKSTYLE:OFF
         final IoFileChannel instance = new IoFileChannel(newServerUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
         if (getFilename() != null) {
@@ -122,7 +126,9 @@ public class IoFileChannel implements IFileChannel {
     public IoFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
+        //CHECKSTYLE:OFF
         final IoFileChannel instance = new IoFileChannel(newServerUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         if (getFilename() != null) {
             instance.setFilename(getFilename());
@@ -133,8 +139,8 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withSubPath(final String subPath) {
-        //CHECKSTYLE:ON
         final IoFileChannel instance = new IoFileChannel(serverUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubPath(subPath);
         return instance;
@@ -143,8 +149,8 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withSubPath(final Path path) {
-        //CHECKSTYLE:ON
         final IoFileChannel instance = new IoFileChannel(serverUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubPath(path);
         return instance;
@@ -153,8 +159,8 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withFilename(final String filename) {
-        //CHECKSTYLE:ON
         final IoFileChannel instance = new IoFileChannel(serverUri);
+        //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
         instance.setFilename(filename);
@@ -166,7 +172,9 @@ public class IoFileChannel implements IFileChannel {
     public IoFileChannel withAbsolutePath(final String path) {
         //CHECKSTYLE:ON
         if (Strings.isBlank(path)) {
+            //CHECKSTYLE:OFF
             final IoFileChannel instance = new IoFileChannel(getBaseServerUri());
+            //CHECKSTYLE:ON
             instance.emptyFileContent = emptyFileContent;
             instance.setSubPath((String) null);
             return instance;
@@ -174,7 +182,9 @@ public class IoFileChannel implements IFileChannel {
         if (path.contains("://")) {
             return (IoFileChannel) FileChannelRegistry.newInstance(path);
         } else {
+            //CHECKSTYLE:OFF
             final IoFileChannel instance = new IoFileChannel(getBaseServerUri());
+            //CHECKSTYLE:ON
             instance.emptyFileContent = emptyFileContent;
             instance.setSubPath(path);
             return instance;
