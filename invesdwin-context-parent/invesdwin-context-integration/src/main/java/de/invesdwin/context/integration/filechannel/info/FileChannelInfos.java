@@ -51,7 +51,7 @@ public final class FileChannelInfos {
         if (cleanDir.isEmpty()) {
             return baseDirectory;
         }
-        return Strings.putSuffix(baseDirectory + cleanDir, "/");
+        return Strings.putSuffix(Strings.putSuffix(baseDirectory, "/") + cleanDir, "/");
     }
 
     public static URI newDirectoryUri(final IFileChannelInfo info) {
