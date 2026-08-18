@@ -59,8 +59,11 @@ public final class FileChannelInfos {
     }
 
     public static URI newDirectoryUri(final URI serverUri, final String directory) {
-        final String uriStr = Strings.putSuffix(serverUri != null ? serverUri.toString() : "", "/")
-                + Strings.putSuffix(directory, "/");
+        return newDirectoryUri(serverUri.toString(), directory);
+    }
+
+    public static URI newDirectoryUri(final String serverUri, final String directory) {
+        final String uriStr = combinePath(serverUri, directory);
         return URI.create(uriStr);
     }
 
@@ -69,8 +72,11 @@ public final class FileChannelInfos {
     }
 
     public static URI newFileUri(final URI serverUri, final String directory, final String filename) {
-        final String uriStr = Strings.putSuffix(serverUri != null ? serverUri.toString() : "", "/")
-                + Strings.putSuffix(directory, "/") + filename;
+        return newFileUri(serverUri.toString(), directory, filename);
+    }
+
+    public static URI newFileUri(final String serverUri, final String directory, final String filename) {
+        final String uriStr = combinePath(serverUri, directory) + filename;
         return URI.create(uriStr);
     }
 
@@ -85,16 +91,15 @@ public final class FileChannelInfos {
     }
 
     public static String toString(final IFileChannelInfo info) {
-        return toString(info.getServerUri(), info.getAbsoluteDirectory(), info.getFilename());
+        return toString(info.getBaseServerUri(), info.getAbsoluteDirectory(), info.getFilename());
     }
 
     public static String toString(final URI serverUri, final String directory, final String filename) {
-        return Strings.putSuffix(serverUri != null ? serverUri.toString() : "", "/") + Strings.putSuffix(directory, "/")
-                + filename;
+        return toString(serverUri.toString(), directory, filename);
     }
 
     public static String toString(final String serverUri, final String directory, final String filename) {
-        return Strings.putSuffix(serverUri, "/") + Strings.putSuffix(directory, "/") + filename;
+        return combinePath(serverUri, directory) + Strings.asStringEmptyText(filename);
     }
 
 }
