@@ -20,7 +20,7 @@ public class AsyncFileChannelUpload implements Runnable {
     public static final int MAX_TRIES = 3;
     public static final int MAX_PARALLEL_UPLOADS = 2;
 
-    private static final WrappedExecutorService EXECUTOR = Executors
+    public static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelUpload.class.getSimpleName(), MAX_PARALLEL_UPLOADS);
 
     private final IFileChannel channel;
