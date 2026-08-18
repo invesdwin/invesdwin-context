@@ -76,7 +76,7 @@ public final class FileChannelInfos {
     }
 
     public static URI newFileUri(final String serverUri, final String directory, final String filename) {
-        final String uriStr = combinePath(serverUri, directory) + filename;
+        final String uriStr = toString(serverUri, directory, filename);
         return URI.create(uriStr);
     }
 
