@@ -13,6 +13,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.lang.uri.URIs;
 
 @ThreadSafe
 public final class FileChannelRegistry {
@@ -88,7 +89,7 @@ public final class FileChannelRegistry {
         if (serverUriStr == null) {
             return newInstance((URI) null);
         }
-        return newInstance(URI.create(serverUriStr));
+        return newInstance(URIs.asUri(serverUriStr));
     }
 
     public static IFileChannel newInstance(final URI serverUri) {

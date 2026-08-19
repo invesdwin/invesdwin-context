@@ -37,7 +37,34 @@ public final class FileChannelInfos {
         if (Strings.isBlank(path) || "/".equals(path)) {
             return "/";
         }
-        return Strings.putSuffix(path.replace("\\", "/").replaceAll("[/]+", "/"), "/");
+        final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
+        if (cleanPath.endsWith("/")) {
+            return cleanPath;
+        }
+        final int lastSlash = cleanPath.lastIndexOf('/');
+        if (lastSlash == -1) {
+            return "/";
+        }
+        return cleanPath.substring(0, lastSlash + 1);
+    }
+
+    public static String extractFileName(final URI uri) {
+        if (uri == null) {
+            return null;
+        }
+        final String path = uri.getPath();
+        if (Strings.isBlank(path) || "/".equals(path)) {
+            return null;
+        }
+        final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
+        if (cleanPath.endsWith("/")) {
+            return null;
+        }
+        final int lastSlash = cleanPath.lastIndexOf('/');
+        if (lastSlash == -1) {
+            return cleanPath;
+        }
+        return cleanPath.substring(lastSlash + 1);
     }
 
     public static String combinePath(final String baseDirectory, final String subDirectory) {
@@ -77,6 +104,15 @@ public final class FileChannelInfos {
 
     public static URI newFileUri(final String serverUri, final String directory, final String filename) {
         final String uriStr = toString(serverUri, directory, filename);
+        return URI.create(uriStr);
+    }
+
+    public static URI newFileUri(final URI serverUri, final String filename) {
+        return newFileUri(serverUri.toString(), filename);
+    }
+
+    public static URI newFileUri(final String serverUri, final String filename) {
+        final String uriStr = toString(serverUri, null, filename);
         return URI.create(uriStr);
     }
 

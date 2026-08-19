@@ -65,6 +65,7 @@ public class IoFileChannel implements IFileChannel {
         this.serverUri = serverUri != null ? serverUri : DEFAULT_SERVER_URI;
         this.baseServerUri = FileChannelInfos.extractBaseServerUri(this.serverUri, DEFAULT_SERVER_URI);
         this.baseDirectory = FileChannelInfos.extractBaseDirectory(this.serverUri);
+        this.filename = FileChannelInfos.extractFileName(serverUri);
     }
 
     public IoFileChannel(final String serverUri) {

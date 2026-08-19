@@ -52,6 +52,7 @@ public class NioFileChannel implements IFileChannel {
         this.serverUri = serverUri != null ? serverUri : DEFAULT_SERVER_URI;
         this.baseServerUri = FileChannelInfos.extractBaseServerUri(this.serverUri, DEFAULT_SERVER_URI);
         this.baseDirectory = FileChannelInfos.extractBaseDirectory(this.serverUri);
+        this.filename = FileChannelInfos.extractFileName(serverUri);
     }
 
     public NioFileChannel(final String serverUri) {
