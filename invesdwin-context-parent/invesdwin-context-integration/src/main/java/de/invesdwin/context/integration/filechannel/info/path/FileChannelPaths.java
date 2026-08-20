@@ -11,9 +11,11 @@ public final class FileChannelPaths {
 
     private FileChannelPaths() {}
 
+    //CHECKSTYLE:OFF
     public static String combinePath(final String baseDirectory, final String subDirectory) {
+        //CHECKSTYLE:ON
         if (Strings.isBlank(subDirectory)) {
-            return baseDirectory;
+            return Strings.isBlank(baseDirectory) ? "" : Strings.putSuffix(baseDirectory, "/");
         }
 
         final int len = subDirectory.length();
@@ -29,18 +31,32 @@ public final class FileChannelPaths {
             }
         }
 
-        // If the subDirectory was purely slashes, just return the baseDirectory
+        // If subDirectory was purely slashes, ensure baseDirectory ends with '/'
         if (i == len) {
-            return baseDirectory;
+            return Strings.isBlank(baseDirectory) ? "/" : Strings.putSuffix(baseDirectory, "/");
         }
 
-        // 2. Pre-size the StringBuilder to avoid resizing during append
-        // Capacity: base directory length + remaining characters + 1 for potential trailing slash
-        final StringBuilder sb = new StringBuilder(baseDirectory.length() + len - i + 1);
-        sb.append(baseDirectory);
+        final int baseLen = baseDirectory != null ? baseDirectory.length() : 0;
+        final StringBuilder sb = new StringBuilder(baseLen + len - i + 2);
 
-        // 3. Single pass to append characters, convert backslashes, and squash multiple slashes
         boolean lastWasSlash = false;
+
+        // 2. Append base directory and ensure proper joiner slash
+        if (baseLen > 0) {
+            sb.append(baseDirectory);
+            final char lastBaseChar = baseDirectory.charAt(baseLen - 1);
+            if (lastBaseChar == '/' || lastBaseChar == '\\') {
+                if (lastBaseChar == '\\') {
+                    sb.setCharAt(baseLen - 1, '/');
+                }
+                lastWasSlash = true;
+            } else {
+                sb.append('/');
+                lastWasSlash = true;
+            }
+        }
+
+        // 3. Single pass to append subDirectory, convert backslashes, and squash slashes
         while (i < len) {
             final char c = subDirectory.charAt(i);
             if (c == '/' || c == '\\') {
@@ -55,7 +71,7 @@ public final class FileChannelPaths {
             i++;
         }
 
-        // 4. Ensure trailing slash inline (replaces the need for Strings.putSuffix())
+        // 4. Ensure trailing slash inline
         if (!lastWasSlash) {
             sb.append('/');
         }
