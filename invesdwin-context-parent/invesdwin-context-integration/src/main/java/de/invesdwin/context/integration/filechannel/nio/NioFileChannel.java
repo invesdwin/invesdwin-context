@@ -17,7 +17,8 @@ import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
-import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Files;
@@ -49,10 +50,11 @@ public class NioFileChannel implements IFileChannel {
     }
 
     public NioFileChannel(final URI serverUri) {
-        this.serverUri = serverUri != null ? serverUri : DEFAULT_SERVER_URI;
-        this.baseServerUri = FileChannelInfos.extractBaseServerUri(this.serverUri, DEFAULT_SERVER_URI);
-        this.baseDirectory = FileChannelInfos.extractBaseDirectory(this.serverUri);
-        this.filename = FileChannelInfos.extractFileName(serverUri);
+        final FileChannelPath path = FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI);
+        this.serverUri = path.getServerUri();
+        this.baseServerUri = path.getBaseServerUri();
+        this.baseDirectory = path.getAbsoluteDirectory();
+        this.filename = path.getFilename();
     }
 
     public NioFileChannel(final String serverUri) {
@@ -74,7 +76,7 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public NioFileChannel withBaseServerUri(final URI baseServerUri) {
         //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(baseServerUri, getBaseDirectory());
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
         //CHECKSTYLE:OFF
         final NioFileChannel instance = new NioFileChannel(newServerUri);
         //CHECKSTYLE:ON
@@ -97,7 +99,7 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public NioFileChannel withBaseDirectory(final String baseDirectory) {
         //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), baseDirectory);
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
         //CHECKSTYLE:OFF
         final NioFileChannel instance = new NioFileChannel(newServerUri);
         //CHECKSTYLE:ON
@@ -113,7 +115,7 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public NioFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
         //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         //CHECKSTYLE:OFF
         final NioFileChannel instance = new NioFileChannel(newServerUri);
         //CHECKSTYLE:ON
@@ -204,11 +206,6 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public String getSubDirectory() {
         return subDirectory;
-    }
-
-    @Override
-    public String getAbsoluteDirectory() {
-        return FileChannelInfos.combinePath(baseDirectory, subDirectory);
     }
 
     @Override
@@ -386,7 +383,7 @@ public class NioFileChannel implements IFileChannel {
         connect(false);
         try {
             final Path source = resolveFilePath();
-            final Path target = Paths.get(FileChannelInfos.newFileUri(baseServerUri, getAbsoluteDirectory(), filename));
+            final Path target = Paths.get(FileChannelPaths.newFileUri(baseServerUri, getAbsoluteDirectory(), filename));
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
             setFilename(filename);
             return this;
@@ -513,6 +510,6 @@ public class NioFileChannel implements IFileChannel {
 
     @Override
     public String toString() {
-        return FileChannelInfos.toString(this);
+        return FileChannelPaths.toString(this);
     }
 }

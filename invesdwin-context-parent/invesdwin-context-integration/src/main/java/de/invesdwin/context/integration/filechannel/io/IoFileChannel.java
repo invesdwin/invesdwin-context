@@ -18,7 +18,8 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.commons.io.IOUtils;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
-import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
@@ -62,10 +63,11 @@ public class IoFileChannel implements IFileChannel {
     }
 
     public IoFileChannel(final URI serverUri) {
-        this.serverUri = serverUri != null ? serverUri : DEFAULT_SERVER_URI;
-        this.baseServerUri = FileChannelInfos.extractBaseServerUri(this.serverUri, DEFAULT_SERVER_URI);
-        this.baseDirectory = FileChannelInfos.extractBaseDirectory(this.serverUri);
-        this.filename = FileChannelInfos.extractFileName(serverUri);
+        final FileChannelPath path = FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI);
+        this.serverUri = path.getServerUri();
+        this.baseServerUri = path.getBaseServerUri();
+        this.baseDirectory = path.getAbsoluteDirectory();
+        this.filename = path.getFilename();
     }
 
     public IoFileChannel(final String serverUri) {
@@ -87,7 +89,7 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public IoFileChannel withBaseServerUri(final URI baseServerUri) {
         //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(baseServerUri, getBaseDirectory());
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
         //CHECKSTYLE:OFF
         final IoFileChannel instance = new IoFileChannel(newServerUri);
         //CHECKSTYLE:ON
@@ -110,7 +112,7 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public IoFileChannel withBaseDirectory(final String baseDirectory) {
         //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), baseDirectory);
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
         //CHECKSTYLE:OFF
         final IoFileChannel instance = new IoFileChannel(newServerUri);
         //CHECKSTYLE:ON
@@ -126,7 +128,7 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public IoFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
         //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         //CHECKSTYLE:OFF
         final IoFileChannel instance = new IoFileChannel(newServerUri);
         //CHECKSTYLE:ON
@@ -217,11 +219,6 @@ public class IoFileChannel implements IFileChannel {
     @Override
     public String getSubDirectory() {
         return subDirectory;
-    }
-
-    @Override
-    public String getAbsoluteDirectory() {
-        return FileChannelInfos.combinePath(baseDirectory, subDirectory);
     }
 
     @Override
@@ -384,7 +381,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     private File resolveDirectory() {
-        return new File(FileChannelInfos.newDirectoryUri(baseServerUri, getAbsoluteDirectory()));
+        return new File(FileChannelPaths.newDirectoryUri(baseServerUri, getAbsoluteDirectory()));
     }
 
     private File resolveFile() {
@@ -527,6 +524,6 @@ public class IoFileChannel implements IFileChannel {
 
     @Override
     public String toString() {
-        return FileChannelInfos.toString(this);
+        return FileChannelPaths.toString(this);
     }
 }

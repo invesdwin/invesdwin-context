@@ -8,8 +8,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
 import de.invesdwin.context.integration.filechannel.info.IFileInfo;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.time.date.FDate;
 
@@ -69,11 +69,6 @@ public class NioFileInfo implements IFileInfo {
     }
 
     @Override
-    public String getAbsoluteDirectory() {
-        return FileChannelInfos.combinePath(baseDirectory, subDirectory);
-    }
-
-    @Override
     public String getFilename() {
         return filename;
     }
@@ -108,7 +103,7 @@ public class NioFileInfo implements IFileInfo {
 
     @Override
     public String toString() {
-        return FileChannelInfos.toString(this);
+        return FileChannelPaths.toString(this);
     }
 
     public static NioFileInfo valueOf(final URI serverUri, final URI baseServerUri, final String baseDirectory,

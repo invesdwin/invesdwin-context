@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.integration.filechannel.info.FileChannelInfos;
 import de.invesdwin.context.integration.filechannel.info.IFileChannelInfo;
 import de.invesdwin.context.integration.filechannel.info.IFileInfo;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Strings;
@@ -136,7 +136,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      * Creates a new instance with the given base server URI, retaining the base directory, sub-directory, and filename.
      */
     default IFileChannel withBaseServerUri(final URI baseServerUri) {
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(baseServerUri, getBaseDirectory());
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
         final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
@@ -155,7 +155,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      * Creates a new instance with the given base directory, retaining the base server URI, sub-directory, and filename.
      */
     default IFileChannel withBaseDirectory(final String baseDirectory) {
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), baseDirectory);
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
         final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
@@ -167,7 +167,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      * Creates a new instance with the given absolute directory.
      */
     default IFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
-        final URI newServerUri = FileChannelInfos.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setFilename(getFilename());
