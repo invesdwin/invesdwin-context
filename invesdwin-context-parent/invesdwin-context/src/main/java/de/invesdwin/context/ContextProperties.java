@@ -156,7 +156,7 @@ public final class ContextProperties {
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
             homeDirectory = PlatformInitializerProperties.getInitializer()
-                    .initHomeDirectory(getSystemHomeDirectory(), isTestEnvironmentForHomeDirectory());
+                    .initHomeDirectory(getUserHomeDirectory(), isTestEnvironmentForHomeDirectory());
         }
         return homeDirectory;
     }
@@ -185,7 +185,7 @@ public final class ContextProperties {
      * 
      * this should be $HOME
      */
-    public static String getSystemHomeDirectory() {
+    public static String getUserHomeDirectory() {
         return new SystemProperties().getString("user.home");
     }
 
