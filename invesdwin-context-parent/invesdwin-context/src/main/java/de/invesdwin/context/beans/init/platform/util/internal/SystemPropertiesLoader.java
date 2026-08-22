@@ -50,17 +50,18 @@ public final class SystemPropertiesLoader {
             }
             overridePropertiesNames.add(Resources.resourceToPatternString(systemPropertiesResource) + "("
                     + overrideProperties.size() + ")");
-            final String distributionPropertiesName;
-            if (ContextProperties.IS_TEST_ENVIRONMENT || ContextProperties.isIgnoreDistributionProperties()) {
-                distributionPropertiesName = new SystemProperties().getString("user.name") + ".properties";
-            } else {
-                distributionPropertiesName = "distribution.properties";
+            if (!ContextProperties.isIgnoreDistributionProperties()) {
+                final String distributionPropertiesPattern = "classpath*:" + META_INF_ENV + "distribution.properties";
+                loadDistributionProperties(resolver, overrideProperties, overridePropertiesNames,
+                        distributionPropertiesPattern);
             }
-            final String distributionPropertiesPattern = "classpath*:" + META_INF_ENV + distributionPropertiesName;
-            final List<Resource> distributionProperties = Arrays
-                    .asList(resolver.getResources(distributionPropertiesPattern));
-            overridePropertiesNames.add(distributionPropertiesPattern + "(" + distributionProperties.size() + ")");
-            overrideProperties.addAll(distributionProperties);
+            if (!ContextProperties.isIgnoreUserProperties()
+                    && (ContextProperties.IS_TEST_ENVIRONMENT || ContextProperties.isIgnoreDistributionProperties())) {
+                final String userPropertiesPattern = "classpath*:" + META_INF_ENV
+                        + new SystemProperties().getString("user.name") + ".properties";
+                loadDistributionProperties(resolver, overrideProperties, overridePropertiesNames,
+                        userPropertiesPattern);
+            }
             logOverridePropertiesBeingLoaded(overrideProperties, overridePropertiesNames);
             for (final Resource p : overrideProperties) {
                 SystemProperties.setSystemProperties(p, true);
@@ -68,6 +69,15 @@ public final class SystemPropertiesLoader {
         } catch (final IOException e) {
             throw Err.process(e);
         }
+    }
+
+    private static void loadDistributionProperties(final PathMatchingResourcePatternResolver resolver,
+            final List<Resource> overrideProperties, final List<String> overridePropertiesNames,
+            final String distributionPropertiesPattern) throws IOException {
+        final List<Resource> distributionProperties = Arrays
+                .asList(resolver.getResources(distributionPropertiesPattern));
+        overridePropertiesNames.add(distributionPropertiesPattern + "(" + distributionProperties.size() + ")");
+        overrideProperties.addAll(distributionProperties);
     }
 
     private static Resource initSystemPropertiesResource() {

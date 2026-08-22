@@ -46,6 +46,11 @@ public final class ContextProperties {
     public static final String USER_NAME;
     public static final boolean KEEP_JDK_DEEP_CLONE_PROVIDER;
 
+    public static final String KEY_IGNORE_USER_PROPERTIES = ContextProperties.class.getName()
+            + ".IGNORE_USER_PROPERTIES";
+    public static final String KEY_IGNORE_DISTRIBUTION_PROPERTIES = ContextProperties.class.getName()
+            + ".ATTR_IGNORE_DISTRIBUTION_PROPERTIES";
+
     @GuardedBy("ContextProperties.class")
     private static File cacheDirectory;
     @GuardedBy("ContextProperties.class")
@@ -333,13 +338,13 @@ public final class ContextProperties {
     }
 
     public static boolean isIgnoreDistributionProperties() {
-        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-        final String keyIgnoreDistributionProperties = "IGNORE_DISTRIBUTION_PROPERTIES";
-        if (systemProperties.containsValue(keyIgnoreDistributionProperties)) {
-            return systemProperties.getBoolean(keyIgnoreDistributionProperties);
-        } else {
-            return false;
-        }
+        final SystemProperties systemProperties = new SystemProperties();
+        return systemProperties.getBooleanOptional(KEY_IGNORE_DISTRIBUTION_PROPERTIES, false);
+    }
+
+    public static boolean isIgnoreUserProperties() {
+        final SystemProperties systemProperties = new SystemProperties();
+        return systemProperties.getBooleanOptional(KEY_IGNORE_USER_PROPERTIES, false);
     }
 
 }
