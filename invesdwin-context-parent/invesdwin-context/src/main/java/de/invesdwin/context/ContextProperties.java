@@ -49,7 +49,8 @@ public final class ContextProperties {
     public static final String KEY_IGNORE_USER_PROPERTIES = ContextProperties.class.getName()
             + ".IGNORE_USER_PROPERTIES";
     public static final String KEY_IGNORE_DISTRIBUTION_PROPERTIES = ContextProperties.class.getName()
-            + ".ATTR_IGNORE_DISTRIBUTION_PROPERTIES";
+            + ".IGNORE_DISTRIBUTION_PROPERTIES";
+    public static final String KEY_CPU_THREAD_POOL_COUNT = ContextProperties.class.getName() + ".CPU_THREAD_POOL_COUNT";
 
     @GuardedBy("ContextProperties.class")
     private static File cacheDirectory;
