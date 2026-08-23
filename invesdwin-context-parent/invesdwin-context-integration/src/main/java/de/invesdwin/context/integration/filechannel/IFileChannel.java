@@ -10,17 +10,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.filechannel.info.IFileChannelInfo;
 import de.invesdwin.context.integration.filechannel.info.IFileInfo;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
+import de.invesdwin.util.error.InterruptedRuntimeException;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.streams.closeable.ISafeCloseable;
+import de.invesdwin.util.time.date.FTimeUnit;
+import de.invesdwin.util.time.date.millis.FDateMillis;
+import de.invesdwin.util.time.duration.Duration;
 
 public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
@@ -297,6 +302,26 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
     IFileChannel download(File destination);
 
     IFileChannel rename(String filename);
+
+    default byte[] downloadTimeout(final Duration existsTimeout) throws TimeoutException {
+        final long startTime = FDateMillis.nowMillis();
+        while (true) {
+            if (exists()) {
+                return download();
+            }
+            if (existsTimeout != null) {
+                if (existsTimeout.isLessThanMillis(FDateMillis.nowMillis() - startTime)) {
+                    throw new TimeoutException("File does not exist after waiting for " + existsTimeout);
+                }
+            }
+            try {
+                FTimeUnit.MILLISECONDS.sleep(250);
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new InterruptedRuntimeException("Thread interrupted while waiting for file to exist", e);
+            }
+        }
+    };
 
     byte[] download();
 
