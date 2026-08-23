@@ -174,12 +174,12 @@ public class ThreadLocalChronicleLargeMappedFileChunkStorage<V> implements IChun
     }
 
     private long readPosition() {
-        return Long.parseLong(Files.readFileToStringNoThrow(positionFile, Charsets.DEFAULT));
+        return Long.parseLong(Files.readFileToStringNoThrow(positionFile, Charsets.defaultCharset()));
     }
 
     private void writePosition(final long position) {
         try {
-            Files.writeStringToFile(positionFile, Long.toString(position), Charsets.DEFAULT);
+            Files.writeStringToFile(positionFile, Long.toString(position), Charsets.defaultCharset());
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

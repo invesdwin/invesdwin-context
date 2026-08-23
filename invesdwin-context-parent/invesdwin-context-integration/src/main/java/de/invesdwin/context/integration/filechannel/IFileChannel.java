@@ -291,7 +291,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
     IFileChannel upload(InputStream input);
 
     default IFileChannel uploadString(final String str) {
-        return upload(str.getBytes(Charsets.DEFAULT));
+        return upload(str.getBytes(Charsets.defaultCharset()));
     }
 
     IFileChannel download(File destination);
@@ -305,7 +305,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         if (bytes == null) {
             return null;
         }
-        return new String(bytes, Charsets.DEFAULT);
+        return new String(bytes, Charsets.defaultCharset());
     }
 
     IFileChannel delete();

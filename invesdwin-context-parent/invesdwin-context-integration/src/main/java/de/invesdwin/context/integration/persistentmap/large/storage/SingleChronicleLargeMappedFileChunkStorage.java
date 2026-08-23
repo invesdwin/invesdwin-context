@@ -51,8 +51,8 @@ public class SingleChronicleLargeMappedFileChunkStorage<V> implements IChunkStor
 
     @Deprecated
     @SuppressWarnings("unchecked")
-    public SingleChronicleLargeMappedFileChunkStorage(final File memoryDirectory,
-            final ILargeSerde<V> valueSerde, final boolean readOnly, final boolean closeAllowed) {
+    public SingleChronicleLargeMappedFileChunkStorage(final File memoryDirectory, final ILargeSerde<V> valueSerde,
+            final boolean readOnly, final boolean closeAllowed) {
         this.memoryDirectory = memoryDirectory;
         this.memoryFile = new File(memoryDirectory, "memory.bin");
         this.positionFile = new File(memoryDirectory, "memory.pos");
@@ -71,12 +71,12 @@ public class SingleChronicleLargeMappedFileChunkStorage<V> implements IChunkStor
     }
 
     private long readPosition() {
-        return Long.parseLong(Files.readFileToStringNoThrow(positionFile, Charsets.DEFAULT));
+        return Long.parseLong(Files.readFileToStringNoThrow(positionFile, Charsets.defaultCharset()));
     }
 
     private void writePosition(final long position) {
         try {
-            Files.writeStringToFile(positionFile, Long.toString(position), Charsets.DEFAULT);
+            Files.writeStringToFile(positionFile, Long.toString(position), Charsets.defaultCharset());
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
