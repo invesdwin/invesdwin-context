@@ -17,14 +17,11 @@ import de.invesdwin.context.integration.filechannel.info.IFileChannelInfo;
 import de.invesdwin.context.integration.filechannel.info.IFileInfo;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
-import de.invesdwin.util.error.InterruptedRuntimeException;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.streams.closeable.ISafeCloseable;
-import de.invesdwin.util.time.date.FTimeUnit;
-import de.invesdwin.util.time.date.millis.FDateMillis;
 import de.invesdwin.util.time.duration.Duration;
 
 public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
@@ -301,36 +298,56 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     IFileChannel download(File destination);
 
+    default IFileChannel downloadTimeout(final File destination) throws TimeoutException {
+        FileChannels.<Void> downloadTimeout(this, () -> {
+            download(destination);
+            return null;
+        });
+        return this;
+    }
+
+    default IFileChannel downloadTimeout(final File destination, final Duration timeout) throws TimeoutException {
+        FileChannels.<Void> downloadTimeout(this, () -> {
+            download(destination);
+            return null;
+        }, timeout);
+        return this;
+    }
+
     IFileChannel rename(String filename);
 
-    default byte[] downloadTimeout(final Duration existsTimeout) throws TimeoutException {
-        final long startTime = FDateMillis.nowMillis();
-        while (true) {
-            if (exists()) {
-                return download();
-            }
-            if (existsTimeout != null) {
-                if (existsTimeout.isLessThanMillis(FDateMillis.nowMillis() - startTime)) {
-                    throw new TimeoutException("File does not exist after waiting for " + existsTimeout);
-                }
-            }
-            try {
-                FTimeUnit.MILLISECONDS.sleep(250);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new InterruptedRuntimeException("Thread interrupted while waiting for file to exist", e);
-            }
-        }
-    };
+    byte[] downloadBytes();
 
-    byte[] download();
+    default byte[] downloadBytesTimeout() throws TimeoutException {
+        return FileChannels.<byte[]> downloadTimeout(this, () -> {
+            return downloadBytes();
+        });
+    }
+
+    default byte[] downloadBytesTimeout(final File destination, final Duration timeout) throws TimeoutException {
+        return FileChannels.<byte[]> downloadTimeout(this, () -> {
+            return downloadBytes();
+        }, timeout);
+    }
 
     default String downloadString() {
-        final byte[] bytes = download();
+        final byte[] bytes = downloadBytes();
         if (bytes == null) {
             return null;
         }
         return new String(bytes, Charsets.defaultCharset());
+    }
+
+    default String downloadStringTimeout() throws TimeoutException {
+        return FileChannels.<String> downloadTimeout(this, () -> {
+            return downloadString();
+        });
+    }
+
+    default String downloadStringTimeout(final File destination, final Duration timeout) throws TimeoutException {
+        return FileChannels.<String> downloadTimeout(this, () -> {
+            return downloadString();
+        }, timeout);
     }
 
     IFileChannel delete();

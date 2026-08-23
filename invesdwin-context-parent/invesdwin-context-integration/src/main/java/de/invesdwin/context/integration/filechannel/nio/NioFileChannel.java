@@ -451,7 +451,7 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
-    public byte[] download() {
+    public byte[] downloadBytes() {
         connect(false);
         try {
             return Files.readAllBytes(resolveFilePath());

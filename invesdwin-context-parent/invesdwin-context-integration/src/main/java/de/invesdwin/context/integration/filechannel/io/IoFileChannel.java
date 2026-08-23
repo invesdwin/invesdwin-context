@@ -471,7 +471,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public byte[] download() {
+    public byte[] downloadBytes() {
         connect(false);
         try (FileInputStream in = new FileInputStream(resolveFile())) {
             return IOUtils.toByteArray(in);
