@@ -6,7 +6,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.concurrent.GuardedBy;
@@ -36,6 +35,7 @@ import de.invesdwin.context.test.stub.IStub;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.UUIDs;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.lang.string.Strings;
 import io.netty.util.concurrent.FastThreadLocal;
@@ -262,7 +262,7 @@ public class TestContextLoader implements ContextLoader {
     @Override
     public String[] processLocations(final Class<?> clazz, final String... locations) {
         final List<String> list = new ArrayList<String>(Arrays.asList(locations));
-        list.add(0, CTX_DUMMY + "_" + UUID.randomUUID().toString());
+        list.add(0, CTX_DUMMY + "_" + UUIDs.newPseudoRandomUUID());
         return list.toArray(Strings.EMPTY_ARRAY);
     }
 }
