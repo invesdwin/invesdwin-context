@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import de.invesdwin.context.integration.filechannel.info.IFileInfo;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.streams.closeable.ISafeCloseable;
@@ -291,7 +291,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
     IFileChannel upload(InputStream input);
 
     default IFileChannel uploadString(final String str) {
-        return upload(str.getBytes(StandardCharsets.UTF_8));
+        return upload(str.getBytes(Charsets.DEFAULT));
     }
 
     IFileChannel download(File destination);
@@ -305,7 +305,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         if (bytes == null) {
             return null;
         }
-        return new String(bytes, StandardCharsets.UTF_8);
+        return new String(bytes, Charsets.DEFAULT);
     }
 
     IFileChannel delete();
