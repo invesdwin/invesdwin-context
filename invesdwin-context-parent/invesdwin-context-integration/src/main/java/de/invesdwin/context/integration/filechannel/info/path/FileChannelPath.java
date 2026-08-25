@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.filechannel.info.path;
 
 import java.net.URI;
+import java.util.function.Supplier;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -47,9 +48,9 @@ public final class FileChannelPath implements IFileChannelPath {
         return FileChannelPaths.toString(baseServerUri, absoluteDirectory, filename);
     }
 
-    public static FileChannelPath valueOf(final URI serverUri, final URI defaultServerUri) {
+    public static FileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
-            return new FileChannelPath(serverUri, defaultServerUri, "/", null);
+            return new FileChannelPath(serverUri, defaultServerUriF.get(), "/", null);
         }
 
         // Extract Base Server URI
@@ -64,7 +65,7 @@ public final class FileChannelPath implements IFileChannelPath {
             }
             baseServerUri = URIs.asUri(sb.toString());
         } else {
-            baseServerUri = defaultServerUri;
+            baseServerUri = defaultServerUriF.get();
         }
 
         // Extract Base Directory and Filename in one pass
@@ -88,15 +89,15 @@ public final class FileChannelPath implements IFileChannelPath {
         return new FileChannelPath(serverUri, baseServerUri, baseDirectory, filename);
     }
 
-    public static URI extractBaseServerUri(final URI uri, final URI defaultServerUri) {
+    public static URI extractBaseServerUri(final URI uri, final Supplier<URI> defaultServerUriF) {
         if (uri == null) {
-            return defaultServerUri;
+            return defaultServerUriF.get();
         }
         final StringBuilder sb = new StringBuilder();
         if (uri.getScheme() != null) {
             sb.append(uri.getScheme()).append("://");
         } else {
-            return defaultServerUri;
+            return defaultServerUriF.get();
         }
         if (Strings.isNotBlank(uri.getAuthority())) {
             sb.append(uri.getAuthority());
