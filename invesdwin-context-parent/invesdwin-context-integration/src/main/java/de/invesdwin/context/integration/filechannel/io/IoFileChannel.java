@@ -400,6 +400,7 @@ public class IoFileChannel implements IFileChannel {
         return this;
     }
 
+    @Deprecated
     @Override
     public void moveSameType(final IFileChannel targetChannel) {
         final IoFileChannel targetIo = (IoFileChannel) targetChannel;

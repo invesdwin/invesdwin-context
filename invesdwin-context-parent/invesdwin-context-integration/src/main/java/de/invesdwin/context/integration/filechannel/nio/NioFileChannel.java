@@ -392,6 +392,7 @@ public class NioFileChannel implements IFileChannel {
         }
     }
 
+    @Deprecated
     @Override
     public void moveSameType(final IFileChannel targetChannel) {
         try {
@@ -399,7 +400,7 @@ public class NioFileChannel implements IFileChannel {
             targetNio.ensureDirectoryCreated();
             final Path source = resolveFilePath();
             final Path target = targetNio.resolveFilePath();
-            java.nio.file.Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
             setSubDirectory(targetNio.getSubDirectory());
             setFilename(targetNio.getFilename());
         } catch (final IOException e) {

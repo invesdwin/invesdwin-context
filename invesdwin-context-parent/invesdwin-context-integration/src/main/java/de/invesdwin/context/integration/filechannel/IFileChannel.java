@@ -423,5 +423,9 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         return targetChannel;
     }
 
+    /**
+     * WARNING: for internal use only. This method should not be used directly. Use the move() method instead.
+     */
+    @Deprecated
     void moveSameType(IFileChannel targetChannel);
 }
