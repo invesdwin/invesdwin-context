@@ -264,6 +264,9 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     default List<? extends IFileInfo> listFiles() {
         final List<? extends IFileInfo> list = list();
+        if (list == null) {
+            return null;
+        }
         final List<IFileInfo> files = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             final IFileInfo file = list.get(i);
@@ -276,6 +279,9 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     default List<? extends IFileInfo> listDirectories() {
         final List<? extends IFileInfo> list = list();
+        if (list == null) {
+            return null;
+        }
         final List<IFileInfo> directories = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             final IFileInfo directory = list.get(i);
