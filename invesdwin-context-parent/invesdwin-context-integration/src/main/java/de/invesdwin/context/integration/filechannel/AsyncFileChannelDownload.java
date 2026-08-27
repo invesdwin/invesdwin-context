@@ -17,6 +17,7 @@ import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.future.Futures;
 import de.invesdwin.util.lang.string.description.TextDescription;
+import de.invesdwin.util.streams.closeable.Closeables;
 import de.invesdwin.util.streams.delegate.ADelegateInputStream;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.date.FDate;
@@ -31,7 +32,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     public static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelDownload.class.getSimpleName(), MAX_PARALLEL_DOWNLOADS);
 
-    private final IFileChannel<?> channel;
+    private final IFileChannel channel;
     private final String channelFileName;
     private final Duration downloadTimeout;
     private Instant timeoutStart;
@@ -39,7 +40,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     private Long lastFileSize;
     private int tries = 0;
 
-    public AsyncFileChannelDownload(final IFileChannel<?> channel, final Duration downloadTimeout) {
+    public AsyncFileChannelDownload(final IFileChannel channel, final Duration downloadTimeout) {
         Assertions.checkNotNull(channel);
         this.channel = channel;
         this.channelFileName = channel.getFilename();
@@ -84,11 +85,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
 
                     };
                 } catch (InterruptedException | TimeoutException e) {
-                    try {
-                        channel.close();
-                    } catch (final IOException e1) {
-                        //ignore
-                    }
+                    Closeables.closeQuietly(channel);
                     throw new RetryDisabledRuntimeException(e);
                 } catch (final Throwable t) {
                     throw handleRetry(t);
@@ -101,15 +98,11 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     }
 
     protected InputStream download() {
-        return channel.downloadInputStream();
+        return channel.newDownload();
     }
 
     private RuntimeException handleRetry(final Throwable t) {
-        try {
-            channel.close();
-        } catch (final IOException e) {
-            //ignore
-        }
+        Closeables.closeQuietly(channel);
         tries++;
         if (tries >= AsyncFileChannelUpload.MAX_TRIES) {
             return new RetryDisabledRuntimeException(
@@ -127,11 +120,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     }
 
     protected void closeChannelAutomatically() {
-        try {
-            channel.close();
-        } catch (final IOException e) {
-            //ignore
-        }
+        Closeables.closeQuietly(channel);
     }
 
     private boolean shouldWaitForFinishedFile() {
@@ -142,14 +131,14 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
 
         channel.setFilename(channelFileName);
         if (channel.exists()) {
-            final FDate fileModified = channel.modified();
+            final FDate fileModified = channel.lastModified();
             if (lastFileModified == null || lastFileModified.isBefore(fileModified)) {
                 lastFileModified = fileModified;
                 //reset timeout since upload is still in progress
                 timeoutStart = new Instant();
                 return true;
             }
-            final long fileSize = channel.size();
+            final long fileSize = channel.length();
             if (lastFileSize == null || lastFileSize != fileSize) {
                 lastFileSize = fileSize;
                 //reset timeout since upload is still in progress

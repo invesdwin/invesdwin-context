@@ -2,14 +2,12 @@ package de.invesdwin.context.log;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import org.slf4j.Marker;
-
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.lang.string.description.TextDescription;
 import de.invesdwin.util.log.ILog;
 import de.invesdwin.util.log.LogLevel;
-import de.invesdwin.util.log.modify.FormattedDelegateLog;
 
 /**
  * A utility that provides standard mechanisms for logging certain kinds of activities.
@@ -27,7 +25,7 @@ import de.invesdwin.util.log.modify.FormattedDelegateLog;
  * 
  */
 @ThreadSafe
-public final class Log extends org.slf4j.ext.XLogger implements ILog {
+public final class Log implements ILog {
 
     static {
         if (PlatformInitializerProperties.isAllowed()) {
@@ -39,8 +37,10 @@ public final class Log extends org.slf4j.ext.XLogger implements ILog {
         }
     }
 
+    private final org.apache.logging.log4j.Logger logger;
+
     public Log(final String name) {
-        super(org.slf4j.LoggerFactory.getLogger(name));
+        this.logger = org.apache.logging.log4j.LogManager.getLogger(name);
     }
 
     public Log(final Class<?> clazz) {
@@ -52,174 +52,576 @@ public final class Log extends org.slf4j.ext.XLogger implements ILog {
     }
 
     @Override
-    public void trace(final String format, final Object... args) {
-        super.trace(format(LogLevel.TRACE, format, args), args);
+    public String getName() {
+        return logger.getName();
     }
 
     @Override
-    public void trace(final Marker marker, final String format, final Object... args) {
-        super.trace(marker, format(LogLevel.TRACE, format, args), args);
+    public boolean isTraceEnabled() {
+        return logger.isTraceEnabled();
     }
 
     @Override
-    public void debug(final String format, final Object... args) {
-        super.debug(format(LogLevel.DEBUG, format, args), args);
+    public void trace(final String msg) {
+        logger.trace(msg);
     }
 
     @Override
-    public void debug(final Marker marker, final String format, final Object... args) {
-        super.debug(marker, format(LogLevel.DEBUG, format, args), args);
-    }
-
-    @Override
-    public void info(final String format, final Object... args) {
-        super.info(format(LogLevel.INFO, format, args), args);
-    }
-
-    @Override
-    public void info(final Marker marker, final String format, final Object... args) {
-        super.info(marker, format(LogLevel.INFO, format, args), args);
-    }
-
-    @Override
-    public void warn(final String format, final Object... args) {
-        super.warn(format(LogLevel.WARN, format, args), args);
-    }
-
-    @Override
-    public void warn(final Marker marker, final String format, final Object... args) {
-        super.warn(marker, format(LogLevel.WARN, format, args), args);
-    }
-
-    @Override
-    public void error(final String format, final Object... args) {
-        super.error(format(LogLevel.ERROR, format, args), args);
-    }
-
-    @Override
-    public void error(final Marker marker, final String format, final Object... args) {
-        super.error(marker, format(LogLevel.ERROR, format, args), args);
-    }
-
-    @Override
-    public void debug(final Marker marker, final String format, final Object arg) {
-        super.debug(marker, format(LogLevel.DEBUG, format, arg), arg);
-    }
-
-    @Override
-    public void debug(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.debug(marker, format(LogLevel.DEBUG, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void debug(final String format, final Object arg) {
-        super.debug(format(LogLevel.DEBUG, format, arg), arg);
-    }
-
-    @Override
-    public void debug(final String format, final Object arg1, final Object arg2) {
-        super.debug(format(LogLevel.DEBUG, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void error(final Marker marker, final String format, final Object arg) {
-        super.error(marker, format(LogLevel.ERROR, format, arg), arg);
-    }
-
-    @Override
-    public void error(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.error(marker, format(LogLevel.ERROR, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void error(final String format, final Object arg) {
-        super.error(format(LogLevel.ERROR, format, arg), arg);
-    }
-
-    @Override
-    public void error(final String format, final Object arg1, final Object arg2) {
-        super.error(format(LogLevel.ERROR, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void info(final Marker marker, final String format, final Object arg) {
-        super.info(marker, format(LogLevel.INFO, format, arg), arg);
-    }
-
-    @Override
-    public void info(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.info(marker, format(LogLevel.INFO, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void info(final String format, final Object arg) {
-        super.info(format(LogLevel.INFO, format, arg), arg);
-    }
-
-    @Override
-    public void info(final String format, final Object arg1, final Object arg2) {
-        super.info(format(LogLevel.INFO, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void trace(final Marker marker, final String format, final Object arg) {
-        super.trace(marker, format(LogLevel.TRACE, format, arg), arg);
-    }
-
-    @Override
-    public void trace(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.trace(marker, format(LogLevel.TRACE, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void trace(final String format, final Object arg) {
-        super.trace(format(LogLevel.TRACE, format, arg), arg);
-    }
-
-    @Override
-    public void trace(final String format, final Object arg1, final Object arg2) {
-        super.trace(format(LogLevel.TRACE, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void warn(final Marker marker, final String format, final Object arg) {
-        super.warn(marker, format(LogLevel.WARN, format, arg), arg);
-    }
-
-    @Override
-    public void warn(final Marker marker, final String format, final Object arg1, final Object arg2) {
-        super.warn(marker, format(LogLevel.WARN, format, arg1, arg2), arg1, arg2);
-    }
-
-    @Override
-    public void warn(final String format, final Object arg) {
-        super.warn(format(LogLevel.WARN, format, arg), arg);
-    }
-
-    @Override
-    public void warn(final String format, final Object arg1, final Object arg2) {
-        super.warn(format(LogLevel.WARN, format, arg1, arg2), arg1, arg2);
-    }
-
-    private String format(final LogLevel level, final String messagePattern, final Object arg) {
-        if (!level.isEnabled(logger)) {
-            return messagePattern;
+    public void trace(final String format, final Object p0) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0));
         }
-        return FormattedDelegateLog.format(messagePattern, new Object[] { arg });
     }
 
-    private String format(final LogLevel level, final String messagePattern, final Object arg1, final Object arg2) {
-        if (!level.isEnabled(logger)) {
-            return messagePattern;
+    @Override
+    public void trace(final String format, final Object p0, final Object p1) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1));
         }
-        return FormattedDelegateLog.format(messagePattern, new Object[] { arg1, arg2 });
     }
 
-    private String format(final LogLevel level, final String messagePattern, final Object[] argArray) {
-        if (!level.isEnabled(logger)) {
-            return messagePattern;
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2));
         }
-        return FormattedDelegateLog.format(messagePattern, argArray);
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void trace(final String format, final Object... params) {
+        if (logger.isTraceEnabled()) {
+            logger.trace(new TextDescription(format, params));
+        }
+    }
+
+    @Override
+    public boolean isDebugEnabled() {
+        return logger.isDebugEnabled();
+    }
+
+    @Override
+    public void debug(final String msg) {
+        logger.debug(msg);
+    }
+
+    @Override
+    public void debug(final String format, final Object p0) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void debug(final String format, final Object... params) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(new TextDescription(format, params));
+        }
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return logger.isInfoEnabled();
+    }
+
+    @Override
+    public void info(final String msg) {
+        logger.info(msg);
+    }
+
+    @Override
+    public void info(final String format, final Object p0) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void info(final String format, final Object... params) {
+        if (logger.isInfoEnabled()) {
+            logger.info(new TextDescription(format, params));
+        }
+    }
+
+    @Override
+    public boolean isWarnEnabled() {
+        return logger.isWarnEnabled();
+    }
+
+    @Override
+    public void warn(final String msg) {
+        logger.warn(msg);
+    }
+
+    @Override
+    public void warn(final String format, final Object p0) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void warn(final String format, final Object... params) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(new TextDescription(format, params));
+        }
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return logger.isErrorEnabled();
+    }
+
+    @Override
+    public void error(final String msg) {
+        logger.error(msg);
+    }
+
+    @Override
+    public void error(final String format, final Object p0) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void error(final String format, final Object... params) {
+        if (logger.isErrorEnabled()) {
+            logger.error(new TextDescription(format, params));
+        }
+    }
+
+    @Override
+    public boolean isFatalEnabled() {
+        return logger.isFatalEnabled();
+    }
+
+    @Override
+    public void fatal(final String msg) {
+        logger.fatal(msg);
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
+            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+        }
+    }
+
+    @Override
+    public void fatal(final String format, final Object... params) {
+        if (logger.isFatalEnabled()) {
+            logger.fatal(new TextDescription(format, params));
+        }
+    }
+
+    @Override
+    public void catching(final Throwable throwable) {
+        logger.catching(throwable);
+    }
+
+    @Override
+    public void catching(final LogLevel level, final Throwable throwable) {
+        logger.catching(level.asLog4j2Level(), throwable);
     }
 
 }

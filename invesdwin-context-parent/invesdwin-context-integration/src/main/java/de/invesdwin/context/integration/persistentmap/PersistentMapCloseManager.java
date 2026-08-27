@@ -24,8 +24,8 @@ import de.invesdwin.util.collections.loadingcache.historical.refresh.HistoricalC
 @ThreadSafe
 public final class PersistentMapCloseManager {
 
-    private static final org.slf4j.ext.XLogger LOG = org.slf4j.ext.XLoggerFactory
-            .getXLogger(HistoricalCacheRefreshManager.class);
+    private static final org.apache.logging.log4j.Logger LOG = org.apache.logging.log4j.LogManager
+            .getLogger(HistoricalCacheRefreshManager.class);
 
     private static final ALoadingCache<String, Set<APersistentMap<?, ?>>> REGISTERED_CACHES = new ALoadingCache<String, Set<APersistentMap<?, ?>>>() {
 
@@ -53,8 +53,7 @@ public final class PersistentMapCloseManager {
         });
     }
 
-    private PersistentMapCloseManager() {
-    }
+    private PersistentMapCloseManager() {}
 
     public static synchronized boolean register(final APersistentMap<?, ?> cache) {
         final Set<APersistentMap<?, ?>> caches = REGISTERED_CACHES.get(cache.toString());

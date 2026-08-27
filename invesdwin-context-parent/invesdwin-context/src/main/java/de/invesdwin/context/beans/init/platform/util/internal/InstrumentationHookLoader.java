@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
+import org.apache.logging.log4j.LogManager;
+
 import de.invesdwin.context.beans.hook.IInstrumentationHook;
 import de.invesdwin.instrument.DynamicInstrumentationReflections;
 
@@ -40,7 +42,7 @@ public final class InstrumentationHookLoader {
             }
             message.append(" ");
             message.append(instrumentationHookNames);
-            org.slf4j.ext.XLoggerFactory.getXLogger(InstrumentationHookLoader.class).info(message.toString());
+            LogManager.getLogger(InstrumentationHookLoader.class).info(message.toString());
         }
     }
 

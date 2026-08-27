@@ -17,6 +17,7 @@ import de.invesdwin.util.collections.array.large.bitset.ILargeBitSet;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.nested.INestedExecutor;
 import de.invesdwin.util.concurrent.pool.MemoryLimit;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
@@ -261,6 +262,11 @@ public class CachingLargeArrayAllocator implements ILargeArrayAllocator {
     @Override
     public ILock getLock(final String id) {
         return delegate.getLock(id);
+    }
+
+    @Override
+    public INestedExecutor getExecutor() {
+        return delegate.getExecutor();
     }
 
 }

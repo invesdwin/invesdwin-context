@@ -332,7 +332,11 @@ public class LoggingDelegateProperties implements IProperties {
     @Override
     public Map<String, String> asMap() {
         if (asMap == null) {
-            asMap = new PropertiesAsMap(this);
+            synchronized (this) {
+                if (asMap == null) {
+                    asMap = new PropertiesAsMap(this);
+                }
+            }
         }
         return asMap;
     }

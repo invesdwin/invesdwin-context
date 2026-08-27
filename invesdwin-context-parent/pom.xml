@@ -67,8 +67,6 @@
 		<version.jarchivelib>1.2.0</version.jarchivelib>
 		<version.sevenzipjbinding>16.02-2.01</version.sevenzipjbinding>
 
-		<version.logback>1.5.22</version.logback>
-
 		<!-- reports -->
 		<version.jfreechart>1.5.4</version.jfreechart>
 		<version.dynamicreports>6.12.1-inv</version.dynamicreports>
@@ -76,18 +74,17 @@
 		<version.batik>1.17</version.batik>
 		<version.openpdf>1.3.30</version.openpdf>
 		<version.bcprov>1.83</version.bcprov>
-		
+
 
 		<!-- integration -->
 		<version.spring-batch>5.2.4</version.spring-batch>
-		<version.spring-retry>2.0.12</version.spring-retry>
+		<version.spring-retry>2.0.13</version.spring-retry>
 		<version.spring-integration>6.5.1</version.spring-integration>
 		<version.spring-ws>4.1.2</version.spring-ws>
 
 		<version.hsqldb>2.7.2</version.hsqldb>
 		<version.mysql-connector-j>8.2.0</version.mysql-connector-j>
 		<version.postgresql>42.7.2</version.postgresql>
-
 	</properties>
 
 	<dependencyManagement>
@@ -123,6 +120,12 @@
 			</dependency>
 			<dependency>
 				<groupId>de.invesdwin</groupId>
+				<artifactId>invesdwin-context-webserver</artifactId>
+				<version>${project.version.invesdwin-context}</version>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>de.invesdwin</groupId>
 				<artifactId>invesdwin-context-jasperreports</artifactId>
 				<version>${project.version.invesdwin-context}</version>
 			</dependency>
@@ -147,23 +150,11 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-configuration2</artifactId>
 				<version>${version.commons-configuration2}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>${version.commons-configuration}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -182,35 +173,21 @@
 				<version>${version.jarchivelib}</version>
 			</dependency>
 			<dependency>
-			    <groupId>net.sf.sevenzipjbinding</groupId>
-			    <artifactId>sevenzipjbinding</artifactId>
-			    <version>${version.sevenzipjbinding}</version>
+				<groupId>net.sf.sevenzipjbinding</groupId>
+				<artifactId>sevenzipjbinding</artifactId>
+				<version>${version.sevenzipjbinding}</version>
 			</dependency>
 			<dependency>
-			    <groupId>net.sf.sevenzipjbinding</groupId>
-			    <artifactId>sevenzipjbinding-all-platforms</artifactId>
-			    <version>${version.sevenzipjbinding}</version>
+				<groupId>net.sf.sevenzipjbinding</groupId>
+				<artifactId>sevenzipjbinding-all-platforms</artifactId>
+				<version>${version.sevenzipjbinding}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${version.logback}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${version.logback}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.puppycrawl.tools</groupId>
 				<artifactId>checkstyle</artifactId>
 				<version>${version.checkstyle}</version>
 				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
 					<exclusion>
 						<artifactId>tools</artifactId>
 						<groupId>com.sun</groupId>
@@ -348,10 +325,6 @@
 						<groupId>org.codehaus.castor</groupId>
 					</exclusion>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
 						<artifactId>olap4j</artifactId>
 						<groupId>org.olap4j</groupId>
 					</exclusion>
@@ -408,10 +381,6 @@
 				<classifier>jakarta</classifier>
 				<exclusions>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
 						<artifactId>jdtcore</artifactId>
 						<groupId>eclipse</groupId>
 					</exclusion>
@@ -445,9 +414,9 @@
 				<version>${version.bcprov}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.bouncycastle</groupId>
-			    <artifactId>bcutil-jdk18on</artifactId>
-			    <version>${version.bcprov}</version>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcutil-jdk18on</artifactId>
+				<version>${version.bcprov}</version>
 			</dependency>
 
 			<dependency>
@@ -463,10 +432,6 @@
 					<exclusion>
 						<artifactId>xalan</artifactId>
 						<groupId>xalan</groupId>
-					</exclusion>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -527,10 +492,6 @@
 				<version>${version.spring-integration}</version>
 				<exclusions>
 					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-					<exclusion>
 						<artifactId>stax-api</artifactId>
 						<groupId>javax.xml.stream</groupId>
 					</exclusion>
@@ -540,12 +501,6 @@
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-xml</artifactId>
 				<version>${version.spring-ws}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -866,6 +821,14 @@
 							<transformer
 								implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
 								<resource>META-INF/wsdl.plugin.xml</resource>
+							</transformer>
+							<transformer
+								implementation="org.apache.logging.log4j.maven.plugins.shade.transformer.Log4j2PluginCacheFileTransformer" />
+							<transformer
+								implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<manifestEntries>
+									<Multi-Release>true</Multi-Release>
+								</manifestEntries>
 							</transformer>
 						</transformers>
 						<filters>

@@ -42,10 +42,10 @@ public abstract class ACachedMarshalledDownloadListRequest<E> implements Callabl
                     if (!file.exists() || isExpired(file)) {
                         final List<E> downloaded = download();
                         if (downloaded.isEmpty()) {
-                            Files.writeStringToFile(file, "", Charsets.DEFAULT);
+                            Files.writeStringToFile(file, "", Charsets.defaultCharset());
                         } else {
                             final String json = toMarshalled(downloaded);
-                            Files.writeStringToFile(file, json, Charsets.DEFAULT);
+                            Files.writeStringToFile(file, json, Charsets.defaultCharset());
                         }
                         return downloaded;
                     }
@@ -55,7 +55,7 @@ public abstract class ACachedMarshalledDownloadListRequest<E> implements Callabl
                 return Collections.emptyList();
             } else {
                 try {
-                    final String json = Files.readFileToString(file, Charsets.DEFAULT);
+                    final String json = Files.readFileToString(file, Charsets.defaultCharset());
                     return fromMarshalled(json);
                 } catch (final Throwable t) {
                     Err.process(new RuntimeException("Resetting and retrying: " + t.toString(), t));

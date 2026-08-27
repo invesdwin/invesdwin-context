@@ -3,12 +3,14 @@ package de.invesdwin.context.beans.init;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.OptionHandler;
 
 import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
@@ -16,13 +18,12 @@ import de.invesdwin.context.log.error.LoggedRuntimeException;
 import de.invesdwin.context.system.properties.ResourceBundles;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.date.FTimeUnit;
 
 @Immutable
 public abstract class AMain implements Runnable {
-
-    protected final Log log = new Log(this);
 
     @Option(help = true, name = "-h", aliases = "--help", usage = "Shows this help text")
     protected boolean help;
@@ -48,6 +49,7 @@ public abstract class AMain implements Runnable {
     private void parseCommandline() {
         final CmdLineParser parser = newCmdLineParser();
         try {
+            assertNoRequiredHelpOption(parser);
             final String[] filteredArgs = parseSystemProperties(args);
             parser.parseArgument(filteredArgs);
             if (help) {
@@ -73,6 +75,17 @@ public abstract class AMain implements Runnable {
         final CmdLineParser parser = new CmdLineParser(this);
         parser.getProperties().withUsageWidth(120);
         return parser;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void assertNoRequiredHelpOption(final CmdLineParser parser) {
+        final List<OptionHandler> options = parser.getOptions();
+        for (int i = 0; i < options.size(); i++) {
+            final OptionHandler option = options.get(i);
+            if (option.option.required() && option.option.help()) {
+                throw new IllegalArgumentException("Option [" + option.option + "] cannot be both required and help.");
+            }
+        }
     }
 
     /**
@@ -129,10 +142,24 @@ public abstract class AMain implements Runnable {
     }
 
     protected final void printHelp(final CmdLineParser parser) {
-        log.error(createHelpString(parser));
+        final String helpStr = createHelpString(parser);
+        try {
+            new Log(this).error(helpStr);
+        } catch (final Throwable t) {
+            //CHECKSTYLE:OFF
+            final String fullStackTrace = Throwables.getFullStackTrace(t);
+            System.err.println("Failed to print help text: " + fullStackTrace);
+            System.err.println(helpStr);
+            //CHECKSTYLE:ON
+        }
+    }
+
+    protected void forceEnglishLocaleForHelp() {
+        Locale.setDefault(Locale.ENGLISH);
     }
 
     protected String createHelpString(final CmdLineParser parser) {
+        forceEnglishLocaleForHelp();
         final StringWriter writer = new StringWriter();
         final ResourceBundle rb = ResourceBundles.getResourceBundle(getClass());
         writer.append("\nUsage:\tjava ");

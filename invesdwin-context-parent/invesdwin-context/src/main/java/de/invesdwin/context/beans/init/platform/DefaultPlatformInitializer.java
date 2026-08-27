@@ -26,7 +26,7 @@ import de.invesdwin.context.beans.init.platform.util.TempDirectoryLockConfigurer
 import de.invesdwin.context.beans.init.platform.util.WildflyOpenSslSecurityProviderConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.FileEncodingChecker;
 import de.invesdwin.context.beans.init.platform.util.internal.InstrumentationHookLoader;
-import de.invesdwin.context.beans.init.platform.util.internal.LogbackConfigurationLoader;
+import de.invesdwin.context.beans.init.platform.util.internal.Log4j2ConfigurationLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.SystemPropertiesLoader;
 import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
@@ -45,7 +45,7 @@ import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
-import de.invesdwin.util.marshallers.serde.LocalFastSerializingSerde;
+import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -80,7 +80,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         try {
             //use FST in BeanPathObjects as deepClone fallback instead of java serialization
             FSTConfiguration.getDefaultConfiguration(); //might throw an exception here
-            BeanPathObjects.setDeepCloneProvider(LocalFastSerializingSerde.get());
+            BeanPathObjects.setDeepCloneProvider(RemoteFastSerializingSerde.get());
         } catch (final Throwable t) {
             // we might be in a restricted environment where FST is not allowed, stay with java serialization then
         }
@@ -121,7 +121,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public void initLogbackConfigurationLoader() {
-        LogbackConfigurationLoader.loadLogbackConfiguration();
+        Log4j2ConfigurationLoader.loadLog4jConfiguration();
     }
 
     @Override

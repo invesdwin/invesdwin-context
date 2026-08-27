@@ -92,6 +92,10 @@ public abstract class ATest implements ITestLifecycle, ITestContextState {
     private IStub[] hooks;
 
     public ATest() {
+        init();
+    }
+
+    protected void init() {
         if (TestContextLoader.getCurrentTest() == null) {
             TestContextLoader.setCurrentTest(this);
         }

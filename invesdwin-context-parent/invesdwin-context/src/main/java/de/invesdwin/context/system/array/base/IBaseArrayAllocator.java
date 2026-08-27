@@ -7,6 +7,7 @@ import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.norva.beanpath.spi.IUnwrap;
 import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.nested.INestedExecutor;
 
 /**
  * An instance of a primitive array allocator should only be shared within the same backtesting engine. Otherwise
@@ -26,5 +27,7 @@ public interface IBaseArrayAllocator extends IUnwrap, Closeable {
     void close();
 
     ILock getLock(String id);
+
+    INestedExecutor getExecutor();
 
 }

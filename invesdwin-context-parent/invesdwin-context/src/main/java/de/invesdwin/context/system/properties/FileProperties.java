@@ -2,17 +2,19 @@ package de.invesdwin.context.system.properties;
 
 import java.io.File;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.builder.fluent.PropertiesBuilderParameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 
 import de.invesdwin.util.lang.Files;
 
-@NotThreadSafe
+@ThreadSafe
 public class FileProperties extends AProperties {
 
     private final File file;
@@ -30,12 +32,19 @@ public class FileProperties extends AProperties {
             if (!file.exists()) {
                 Files.touchQuietly(file);
             }
-            final PropertiesConfiguration conf = builder.configure(new Parameters().properties().setFile(file))
-                    .getConfiguration();
-            return conf;
+            PropertiesBuilderParameters params = new Parameters().properties().setFile(file);
+            if (isThreadSafe()) {
+                params = params.setSynchronizer(new ReadWriteSynchronizer());
+            }
+            final PropertiesConfiguration config = builder.configure(params).getConfiguration();
+            return config;
         } catch (final ConfigurationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isThreadSafe() {
+        return true;
     }
 
 }

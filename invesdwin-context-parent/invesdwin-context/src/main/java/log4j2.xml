@@ -1,0 +1,22 @@
+<Configuration status="ERROR" packages="de.invesdwin.context.log.log4j2">
+	<!-- Configuration for Log4j2 before bootstrap has been done -->
+
+	<Appenders>
+		<ConfiguredConsole name="stdout" target="SYSTEM_OUT"/>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="AspectJ Weaver" additivity="false" level="ERROR">
+			<AppenderRef ref="stdout" />
+		</Logger>
+
+		<Logger name="de.invesdwin" additivity="false" level="INFO">
+			<AppenderRef ref="stdout" />
+		</Logger>
+
+		<Root level="WARN">
+			<AppenderRef ref="stdout" />
+		</Root>
+	</Loggers>
+
+</Configuration>

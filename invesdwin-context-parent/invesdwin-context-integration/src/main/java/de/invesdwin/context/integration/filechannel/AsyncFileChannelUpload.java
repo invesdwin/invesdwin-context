@@ -1,20 +1,23 @@
 package de.invesdwin.context.integration.filechannel;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
+import de.invesdwin.context.integration.retry.task.ARetryCallable;
 import de.invesdwin.context.integration.retry.task.ARetryRunnable;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
+import de.invesdwin.util.streams.closeable.Closeables;
 
 @NotThreadSafe
-public class AsyncFileChannelUpload implements Runnable {
+public class AsyncFileChannelUpload implements Callable<Future<?>> {
 
     public static final String FINISHED_FILENAME_SUFFIX = ".finished";
     public static final int MAX_TRIES = 3;
@@ -23,12 +26,12 @@ public class AsyncFileChannelUpload implements Runnable {
     private static final WrappedExecutorService EXECUTOR = Executors
             .newFixedThreadPool(AsyncFileChannelUpload.class.getSimpleName(), MAX_PARALLEL_UPLOADS);
 
-    private final IFileChannel<?> channel;
+    private final IFileChannel channel;
     private final String channelFileName;
     private final File localTempFile;
     private int tries = 0;
 
-    public AsyncFileChannelUpload(final IFileChannel<?> channel, final File localTempFile) {
+    public AsyncFileChannelUpload(final IFileChannel channel, final File localTempFile) {
         Assertions.checkNotNull(channel);
         this.channel = channel;
         this.localTempFile = localTempFile;
@@ -37,11 +40,11 @@ public class AsyncFileChannelUpload implements Runnable {
     }
 
     @Override
-    public void run() {
-        final Runnable retry = new ARetryRunnable(
+    public Future<?> call() {
+        final Callable<Future<?>> retry = new ARetryCallable<Future<?>>(
                 new RetryOriginator(AsyncFileChannelUpload.class, "run", channel, localTempFile)) {
             @Override
-            protected void runRetry() throws Exception {
+            protected Future<?> callRetry() throws Exception {
                 cleanupForUpload();
                 try {
                     EXECUTOR.awaitPendingCountFull();
@@ -51,11 +54,15 @@ public class AsyncFileChannelUpload implements Runnable {
                 } catch (final Throwable t) {
                     throw handleRetry(t);
                 }
-                uploadAsync();
+                return uploadAsync();
             }
 
         };
-        retry.run();
+        try {
+            return retry.call();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void cleanupForUpload() {
@@ -68,8 +75,8 @@ public class AsyncFileChannelUpload implements Runnable {
         channel.delete();
     }
 
-    private void uploadAsync() {
-        EXECUTOR.execute(new ARetryRunnable(
+    private Future<?> uploadAsync() {
+        return EXECUTOR.submit(new ARetryRunnable(
                 new RetryOriginator(AsyncFileChannelUpload.class, "upload", channel, localTempFile)) {
             @Override
             protected void runRetry() throws Exception {
@@ -95,11 +102,7 @@ public class AsyncFileChannelUpload implements Runnable {
     }
 
     private RuntimeException handleRetry(final Throwable t) {
-        try {
-            channel.close();
-        } catch (final IOException e) {
-            //ignore
-        }
+        Closeables.closeQuietly(channel);
         tries++;
         if (tries >= MAX_TRIES) {
             return new RetryDisabledRuntimeException(
@@ -114,11 +117,7 @@ public class AsyncFileChannelUpload implements Runnable {
     }
 
     protected void closeChannelAutomatically() {
-        try {
-            channel.close();
-        } catch (final IOException e) {
-            //ignore
-        }
+        Closeables.closeQuietly(channel);
     }
 
 }

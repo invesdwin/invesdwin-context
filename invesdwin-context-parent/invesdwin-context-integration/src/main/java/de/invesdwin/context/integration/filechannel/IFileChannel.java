@@ -1,72 +1,431 @@
 package de.invesdwin.context.integration.filechannel;
 
-import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
-import de.invesdwin.norva.marker.ISerializableValueObject;
-import de.invesdwin.util.time.date.FDate;
+import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.integration.filechannel.info.IFileChannelInfo;
+import de.invesdwin.context.integration.filechannel.info.IFileInfo;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
+import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
+import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.string.Charsets;
+import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.lang.uri.URIs;
+import de.invesdwin.util.streams.closeable.ISafeCloseable;
+import de.invesdwin.util.time.duration.Duration;
 
-public interface IFileChannel<FILEINFO> extends Closeable, ISerializableValueObject {
+public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
-    String getDirectory();
+    Path DOT_DOT = Paths.get("..");
 
-    void setFilename(String filename);
+    IFileChannel setFilename(String filename);
 
-    String getFilename();
+    /**
+     * Sets the relative sub-directory within the base path.
+     */
+    IFileChannel setSubDirectory(String subDirectory);
+
+    /**
+     * Sets both the sub-directory and filename from a single path string, delegating safe path normalization to
+     * standard NIO while validating it does not escape the base directory.
+     */
+    //CHECKSTYLE:OFF
+    default IFileChannel setSubPath(final String path) {
+        //CHECKSTYLE:ON
+        if (Strings.isBlank(path)) {
+            setSubDirectory("");
+            setFilename(null);
+            return this;
+        }
+
+        int start = 0;
+
+        // Handle full URIs if present without heavy URI object allocation
+        final int schemeIndex = path.indexOf("://");
+        if (schemeIndex >= 0) {
+            final int slashAfterScheme = path.indexOf('/', schemeIndex + 3);
+            if (slashAfterScheme >= 0) {
+                start = slashAfterScheme;
+            } else {
+                setSubDirectory("");
+                setFilename(null);
+                return this;
+            }
+        }
+
+        // Delegate normalization to NIO Paths to securely resolve internal '.' and '..' segments
+        final Path normalizedPath = Paths.get(start > 0 ? path.substring(start) : path).normalize();
+
+        // Verify normalization didn't leave unresolved traversal segments escaping the root (zero-allocation check)
+        for (final Path segment : normalizedPath) {
+            if (segment.equals(DOT_DOT)) {
+                throw new IllegalArgumentException("Path traversal escaping the base is not allowed: " + path);
+            }
+        }
+
+        final String normalizedPathStr = normalizedPath.toString();
+        final String cleanPath = normalizedPathStr.indexOf('\\') >= 0 ? normalizedPathStr.replace('\\', '/')
+                : normalizedPathStr;
+        final int cleanLen = cleanPath.length();
+        int cleanStart = 0;
+
+        final String baseDir = getBaseDirectory();
+        if (baseDir != null && !"/".equals(baseDir)) {
+            final String normalizedBaseRaw = Paths.get(baseDir).normalize().toString();
+            final String normalizedBase = normalizedBaseRaw.indexOf('\\') >= 0 ? normalizedBaseRaw.replace('\\', '/')
+                    : normalizedBaseRaw;
+            final int baseLen = normalizedBase.length();
+
+            if (cleanLen > 0 && cleanPath.charAt(0) == '/') {
+                final boolean startsWithBase = cleanPath.startsWith(normalizedBase, 0);
+                final boolean startsWithBaseAfterSlash = cleanPath.startsWith(normalizedBase, 1);
+                if (!startsWithBase && !startsWithBaseAfterSlash) {
+                    throw new IllegalArgumentException("Path [" + path
+                            + "] attempts to modify or escape outside the base directory [" + baseDir + "]");
+                }
+                if (startsWithBase) {
+                    cleanStart = baseLen;
+                } else {
+                    cleanStart = 1 + baseLen;
+                }
+            } else {
+                if (cleanPath.startsWith(normalizedBase, 0)) {
+                    cleanStart = baseLen;
+                }
+            }
+        } else {
+            if (cleanLen > 0 && cleanPath.charAt(0) == '/') {
+                cleanStart = 1;
+            }
+        }
+
+        while (cleanStart < cleanLen && cleanPath.charAt(cleanStart) == '/') {
+            cleanStart++;
+        }
+
+        final int lastSlashIndex = cleanPath.lastIndexOf('/');
+        if (lastSlashIndex >= cleanStart) {
+            setSubDirectory(cleanPath.substring(cleanStart, lastSlashIndex));
+            setFilename(cleanPath.substring(lastSlashIndex + 1));
+        } else {
+            setSubDirectory("");
+            setFilename(cleanStart < cleanLen ? cleanPath.substring(cleanStart) : cleanPath);
+        }
+        return this;
+    }
+
+    /**
+     * Sets both the sub-directory and filename from a java.nio.file.Path.
+     */
+    default IFileChannel setSubPath(final Path path) {
+        if (path == null) {
+            return setSubPath((String) null);
+        }
+        return setSubPath(path.toString());
+    }
+
+    /**
+     * Creates a new instance with the given base server URI, retaining the base directory, sub-directory, and filename.
+     */
+    default IFileChannel withBaseServerUri(final URI baseServerUri) {
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
+        final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
+        clone.setEmptyFileContent(getEmptyFileContent());
+        clone.setSubDirectory(getSubDirectory());
+        clone.setFilename(getFilename());
+        return clone;
+    }
+
+    /**
+     * Creates a new instance with the given base server URI string.
+     */
+    default IFileChannel withBaseServerUri(final String baseServerUri) {
+        return withBaseServerUri(URIs.asUri(baseServerUri));
+    }
+
+    /**
+     * Creates a new instance with the given base directory, retaining the base server URI, sub-directory, and filename.
+     */
+    default IFileChannel withBaseDirectory(final String baseDirectory) {
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
+        final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
+        clone.setEmptyFileContent(getEmptyFileContent());
+        clone.setSubDirectory(getSubDirectory());
+        clone.setFilename(getFilename());
+        return clone;
+    }
+
+    /**
+     * Creates a new instance with the given absolute directory.
+     */
+    default IFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
+        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
+        final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
+        clone.setEmptyFileContent(getEmptyFileContent());
+        clone.setFilename(getFilename());
+        return clone;
+    }
+
+    /**
+     * Creates a new instance with the given sub-path (relative to base directory).
+     */
+    default IFileChannel withSubPath(final String subPath) {
+        final IFileChannel clone = FileChannelRegistry.newInstance(getServerUri());
+        clone.setEmptyFileContent(getEmptyFileContent());
+        clone.setSubPath(subPath);
+        return clone;
+    }
+
+    /**
+     * Creates a new instance with the given java.nio.file.Path sub-path.
+     */
+    default IFileChannel withSubPath(final Path path) {
+        if (path == null) {
+            return withSubPath((String) null);
+        }
+        return withSubPath(path.toString());
+    }
+
+    /**
+     * Creates a new instance with the given filename, retaining base server URI, base directory, and sub-directory.
+     */
+    default IFileChannel withFilename(final String filename) {
+        final IFileChannel clone = FileChannelRegistry.newInstance(getServerUri());
+        clone.setEmptyFileContent(getEmptyFileContent());
+        clone.setSubDirectory(getSubDirectory());
+        clone.setFilename(filename);
+        return clone;
+    }
+
+    /**
+     * Creates a new instance with the given absolute path (expecting no baseServerUri, containing baseDirectory,
+     * subDirectory, and filename).
+     */
+    default IFileChannel withAbsolutePath(final String path) {
+        if (Strings.isBlank(path)) {
+            final IFileChannel clone = FileChannelRegistry.newInstance(getBaseServerUri());
+            clone.setEmptyFileContent(getEmptyFileContent());
+            clone.setSubPath((String) null);
+            return clone;
+        }
+        if (path.contains("://")) {
+            return FileChannelRegistry.newInstance(path);
+        } else {
+            final IFileChannel clone = FileChannelRegistry.newInstance(getBaseServerUri());
+            clone.setEmptyFileContent(getEmptyFileContent());
+            clone.setSubPath(path);
+            return clone;
+        }
+    }
+
+    /**
+     * Creates a new instance with the given java.nio.file.Path absolute path.
+     */
+    default IFileChannel withAbsolutePath(final Path path) {
+        if (path == null) {
+            return withAbsolutePath((String) null);
+        }
+        return withAbsolutePath(path.toString());
+    }
 
     byte[] getEmptyFileContent();
 
-    void setEmptyFileContent(byte[] emptyFileContent);
+    IFileChannel setEmptyFileContent(byte[] emptyFileContent);
 
-    void createUniqueFile();
+    IFileChannel createUniqueFile();
 
-    void createUniqueFile(String filenamePrefix, String filenameSuffix);
+    IFileChannel createUniqueFile(String filenamePrefix, String filenameSuffix);
 
-    void connect();
+    default IFileChannel connect() {
+        return connect(true);
+    }
+
+    IFileChannel connect(boolean createDirectory);
+
+    IFileChannel createDirectory();
 
     boolean isConnected();
 
     boolean exists();
 
-    long size();
+    IFileInfo info();
 
-    FDate modified();
+    List<? extends IFileInfo> list();
 
-    FILEINFO info();
+    default List<? extends IFileInfo> listFiles() {
+        final List<? extends IFileInfo> list = list();
+        final List<IFileInfo> files = new ArrayList<>(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            final IFileInfo file = list.get(i);
+            if (file.isFile()) {
+                files.add(file);
+            }
+        }
+        return files;
+    }
 
-    List<FILEINFO> list();
+    default List<? extends IFileInfo> listDirectories() {
+        final List<? extends IFileInfo> list = list();
+        final List<IFileInfo> directories = new ArrayList<>(list.size());
+        for (int i = 0; i < list.size(); i++) {
+            final IFileInfo directory = list.get(i);
+            if (directory.isDirectory()) {
+                directories.add(directory);
+            }
+        }
+        return directories;
+    }
 
-    List<FILEINFO> listFiles();
+    IFileChannel upload(File file);
 
-    List<FILEINFO> listDirectories();
+    IFileChannel upload(byte[] bytes);
 
-    void upload(File file);
+    IFileChannel upload(InputStream input);
 
-    void upload(byte[] bytes);
+    default IFileChannel uploadString(final String str) {
+        return upload(str.getBytes(Charsets.defaultCharset()));
+    }
 
-    void upload(InputStream input);
+    IFileChannel download(File destination);
 
-    void download(File destination);
+    default IFileChannel downloadTimeout(final File destination) throws TimeoutException {
+        FileChannels.<Void> downloadTimeout(this, () -> {
+            download(destination);
+            return null;
+        });
+        return this;
+    }
+
+    default IFileChannel downloadTimeout(final File destination, final Duration timeout) throws TimeoutException {
+        FileChannels.<Void> downloadTimeout(this, () -> {
+            download(destination);
+            return null;
+        }, timeout);
+        return this;
+    }
+
+    IFileChannel rename(String filename);
+
+    byte[] downloadBytes();
+
+    default byte[] downloadBytesTimeout() throws TimeoutException {
+        return FileChannels.<byte[]> downloadTimeout(this, () -> {
+            return downloadBytes();
+        });
+    }
+
+    default byte[] downloadBytesTimeout(final File destination, final Duration timeout) throws TimeoutException {
+        return FileChannels.<byte[]> downloadTimeout(this, () -> {
+            return downloadBytes();
+        }, timeout);
+    }
+
+    default String downloadString() {
+        final byte[] bytes = downloadBytes();
+        if (bytes == null) {
+            return null;
+        }
+        return new String(bytes, Charsets.defaultCharset());
+    }
+
+    default String downloadStringTimeout() throws TimeoutException {
+        return FileChannels.<String> downloadTimeout(this, () -> {
+            return downloadString();
+        });
+    }
+
+    default String downloadStringTimeout(final File destination, final Duration timeout) throws TimeoutException {
+        return FileChannels.<String> downloadTimeout(this, () -> {
+            return downloadString();
+        }, timeout);
+    }
+
+    IFileChannel delete();
+
+    OutputStream newUpload();
+
+    default File downloadLocalTempFile() {
+        final File directory = new File(ContextProperties.TEMP_DIRECTORY, getAbsoluteDirectory());
+        try {
+            Files.forceMkdir(directory);
+        } catch (final IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+
+        final File file = new File(directory, getFilename());
+        Files.deleteQuietly(file);
+        if (exists()) {
+            download(file);
+        }
+        return file;
+    }
+
+    default IFileChannel reconnect() {
+        return reconnect(true);
+    }
+
+    IFileChannel reconnect(boolean createDirectory);
+
+    InputStream newDownload();
 
     /**
-     * Actually moves the file and overwrites if it already exists, though might use a safe rename if target file does
-     * not exist.
+     * Creates a new instance with the given relative sub-directory.
      */
-    void rename(String filename);
+    IFileChannel withSubDirectory(String subDirectory);
 
-    byte[] download();
+    default IFileChannel copy(final String targetAbsolutePath) {
+        return copy(withAbsolutePath(targetAbsolutePath));
+    }
 
-    void delete();
+    default IFileChannel copy(final Path targetPath) {
+        return copy(withAbsolutePath(targetPath));
+    }
 
-    OutputStream uploadOutputStream();
+    default IFileChannel copy(final IFileChannel targetChannel) {
+        connect(false);
+        try (InputStream in = newDownload()) {
+            if (in == null) {
+                throw new IllegalStateException("Source file not found: " + this);
+            }
+            targetChannel.upload(in);
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return targetChannel;
+    }
 
-    File getLocalTempFile();
+    default IFileChannel move(final String targetAbsolutePath) {
+        return move(withAbsolutePath(targetAbsolutePath));
+    }
 
-    void reconnect();
+    default IFileChannel move(final Path targetPath) {
+        return move(withAbsolutePath(targetPath));
+    }
 
-    InputStream downloadInputStream();
+    default IFileChannel move(final IFileChannel targetChannel) {
+        connect(false);
+        if (getClass().isInstance(targetChannel)) {
+            moveSameType(targetChannel);
+        } else {
+            copy(targetChannel);
+            delete();
+        }
+        return targetChannel;
+    }
 
+    /**
+     * WARNING: for internal use only. This method should not be used directly. Use the move() method instead.
+     */
+    @Deprecated
+    void moveSameType(IFileChannel targetChannel);
 }

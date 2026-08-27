@@ -9,7 +9,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.context.log.Log;
-import de.invesdwin.context.log.logback.LogbackProperties;
+import de.invesdwin.context.log.log4j2.Log4j2Properties;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
@@ -41,16 +41,16 @@ public final class DefaultTimeZoneConfigurer {
     public static void configure() {
         //explicitly using fully qualified reference to not invoke static initializer for loading properties while
         final de.invesdwin.context.system.properties.SystemProperties systemProperties = new de.invesdwin.context.system.properties.SystemProperties();
-        final TimeZone newTimeZone = LogbackProperties.TIME_ZONE_OVERRIDE;
+        final TimeZone newTimeZone = Log4j2Properties.TIME_ZONE_OVERRIDE;
         final Log log = new Log(DefaultTimeZoneConfigurer.class);
-        if (!LogbackProperties.isKeepDefaultTimezone()) {
+        if (!Log4j2Properties.isKeepDefaultTimezone()) {
             if (!SYSTEM_TIMEZONE.equals(newTimeZone.getID())) {
                 log.warn("Changing JVM default " + TimeZone.class.getSimpleName() + " from [" + SYSTEM_TIMEZONE
                         + "] to [" + newTimeZone.getID() + "] in order to have commonality between systems:"
-                        + "\n- Use -D" + LogbackProperties.KEEP_USER_TIMEZONE_PARAM
-                        + "=true to keep the system default." + " Additionally using -D" + USER_TIMEZONE_PARAM + "=<"
-                        + TimeZone.class.getSimpleName() + "ID> allows to change the default of the JVM."
-                        + "\n- Hide this warning by using -D" + USER_TIMEZONE_PARAM + "=" + newTimeZone.getID()
+                        + "\n- Use -D" + Log4j2Properties.KEEP_USER_TIMEZONE_PARAM + "=true to keep the system default."
+                        + " Additionally using -D" + USER_TIMEZONE_PARAM + "=<" + TimeZone.class.getSimpleName()
+                        + "ID> allows to change the default of the JVM." + "\n- Hide this warning by using -D"
+                        + USER_TIMEZONE_PARAM + "=" + newTimeZone.getID()
                         + " to specify the default to match the convention.");
                 systemProperties.setString(USER_TIMEZONE_PARAM, newTimeZone.getID());
                 setDefaultTimeZone(newTimeZone);

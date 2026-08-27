@@ -333,7 +333,11 @@ public class PropertyChangeDelegateProperties extends APropertyChangeSupportedBa
     @Override
     public Map<String, String> asMap() {
         if (asMap == null) {
-            asMap = new PropertiesAsMap(this);
+            synchronized (this) {
+                if (asMap == null) {
+                    asMap = new PropertiesAsMap(this);
+                }
+            }
         }
         return asMap;
     }

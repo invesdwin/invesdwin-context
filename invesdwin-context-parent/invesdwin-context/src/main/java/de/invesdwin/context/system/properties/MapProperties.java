@@ -16,7 +16,7 @@ public class MapProperties extends AProperties {
     private final Map<String, Object> map;
 
     public MapProperties() {
-        this(ILockCollectionFactory.getInstance(false).newMap());
+        this(ILockCollectionFactory.getInstance(true).newConcurrentMap());
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

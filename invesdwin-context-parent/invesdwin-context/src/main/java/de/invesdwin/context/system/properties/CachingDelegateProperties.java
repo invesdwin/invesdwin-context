@@ -30,7 +30,7 @@ public final class CachingDelegateProperties implements IProperties {
 
     private final IProperties delegate;
 
-    @GuardedBy("this")
+    @GuardedBy("none")
     private final Map<String, Optional<?>> cache;
     @GuardedBy("none")
     private PropertiesAsMap asMap;
@@ -51,12 +51,12 @@ public final class CachingDelegateProperties implements IProperties {
     }
 
     @Override
-    public synchronized void remove(final String key) {
+    public void remove(final String key) {
         delegate.remove(key);
         cache.remove(key);
     }
 
-    public synchronized Object removeFromCache(final String key) {
+    public Object removeFromCache(final String key) {
         final Optional<?> value = cache.remove(key);
         if (value == null) {
             return null;
@@ -65,7 +65,7 @@ public final class CachingDelegateProperties implements IProperties {
         }
     }
 
-    public synchronized Object putIntoCache(final String key, final Object value) {
+    public Object putIntoCache(final String key, final Object value) {
         final Optional<?> oldValue = cache.put(key, Optional.ofNullable(value));
         if (oldValue == null) {
             return null;
@@ -79,7 +79,7 @@ public final class CachingDelegateProperties implements IProperties {
     }
 
     @Override
-    public synchronized boolean containsKey(final String key) {
+    public boolean containsKey(final String key) {
         if (cache.containsKey(key)) {
             return true;
         } else {
@@ -88,7 +88,7 @@ public final class CachingDelegateProperties implements IProperties {
     }
 
     @Override
-    public synchronized boolean containsValue(final String key) {
+    public boolean containsValue(final String key) {
         if (cache.get(key) != null) {
             return true;
         } else {
@@ -117,22 +117,26 @@ public final class CachingDelegateProperties implements IProperties {
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized <T> T getOrLoad(final String key, final Callable<T> getter) {
+    public <T> T getOrLoad(final String key, final Callable<T> getter) {
         final Optional<T> existingValue = (Optional<T>) cache.get(key);
         if (existingValue != null) {
             return existingValue.orElse(null);
         } else {
             try {
                 final T newValue = getter.call();
-                Assertions.assertThat(cache.put(key, Optional.ofNullable(newValue))).isNull();
-                return newValue;
+                final Optional<T> oldValue = (Optional<T>) cache.putIfAbsent(key, Optional.ofNullable(newValue));
+                if (oldValue != null) {
+                    return (T) oldValue.orElse(null);
+                } else {
+                    return newValue;
+                }
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private synchronized <T> void set(final String key, final T value, final Runnable setter) {
+    private <T> void set(final String key, final T value, final Runnable setter) {
         final Optional<T> next = Optional.ofNullable(value);
         final Optional<?> prev = cache.put(key, next);
         if (!Objects.equals(Optionals.orNull(prev), Optionals.orNull(next))) {
@@ -585,12 +589,17 @@ public final class CachingDelegateProperties implements IProperties {
     @Override
     public void clear() {
         delegate.clear();
+        cache.clear();
     }
 
     @Override
     public Map<String, String> asMap() {
         if (asMap == null) {
-            asMap = new PropertiesAsMap(this);
+            synchronized (this) {
+                if (asMap == null) {
+                    asMap = new PropertiesAsMap(this);
+                }
+            }
         }
         return asMap;
     }

@@ -46,6 +46,12 @@ public final class ContextProperties {
     public static final String USER_NAME;
     public static final boolean KEEP_JDK_DEEP_CLONE_PROVIDER;
 
+    public static final String KEY_IGNORE_USER_PROPERTIES = ContextProperties.class.getName()
+            + ".IGNORE_USER_PROPERTIES";
+    public static final String KEY_IGNORE_DISTRIBUTION_PROPERTIES = ContextProperties.class.getName()
+            + ".IGNORE_DISTRIBUTION_PROPERTIES";
+    public static final String KEY_CPU_THREAD_POOL_COUNT = ContextProperties.class.getName() + ".CPU_THREAD_POOL_COUNT";
+
     @GuardedBy("ContextProperties.class")
     private static File cacheDirectory;
     @GuardedBy("ContextProperties.class")
@@ -156,7 +162,7 @@ public final class ContextProperties {
     public static synchronized File getHomeDirectory() {
         if (homeDirectory == null) {
             homeDirectory = PlatformInitializerProperties.getInitializer()
-                    .initHomeDirectory(getSystemHomeDirectory(), isTestEnvironmentForHomeDirectory());
+                    .initHomeDirectory(getUserHomeDirectory(), isTestEnvironmentForHomeDirectory());
         }
         return homeDirectory;
     }
@@ -185,7 +191,7 @@ public final class ContextProperties {
      * 
      * this should be $HOME
      */
-    public static String getSystemHomeDirectory() {
+    public static String getUserHomeDirectory() {
         return new SystemProperties().getString("user.home");
     }
 
@@ -333,13 +339,13 @@ public final class ContextProperties {
     }
 
     public static boolean isIgnoreDistributionProperties() {
-        final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-        final String keyIgnoreDistributionProperties = "IGNORE_DISTRIBUTION_PROPERTIES";
-        if (systemProperties.containsValue(keyIgnoreDistributionProperties)) {
-            return systemProperties.getBoolean(keyIgnoreDistributionProperties);
-        } else {
-            return false;
-        }
+        final SystemProperties systemProperties = new SystemProperties();
+        return systemProperties.getBooleanOptional(KEY_IGNORE_DISTRIBUTION_PROPERTIES, false);
+    }
+
+    public static boolean isIgnoreUserProperties() {
+        final SystemProperties systemProperties = new SystemProperties();
+        return systemProperties.getBooleanOptional(KEY_IGNORE_USER_PROPERTIES, false);
     }
 
 }

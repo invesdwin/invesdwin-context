@@ -1,0 +1,22 @@
+<Configuration>
+
+	<Loggers>
+		<Logger name="de.invesdwin" additivity="false" level="INFO">
+			<AppenderRef ref="stdout" />
+			<AppenderRef ref="stderr" />
+			<AppenderRef ref="common" />
+			<AppenderRef ref="error" />
+		</Logger>
+
+		<!-- change this to trace to debug load time weaving classloader issues -->
+		<Logger name="AspectJ Weaver" additivity="false" level="OFF">
+			<AppenderRef ref="stdout" />
+			<AppenderRef ref="stderr" />
+			<AppenderRef ref="common" />
+			<AppenderRef ref="error" />
+		</Logger>
+
+		<Logger name="org.springframework.test" additivity="false" level="OFF" />
+	</Loggers>
+
+</Configuration>

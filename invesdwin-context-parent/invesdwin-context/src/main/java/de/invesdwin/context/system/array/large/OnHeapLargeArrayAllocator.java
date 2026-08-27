@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.system.array.base.ArrayAllocators;
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.context.system.properties.MapProperties;
 import de.invesdwin.util.collections.array.large.IBooleanLargeArray;
@@ -16,17 +17,21 @@ import de.invesdwin.util.collections.attributes.IAttributesMap;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.Locks;
+import de.invesdwin.util.concurrent.nested.INestedExecutor;
 import de.invesdwin.util.lang.Objects;
+import de.invesdwin.util.lang.finalizer.AFinalizer;
 import de.invesdwin.util.streams.buffer.memory.IMemoryBuffer;
 import de.invesdwin.util.streams.buffer.memory.MemoryBuffers;
 
 @ThreadSafe
 public final class OnHeapLargeArrayAllocator implements ILargeArrayAllocator {
 
-    private AttributesMap attributes;
-    private MapProperties properties;
+    private final OnHeapLargeArrayAllocatorFinalizer finalizer;
 
-    public OnHeapLargeArrayAllocator() {}
+    public OnHeapLargeArrayAllocator() {
+        this.finalizer = new OnHeapLargeArrayAllocatorFinalizer();
+        this.finalizer.register(this);
+    }
 
     @Override
     public IMemoryBuffer getMemoryBuffer(final String id) {
@@ -115,36 +120,36 @@ public final class OnHeapLargeArrayAllocator implements ILargeArrayAllocator {
 
     @Override
     public IAttributesMap getAttributes() {
-        if (attributes == null) {
+        if (finalizer.attributes == null) {
             synchronized (this) {
-                if (attributes == null) {
-                    attributes = new AttributesMap();
+                if (finalizer.attributes == null) {
+                    finalizer.attributes = new AttributesMap();
                 }
             }
         }
-        return attributes;
+        return finalizer.attributes;
     }
 
     @Override
     public IProperties getProperties() {
-        if (properties == null) {
+        if (finalizer.properties == null) {
             synchronized (this) {
-                if (properties == null) {
-                    properties = new MapProperties();
+                if (finalizer.properties == null) {
+                    finalizer.properties = new MapProperties();
                 }
             }
         }
-        return properties;
+        return finalizer.properties;
     }
 
     @Override
     public void clear() {
-        final AttributesMap attributesCopy = attributes;
+        final AttributesMap attributesCopy = finalizer.attributes;
         if (attributesCopy != null) {
             attributesCopy.clear();
-            attributes = null;
+            finalizer.attributes = null;
         }
-        properties = null;
+        finalizer.properties = null;
     }
 
     @Override
@@ -158,11 +163,50 @@ public final class OnHeapLargeArrayAllocator implements ILargeArrayAllocator {
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        finalizer.close();
+    }
 
     @Override
     public ILock getLock(final String id) {
         return (ILock) getAttributes().computeIfAbsent(id, (k) -> Locks.newReentrantLock(k));
+    }
+
+    @Override
+    public INestedExecutor getExecutor() {
+        return finalizer.executor;
+    }
+
+    private static final class OnHeapLargeArrayAllocatorFinalizer extends AFinalizer {
+
+        private AttributesMap attributes;
+        private MapProperties properties;
+        private INestedExecutor executor;
+
+        private OnHeapLargeArrayAllocatorFinalizer() {
+            this.executor = ArrayAllocators.newDefaultExecutor(OnHeapLargeArrayAllocator.class.getSimpleName());
+        }
+
+        @Override
+        protected void clean() {
+            final INestedExecutor executorCopy = executor;
+            if (executorCopy != null) {
+                executorCopy.close();
+                executor = null;
+            }
+            attributes = null;
+            properties = null;
+        }
+
+        @Override
+        protected boolean isCleaned() {
+            return executor == null;
+        }
+
+        @Override
+        public boolean isThreadLocal() {
+            return false;
+        }
     }
 
 }
