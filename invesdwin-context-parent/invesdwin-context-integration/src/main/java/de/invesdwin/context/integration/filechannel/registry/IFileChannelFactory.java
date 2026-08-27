@@ -1,8 +1,7 @@
 package de.invesdwin.context.integration.filechannel.registry;
 
-import java.net.URI;
-
 import de.invesdwin.context.integration.filechannel.IFileChannel;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 
 public interface IFileChannelFactory {
 
@@ -12,8 +11,8 @@ public interface IFileChannelFactory {
     String getScheme();
 
     /**
-     * Creates an instance of IFileChannel configured for the given server URI.
+     * Creates an instance of IFileChannel configured for the given IFileChannelPath.
      */
-    IFileChannel newInstance(URI serverUri);
+    IFileChannel newInstance(IFileChannelPath path);
 
 }

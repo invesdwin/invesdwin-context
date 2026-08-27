@@ -9,13 +9,13 @@ import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 
 @Immutable
-public final class FileChannelPath implements IFileChannelPath {
+public final class UriFileChannelPath implements IFileChannelPath {
     private final URI serverUri;
     private final URI baseServerUri;
     private final String absoluteDirectory;
     private final String filename;
 
-    private FileChannelPath(final URI serverUri, final URI baseServerUri, final String absoluteDirectory,
+    private UriFileChannelPath(final URI serverUri, final URI baseServerUri, final String absoluteDirectory,
             final String filename) {
         this.serverUri = serverUri != null ? serverUri : baseServerUri;
         this.baseServerUri = baseServerUri;
@@ -48,9 +48,9 @@ public final class FileChannelPath implements IFileChannelPath {
         return FileChannelPaths.toString(baseServerUri, absoluteDirectory, filename);
     }
 
-    public static FileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static UriFileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
-            return new FileChannelPath(serverUri, defaultServerUriF.get(), "/", null);
+            throw new NullPointerException("serverUri cannot be null");
         }
 
         // Extract Base Server URI
@@ -71,12 +71,12 @@ public final class FileChannelPath implements IFileChannelPath {
         // Extract Base Directory and Filename in one pass
         final String path = serverUri.getPath();
         if (Strings.isBlank(path) || "/".equals(path)) {
-            return new FileChannelPath(serverUri, baseServerUri, "/", null);
+            return new UriFileChannelPath(serverUri, baseServerUri, "/", null);
         }
 
         final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
         if (cleanPath.endsWith("/")) {
-            return new FileChannelPath(serverUri, baseServerUri, cleanPath, null);
+            return new UriFileChannelPath(serverUri, baseServerUri, cleanPath, null);
         }
 
         final int lastSlash = cleanPath.lastIndexOf('/');
@@ -84,10 +84,10 @@ public final class FileChannelPath implements IFileChannelPath {
 
         if (candidateFilename.contains(".")) {
             final String baseDirectory = lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
-            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, candidateFilename);
+            return new UriFileChannelPath(serverUri, baseServerUri, baseDirectory, candidateFilename);
         } else {
             final String baseDirectory = cleanPath + "/";
-            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, null);
+            return new UriFileChannelPath(serverUri, baseServerUri, baseDirectory, null);
         }
     }
 

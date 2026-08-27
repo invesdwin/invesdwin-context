@@ -19,8 +19,9 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.commons.io.IOUtils;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
-import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
+import de.invesdwin.context.integration.filechannel.info.path.UriFileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
@@ -64,16 +65,20 @@ public class IoFileChannel implements IFileChannel {
         this(DEFAULT_SERVER_URI);
     }
 
+    public IoFileChannel(final String serverUri) {
+        this(serverUri == null ? null : URIs.asUri(serverUri));
+    }
+
     public IoFileChannel(final URI serverUri) {
-        final FileChannelPath path = FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI_F);
+        this(UriFileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI_F));
+
+    }
+
+    public IoFileChannel(final IFileChannelPath path) {
         this.serverUri = path.getServerUri();
         this.baseServerUri = path.getBaseServerUri();
         this.baseDirectory = path.getAbsoluteDirectory();
         this.filename = path.getFilename();
-    }
-
-    public IoFileChannel(final String serverUri) {
-        this(serverUri == null ? null : URIs.asUri(serverUri));
     }
 
     //CHECKSTYLE:OFF
