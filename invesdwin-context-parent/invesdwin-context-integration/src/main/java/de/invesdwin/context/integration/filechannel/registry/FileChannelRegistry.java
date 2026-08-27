@@ -11,6 +11,8 @@ import java.util.ServiceLoader;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.lang.uri.URIs;
@@ -95,13 +97,12 @@ public final class FileChannelRegistry {
     public static IFileChannel newInstance(final URI serverUri) {
         final String scheme;
         final URI effectiveUri;
-        if (serverUri == null || serverUri.getScheme() == null) {
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
+        }
+        if (serverUri.getScheme() == null) {
             scheme = "file";
-            if (serverUri == null) {
-                effectiveUri = URI.create("file:");
-            } else {
-                effectiveUri = URI.create("file:" + serverUri.toString());
-            }
+            effectiveUri = URI.create("file:" + serverUri.toString());
         } else {
             scheme = serverUri.getScheme();
             effectiveUri = serverUri;
@@ -112,6 +113,24 @@ public final class FileChannelRegistry {
             throw new IllegalArgumentException("No IFileChannelFactory registered for scheme: " + scheme
                     + ". Available schemes: " + FACTORIES.keySet());
         }
-        return factory.newInstance(effectiveUri);
+        return newInstance(FileChannelPath.valueOf(effectiveUri, null));
+    }
+
+    public static IFileChannel newInstance(final IFileChannelPath path) {
+        if (path == null) {
+            throw new NullPointerException("path cannot be null");
+        }
+        final String scheme;
+        if (path.getScheme() == null) {
+            scheme = "file";
+        } else {
+            scheme = path.getScheme();
+        }
+        final IFileChannelFactory factory = FACTORIES.get(scheme.toLowerCase());
+        if (factory == null) {
+            throw new IllegalArgumentException("No IFileChannelFactory registered for scheme: " + scheme
+                    + ". Available schemes: " + FACTORIES.keySet());
+        }
+        return factory.newInstance(path);
     }
 }

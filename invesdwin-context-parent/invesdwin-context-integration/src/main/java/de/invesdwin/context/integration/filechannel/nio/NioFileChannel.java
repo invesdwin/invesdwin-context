@@ -20,6 +20,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Files;
@@ -51,16 +52,19 @@ public class NioFileChannel implements IFileChannel {
         this(DEFAULT_SERVER_URI);
     }
 
+    public NioFileChannel(final String serverUri) {
+        this(serverUri == null ? null : URIs.asUri(serverUri));
+    }
+
     public NioFileChannel(final URI serverUri) {
-        final FileChannelPath path = FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI_F);
+        this(FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public NioFileChannel(final IFileChannelPath path) {
         this.serverUri = path.getServerUri();
         this.baseServerUri = path.getBaseServerUri();
         this.baseDirectory = path.getAbsoluteDirectory();
         this.filename = path.getFilename();
-    }
-
-    public NioFileChannel(final String serverUri) {
-        this(serverUri == null ? null : URIs.asUri(serverUri));
     }
 
     //CHECKSTYLE:OFF

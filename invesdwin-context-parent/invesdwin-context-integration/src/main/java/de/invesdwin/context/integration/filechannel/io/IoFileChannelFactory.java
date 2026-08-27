@@ -1,10 +1,9 @@
 package de.invesdwin.context.integration.filechannel.io;
 
-import java.net.URI;
-
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.registry.IFileChannelFactory;
 
 @Immutable
@@ -21,9 +20,10 @@ public class IoFileChannelFactory implements IFileChannelFactory {
     }
 
     @Override
-    public IFileChannel newInstance(final URI serverUri) {
+    public IFileChannel newInstance(final IFileChannelPath path) {
         //CHECKSTYLE:OFF
-        return new IoFileChannel(serverUri);
+        return new IoFileChannel(path);
         //CHECKSTYLE:ON
     }
+
 }

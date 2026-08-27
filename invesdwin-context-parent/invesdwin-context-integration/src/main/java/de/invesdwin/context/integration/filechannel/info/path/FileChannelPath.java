@@ -48,9 +48,24 @@ public final class FileChannelPath implements IFileChannelPath {
         return FileChannelPaths.toString(baseServerUri, absoluteDirectory, filename);
     }
 
+    /**
+     * Creates a {@link FileChannelPath} by auto-detecting whether the final path segment represents a file or a
+     * directory.
+     * <p>
+     * If the clean path ends with a slash ({@code /}), it is treated as a directory. Otherwise, if the last path
+     * segment contains a dot ({@code .}), it is parsed as a file; if it contains no dot, it is treated as a directory.
+     *
+     * @param serverUri
+     *            the server URI to parse; must not be {@code null}
+     * @param defaultServerUriF
+     *            supplier for the fallback base server URI if {@code serverUri} lacks a scheme
+     * @return the parsed {@link FileChannelPath}
+     * @throws NullPointerException
+     *             if {@code serverUri} is {@code null}
+     */
     public static FileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
-            return new FileChannelPath(serverUri, defaultServerUriF.get(), "/", null);
+            throw new NullPointerException("serverUri cannot be null");
         }
 
         // Extract Base Server URI
@@ -80,12 +95,119 @@ public final class FileChannelPath implements IFileChannelPath {
         }
 
         final int lastSlash = cleanPath.lastIndexOf('/');
-        if (lastSlash == -1) {
-            return new FileChannelPath(serverUri, baseServerUri, "/", cleanPath);
+        final String candidateFilename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
+
+        if (candidateFilename.contains(".")) {
+            final String baseDirectory = lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
+            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, candidateFilename);
+        } else {
+            final String baseDirectory = cleanPath + "/";
+            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, null);
+        }
+    }
+
+    /**
+     * Creates a {@link FileChannelPath} by explicitly treating the entire path as a directory.
+     * <p>
+     * Bypasses extension/dot auto-detection logic. Appends a trailing slash ({@code /}) to the path if missing and sets
+     * the filename to {@code null}.
+     *
+     * @param serverUri
+     *            the server URI to parse; must not be {@code null}
+     * @param defaultServerUriF
+     *            supplier for the fallback base server URI if {@code serverUri} lacks a scheme
+     * @return the parsed directory {@link FileChannelPath}
+     * @throws NullPointerException
+     *             if {@code serverUri} is {@code null}
+     */
+    public static FileChannelPath valueOfDirectory(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
         }
 
-        final String baseDirectory = cleanPath.substring(0, lastSlash + 1);
-        final String filename = cleanPath.substring(lastSlash + 1);
+        // Extract Base Server URI
+        final URI baseServerUri;
+        if (serverUri.getScheme() != null) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append(serverUri.getScheme()).append("://");
+            if (Strings.isNotBlank(serverUri.getAuthority())) {
+                sb.append(serverUri.getAuthority());
+            } else {
+                sb.append("/");
+            }
+            baseServerUri = URIs.asUri(sb.toString());
+        } else {
+            baseServerUri = defaultServerUriF.get();
+        }
+
+        // Extract Base Directory
+        final String path = serverUri.getPath();
+        if (Strings.isBlank(path) || "/".equals(path)) {
+            return new FileChannelPath(serverUri, baseServerUri, "/", null);
+        }
+
+        final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
+        if (cleanPath.endsWith("/")) {
+            return new FileChannelPath(serverUri, baseServerUri, cleanPath, null);
+        }
+
+        // Explicitly treat the remaining path as a directory
+        final String baseDirectory = cleanPath + "/";
+        return new FileChannelPath(serverUri, baseServerUri, baseDirectory, null);
+    }
+
+    /**
+     * Creates a {@link FileChannelPath} by explicitly treating the final segment of the path as a filename.
+     * <p>
+     * Bypasses extension/dot auto-detection logic so filenames without extensions (e.g., {@code /etc/hosts}) are
+     * correctly populated. If the URI path explicitly ends with a trailing slash ({@code /}), it remains treated as a
+     * directory with a {@code null} filename.
+     *
+     * @param serverUri
+     *            the server URI to parse; must not be {@code null}
+     * @param defaultServerUriF
+     *            supplier for the fallback base server URI if {@code serverUri} lacks a scheme
+     * @return the parsed file {@link FileChannelPath}
+     * @throws NullPointerException
+     *             if {@code serverUri} is {@code null}
+     */
+    public static FileChannelPath valueOfFile(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
+        }
+
+        // Extract Base Server URI
+        final URI baseServerUri;
+        if (serverUri.getScheme() != null) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append(serverUri.getScheme()).append("://");
+            if (Strings.isNotBlank(serverUri.getAuthority())) {
+                sb.append(serverUri.getAuthority());
+            } else {
+                sb.append("/");
+            }
+            baseServerUri = URIs.asUri(sb.toString());
+        } else {
+            baseServerUri = defaultServerUriF.get();
+        }
+
+        // Extract Base Directory and Filename
+        final String path = serverUri.getPath();
+        if (Strings.isBlank(path) || "/".equals(path)) {
+            return new FileChannelPath(serverUri, baseServerUri, "/", null);
+        }
+
+        final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
+        if (cleanPath.endsWith("/")) {
+            // If it ends with a slash, it's explicitly a directory. Filename remains null.
+            return new FileChannelPath(serverUri, baseServerUri, cleanPath, null);
+        }
+
+        // Explicitly treat the last segment as a file, ignoring the dot check
+        final int lastSlash = cleanPath.lastIndexOf('/');
+        final String filename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
+        final String baseDirectory = lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
+
         return new FileChannelPath(serverUri, baseServerUri, baseDirectory, filename);
     }
 
@@ -120,10 +242,12 @@ public final class FileChannelPath implements IFileChannelPath {
             return cleanPath;
         }
         final int lastSlash = cleanPath.lastIndexOf('/');
-        if (lastSlash == -1) {
-            return "/";
+        final String candidateFilename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
+
+        if (candidateFilename.contains(".")) {
+            return lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
         }
-        return cleanPath.substring(0, lastSlash + 1);
+        return cleanPath + "/";
     }
 
     public static String extractFileName(final URI uri) {
@@ -139,10 +263,12 @@ public final class FileChannelPath implements IFileChannelPath {
             return null;
         }
         final int lastSlash = cleanPath.lastIndexOf('/');
-        if (lastSlash == -1) {
-            return cleanPath;
+        final String candidateFilename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
+
+        if (candidateFilename.contains(".")) {
+            return candidateFilename;
         }
-        return cleanPath.substring(lastSlash + 1);
+        return null;
     }
 
 }
