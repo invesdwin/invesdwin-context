@@ -12,7 +12,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
-import de.invesdwin.context.integration.filechannel.info.path.UriFileChannelPath;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.lang.uri.URIs;
@@ -113,7 +113,7 @@ public final class FileChannelRegistry {
             throw new IllegalArgumentException("No IFileChannelFactory registered for scheme: " + scheme
                     + ". Available schemes: " + FACTORIES.keySet());
         }
-        return newInstance(UriFileChannelPath.valueOf(effectiveUri, null));
+        return newInstance(FileChannelPath.valueOf(effectiveUri, null));
     }
 
     public static IFileChannel newInstance(final IFileChannelPath path) {

@@ -9,13 +9,13 @@ import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 
 @Immutable
-public final class UriFileChannelPath implements IFileChannelPath {
+public final class FileChannelPath implements IFileChannelPath {
     private final URI serverUri;
     private final URI baseServerUri;
     private final String absoluteDirectory;
     private final String filename;
 
-    private UriFileChannelPath(final URI serverUri, final URI baseServerUri, final String absoluteDirectory,
+    private FileChannelPath(final URI serverUri, final URI baseServerUri, final String absoluteDirectory,
             final String filename) {
         this.serverUri = serverUri != null ? serverUri : baseServerUri;
         this.baseServerUri = baseServerUri;
@@ -49,7 +49,7 @@ public final class UriFileChannelPath implements IFileChannelPath {
     }
 
     /**
-     * Creates a {@link UriFileChannelPath} by auto-detecting whether the final path segment represents a file or a
+     * Creates a {@link FileChannelPath} by auto-detecting whether the final path segment represents a file or a
      * directory.
      * <p>
      * If the clean path ends with a slash ({@code /}), it is treated as a directory. Otherwise, if the last path
@@ -59,11 +59,11 @@ public final class UriFileChannelPath implements IFileChannelPath {
      *            the server URI to parse; must not be {@code null}
      * @param defaultServerUriF
      *            supplier for the fallback base server URI if {@code serverUri} lacks a scheme
-     * @return the parsed {@link UriFileChannelPath}
+     * @return the parsed {@link FileChannelPath}
      * @throws NullPointerException
      *             if {@code serverUri} is {@code null}
      */
-    public static UriFileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static FileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
             throw new NullPointerException("serverUri cannot be null");
         }
@@ -86,12 +86,12 @@ public final class UriFileChannelPath implements IFileChannelPath {
         // Extract Base Directory and Filename in one pass
         final String path = serverUri.getPath();
         if (Strings.isBlank(path) || "/".equals(path)) {
-            return new UriFileChannelPath(serverUri, baseServerUri, "/", null);
+            return new FileChannelPath(serverUri, baseServerUri, "/", null);
         }
 
         final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
         if (cleanPath.endsWith("/")) {
-            return new UriFileChannelPath(serverUri, baseServerUri, cleanPath, null);
+            return new FileChannelPath(serverUri, baseServerUri, cleanPath, null);
         }
 
         final int lastSlash = cleanPath.lastIndexOf('/');
@@ -99,15 +99,15 @@ public final class UriFileChannelPath implements IFileChannelPath {
 
         if (candidateFilename.contains(".")) {
             final String baseDirectory = lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
-            return new UriFileChannelPath(serverUri, baseServerUri, baseDirectory, candidateFilename);
+            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, candidateFilename);
         } else {
             final String baseDirectory = cleanPath + "/";
-            return new UriFileChannelPath(serverUri, baseServerUri, baseDirectory, null);
+            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, null);
         }
     }
 
     /**
-     * Creates a {@link UriFileChannelPath} by explicitly treating the entire path as a directory.
+     * Creates a {@link FileChannelPath} by explicitly treating the entire path as a directory.
      * <p>
      * Bypasses extension/dot auto-detection logic. Appends a trailing slash ({@code /}) to the path if missing and sets
      * the filename to {@code null}.
@@ -116,11 +116,11 @@ public final class UriFileChannelPath implements IFileChannelPath {
      *            the server URI to parse; must not be {@code null}
      * @param defaultServerUriF
      *            supplier for the fallback base server URI if {@code serverUri} lacks a scheme
-     * @return the parsed directory {@link UriFileChannelPath}
+     * @return the parsed directory {@link FileChannelPath}
      * @throws NullPointerException
      *             if {@code serverUri} is {@code null}
      */
-    public static UriFileChannelPath valueOfDirectory(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static FileChannelPath valueOfDirectory(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
             throw new NullPointerException("serverUri cannot be null");
         }
@@ -143,21 +143,21 @@ public final class UriFileChannelPath implements IFileChannelPath {
         // Extract Base Directory
         final String path = serverUri.getPath();
         if (Strings.isBlank(path) || "/".equals(path)) {
-            return new UriFileChannelPath(serverUri, baseServerUri, "/", null);
+            return new FileChannelPath(serverUri, baseServerUri, "/", null);
         }
 
         final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
         if (cleanPath.endsWith("/")) {
-            return new UriFileChannelPath(serverUri, baseServerUri, cleanPath, null);
+            return new FileChannelPath(serverUri, baseServerUri, cleanPath, null);
         }
 
         // Explicitly treat the remaining path as a directory
         final String baseDirectory = cleanPath + "/";
-        return new UriFileChannelPath(serverUri, baseServerUri, baseDirectory, null);
+        return new FileChannelPath(serverUri, baseServerUri, baseDirectory, null);
     }
 
     /**
-     * Creates a {@link UriFileChannelPath} by explicitly treating the final segment of the path as a filename.
+     * Creates a {@link FileChannelPath} by explicitly treating the final segment of the path as a filename.
      * <p>
      * Bypasses extension/dot auto-detection logic so filenames without extensions (e.g., {@code /etc/hosts}) are
      * correctly populated. If the URI path explicitly ends with a trailing slash ({@code /}), it remains treated as a
@@ -167,11 +167,11 @@ public final class UriFileChannelPath implements IFileChannelPath {
      *            the server URI to parse; must not be {@code null}
      * @param defaultServerUriF
      *            supplier for the fallback base server URI if {@code serverUri} lacks a scheme
-     * @return the parsed file {@link UriFileChannelPath}
+     * @return the parsed file {@link FileChannelPath}
      * @throws NullPointerException
      *             if {@code serverUri} is {@code null}
      */
-    public static UriFileChannelPath valueOfFile(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static FileChannelPath valueOfFile(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
             throw new NullPointerException("serverUri cannot be null");
         }
@@ -194,13 +194,13 @@ public final class UriFileChannelPath implements IFileChannelPath {
         // Extract Base Directory and Filename
         final String path = serverUri.getPath();
         if (Strings.isBlank(path) || "/".equals(path)) {
-            return new UriFileChannelPath(serverUri, baseServerUri, "/", null);
+            return new FileChannelPath(serverUri, baseServerUri, "/", null);
         }
 
         final String cleanPath = path.replace("\\", "/").replaceAll("[/]+", "/");
         if (cleanPath.endsWith("/")) {
             // If it ends with a slash, it's explicitly a directory. Filename remains null.
-            return new UriFileChannelPath(serverUri, baseServerUri, cleanPath, null);
+            return new FileChannelPath(serverUri, baseServerUri, cleanPath, null);
         }
 
         // Explicitly treat the last segment as a file, ignoring the dot check
@@ -208,7 +208,7 @@ public final class UriFileChannelPath implements IFileChannelPath {
         final String filename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
         final String baseDirectory = lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
 
-        return new UriFileChannelPath(serverUri, baseServerUri, baseDirectory, filename);
+        return new FileChannelPath(serverUri, baseServerUri, baseDirectory, filename);
     }
 
     public static URI extractBaseServerUri(final URI uri, final Supplier<URI> defaultServerUriF) {
