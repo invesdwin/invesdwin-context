@@ -1,6 +1,5 @@
 package de.invesdwin.context.integration.filechannel.registry;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +10,6 @@ import java.util.ServiceLoader;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
