@@ -5,11 +5,20 @@ import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.lang.uri.URIs;
 
 @Immutable
 public final class FileChannelPaths {
 
     private FileChannelPaths() {}
+
+    public static URI combineUri(final URI baseDirectory, final String subDirectory) {
+        return URIs.asUri(combinePath(baseDirectory, subDirectory));
+    }
+
+    public static String combinePath(final URI baseDirectory, final String subDirectory) {
+        return combinePath(baseDirectory.toString(), subDirectory);
+    }
 
     //CHECKSTYLE:OFF
     public static String combinePath(final String baseDirectory, final String subDirectory) {
