@@ -23,8 +23,6 @@ public final class FileChannelRegistry {
     private static final Log LOG = new Log(FileChannelRegistry.class);
     private static final Map<String, IFileChannelFactory> FACTORIES = ILockCollectionFactory.getInstance(true)
             .newConcurrentMap();
-    private static final URI FALLBACK_SERVER_URI = new File(ContextProperties.getCacheDirectory(),
-            FileChannelRegistry.class.getSimpleName() + "_FALLBACK").toURI();
 
     static {
         registerDiscoveredFactories();
