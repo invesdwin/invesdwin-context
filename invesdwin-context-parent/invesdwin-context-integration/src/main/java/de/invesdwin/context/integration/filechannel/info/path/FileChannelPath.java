@@ -80,13 +80,15 @@ public final class FileChannelPath implements IFileChannelPath {
         }
 
         final int lastSlash = cleanPath.lastIndexOf('/');
-        if (lastSlash == -1) {
-            return new FileChannelPath(serverUri, baseServerUri, "/", cleanPath);
-        }
+        final String candidateFilename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
 
-        final String baseDirectory = cleanPath.substring(0, lastSlash + 1);
-        final String filename = cleanPath.substring(lastSlash + 1);
-        return new FileChannelPath(serverUri, baseServerUri, baseDirectory, filename);
+        if (candidateFilename.contains(".")) {
+            final String baseDirectory = lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
+            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, candidateFilename);
+        } else {
+            final String baseDirectory = cleanPath + "/";
+            return new FileChannelPath(serverUri, baseServerUri, baseDirectory, null);
+        }
     }
 
     public static URI extractBaseServerUri(final URI uri, final Supplier<URI> defaultServerUriF) {
@@ -120,10 +122,12 @@ public final class FileChannelPath implements IFileChannelPath {
             return cleanPath;
         }
         final int lastSlash = cleanPath.lastIndexOf('/');
-        if (lastSlash == -1) {
-            return "/";
+        final String candidateFilename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
+
+        if (candidateFilename.contains(".")) {
+            return lastSlash == -1 ? "/" : cleanPath.substring(0, lastSlash + 1);
         }
-        return cleanPath.substring(0, lastSlash + 1);
+        return cleanPath + "/";
     }
 
     public static String extractFileName(final URI uri) {
@@ -139,10 +143,12 @@ public final class FileChannelPath implements IFileChannelPath {
             return null;
         }
         final int lastSlash = cleanPath.lastIndexOf('/');
-        if (lastSlash == -1) {
-            return cleanPath;
+        final String candidateFilename = lastSlash == -1 ? cleanPath : cleanPath.substring(lastSlash + 1);
+
+        if (candidateFilename.contains(".")) {
+            return candidateFilename;
         }
-        return cleanPath.substring(lastSlash + 1);
+        return null;
     }
 
 }

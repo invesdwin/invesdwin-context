@@ -1,5 +1,6 @@
 package de.invesdwin.context.integration.filechannel.registry;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.ServiceLoader;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
@@ -21,6 +23,8 @@ public final class FileChannelRegistry {
     private static final Log LOG = new Log(FileChannelRegistry.class);
     private static final Map<String, IFileChannelFactory> FACTORIES = ILockCollectionFactory.getInstance(true)
             .newConcurrentMap();
+    private static final URI FALLBACK_SERVER_URI = new File(ContextProperties.getCacheDirectory(),
+            FileChannelRegistry.class.getSimpleName() + "_FALLBACK").toURI();
 
     static {
         registerDiscoveredFactories();
@@ -95,13 +99,12 @@ public final class FileChannelRegistry {
     public static IFileChannel newInstance(final URI serverUri) {
         final String scheme;
         final URI effectiveUri;
-        if (serverUri == null || serverUri.getScheme() == null) {
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
+        }
+        if (serverUri.getScheme() == null) {
             scheme = "file";
-            if (serverUri == null) {
-                effectiveUri = URI.create("file:");
-            } else {
-                effectiveUri = URI.create("file:" + serverUri.toString());
-            }
+            effectiveUri = URI.create("file:" + serverUri.toString());
         } else {
             scheme = serverUri.getScheme();
             effectiveUri = serverUri;
