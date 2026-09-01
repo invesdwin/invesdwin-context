@@ -1,5 +1,6 @@
 package de.invesdwin.context.integration;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.integration.network.NetworkUtil;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.collections.Collections;
@@ -128,6 +130,10 @@ public final class IntegrationProperties {
             SYSTEM_PROPERTIES.setString(key, hostname);
             return hostname;
         }
+    }
+
+    public static synchronized File getHomeDataDirectoryPerNode() {
+        return new File(ContextProperties.getHomeDataDirectory(), HOSTNAME);
     }
 
 }
