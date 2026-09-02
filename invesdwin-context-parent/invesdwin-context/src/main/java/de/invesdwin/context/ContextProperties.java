@@ -59,6 +59,8 @@ public final class ContextProperties {
     @GuardedBy("ContextProperties.class")
     private static File homeDataDirectory;
     @GuardedBy("ContextProperties.class")
+    private static File homeDataDirectoryPerNode;
+    @GuardedBy("ContextProperties.class")
     private static File logDirectory;
 
     static {
@@ -184,6 +186,14 @@ public final class ContextProperties {
                     .initHomeDataDirectory(getHomeDirectory(), isTestEnvironmentForHomeDirectory());
         }
         return homeDataDirectory;
+    }
+
+    public static synchronized File getHomeDataDirectoryPerNode() {
+        if (homeDataDirectoryPerNode == null) {
+            homeDataDirectory = PlatformInitializerProperties.getInitializer()
+                    .initHomeDataDirectoryPerNode(getHomeDataDirectory(), isTestEnvironmentForHomeDirectory());
+        }
+        return homeDataDirectoryPerNode;
     }
 
     /**
