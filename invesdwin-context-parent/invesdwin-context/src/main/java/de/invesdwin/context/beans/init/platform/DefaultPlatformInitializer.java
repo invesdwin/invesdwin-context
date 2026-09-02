@@ -296,9 +296,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
             return baseDir;
         }
 
-        int slot = 0;
+        int node = 0;
         while (true) {
-            final File slotDir = new File(baseDir, "slot_" + String.valueOf(slot));
+            final File slotDir = new File(baseDir, "node_" + String.valueOf(node));
             final File lockFile = new File(slotDir, "process.lock");
             final FileChannelLock slotLock = new FileChannelLock(lockFile);
 
@@ -308,8 +308,8 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
                 return slotDir;
             }
 
-            slot++;
-            if (slot > 1000) {
+            node++;
+            if (node > 1000) {
                 throw new IllegalStateException("Exhausted all process slots up to index 1000 in: " + baseDir);
             }
         }
