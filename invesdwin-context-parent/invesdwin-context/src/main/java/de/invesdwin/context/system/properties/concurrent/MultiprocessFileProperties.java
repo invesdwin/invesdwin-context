@@ -15,6 +15,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 
+import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.system.properties.AProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.util.lang.Files;
@@ -24,7 +25,7 @@ import de.invesdwin.util.time.date.millis.FDateMillis;
 @ThreadSafe
 public class MultiprocessFileProperties extends AProperties {
 
-    private static final long STALE_TEMP_FILE_AGE_MILLIS = 10 * 60 * 1000L; // 10 minutes
+    private static final long STALE_TEMP_FILE_AGE_MILLIS = ContextProperties.DEFAULT_NETWORK_TIMEOUT_MILLIS;
     private static final long CLEANUP_INTERVAL_MILLIS = 24 * 60 * 60 * 1000L; // 24 hours
     private static final String CLEANUP_MARKER_FILENAME = ".cleanup";
 
@@ -32,7 +33,7 @@ public class MultiprocessFileProperties extends AProperties {
     private final AtomicLong lastCleanupTime;
 
     public MultiprocessFileProperties(final File baseFolder) {
-        this.folderPath = new File(baseFolder, MultiprocessFileProperties.class.getSimpleName()).toPath();
+        this.folderPath = newFolder(baseFolder).toPath();
         try {
             Files.createDirectories(this.folderPath);
         } catch (final IOException e) {
@@ -41,6 +42,10 @@ public class MultiprocessFileProperties extends AProperties {
         final long initialCleanupTime = newInitialCleanupTime();
         this.lastCleanupTime = new AtomicLong(initialCleanupTime);
         maybeRunCleanup();
+    }
+
+    protected File newFolder(final File baseFolder) {
+        return new File(baseFolder, MultiprocessFileProperties.class.getSimpleName());
     }
 
     private long newInitialCleanupTime() {
@@ -57,6 +62,21 @@ public class MultiprocessFileProperties extends AProperties {
         return 0;
     }
 
+    private void writeAtomic(final Path targetPath, final byte[] bytes) throws IOException {
+        final Path tempPath = targetPath.resolveSibling(targetPath.getFileName().toString() + "_"
+                + DynamicInstrumentationProperties.getManagementName() + ".tmp");
+        try {
+            Files.write(tempPath, bytes);
+            Files.move(tempPath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            try {
+                Files.deleteIfExists(tempPath);
+            } catch (final IOException e) {
+                // Ignore cleanup error for temporary file
+            }
+        }
+    }
+
     private void maybeRunCleanup() {
         final long now = FDateMillis.nowMillis();
         final long last = lastCleanupTime.get();
@@ -71,7 +91,6 @@ public class MultiprocessFileProperties extends AProperties {
             if (Files.exists(markerPath)) {
                 final long lastModified = Files.getLastModifiedTime(markerPath).toMillis();
                 if (now - lastModified < CLEANUP_INTERVAL_MILLIS) {
-                    // Cleaned up recently by another process; update local state and skip
                     lastCleanupTime.set(now);
                     return;
                 }
@@ -80,25 +99,12 @@ public class MultiprocessFileProperties extends AProperties {
             // Ignore and proceed to attempt claiming the slot
         }
 
-        // Tier 2: Attempt to claim the cleanup slot atomically across processes using a temp file swap
-        final Path tempMarker = folderPath
-                .resolve(CLEANUP_MARKER_FILENAME + "_" + DynamicInstrumentationProperties.getManagementName() + ".tmp");
         try {
-            Files.write(tempMarker, String.valueOf(now).getBytes(Charsets.defaultCharset()));
-            Files.move(tempMarker, markerPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-
-            // Successfully won the race; update local tracker and run cleanup
+            writeAtomic(markerPath, String.valueOf(now).getBytes(Charsets.defaultCharset()));
             lastCleanupTime.set(now);
             cleanupStaleTempFiles();
         } catch (final IOException e) {
-            // Another process raced and won; update local tracker to prevent immediate retries
             lastCleanupTime.set(now);
-        } finally {
-            try {
-                Files.deleteIfExists(tempMarker);
-            } catch (final IOException e) {
-                // Ignore cleanup error for temporary marker
-            }
         }
     }
 
@@ -139,6 +145,31 @@ public class MultiprocessFileProperties extends AProperties {
                         && !fileName.equals(CLEANUP_MARKER_FILENAME);
             }
 
+            private List<Path> listValidPropertyFiles() {
+                final List<Path> paths = new ArrayList<>();
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
+                    for (final Path path : stream) {
+                        if (isValidPropertyFile(path)) {
+                            paths.add(path);
+                        }
+                    }
+                } catch (final IOException e) {
+                    throw new RuntimeException("Failed to list properties directory: " + folderPath.toAbsolutePath(),
+                            e);
+                }
+                return paths;
+            }
+
+            private String readProperty(final Path path) {
+                try {
+                    return new String(Files.readAllBytes(path), Charsets.defaultCharset());
+                } catch (final NoSuchFileException e) {
+                    return null;
+                } catch (final IOException e) {
+                    throw new RuntimeException("Failed to read property file: " + path.toAbsolutePath(), e);
+                }
+            }
+
             @Override
             protected boolean isEmptyInternal() {
                 maybeRunCleanup();
@@ -152,28 +183,15 @@ public class MultiprocessFileProperties extends AProperties {
                 if (!Files.exists(path)) {
                     return null;
                 }
-                try {
-                    return new String(Files.readAllBytes(path), Charsets.defaultCharset());
-                } catch (final NoSuchFileException e) {
-                    return null;
-                } catch (final IOException e) {
-                    throw new RuntimeException("Failed to read property file: " + path.toAbsolutePath(), e);
-                }
+                return readProperty(path);
             }
 
             @Override
             protected Iterator<String> getKeysInternal() {
                 maybeRunCleanup();
                 final List<String> keys = new ArrayList<>();
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
-                    for (final Path path : stream) {
-                        if (isValidPropertyFile(path)) {
-                            keys.add(path.getFileName().toString());
-                        }
-                    }
-                } catch (final IOException e) {
-                    throw new RuntimeException("Failed to list properties directory: " + folderPath.toAbsolutePath(),
-                            e);
+                for (final Path path : listValidPropertyFiles()) {
+                    keys.add(path.getFileName().toString());
                 }
                 return keys.iterator();
             }
@@ -196,23 +214,10 @@ public class MultiprocessFileProperties extends AProperties {
             protected void addPropertyDirect(final String key, final Object value) {
                 maybeRunCleanup();
                 final Path targetPath = getPath(key);
-                final String tempSuffix = "_" + DynamicInstrumentationProperties.getManagementName() + ".tmp";
-                final Path tempPath = getPath(key + tempSuffix);
-
                 try {
-                    Files.write(tempPath, String.valueOf(value).getBytes(Charsets.defaultCharset()));
-                    Files.move(tempPath, targetPath, StandardCopyOption.ATOMIC_MOVE,
-                            StandardCopyOption.REPLACE_EXISTING);
+                    writeAtomic(targetPath, String.valueOf(value).getBytes(Charsets.defaultCharset()));
                 } catch (final IOException e) {
                     throw new RuntimeException("Failed to write property to shared directory: " + key, e);
-                } finally {
-                    try {
-                        Files.deleteIfExists(tempPath);
-                    } catch (final NoSuchFileException e) {
-                        // Already cleaned up or moved
-                    } catch (final IOException e) {
-                        // Non-fatal temporary file cleanup failure
-                    }
                 }
             }
 
@@ -223,25 +228,11 @@ public class MultiprocessFileProperties extends AProperties {
                     return false;
                 }
                 final String valueStr = String.valueOf(value);
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath)) {
-                    for (final Path path : stream) {
-                        if (isValidPropertyFile(path)) {
-                            try {
-                                final String content = new String(Files.readAllBytes(path), Charsets.defaultCharset());
-                                if (valueStr.equals(content)) {
-                                    return true;
-                                }
-                            } catch (final NoSuchFileException e) {
-                                // File removed concurrently; skip safely
-                            } catch (final IOException e) {
-                                throw new RuntimeException(
-                                        "Failed to read property file during value scan: " + path.toAbsolutePath(), e);
-                            }
-                        }
+                for (final Path path : listValidPropertyFiles()) {
+                    final String content = readProperty(path);
+                    if (valueStr.equals(content)) {
+                        return true;
                     }
-                } catch (final IOException e) {
-                    throw new RuntimeException("Failed to scan properties directory: " + folderPath.toAbsolutePath(),
-                            e);
                 }
                 return false;
             }
