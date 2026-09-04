@@ -17,6 +17,7 @@ import org.apache.commons.configuration2.AbstractConfiguration;
 
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.system.properties.AProperties;
+import de.invesdwin.context.system.properties.concurrent.multiprocess.AtomicFilesProperties;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
@@ -45,7 +46,7 @@ public class MultiprocessFileProperties extends AProperties {
     }
 
     protected File newFolder(final File baseFolder) {
-        return new File(baseFolder, MultiprocessFileProperties.class.getSimpleName());
+        return new File(baseFolder, AtomicFilesProperties.class.getSimpleName());
     }
 
     private long newInitialCleanupTime() {
