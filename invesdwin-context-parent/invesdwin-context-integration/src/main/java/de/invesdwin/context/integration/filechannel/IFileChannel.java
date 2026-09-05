@@ -263,6 +263,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
     List<? extends IFileInfo> list();
 
     default List<? extends IFileInfo> listFiles() {
+        //System.out.println("TODO: implement efficient iterator versions");
         final List<? extends IFileInfo> list = list();
         if (list == null) {
             return null;
