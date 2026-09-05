@@ -137,7 +137,7 @@ public class AtomicNioFileChannelPath implements IFileChannelPath {
             final Path tempMarkerPath = markerPath
                     .resolveSibling(Files.normalizeFilename(markerPath.getFileName().toString() + TMP_SUFFIX));
             Files.write(tempMarkerPath, String.valueOf(now).getBytes(Charsets.defaultCharset()));
-            Files.move(tempMarkerPath, markerPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(tempMarkerPath, markerPath, StandardCopyOption.REPLACE_EXISTING);
 
             directoryCleanupTime.set(now);
             cleanupStaleTempFiles();

@@ -28,9 +28,8 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
  * 
  * <p>
  * <b>Pattern used:</b> Leverages a write-to-temporary-file and atomic-rename strategy. Data is first streamed or copied
- * into a sibling temporary file. Once fully flushed, the file is moved to its final destination using
- * {@link StandardCopyOption#ATOMIC_MOVE}. This prevents consumers from reading partial or corrupted data during slow
- * uploads or system crashes.
+ * into a sibling temporary file. Once fully flushed, the file is moved to its final destination. This prevents
+ * consumers from reading partial or corrupted data during slow uploads or system crashes.
  */
 @NotThreadSafe
 public class AtomicNioFileChannel extends NioFileChannel {
@@ -198,7 +197,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
             final Path tempPath = targetPath.resolveSibling(
                     Files.normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelPath.TMP_SUFFIX));
             Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tempPath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -219,7 +218,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
             final Path tempPath = targetPath.resolveSibling(
                     Files.normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelPath.TMP_SUFFIX));
             Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tempPath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -248,8 +247,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                     }
                     closed = true;
                     super.close();
-                    Files.move(tempPath, targetPath, StandardCopyOption.ATOMIC_MOVE,
-                            StandardCopyOption.REPLACE_EXISTING);
+                    Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             };
         } catch (final IOException e) {
