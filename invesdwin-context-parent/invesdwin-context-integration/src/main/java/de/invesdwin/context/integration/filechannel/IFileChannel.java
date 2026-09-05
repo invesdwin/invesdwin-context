@@ -17,6 +17,9 @@ import de.invesdwin.context.integration.filechannel.info.IFileChannelInfo;
 import de.invesdwin.context.integration.filechannel.info.IFileInfo;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
+import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
+import de.invesdwin.util.collections.iterable.skip.ASkippingIterator;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.lang.string.Strings;
@@ -262,8 +265,11 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     List<? extends IFileInfo> list();
 
+    default ICloseableIterator<? extends IFileInfo> listIterator() {
+        return WrapperCloseableIterable.maybeWrap(list()).iterator();
+    }
+
     default List<? extends IFileInfo> listFiles() {
-        //System.out.println("TODO: implement efficient iterator versions");
         final List<? extends IFileInfo> list = list();
         if (list == null) {
             return null;
@@ -276,6 +282,15 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
             }
         }
         return files;
+    }
+
+    default ICloseableIterator<? extends IFileInfo> listFilesIterator() {
+        return new ASkippingIterator<IFileInfo>(listIterator()) {
+            @Override
+            protected boolean skip(final IFileInfo element) {
+                return !element.isFile();
+            }
+        };
     }
 
     default List<? extends IFileInfo> listDirectories() {
@@ -291,6 +306,15 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
             }
         }
         return directories;
+    }
+
+    default ICloseableIterator<? extends IFileInfo> listDirectoriesIterator() {
+        return new ASkippingIterator<IFileInfo>(listIterator()) {
+            @Override
+            protected boolean skip(final IFileInfo element) {
+                return !element.isDirectory();
+            }
+        };
     }
 
     IFileChannel upload(File file);

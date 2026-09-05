@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.DirectoryStream;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +24,8 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
+import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.UUIDs;
 import de.invesdwin.util.lang.string.Strings;
@@ -355,6 +358,59 @@ public class NioFileChannel implements IFileChannel {
     @Override
     public List<NioFileInfo> listDirectories() {
         return (List<NioFileInfo>) IFileChannel.super.listDirectories();
+    }
+
+    @Override
+    public ICloseableIterator<NioFileInfo> listIterator() {
+        return createFilteredIterator(path -> true);
+    }
+
+    @Override
+    public ICloseableIterator<NioFileInfo> listFilesIterator() {
+        return createFilteredIterator(Files::isRegularFile);
+    }
+
+    @Override
+    public ICloseableIterator<NioFileInfo> listDirectoriesIterator() {
+        return createFilteredIterator(Files::isDirectory);
+    }
+
+    /**
+     * Creates a lazy, memory-efficient iterator wrapping Java NIO's DirectoryStream.
+     */
+    private ICloseableIterator<NioFileInfo> createFilteredIterator(final DirectoryStream.Filter<Path> filter) {
+        connect(false);
+        final Path dirPath = resolveDirectoryPath();
+
+        if (!Files.exists(dirPath)) {
+            return WrapperCloseableIterable.maybeWrap(java.util.Collections.<NioFileInfo> emptyList()).iterator();
+        }
+
+        try {
+            final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dirPath, filter);
+            final java.util.Iterator<Path> pathIterator = directoryStream.iterator();
+
+            return new ICloseableIterator<NioFileInfo>() {
+                @Override
+                public boolean hasNext() {
+                    return pathIterator.hasNext();
+                }
+
+                @Override
+                public NioFileInfo next() {
+                    return NioFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory,
+                            pathIterator.next());
+                }
+
+                @Override
+                public void close() {
+                    // Ensures the underlying OS file handle is closed cleanly
+                    Closeables.close(directoryStream);
+                }
+            };
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Failed to iterate directory at " + dirPath, e);
+        }
     }
 
     private void ensureDirectoryCreated() {
