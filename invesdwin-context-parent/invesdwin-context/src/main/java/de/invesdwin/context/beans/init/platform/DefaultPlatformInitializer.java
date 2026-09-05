@@ -289,7 +289,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
                 baseDir = systemProperties.getFile(key);
             } else {
                 baseDir = new File(homeDataDirectory,
-                        DynamicInstrumentationProperties.getProcessName() + "_" + ContextProperties.USER_NAME);
+                        ContextProperties.USER_NAME + "@" + DynamicInstrumentationProperties.getProcessName());
             }
         }
         if (!createDirectoryIfAllowed(baseDir)) {
@@ -300,7 +300,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         while (true) {
             final File slotDir = new File(baseDir, "node_" + String.valueOf(node));
             final File lockFile = new File(slotDir, "process.lock");
-            final FileChannelLock slotLock = new FileChannelLock(lockFile);
+            final FileChannelLock slotLock = newHomeDataDirectoryPerNodeLock(lockFile);
 
             if (slotLock.tryLock()) {
                 ShutdownHookManager.register(new CloseableShutdownHook(slotLock));
@@ -313,6 +313,15 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
                 throw new IllegalStateException("Exhausted all process slots up to index 1000 in: " + baseDir);
             }
         }
+    }
+
+    public static FileChannelLock newHomeDataDirectoryPerNodeLock(final File lockFile) {
+        return new FileChannelLock(lockFile) {
+            @Override
+            protected boolean isHeartbeatEnabled() {
+                return true;
+            }
+        };
     }
 
     @Override

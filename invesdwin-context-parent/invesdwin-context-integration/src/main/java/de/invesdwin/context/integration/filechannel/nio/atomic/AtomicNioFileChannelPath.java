@@ -14,7 +14,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
-import de.invesdwin.instrument.DynamicInstrumentationProperties;
+import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.string.Charsets;
@@ -34,10 +34,9 @@ import de.invesdwin.util.time.date.millis.FDateMillis;
 @ThreadSafe
 public class AtomicNioFileChannelPath implements IFileChannelPath {
 
-    public static final String TMP_EXTENSION = ".tmp";
-    public static final String TMP_SUFFIX = "_"
-            + Files.normalizePath(DynamicInstrumentationProperties.getManagementName())
-            + AtomicNioFileChannelPath.TMP_EXTENSION;
+    public static final String TMP_EXTENSION = FileChannelLock.TMP_EXTENSION;
+    public static final String TMP_SUFFIX = FileChannelLock.TMP_SUFFIX;
+
     private static final long UNINITIALIZED_DIRECTORY_CLEANUP_TIME = -1L;
     private static final long CLEANUP_INTERVAL_MILLIS = 24 * FTimeUnit.MILLISECONDS_IN_HOUR;
     private static final long STALE_TEMP_FILE_AGE_MILLIS = 12 * FTimeUnit.MILLISECONDS_IN_HOUR;
