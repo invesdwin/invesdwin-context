@@ -15,6 +15,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
 import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.lang.Files;
@@ -42,6 +43,10 @@ public class AtomicNioFileChannel extends NioFileChannel {
 
     public AtomicNioFileChannel(final URI serverUri) {
         this(new AtomicNioFileChannelPath(serverUri));
+    }
+
+    public AtomicNioFileChannel(final IFileChannelPath path) {
+        this(new AtomicNioFileChannelPath(path));
     }
 
     public AtomicNioFileChannel(final AtomicNioFileChannelPath path) {

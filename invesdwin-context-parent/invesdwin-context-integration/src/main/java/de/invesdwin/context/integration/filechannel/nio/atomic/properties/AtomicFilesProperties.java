@@ -9,6 +9,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileInfo;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannel;
 import de.invesdwin.context.system.properties.AProperties;
@@ -35,9 +36,10 @@ public class AtomicFilesProperties extends AProperties {
 
     private final AtomicNioFileChannel fileChannel;
 
-    public AtomicFilesProperties(final File baseFolder) {
+    public AtomicFilesProperties(final File baseDirectory) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(newDefaultFolder(baseFolder).toURI()));
+        this(new AtomicNioFileChannel(FileChannelPath.valueOfDirectory(newDefaultDirectory(baseDirectory).toURI(),
+                AtomicNioFileChannel.DEFAULT_SERVER_URI_F)));
         //CHECKSTYLE:ON
     }
 
@@ -45,7 +47,7 @@ public class AtomicFilesProperties extends AProperties {
         this.fileChannel = fileChannel;
     }
 
-    public static File newDefaultFolder(final File baseFolder) {
+    public static File newDefaultDirectory(final File baseFolder) {
         return new File(baseFolder, AtomicFilesProperties.class.getSimpleName());
     }
 

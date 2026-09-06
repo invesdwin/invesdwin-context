@@ -41,9 +41,9 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
     private volatile Properties propertiesFile;
     private volatile boolean modified;
 
-    public TransactionalFileProperties(final File baseFolder) {
+    public TransactionalFileProperties(final File baseDirectory) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(newDefaultFolder(baseFolder).toURI()));
+        this(new AtomicNioFileChannel(newDefaultDirectory(baseDirectory).toURI()));
         //CHECKSTYLE:ON
     }
 
@@ -58,8 +58,8 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
         this.targetChannel = fileChannel.withFilename(PROPERTIES_FILENAME);
     }
 
-    public static File newDefaultFolder(final File baseFolder) {
-        return new File(baseFolder, TransactionalFileProperties.class.getSimpleName());
+    public static File newDefaultDirectory(final File baseDirectory) {
+        return new File(baseDirectory, TransactionalFileProperties.class.getSimpleName());
     }
 
     public AtomicNioFileChannel getFileChannel() {
