@@ -3,7 +3,8 @@ package de.invesdwin.context.integration.filechannel.nio.atomic.properties;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -13,8 +14,11 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileInfo;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannel;
 import de.invesdwin.context.system.properties.AProperties;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
+import de.invesdwin.util.time.date.FDate;
 
 /**
  * Properties implementation utilizing a highly concurrent file-per-property pattern.
@@ -36,6 +40,11 @@ public class AtomicFilesProperties extends AProperties {
 
     private final AtomicNioFileChannel fileChannel;
 
+    // Cache structures
+    private final Set<String> knownKeys = ILockCollectionFactory.getInstance(true).newConcurrentSet();
+    private final Map<String, String> valueCache = ILockCollectionFactory.getInstance(true).newConcurrentMap();
+    private volatile FDate lastDirectoryScan = null;
+
     public AtomicFilesProperties(final File baseDirectory) {
         //CHECKSTYLE:OFF
         this(new AtomicNioFileChannel(FileChannelPath.valueOfDirectory(newDefaultDirectory(baseDirectory).toURI(),
@@ -55,27 +64,49 @@ public class AtomicFilesProperties extends AProperties {
         return fileChannel;
     }
 
+    private void syncCacheWithDirectory() {
+        final FDate currentModTime = fileChannel.lastModified();
+
+        if (lastDirectoryScan != null && currentModTime != null && currentModTime.equals(lastDirectoryScan)) {
+            return;
+        }
+
+        synchronized (this) {
+            if (lastDirectoryScan != null && currentModTime != null && currentModTime.equals(lastDirectoryScan)) {
+                return;
+            }
+
+            final Set<String> currentDiskKeys = new java.util.HashSet<>();
+
+            try (ICloseableIterator<NioFileInfo> iterator = fileChannel.listIterator()) {
+                while (iterator.hasNext()) {
+                    final NioFileInfo info = iterator.next();
+                    final String fileName = info.getFilename();
+                    if (info.isFile() && fileName != null && fileName.endsWith(PROPERTY_FILE_EXTENSION)) {
+                        final String key = fileName.substring(0, fileName.length() - PROPERTY_FILE_EXTENSION.length());
+                        currentDiskKeys.add(key);
+                    }
+                }
+            }
+
+            // Sync known keys
+            knownKeys.retainAll(currentDiskKeys);
+            knownKeys.addAll(currentDiskKeys);
+
+            // Invalidate value cache on folder modification to ensure updated values are re-read lazily
+            valueCache.keySet().retainAll(currentDiskKeys);
+            valueCache.clear();
+
+            lastDirectoryScan = currentModTime;
+        }
+    }
+
     @Override
     protected AbstractConfiguration createDelegate() {
         return new AbstractConfiguration() {
 
             private AtomicNioFileChannel getChannel(final String key) {
                 return fileChannel.withFilename(Files.normalizeFilename(key + PROPERTY_FILE_EXTENSION));
-            }
-
-            private boolean isValidPropertyFile(final NioFileInfo info) {
-                final String fileName = info.getFilename();
-                return info.isFile() && fileName != null && fileName.endsWith(PROPERTY_FILE_EXTENSION);
-            }
-
-            private List<NioFileInfo> listValidPropertyFiles() {
-                final List<NioFileInfo> validFiles = new ArrayList<>();
-                for (final NioFileInfo info : fileChannel.list()) {
-                    if (isValidPropertyFile(info)) {
-                        validFiles.add(info);
-                    }
-                }
-                return validFiles;
             }
 
             private String readProperty(final AtomicNioFileChannel channel) {
@@ -88,43 +119,57 @@ public class AtomicFilesProperties extends AProperties {
 
             @Override
             protected boolean isEmptyInternal() {
-                final Iterator<String> keys = getKeysInternal();
-                return !keys.hasNext();
+                syncCacheWithDirectory();
+                return knownKeys.isEmpty();
             }
 
             @Override
             protected Object getPropertyInternal(final String key) {
-                final AtomicNioFileChannel channel = getChannel(key);
-                if (!channel.exists()) {
+                syncCacheWithDirectory();
+                if (!knownKeys.contains(key)) {
                     return null;
                 }
-                return readProperty(channel);
+
+                // Check lazy cache first
+                final String cachedValue = valueCache.get(key);
+                if (cachedValue != null) {
+                    return cachedValue;
+                }
+
+                // Lazy load from disk
+                final AtomicNioFileChannel channel = getChannel(key);
+                final String value = readProperty(channel);
+                if (value != null) {
+                    valueCache.put(key, value);
+                }
+                return value;
             }
 
             @Override
             protected Iterator<String> getKeysInternal() {
-                final List<String> keys = new ArrayList<>();
-                for (final NioFileInfo info : listValidPropertyFiles()) {
-                    final String fileName = info.getFilename();
-                    final String key = fileName.substring(0, fileName.length() - PROPERTY_FILE_EXTENSION.length());
-                    keys.add(key);
-                }
-                return keys.iterator();
+                syncCacheWithDirectory();
+                return new ArrayList<>(knownKeys).iterator();
             }
 
             @Override
             protected boolean containsKeyInternal(final String key) {
-                return getChannel(key).exists();
+                syncCacheWithDirectory();
+                return knownKeys.contains(key);
             }
 
             @Override
             protected void clearPropertyDirect(final String key) {
                 getChannel(key).delete();
+                knownKeys.remove(key);
+                valueCache.remove(key);
             }
 
             @Override
             protected void addPropertyDirect(final String key, final Object value) {
-                getChannel(key).upload(String.valueOf(value).getBytes(Charsets.defaultCharset()));
+                final String valueStr = String.valueOf(value);
+                getChannel(key).upload(valueStr.getBytes(Charsets.defaultCharset()));
+                knownKeys.add(key);
+                valueCache.put(key, valueStr);
             }
 
             @Override
@@ -132,11 +177,12 @@ public class AtomicFilesProperties extends AProperties {
                 if (value == null) {
                     return false;
                 }
+                syncCacheWithDirectory();
                 final String valueStr = String.valueOf(value);
-                for (final NioFileInfo info : listValidPropertyFiles()) {
-                    final AtomicNioFileChannel channel = fileChannel.withFilename(info.getFilename());
-                    final String content = readProperty(channel);
-                    if (valueStr.equals(content)) {
+
+                for (final String key : knownKeys) {
+                    final Object propValue = getPropertyInternal(key);
+                    if (valueStr.equals(propValue)) {
                         return true;
                     }
                 }
