@@ -37,14 +37,6 @@ public class AtomicNioFileChannel extends NioFileChannel {
 
     private final AtomicNioFileChannelPath atomicPath;
 
-    public AtomicNioFileChannel(final String serverUri) {
-        this(new AtomicNioFileChannelPath(serverUri));
-    }
-
-    public AtomicNioFileChannel(final URI serverUri) {
-        this(new AtomicNioFileChannelPath(serverUri));
-    }
-
     public AtomicNioFileChannel(final IFileChannelPath path) {
         this(new AtomicNioFileChannelPath(path));
     }

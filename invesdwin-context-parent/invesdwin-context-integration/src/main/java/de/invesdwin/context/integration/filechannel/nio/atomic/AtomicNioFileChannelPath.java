@@ -18,7 +18,6 @@ import de.invesdwin.util.concurrent.lock.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.string.Charsets;
-import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.date.millis.FDateMillis;
 
@@ -45,14 +44,6 @@ public class AtomicNioFileChannelPath implements IFileChannelPath {
     private final IFileChannelPath path;
     private final AtomicLong directoryCleanupTime;
     private final Path directoryPath;
-
-    public AtomicNioFileChannelPath(final String serverUri) {
-        this(URIs.asUri(serverUri));
-    }
-
-    public AtomicNioFileChannelPath(final URI serverUri) {
-        this(FileChannelPath.valueOf(serverUri, AtomicNioFileChannel.DEFAULT_SERVER_URI_F));
-    }
 
     public AtomicNioFileChannelPath(final IFileChannelPath path) {
         this.path = path;

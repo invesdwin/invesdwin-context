@@ -10,6 +10,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannel;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelPath;
 import de.invesdwin.context.system.properties.AProperties;
@@ -34,16 +35,19 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 @ThreadSafe
 public class TransactionalFileProperties extends AProperties implements ICloseableProperties {
 
-    private static final String PROPERTIES_FILENAME = "transactional.properties";
-
-    private final AtomicNioFileChannel baseChannel;
-    private final AtomicNioFileChannel targetChannel;
+    private final AtomicNioFileChannel fileChannel;
     private volatile Properties propertiesFile;
     private volatile boolean modified;
 
-    public TransactionalFileProperties(final File baseDirectory) {
+    /**
+     * WARNING: it is recommended to use a separate directory for the properties file to avoid conflicts with other
+     * files during atomic move operations and tmp file cleanups. Here we expect the provided file to be a specific
+     * properties file, not a directory, but in a dedicated directory.
+     */
+    public TransactionalFileProperties(final File file) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(newDefaultDirectory(baseDirectory).toURI()));
+        this(new AtomicNioFileChannel(
+                FileChannelPath.valueOfFile(file.toURI(), AtomicNioFileChannel.DEFAULT_SERVER_URI_F)));
         //CHECKSTYLE:ON
     }
 
@@ -53,17 +57,11 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
         //CHECKSTYLE:ON
     }
 
-    public TransactionalFileProperties(final AtomicNioFileChannel baseChannel) {
-        this.baseChannel = baseChannel;
-        this.targetChannel = baseChannel.withFilename(PROPERTIES_FILENAME);
-    }
-
-    public static File newDefaultDirectory(final File baseDirectory) {
-        return new File(baseDirectory, TransactionalFileProperties.class.getSimpleName());
-    }
-
-    public AtomicNioFileChannel getBaseChannel() {
-        return baseChannel;
+    public TransactionalFileProperties(final AtomicNioFileChannel fileChannel) {
+        if (fileChannel.getFilename() == null) {
+            throw new IllegalArgumentException("The provided path must include a filename: " + fileChannel);
+        }
+        this.fileChannel = fileChannel;
     }
 
     private Properties getPropertiesFile() {
@@ -82,12 +80,12 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
     }
 
     private void loadProperties(final Properties props) {
-        final byte[] bytes = targetChannel.downloadBytes();
+        final byte[] bytes = fileChannel.downloadBytes();
         if (bytes != null) {
             try (InputStream in = new FastByteArrayInputStream(bytes)) {
                 props.load(in);
             } catch (final IOException e) {
-                throw new RuntimeException("Failed to load properties from channel: " + targetChannel, e);
+                throw new RuntimeException("Failed to load properties from channel: " + fileChannel, e);
             }
         }
     }
@@ -156,9 +154,9 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
         }
         try (PooledFastByteArrayOutputStream out = PooledFastByteArrayOutputStream.newInstance()) {
             getPropertiesFile().store(out, null);
-            targetChannel.upload(out.asInputStream());
+            fileChannel.upload(out.asInputStream());
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to save properties to channel: " + targetChannel, e);
+            throw new RuntimeException("Failed to save properties to channel: " + fileChannel, e);
         }
     }
 }

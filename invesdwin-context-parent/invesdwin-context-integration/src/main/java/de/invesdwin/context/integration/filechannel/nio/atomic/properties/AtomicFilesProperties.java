@@ -45,19 +45,23 @@ public class AtomicFilesProperties extends AProperties {
     private final Map<String, String> valueCache = ILockCollectionFactory.getInstance(true).newConcurrentMap();
     private volatile FDate lastDirectoryScan = null;
 
-    public AtomicFilesProperties(final File baseDirectory) {
+    /**
+     * WARNING: it is recommended to use a separate directory for the properties files to avoid conflicts with other
+     * files during atomic move operations and tmp file cleanups. Here we expect a dedicated directory for the
+     * properties files.
+     */
+    public AtomicFilesProperties(final File directory) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(FileChannelPath.valueOfDirectory(newDefaultDirectory(baseDirectory).toURI(),
-                AtomicNioFileChannel.DEFAULT_SERVER_URI_F)));
+        this(new AtomicNioFileChannel(
+                FileChannelPath.valueOfDirectory(directory.toURI(), AtomicNioFileChannel.DEFAULT_SERVER_URI_F)));
         //CHECKSTYLE:ON
     }
 
     public AtomicFilesProperties(final AtomicNioFileChannel fileChannel) {
+        if (fileChannel.getFilename() != null) {
+            throw new IllegalArgumentException("The provided path must be a directory: " + fileChannel);
+        }
         this.fileChannel = fileChannel;
-    }
-
-    public static File newDefaultDirectory(final File baseFolder) {
-        return new File(baseFolder, AtomicFilesProperties.class.getSimpleName());
     }
 
     public AtomicNioFileChannel getFileChannel() {
