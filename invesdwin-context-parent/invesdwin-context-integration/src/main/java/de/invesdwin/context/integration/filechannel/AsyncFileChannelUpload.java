@@ -35,7 +35,7 @@ public class AsyncFileChannelUpload implements Callable<Future<?>> {
         Assertions.checkNotNull(channel);
         this.channel = channel;
         this.localTempFile = localTempFile;
-        this.channelFileName = channel.getFilename();
+        this.channelFileName = channel.getFileName();
         Assertions.checkNotNull(channelFileName);
     }
 
@@ -69,9 +69,9 @@ public class AsyncFileChannelUpload implements Callable<Future<?>> {
         if (!channel.isConnected()) {
             channel.connect();
         }
-        channel.setFilename(channelFileName + FINISHED_FILENAME_SUFFIX);
+        channel.setFileName(channelFileName + FINISHED_FILENAME_SUFFIX);
         channel.delete();
-        channel.setFilename(channelFileName);
+        channel.setFileName(channelFileName);
         channel.delete();
     }
 
@@ -94,11 +94,11 @@ public class AsyncFileChannelUpload implements Callable<Future<?>> {
     }
 
     protected void upload() {
-        channel.setFilename(channelFileName);
+        channel.setFileName(channelFileName);
         channel.upload(localTempFile);
-        channel.setFilename(channelFileName + FINISHED_FILENAME_SUFFIX);
+        channel.setFileName(channelFileName + FINISHED_FILENAME_SUFFIX);
         channel.upload(channel.getEmptyFileContent());
-        channel.setFilename(channelFileName);
+        channel.setFileName(channelFileName);
     }
 
     private RuntimeException handleRetry(final Throwable t) {

@@ -6,7 +6,7 @@ import java.net.URI;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe

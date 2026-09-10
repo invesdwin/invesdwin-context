@@ -43,7 +43,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     public AsyncFileChannelDownload(final IFileChannel channel, final Duration downloadTimeout) {
         Assertions.checkNotNull(channel);
         this.channel = channel;
-        this.channelFileName = channel.getFilename();
+        this.channelFileName = channel.getFileName();
         Assertions.checkNotNull(channelFileName);
         this.downloadTimeout = downloadTimeout;
     }
@@ -66,7 +66,7 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
                                     "Timeout of " + downloadTimeout + " exceeded while downloading: " + channel);
                         }
                     }
-                    channel.setFilename(channelFileName);
+                    channel.setFileName(channelFileName);
                     final InputStream input = download();
                     return new ADelegateInputStream(new TextDescription("%s[%s]: call()",
                             AsyncFileChannelDownload.class.getSimpleName(), channel)) {
@@ -113,9 +113,9 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     }
 
     protected void deleteChannelFileAutomatically() {
-        channel.setFilename(channelFileName + AsyncFileChannelUpload.FINISHED_FILENAME_SUFFIX);
+        channel.setFileName(channelFileName + AsyncFileChannelUpload.FINISHED_FILENAME_SUFFIX);
         channel.delete();
-        channel.setFilename(channelFileName);
+        channel.setFileName(channelFileName);
         channel.delete();
     }
 
@@ -124,12 +124,12 @@ public class AsyncFileChannelDownload implements Callable<InputStream> {
     }
 
     private boolean shouldWaitForFinishedFile() {
-        channel.setFilename(channelFileName + AsyncFileChannelUpload.FINISHED_FILENAME_SUFFIX);
+        channel.setFileName(channelFileName + AsyncFileChannelUpload.FINISHED_FILENAME_SUFFIX);
         if (channel.exists()) {
             return false;
         }
 
-        channel.setFilename(channelFileName);
+        channel.setFileName(channelFileName);
         if (channel.exists()) {
             final FDate fileModified = channel.lastModified();
             if (lastFileModified == null || lastFileModified.isBefore(fileModified)) {

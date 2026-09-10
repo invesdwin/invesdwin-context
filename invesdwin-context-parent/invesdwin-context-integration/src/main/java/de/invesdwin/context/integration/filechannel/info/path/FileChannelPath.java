@@ -1,10 +1,13 @@
 package de.invesdwin.context.integration.filechannel.info.path;
 
+import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 
@@ -39,13 +42,107 @@ public final class FileChannelPath implements IFileChannelPath {
     }
 
     @Override
-    public String getFilename() {
+    public String getFileName() {
         return filename;
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return FileChannelPaths.equals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return FileChannelPaths.hashCode(this);
+    }
+
+    @Override
     public String toString() {
-        return FileChannelPaths.toString(baseServerUri, absoluteDirectory, filename);
+        return FileChannelPaths.toString(this);
+    }
+
+    public static FileChannelPath newInstance(final String serverUri) {
+        return newInstance(URIs.asUri(serverUri));
+    }
+
+    public static FileChannelPath newFile(final String serverUri) {
+        return newFile(URIs.asUri(serverUri));
+    }
+
+    public static FileChannelPath newDirectory(final String serverUri) {
+        return newDirectory(URIs.asUri(serverUri));
+    }
+
+    public static FileChannelPath newInstance(final File path) {
+        return newInstance(path.toURI(), NioFileChannel.DEFAULT_SERVER_URI_F);
+    }
+
+    public static FileChannelPath newFile(final File path) {
+        return newFile(path.toURI(), NioFileChannel.DEFAULT_SERVER_URI_F);
+    }
+
+    public static FileChannelPath newDirectory(final File path) {
+        return newDirectory(path.toURI(), NioFileChannel.DEFAULT_SERVER_URI_F);
+    }
+
+    public static FileChannelPath newInstance(final Path path) {
+        return newInstance(path.toUri());
+    }
+
+    public static FileChannelPath newFile(final Path path) {
+        return newFile(path.toUri());
+    }
+
+    public static FileChannelPath newDirectory(final Path path) {
+        return newDirectory(path.toUri());
+    }
+
+    public static FileChannelPath newInstance(final URI serverUri) {
+        final String scheme;
+        final URI effectiveUri;
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
+        }
+        if (serverUri.getScheme() == null) {
+            scheme = "file";
+            effectiveUri = URI.create("file:" + serverUri.toString());
+        } else {
+            scheme = serverUri.getScheme();
+            effectiveUri = serverUri;
+        }
+        return newInstance(effectiveUri, () -> URIs.asUri(scheme + "://"));
+    }
+
+    public static FileChannelPath newFile(final URI serverUri) {
+        final String scheme;
+        final URI effectiveUri;
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
+        }
+        if (serverUri.getScheme() == null) {
+            scheme = "file";
+            effectiveUri = URI.create("file:" + serverUri.toString());
+        } else {
+            scheme = serverUri.getScheme();
+            effectiveUri = serverUri;
+        }
+        return newFile(effectiveUri, () -> URIs.asUri(scheme + "://"));
+    }
+
+    public static FileChannelPath newDirectory(final URI serverUri) {
+        final String scheme;
+        final URI effectiveUri;
+        if (serverUri == null) {
+            throw new NullPointerException("serverUri cannot be null");
+        }
+        if (serverUri.getScheme() == null) {
+            scheme = "file";
+            effectiveUri = URI.create("file:" + serverUri.toString());
+        } else {
+            scheme = serverUri.getScheme();
+            effectiveUri = serverUri;
+        }
+        return newDirectory(effectiveUri, () -> URIs.asUri(scheme + "://"));
     }
 
     /**
@@ -63,7 +160,7 @@ public final class FileChannelPath implements IFileChannelPath {
      * @throws NullPointerException
      *             if {@code serverUri} is {@code null}
      */
-    public static FileChannelPath valueOf(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static FileChannelPath newInstance(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
             throw new NullPointerException("serverUri cannot be null");
         }
@@ -120,7 +217,7 @@ public final class FileChannelPath implements IFileChannelPath {
      * @throws NullPointerException
      *             if {@code serverUri} is {@code null}
      */
-    public static FileChannelPath valueOfDirectory(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static FileChannelPath newDirectory(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
             throw new NullPointerException("serverUri cannot be null");
         }
@@ -171,7 +268,7 @@ public final class FileChannelPath implements IFileChannelPath {
      * @throws NullPointerException
      *             if {@code serverUri} is {@code null}
      */
-    public static FileChannelPath valueOfFile(final URI serverUri, final Supplier<URI> defaultServerUriF) {
+    public static FileChannelPath newFile(final URI serverUri, final Supplier<URI> defaultServerUriF) {
         if (serverUri == null) {
             throw new NullPointerException("serverUri cannot be null");
         }

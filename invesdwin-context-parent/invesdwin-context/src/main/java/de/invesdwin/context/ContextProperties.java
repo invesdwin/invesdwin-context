@@ -14,7 +14,7 @@ import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;

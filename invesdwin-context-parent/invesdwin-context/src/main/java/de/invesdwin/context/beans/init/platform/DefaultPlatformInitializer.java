@@ -41,7 +41,7 @@ import de.invesdwin.norva.beanpath.BeanPathObjects;
 import de.invesdwin.norva.beanpath.collection.BeanPathCollections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.factory.FactoryBeanPathCollectionProvider;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;

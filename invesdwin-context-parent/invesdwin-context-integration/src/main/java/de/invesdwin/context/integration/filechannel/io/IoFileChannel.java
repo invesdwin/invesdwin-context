@@ -22,13 +22,11 @@ import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
-import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.Arrays;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.UUIDs;
-import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.closeable.Closeables;
@@ -51,40 +49,17 @@ public class IoFileChannel implements IFileChannel {
     private boolean connected = false;
     private boolean directoryCreated = false;
 
-    public IoFileChannel(final File file) {
-        this(DEFAULT_SERVER_URI);
-        if (file != null) {
-            if (file.getParent() != null) {
-                setSubDirectory(file.getParent());
-            }
-            setFilename(file.getName());
-        }
-    }
-
-    public IoFileChannel() {
-        this(DEFAULT_SERVER_URI);
-    }
-
-    public IoFileChannel(final String serverUri) {
-        this(serverUri == null ? null : URIs.asUri(serverUri));
-    }
-
-    public IoFileChannel(final URI serverUri) {
-        this(FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI_F));
-
-    }
-
-    public IoFileChannel(final IFileChannelPath path) {
+    protected IoFileChannel(final IFileChannelPath path) {
         this.serverUri = path.getServerUri();
         this.baseServerUri = path.getBaseServerUri();
         this.baseDirectory = path.getAbsoluteDirectory();
-        this.filename = path.getFilename();
+        this.filename = path.getFileName();
     }
 
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withSubDirectory(final String subDirectory) {
-        final IoFileChannel instance = new IoFileChannel(serverUri);
+        final IoFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.filename = filename;
@@ -98,12 +73,12 @@ public class IoFileChannel implements IFileChannel {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
         //CHECKSTYLE:OFF
-        final IoFileChannel instance = new IoFileChannel(newServerUri);
+        final IoFileChannel instance = newDirectory(newServerUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -121,12 +96,12 @@ public class IoFileChannel implements IFileChannel {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
         //CHECKSTYLE:OFF
-        final IoFileChannel instance = new IoFileChannel(newServerUri);
+        final IoFileChannel instance = newDirectory(newServerUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -137,11 +112,11 @@ public class IoFileChannel implements IFileChannel {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         //CHECKSTYLE:OFF
-        final IoFileChannel instance = new IoFileChannel(newServerUri);
+        final IoFileChannel instance = newDirectory(newServerUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -149,7 +124,7 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withSubPath(final String subPath) {
-        final IoFileChannel instance = new IoFileChannel(serverUri);
+        final IoFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubPath(subPath);
@@ -159,7 +134,7 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withSubPath(final Path path) {
-        final IoFileChannel instance = new IoFileChannel(serverUri);
+        final IoFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubPath(path);
@@ -169,36 +144,22 @@ public class IoFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withFilename(final String filename) {
-        final IoFileChannel instance = new IoFileChannel(serverUri);
+        final IoFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        instance.setFilename(filename);
+        instance.setFileName(filename);
         return instance;
     }
 
     //CHECKSTYLE:OFF
     @Override
     public IoFileChannel withAbsolutePath(final String path) {
+        final IoFileChannel instance = newDirectory(getBaseServerUri());
         //CHECKSTYLE:ON
-        if (Strings.isBlank(path)) {
-            //CHECKSTYLE:OFF
-            final IoFileChannel instance = new IoFileChannel(getBaseServerUri());
-            //CHECKSTYLE:ON
-            instance.emptyFileContent = emptyFileContent;
-            instance.setSubPath((String) null);
-            return instance;
-        }
-        if (path.contains("://")) {
-            return (IoFileChannel) FileChannelRegistry.newInstance(path);
-        } else {
-            //CHECKSTYLE:OFF
-            final IoFileChannel instance = new IoFileChannel(getBaseServerUri());
-            //CHECKSTYLE:ON
-            instance.emptyFileContent = emptyFileContent;
-            instance.setSubPath(path);
-            return instance;
-        }
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubPath(path);
+        return instance;
     }
 
     //CHECKSTYLE:OFF
@@ -239,13 +200,13 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
-    public IoFileChannel setFilename(final String filename) {
+    public IoFileChannel setFileName(final String filename) {
         this.filename = filename;
         return this;
     }
 
     @Override
-    public String getFilename() {
+    public String getFileName() {
         return filename;
     }
 
@@ -270,7 +231,7 @@ public class IoFileChannel implements IFileChannel {
         ensureDirectoryCreated();
         while (true) {
             final String filename = filenamePrefix + UUIDs.newPseudoRandomUUID() + filenameSuffix;
-            setFilename(filename);
+            setFileName(filename);
             if (!exists()) {
                 upload(new FastByteArrayInputStream(getEmptyFileContent()));
                 Assertions.checkTrue(exists());
@@ -392,7 +353,7 @@ public class IoFileChannel implements IFileChannel {
     }
 
     private File resolveFile() {
-        return new File(resolveDirectory(), getFilename());
+        return new File(resolveDirectory(), getFileName());
     }
 
     @Override
@@ -403,7 +364,7 @@ public class IoFileChannel implements IFileChannel {
         if (!source.renameTo(target)) {
             throw new IllegalStateException("Failed to rename file from " + source + " to " + target);
         }
-        setFilename(filename);
+        setFileName(filename);
         return this;
     }
 
@@ -424,7 +385,7 @@ public class IoFileChannel implements IFileChannel {
             throw new UncheckedIOException("Failed to move file from " + source + " to " + target, e);
         }
         setSubDirectory(targetIo.getSubDirectory());
-        setFilename(targetIo.getFilename());
+        setFileName(targetIo.getFileName());
     }
 
     @Override
@@ -531,7 +492,33 @@ public class IoFileChannel implements IFileChannel {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return FileChannelPaths.equals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return FileChannelPaths.hashCode(this);
+    }
+
+    @Override
     public String toString() {
         return FileChannelPaths.toString(this);
+    }
+
+    public static IoFileChannel newInstance(final URI serverUri) {
+        return new IoFileChannel(FileChannelPath.newInstance(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static IoFileChannel newFile(final URI serverUri) {
+        return new IoFileChannel(FileChannelPath.newFile(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static IoFileChannel newDirectory(final URI serverUri) {
+        return new IoFileChannel(FileChannelPath.newDirectory(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static IoFileChannel newInstance(final IFileChannelPath path) {
+        return new IoFileChannel(path);
     }
 }

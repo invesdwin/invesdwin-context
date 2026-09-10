@@ -12,7 +12,7 @@ import org.apache.commons.configuration2.AbstractConfiguration;
 
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannel;
-import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelPath;
+import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelContext;
 import de.invesdwin.context.system.properties.AProperties;
 import de.invesdwin.context.system.properties.ICloseableProperties;
 import de.invesdwin.util.lang.Objects;
@@ -46,19 +46,18 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
      */
     public TransactionalFileProperties(final File file) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(
-                FileChannelPath.valueOfFile(file.toURI(), AtomicNioFileChannel.DEFAULT_SERVER_URI_F)));
+        this(new AtomicNioFileChannel(FileChannelPath.newFile(file)));
         //CHECKSTYLE:ON
     }
 
-    public TransactionalFileProperties(final AtomicNioFileChannelPath path) {
+    public TransactionalFileProperties(final File file, final AtomicNioFileChannelContext context) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(path));
+        this(new AtomicNioFileChannel(FileChannelPath.newFile(file), context));
         //CHECKSTYLE:ON
     }
 
     public TransactionalFileProperties(final AtomicNioFileChannel fileChannel) {
-        if (fileChannel.getFilename() == null) {
+        if (fileChannel.getFileName() == null) {
             throw new IllegalArgumentException("The provided path must include a filename: " + fileChannel);
         }
         this.fileChannel = fileChannel;

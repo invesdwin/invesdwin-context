@@ -31,7 +31,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
 
     Path DOT_DOT = Paths.get("..");
 
-    IFileChannel setFilename(String filename);
+    IFileChannel setFileName(String filename);
 
     /**
      * Sets the relative sub-directory within the base path.
@@ -47,7 +47,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         //CHECKSTYLE:ON
         if (Strings.isBlank(path)) {
             setSubDirectory("");
-            setFilename(null);
+            setFileName(null);
             return this;
         }
 
@@ -61,7 +61,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
                 start = slashAfterScheme;
             } else {
                 setSubDirectory("");
-                setFilename(null);
+                setFileName(null);
                 return this;
             }
         }
@@ -119,10 +119,10 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
         final int lastSlashIndex = cleanPath.lastIndexOf('/');
         if (lastSlashIndex >= cleanStart) {
             setSubDirectory(cleanPath.substring(cleanStart, lastSlashIndex));
-            setFilename(cleanPath.substring(lastSlashIndex + 1));
+            setFileName(cleanPath.substring(lastSlashIndex + 1));
         } else {
             setSubDirectory("");
-            setFilename(cleanStart < cleanLen ? cleanPath.substring(cleanStart) : cleanPath);
+            setFileName(cleanStart < cleanLen ? cleanPath.substring(cleanStart) : cleanPath);
         }
         return this;
     }
@@ -142,10 +142,10 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      */
     default IFileChannel withBaseServerUri(final URI baseServerUri) {
         final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
-        final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
+        final IFileChannel clone = FileChannelRegistry.newDirectory(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
-        clone.setFilename(getFilename());
+        clone.setFileName(getFileName());
         return clone;
     }
 
@@ -161,10 +161,10 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      */
     default IFileChannel withBaseDirectory(final String baseDirectory) {
         final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
-        final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
+        final IFileChannel clone = FileChannelRegistry.newDirectory(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
-        clone.setFilename(getFilename());
+        clone.setFileName(getFileName());
         return clone;
     }
 
@@ -173,9 +173,9 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      */
     default IFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
         final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
-        final IFileChannel clone = FileChannelRegistry.newInstance(newServerUri);
+        final IFileChannel clone = FileChannelRegistry.newDirectory(newServerUri);
         clone.setEmptyFileContent(getEmptyFileContent());
-        clone.setFilename(getFilename());
+        clone.setFileName(getFileName());
         return clone;
     }
 
@@ -183,7 +183,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      * Creates a new instance with the given sub-path (relative to base directory).
      */
     default IFileChannel withSubPath(final String subPath) {
-        final IFileChannel clone = FileChannelRegistry.newInstance(getServerUri());
+        final IFileChannel clone = FileChannelRegistry.newDirectory(getServerUri());
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubPath(subPath);
         return clone;
@@ -203,10 +203,10 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      * Creates a new instance with the given filename, retaining base server URI, base directory, and sub-directory.
      */
     default IFileChannel withFilename(final String filename) {
-        final IFileChannel clone = FileChannelRegistry.newInstance(getServerUri());
+        final IFileChannel clone = FileChannelRegistry.newDirectory(getServerUri());
         clone.setEmptyFileContent(getEmptyFileContent());
         clone.setSubDirectory(getSubDirectory());
-        clone.setFilename(filename);
+        clone.setFileName(filename);
         return clone;
     }
 
@@ -215,20 +215,10 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
      * subDirectory, and filename).
      */
     default IFileChannel withAbsolutePath(final String path) {
-        if (Strings.isBlank(path)) {
-            final IFileChannel clone = FileChannelRegistry.newInstance(getBaseServerUri());
-            clone.setEmptyFileContent(getEmptyFileContent());
-            clone.setSubPath((String) null);
-            return clone;
-        }
-        if (path.contains("://")) {
-            return FileChannelRegistry.newInstance(path);
-        } else {
-            final IFileChannel clone = FileChannelRegistry.newInstance(getBaseServerUri());
-            clone.setEmptyFileContent(getEmptyFileContent());
-            clone.setSubPath(path);
-            return clone;
-        }
+        final IFileChannel clone = FileChannelRegistry.newDirectory(getBaseServerUri());
+        clone.setEmptyFileContent(getEmptyFileContent());
+        clone.setSubPath(path);
+        return clone;
     }
 
     /**
@@ -393,7 +383,7 @@ public interface IFileChannel extends ISafeCloseable, IFileChannelInfo {
             throw new UncheckedIOException(ex);
         }
 
-        final File file = new File(directory, getFilename());
+        final File file = new File(directory, getFileName());
         Files.deleteQuietly(file);
         if (exists()) {
             download(file);

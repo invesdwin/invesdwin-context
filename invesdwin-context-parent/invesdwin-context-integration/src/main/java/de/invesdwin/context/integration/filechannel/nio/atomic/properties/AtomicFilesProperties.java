@@ -13,6 +13,7 @@ import org.apache.commons.configuration2.AbstractConfiguration;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileInfo;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannel;
+import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelContext;
 import de.invesdwin.context.system.properties.AProperties;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.iterable.ICloseableIterator;
@@ -52,13 +53,18 @@ public class AtomicFilesProperties extends AProperties {
      */
     public AtomicFilesProperties(final File directory) {
         //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(
-                FileChannelPath.valueOfDirectory(directory.toURI(), AtomicNioFileChannel.DEFAULT_SERVER_URI_F)));
+        this(new AtomicNioFileChannel(FileChannelPath.newDirectory(directory)));
+        //CHECKSTYLE:ON
+    }
+
+    public AtomicFilesProperties(final File directory, final AtomicNioFileChannelContext context) {
+        //CHECKSTYLE:OFF
+        this(new AtomicNioFileChannel(FileChannelPath.newDirectory(directory), context));
         //CHECKSTYLE:ON
     }
 
     public AtomicFilesProperties(final AtomicNioFileChannel fileChannel) {
-        if (fileChannel.getFilename() != null) {
+        if (fileChannel.getFileName() != null) {
             throw new IllegalArgumentException("The provided path must be a directory: " + fileChannel);
         }
         this.fileChannel = fileChannel;
@@ -85,7 +91,7 @@ public class AtomicFilesProperties extends AProperties {
             try (ICloseableIterator<NioFileInfo> iterator = fileChannel.listIterator()) {
                 while (iterator.hasNext()) {
                     final NioFileInfo info = iterator.next();
-                    final String fileName = info.getFilename();
+                    final String fileName = info.getFileName();
                     if (info.isFile() && fileName != null && fileName.endsWith(PROPERTY_FILE_EXTENSION)) {
                         final String key = fileName.substring(0, fileName.length() - PROPERTY_FILE_EXTENSION.length());
                         currentDiskKeys.add(key);

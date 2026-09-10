@@ -1,20 +1,19 @@
 package de.invesdwin.context.integration.filechannel.nio.atomic;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
+import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.string.Charsets;
@@ -31,7 +30,7 @@ import de.invesdwin.util.time.date.millis.FDateMillis;
  * prevent redundant timestamp tracking or repeated file I/O operations for directory cleanup.
  */
 @ThreadSafe
-public class AtomicNioFileChannelPath implements IFileChannelPath {
+public class AtomicNioFileChannelContext implements Cloneable {
 
     public static final String TMP_EXTENSION = FileChannelLock.TMP_EXTENSION;
     public static final String TMP_SUFFIX = FileChannelLock.TMP_SUFFIX;
@@ -41,58 +40,23 @@ public class AtomicNioFileChannelPath implements IFileChannelPath {
     private static final long STALE_TEMP_FILE_AGE_MILLIS = 12 * FTimeUnit.MILLISECONDS_IN_HOUR;
     private static final String CLEANUP_MARKER_FILENAME = ".cleanup";
 
-    private final IFileChannelPath path;
-    private final AtomicLong directoryCleanupTime;
-    private final Path directoryPath;
+    @GuardedBy("this")
+    private Path directoryPath;
+    @GuardedBy("this")
+    private AtomicLong directoryCleanupTime;
 
-    public AtomicNioFileChannelPath(final IFileChannelPath path) {
-        this.path = path;
-        final URI directoryUri = FileChannelPaths.newDirectoryUri(path.getBaseServerUri(), path.getAbsoluteDirectory());
-        this.directoryPath = Paths.get(directoryUri);
-        // Initialize lazily with -1L to avoid File I/O in the constructor
-        this.directoryCleanupTime = new AtomicLong(UNINITIALIZED_DIRECTORY_CLEANUP_TIME);
-    }
-
-    private AtomicNioFileChannelPath(final IFileChannelPath path, final AtomicLong directoryCleanupTime,
-            final Path directoryPath) {
-        this.path = path;
-        this.directoryCleanupTime = directoryCleanupTime;
-        this.directoryPath = directoryPath;
-    }
-
-    public AtomicNioFileChannelPath derive(final URI newServerUri) {
-        return derive(FileChannelPath.valueOf(newServerUri, AtomicNioFileChannel.DEFAULT_SERVER_URI_F));
-    }
-
-    public AtomicNioFileChannelPath derive(final IFileChannelPath newPath) {
-        if (Objects.equals(getAbsoluteDirectory(), newPath.getAbsoluteDirectory())) {
-            // Reuse the existing AtomicLong and parsed Path since the directory hasn't changed
-            return new AtomicNioFileChannelPath(newPath, this.directoryCleanupTime, this.directoryPath);
+    @Override
+    protected AtomicNioFileChannelContext clone() {
+        try {
+            return (AtomicNioFileChannelContext) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         }
-        return new AtomicNioFileChannelPath(newPath);
     }
 
-    @Override
-    public URI getServerUri() {
-        return path.getServerUri();
-    }
+    public synchronized void maybeRunCleanup(final IFileChannel fileChannel) {
+        attach(fileChannel);
 
-    @Override
-    public URI getBaseServerUri() {
-        return path.getBaseServerUri();
-    }
-
-    @Override
-    public String getAbsoluteDirectory() {
-        return path.getAbsoluteDirectory();
-    }
-
-    @Override
-    public String getFilename() {
-        return path.getFilename();
-    }
-
-    public void maybeRunCleanup() {
         final long now = FDateMillis.nowMillis();
         long last = directoryCleanupTime.get();
 
@@ -133,6 +97,14 @@ public class AtomicNioFileChannelPath implements IFileChannelPath {
             cleanupStaleTempFiles();
         } catch (final IOException e) {
             directoryCleanupTime.set(now);
+        }
+    }
+
+    private void attach(final IFileChannel fileChannel) {
+        final Path newDirectoryPath = FileChannelPaths.toPath(fileChannel.getDirectoryUri());
+        if (!Objects.equals(newDirectoryPath, directoryPath)) {
+            directoryPath = newDirectoryPath;
+            directoryCleanupTime = new AtomicLong(UNINITIALIZED_DIRECTORY_CLEANUP_TIME);
         }
     }
 
@@ -191,4 +163,5 @@ public class AtomicNioFileChannelPath implements IFileChannelPath {
         }
         return isEmpty;
     }
+
 }
