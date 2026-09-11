@@ -42,6 +42,7 @@ import de.invesdwin.norva.beanpath.collection.BeanPathCollections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.factory.FactoryBeanPathCollectionProvider;
 import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.HeartbeatFileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
@@ -300,7 +301,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         while (true) {
             final File slotDir = new File(baseDir, "node_" + String.valueOf(node));
             final File lockFile = new File(slotDir, "process.lock");
-            final FileChannelLock slotLock = newHomeDataDirectoryPerNodeLock(lockFile);
+            final HeartbeatFileChannelLock slotLock = new HeartbeatFileChannelLock(lockFile);
 
             if (slotLock.tryLock()) {
                 ShutdownHookManager.register(new CloseableShutdownHook(slotLock));
@@ -313,15 +314,6 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
                 throw new IllegalStateException("Exhausted all process slots up to index 1000 in: " + baseDir);
             }
         }
-    }
-
-    public static FileChannelLock newHomeDataDirectoryPerNodeLock(final File lockFile) {
-        return new FileChannelLock(lockFile) {
-            @Override
-            protected boolean isHeartbeatEnabled() {
-                return true;
-            }
-        };
     }
 
     @Override
