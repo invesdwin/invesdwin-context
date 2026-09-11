@@ -38,16 +38,20 @@ public class NioFileInfo implements IFileInfo {
     }
 
     private BasicFileAttributes getAttributes() {
-        BasicFileAttributes attrs = attributes;
-        if (attrs == null) {
-            try {
-                attrs = Files.readAttributes(unwrap(), BasicFileAttributes.class);
-            } catch (final IOException e) {
-                attrs = DisabledBasicFileAttributes.INSTANCE;
-            }
-            attributes = attrs;
+        BasicFileAttributes attributesCopy = attributes;
+        if (attributesCopy == null) {
+            attributesCopy = newAttributes();
+            attributes = attributesCopy;
         }
-        return attrs;
+        return attributesCopy;
+    }
+
+    private BasicFileAttributes newAttributes() {
+        try {
+            return Files.readAttributes(unwrap(), BasicFileAttributes.class);
+        } catch (final IOException e) {
+            return DisabledBasicFileAttributes.INSTANCE;
+        }
     }
 
     @Override
