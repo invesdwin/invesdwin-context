@@ -47,8 +47,6 @@ import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;
-import de.invesdwin.util.shutdown.CloseableShutdownHook;
-import de.invesdwin.util.shutdown.ShutdownHookManager;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -301,12 +299,18 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
         while (true) {
             final File slotDir = new File(baseDir, "node_" + String.valueOf(node));
             final File lockFile = new File(slotDir, "process.lock");
+            //retain reference so that finalizer does not clean it during
             final HeartbeatFileChannelLock slotLock = new HeartbeatFileChannelLock(lockFile);
-
             if (slotLock.tryLock()) {
-                ShutdownHookManager.register(new CloseableShutdownHook(slotLock));
-                createDirectoryIfAllowed(slotDir);
-                return slotDir;
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
+                    public void run() {
+                        slotLock.close();
+                    }
+                });
+                final File dataDir = new File(slotDir, "data");
+                createDirectoryIfAllowed(dataDir);
+                return dataDir;
             }
 
             node++;
