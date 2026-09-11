@@ -1,8 +1,6 @@
 package de.invesdwin.context.integration.filechannel.nio.atomic;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,7 +16,6 @@ import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FTimeUnit;
-import de.invesdwin.util.time.date.millis.FDateMillis;
 import de.invesdwin.util.time.duration.Duration;
 
 /**
@@ -114,51 +111,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
     }
 
     private void cleanupStaleTempFiles() {
-        cleanupStaleTempFiles(directoryPath);
-    }
-
-    public static void cleanupStaleTempFiles(final Path dir) {
-        final long now = FDateMillis.nowMillis();
-        cleanupStaleTempFilesDirectory(dir, now);
-    }
-
-    private static boolean cleanupStaleTempFilesDirectory(final Path dir, final long now) {
-        boolean isEmpty = true;
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-            for (final Path p : stream) {
-                if (Files.isDirectory(p)) {
-                    if (cleanupStaleTempFilesDirectory(p, now)) {
-                        try {
-                            Files.deleteIfExists(p);
-                        } catch (final IOException e) {
-                            isEmpty = false; // Directory could not be removed (e.g. concurrent write)
-                        }
-                    } else {
-                        isEmpty = false;
-                    }
-                } else {
-                    final String fileName = p.getFileName().toString();
-                    if (fileName.endsWith(TMP_EXTENSION)) {
-                        try {
-                            if (STALE_TEMP_FILE_AGE.isLessThanMillis(now - Files.lastModifiedNoThrow(p))) {
-                                Files.deleteIfExists(p);
-                            } else {
-                                isEmpty = false;
-                            }
-                        } catch (final NoSuchFileException e) {
-                            // Concurrently deleted by another process
-                        } catch (final IOException e) {
-                            isEmpty = false;
-                        }
-                    } else {
-                        isEmpty = false;
-                    }
-                }
-            }
-        } catch (final IOException e) {
-            isEmpty = false;
-        }
-        return isEmpty;
+        Files.cleanupStaleTempFiles(directoryPath, STALE_TEMP_FILE_AGE, TMP_EXTENSION);
     }
 
 }
