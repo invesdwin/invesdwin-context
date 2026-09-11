@@ -23,10 +23,8 @@ public class NioFileInfo implements IFileInfo {
     private final String filename;
     private transient Path delegate;
 
-    private final boolean isDirectory;
-    private final boolean isFile;
-    private final long length;
-    private final FDate lastModified;
+    // Lazy and transient fields
+    private transient volatile BasicFileAttributes attributes;
 
     public NioFileInfo(final URI serverUri, final URI baseServerUri, final String baseDirectory,
             final String subDirectory, final Path delegate) {
@@ -36,20 +34,20 @@ public class NioFileInfo implements IFileInfo {
         this.subDirectory = subDirectory;
         this.delegate = delegate;
         this.filename = delegate.getFileName().toString();
-
-        final BasicFileAttributes attrs = getAttributes();
-        this.isDirectory = attrs.isDirectory();
-        this.isFile = attrs.isRegularFile();
-        this.length = attrs.size();
-        this.lastModified = new FDate(attrs.lastModifiedTime().toMillis());
+        // Removed eager file system I/O evaluation from the constructor
     }
 
     private BasicFileAttributes getAttributes() {
-        try {
-            return Files.readAttributes(unwrap(), BasicFileAttributes.class);
-        } catch (final IOException e) {
-            return DisabledBasicFileAttributes.INSTANCE;
+        BasicFileAttributes attrs = attributes;
+        if (attrs == null) {
+            try {
+                attrs = Files.readAttributes(unwrap(), BasicFileAttributes.class);
+            } catch (final IOException e) {
+                attrs = DisabledBasicFileAttributes.INSTANCE;
+            }
+            attributes = attrs;
         }
+        return attrs;
     }
 
     @Override
@@ -79,22 +77,22 @@ public class NioFileInfo implements IFileInfo {
 
     @Override
     public boolean isFile() {
-        return isFile;
+        return getAttributes().isRegularFile();
     }
 
     @Override
     public boolean isDirectory() {
-        return isDirectory;
+        return getAttributes().isDirectory();
     }
 
     @Override
     public FDate lastModified() {
-        return lastModified;
+        return new FDate(getAttributes().lastModifiedTime().toMillis());
     }
 
     @Override
     public long length() {
-        return length;
+        return getAttributes().size();
     }
 
     @Override
