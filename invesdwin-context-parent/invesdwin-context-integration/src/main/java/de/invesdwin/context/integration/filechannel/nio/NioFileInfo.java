@@ -34,7 +34,6 @@ public class NioFileInfo implements IFileInfo {
         this.subDirectory = subDirectory;
         this.delegate = delegate;
         this.filename = delegate.getFileName().toString();
-        // Removed eager file system I/O evaluation from the constructor
     }
 
     private BasicFileAttributes getAttributes() {
