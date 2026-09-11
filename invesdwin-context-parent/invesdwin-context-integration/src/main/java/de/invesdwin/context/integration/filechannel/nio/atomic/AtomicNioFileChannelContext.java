@@ -75,16 +75,12 @@ public class AtomicNioFileChannelContext implements Cloneable {
         }
 
         final Path markerPath = directoryPath.resolve(CLEANUP_MARKER_FILENAME);
-        try {
-            if (Files.exists(markerPath)) {
-                final long lastModified = Files.getLastModifiedTime(markerPath).toMillis();
-                if (CLEANUP_INTERVAL.isGreaterThanMillis(now.millisValue() - lastModified)) {
-                    directoryCleanupTime.set(lastModified);
-                    return;
-                }
+        if (Files.exists(markerPath)) {
+            final long lastModified = Files.lastModified(markerPath);
+            if (CLEANUP_INTERVAL.isGreaterThanMillis(now.millisValue() - lastModified)) {
+                directoryCleanupTime.set(lastModified);
+                return;
             }
-        } catch (final IOException e) {
-            // Ignore and proceed to attempt claiming the slot
         }
 
         try {
@@ -111,12 +107,8 @@ public class AtomicNioFileChannelContext implements Cloneable {
 
     private long newInitialCleanupTime(final Path dir) {
         final Path markerPath = dir.resolve(CLEANUP_MARKER_FILENAME);
-        try {
-            if (Files.exists(markerPath)) {
-                return Files.getLastModifiedTime(markerPath).toMillis();
-            }
-        } catch (final IOException e) {
-            // Fall back to 0L if reading the timestamp fails
+        if (Files.exists(markerPath)) {
+            return Files.lastModified(markerPath);
         }
         return 0;
     }
@@ -144,7 +136,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
                     final String fileName = p.getFileName().toString();
                     if (fileName.endsWith(TMP_EXTENSION)) {
                         try {
-                            if (STALE_TEMP_FILE_AGE.isLessThanMillis(now - Files.getLastModifiedTime(p).toMillis())) {
+                            if (STALE_TEMP_FILE_AGE.isLessThanMillis(now - Files.lastModified(p))) {
                                 Files.deleteIfExists(p);
                             } else {
                                 isEmpty = false;
