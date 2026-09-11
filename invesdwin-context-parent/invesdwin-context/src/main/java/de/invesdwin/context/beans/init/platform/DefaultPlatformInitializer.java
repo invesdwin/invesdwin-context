@@ -289,7 +289,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
             if (systemProperties.containsValue(key)) {
                 baseDir = systemProperties.getFile(key);
             } else {
-                baseDir = new File(homeDataDirectory,
+                baseDir = new File(new File(homeDataDirectory, "nodes"),
                         ContextProperties.USER_NAME + "@" + DynamicInstrumentationProperties.getProcessName());
             }
         }
