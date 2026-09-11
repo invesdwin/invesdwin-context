@@ -76,7 +76,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
 
         final Path markerPath = directoryPath.resolve(CLEANUP_MARKER_FILENAME);
         if (Files.exists(markerPath)) {
-            final long lastModified = Files.lastModified(markerPath);
+            final long lastModified = Files.lastModifiedNoThrow(markerPath);
             if (CLEANUP_INTERVAL.isGreaterThanMillis(now.millisValue() - lastModified)) {
                 directoryCleanupTime.set(lastModified);
                 return;
@@ -108,22 +108,26 @@ public class AtomicNioFileChannelContext implements Cloneable {
     private long newInitialCleanupTime(final Path dir) {
         final Path markerPath = dir.resolve(CLEANUP_MARKER_FILENAME);
         if (Files.exists(markerPath)) {
-            return Files.lastModified(markerPath);
+            return Files.lastModifiedNoThrow(markerPath);
         }
         return 0;
     }
 
     private void cleanupStaleTempFiles() {
-        final long now = FDateMillis.nowMillis();
-        cleanupDirectory(directoryPath, now);
+        cleanupStaleTempFiles(directoryPath);
     }
 
-    private boolean cleanupDirectory(final Path dir, final long now) {
+    public static void cleanupStaleTempFiles(final Path dir) {
+        final long now = FDateMillis.nowMillis();
+        cleanupStaleTempFilesDirectory(dir, now);
+    }
+
+    private static boolean cleanupStaleTempFilesDirectory(final Path dir, final long now) {
         boolean isEmpty = true;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
             for (final Path p : stream) {
                 if (Files.isDirectory(p)) {
-                    if (cleanupDirectory(p, now)) {
+                    if (cleanupStaleTempFilesDirectory(p, now)) {
                         try {
                             Files.deleteIfExists(p);
                         } catch (final IOException e) {
@@ -136,7 +140,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
                     final String fileName = p.getFileName().toString();
                     if (fileName.endsWith(TMP_EXTENSION)) {
                         try {
-                            if (STALE_TEMP_FILE_AGE.isLessThanMillis(now - Files.lastModified(p))) {
+                            if (STALE_TEMP_FILE_AGE.isLessThanMillis(now - Files.lastModifiedNoThrow(p))) {
                                 Files.deleteIfExists(p);
                             } else {
                                 isEmpty = false;
