@@ -190,7 +190,7 @@ public final class ContextProperties {
 
     public static synchronized File getHomeDataDirectoryPerNode() {
         if (homeDataDirectoryPerNode == null) {
-            homeDataDirectory = PlatformInitializerProperties.getInitializer()
+            homeDataDirectoryPerNode = PlatformInitializerProperties.getInitializer()
                     .initHomeDataDirectoryPerNode(getHomeDataDirectory(), isTestEnvironmentForHomeDirectory());
         }
         return homeDataDirectoryPerNode;
