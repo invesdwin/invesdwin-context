@@ -24,33 +24,42 @@ public final class BasePackagesConfigurer {
 
     private BasePackagesConfigurer() {}
 
-    public static synchronized Set<String> getBasePackages() {
+    public static Set<String> getBasePackages() {
         if (basePackages == null) {
-            try {
-                basePackages = ILockCollectionFactory.getInstance(false).newLinkedSet();
-                final Iterator<IBasePackageDefinition> basePackageDefinitions = ServiceLoader
-                        .load(IBasePackageDefinition.class)
-                        .iterator();
-                while (basePackageDefinitions.hasNext()) {
-                    final IBasePackageDefinition basePackageDefinition = basePackageDefinitions.next();
-                    basePackages.add(basePackageDefinition.getBasePackage());
+            synchronized (BasePackagesConfigurer.class) {
+                if (basePackages == null) {
+                    basePackages = newBasePackages();
                 }
-
-                if (LOG.isInfoEnabled() && basePackages.size() > 0) {
-                    String basePackageSingularPlural = "base package";
-                    if (basePackages.size() != 1) {
-                        basePackageSingularPlural += "s";
-                    }
-
-                    LOG.info("Loading " + basePackages.size() + " " + basePackageSingularPlural + " " + basePackages);
-                }
-            } catch (final Throwable t) {
-                //webstart safety for access control
-                PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
-                basePackages = ILockCollectionFactory.getInstance(false).newLinkedSet(Arrays.asList("de.invesdwin"));
             }
         }
         return basePackages;
+    }
+
+    private static Set<String> newBasePackages() {
+        try {
+            final Set<String> basePackages = ILockCollectionFactory.getInstance(false).newLinkedSet();
+            final Iterator<IBasePackageDefinition> basePackageDefinitions = ServiceLoader
+                    .load(IBasePackageDefinition.class)
+                    .iterator();
+            while (basePackageDefinitions.hasNext()) {
+                final IBasePackageDefinition basePackageDefinition = basePackageDefinitions.next();
+                basePackages.add(basePackageDefinition.getBasePackage());
+            }
+
+            if (LOG.isInfoEnabled() && basePackages.size() > 0) {
+                String basePackageSingularPlural = "base package";
+                if (basePackages.size() != 1) {
+                    basePackageSingularPlural += "s";
+                }
+
+                LOG.info("Loading " + basePackages.size() + " " + basePackageSingularPlural + " " + basePackages);
+            }
+            return basePackages;
+        } catch (final Throwable t) {
+            //webstart safety for access control
+            PlatformInitializerProperties.logInitializationFailedIsIgnored(t);
+            return ILockCollectionFactory.getInstance(false).newLinkedSet(Arrays.asList("de.invesdwin"));
+        }
     }
 
     public static String[] getBasePackagesArray() {
