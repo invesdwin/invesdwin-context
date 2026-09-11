@@ -165,10 +165,15 @@ public class AtomicNioFileChannel extends NioFileChannel {
         context.maybeRunCleanup(this);
         try {
             final Path targetPath = Paths.get(getFileUri());
-            final Path tempPath = targetPath.resolveSibling(Files
-                    .normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelContext.TMP_SUFFIX));
-            Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            final String targetFilename = targetPath.getFileName().toString();
+            if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
+                Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                final Path tempPath = targetPath.resolveSibling(
+                        Files.normalizeFilename(targetFilename + AtomicNioFileChannelContext.TMP_SUFFIX));
+                Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -186,10 +191,15 @@ public class AtomicNioFileChannel extends NioFileChannel {
         context.maybeRunCleanup(this);
         try {
             final Path targetPath = Paths.get(getFileUri());
-            final Path tempPath = targetPath.resolveSibling(Files
-                    .normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelContext.TMP_SUFFIX));
-            Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            final String targetFilename = targetPath.getFileName().toString();
+            if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
+                Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                final Path tempPath = targetPath.resolveSibling(
+                        Files.normalizeFilename(targetFilename + AtomicNioFileChannelContext.TMP_SUFFIX));
+                Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -204,23 +214,28 @@ public class AtomicNioFileChannel extends NioFileChannel {
         context.maybeRunCleanup(this);
         try {
             final Path targetPath = Paths.get(getFileUri());
-            final Path tempPath = targetPath.resolveSibling(Files
-                    .normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelContext.TMP_SUFFIX));
+            final String targetFilename = targetPath.getFileName().toString();
+            if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
+                return Files.newOutputStream(targetPath);
+            } else {
+                final Path tempPath = targetPath.resolveSibling(Files.normalizeFilename(
+                        targetPath.getFileName().toString() + AtomicNioFileChannelContext.TMP_SUFFIX));
 
-            final OutputStream out = Files.newOutputStream(tempPath);
-            return new FilterOutputStream(out) {
-                private boolean closed = false;
+                final OutputStream out = Files.newOutputStream(tempPath);
+                return new FilterOutputStream(out) {
+                    private boolean closed = false;
 
-                @Override
-                public void close() throws IOException {
-                    if (closed) {
-                        return;
+                    @Override
+                    public void close() throws IOException {
+                        if (closed) {
+                            return;
+                        }
+                        closed = true;
+                        super.close();
+                        Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                     }
-                    closed = true;
-                    super.close();
-                    Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                }
-            };
+                };
+            }
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
