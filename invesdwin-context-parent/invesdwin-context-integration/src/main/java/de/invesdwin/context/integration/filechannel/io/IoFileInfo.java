@@ -31,7 +31,6 @@ public class IoFileInfo implements IFileInfo {
         this.baseDirectory = baseDirectory;
         this.subDirectory = subDirectory;
         this.delegate = delegate;
-        // Removed eager file system I/O evaluation from the constructor
     }
 
     @Override
