@@ -37,14 +37,18 @@ public class NioFileInfo implements IFileInfo {
         this.delegate = delegate;
         this.filename = delegate.getFileName().toString();
 
+        final BasicFileAttributes attrs = getAttributes();
+        this.isDirectory = attrs.isDirectory();
+        this.isFile = attrs.isRegularFile();
+        this.length = attrs.size();
+        this.lastModified = new FDate(attrs.lastModifiedTime().toMillis());
+    }
+
+    private BasicFileAttributes getAttributes() {
         try {
-            final BasicFileAttributes attrs = Files.readAttributes(delegate, BasicFileAttributes.class);
-            this.isDirectory = attrs.isDirectory();
-            this.isFile = attrs.isRegularFile();
-            this.length = attrs.size();
-            this.lastModified = new FDate(attrs.lastModifiedTime().toMillis());
+            return Files.readAttributes(unwrap(), BasicFileAttributes.class);
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to read attributes for path: " + delegate, e);
+            return DisabledBasicFileAttributes.INSTANCE;
         }
     }
 
