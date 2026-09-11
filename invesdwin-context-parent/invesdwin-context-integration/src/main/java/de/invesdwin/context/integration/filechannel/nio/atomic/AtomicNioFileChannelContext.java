@@ -16,9 +16,10 @@ import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.Objects;
-import de.invesdwin.util.lang.string.Charsets;
+import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FTimeUnit;
 import de.invesdwin.util.time.date.millis.FDateMillis;
+import de.invesdwin.util.time.duration.Duration;
 
 /**
  * Encapsulates the path context and background maintenance duties for an {@link AtomicNioFileChannel}.
@@ -35,10 +36,10 @@ public class AtomicNioFileChannelContext implements Cloneable {
     public static final String TMP_EXTENSION = FileChannelLock.TMP_EXTENSION;
     public static final String TMP_SUFFIX = FileChannelLock.TMP_SUFFIX;
 
-    private static final long UNINITIALIZED_DIRECTORY_CLEANUP_TIME = -1L;
-    private static final long CLEANUP_INTERVAL_MILLIS = 24 * FTimeUnit.MILLISECONDS_IN_HOUR;
-    private static final long STALE_TEMP_FILE_AGE_MILLIS = 12 * FTimeUnit.MILLISECONDS_IN_HOUR;
-    private static final String CLEANUP_MARKER_FILENAME = ".cleanup";
+    public static final long UNINITIALIZED_DIRECTORY_CLEANUP_TIME = -1L;
+    public static final String CLEANUP_MARKER_FILENAME = ".cleanup";
+    public static final Duration CLEANUP_INTERVAL = Duration.ONE_DAY;
+    public static final Duration STALE_TEMP_FILE_AGE = new Duration(12, FTimeUnit.HOURS);
 
     @GuardedBy("this")
     private Path directoryPath;
@@ -57,7 +58,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
     public synchronized void maybeRunCleanup(final IFileChannel fileChannel) {
         attach(fileChannel);
 
-        final long now = FDateMillis.nowMillis();
+        final FDate now = FDate.now();
         long last = directoryCleanupTime.get();
 
         // Lazy initialization block
@@ -69,7 +70,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
             last = directoryCleanupTime.get();
         }
 
-        if (now - last < CLEANUP_INTERVAL_MILLIS) {
+        if (CLEANUP_INTERVAL.isGreaterThanMillis(now.millisValue() - last)) {
             return;
         }
 
@@ -77,8 +78,8 @@ public class AtomicNioFileChannelContext implements Cloneable {
         try {
             if (Files.exists(markerPath)) {
                 final long lastModified = Files.getLastModifiedTime(markerPath).toMillis();
-                if (now - lastModified < CLEANUP_INTERVAL_MILLIS) {
-                    directoryCleanupTime.set(now);
+                if (CLEANUP_INTERVAL.isGreaterThanMillis(now.millisValue() - lastModified)) {
+                    directoryCleanupTime.set(lastModified);
                     return;
                 }
             }
@@ -90,13 +91,13 @@ public class AtomicNioFileChannelContext implements Cloneable {
             // Inline atomic write for the marker path
             final Path tempMarkerPath = markerPath
                     .resolveSibling(Files.normalizeFilename(markerPath.getFileName().toString() + TMP_SUFFIX));
-            Files.write(tempMarkerPath, String.valueOf(now).getBytes(Charsets.defaultCharset()));
+            Files.writeString(tempMarkerPath, now.toString());
             Files.move(tempMarkerPath, markerPath, StandardCopyOption.REPLACE_EXISTING);
 
-            directoryCleanupTime.set(now);
+            directoryCleanupTime.set(now.millisValue());
             cleanupStaleTempFiles();
         } catch (final IOException e) {
-            directoryCleanupTime.set(now);
+            directoryCleanupTime.set(now.millisValue());
         }
     }
 
@@ -143,7 +144,7 @@ public class AtomicNioFileChannelContext implements Cloneable {
                     final String fileName = p.getFileName().toString();
                     if (fileName.endsWith(TMP_EXTENSION)) {
                         try {
-                            if (now - Files.getLastModifiedTime(p).toMillis() > STALE_TEMP_FILE_AGE_MILLIS) {
+                            if (STALE_TEMP_FILE_AGE.isLessThanMillis(now - Files.getLastModifiedTime(p).toMillis())) {
                                 Files.deleteIfExists(p);
                             } else {
                                 isEmpty = false;
