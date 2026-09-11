@@ -1,18 +1,16 @@
 package de.invesdwin.context.integration.filechannel.nio.atomic.properties;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 import javax.annotation.concurrent.ThreadSafe;
 
 import org.apache.commons.configuration2.AbstractConfiguration;
 
-import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannel;
-import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelContext;
 import de.invesdwin.context.system.properties.AProperties;
 import de.invesdwin.context.system.properties.ICloseableProperties;
 import de.invesdwin.util.lang.Objects;
@@ -35,7 +33,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 @ThreadSafe
 public class TransactionalFileProperties extends AProperties implements ICloseableProperties {
 
-    private final AtomicNioFileChannel fileChannel;
+    private final Supplier<AtomicNioFileChannel> fileChannelProvider;
     private volatile Properties propertiesFile;
     private volatile boolean modified;
 
@@ -44,23 +42,8 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
      * files during atomic move operations and tmp file cleanups. Here we expect the provided file to be a specific
      * properties file, not a directory, but in a dedicated directory.
      */
-    public TransactionalFileProperties(final File file) {
-        //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(FileChannelPath.newFile(file)));
-        //CHECKSTYLE:ON
-    }
-
-    public TransactionalFileProperties(final File file, final AtomicNioFileChannelContext context) {
-        //CHECKSTYLE:OFF
-        this(new AtomicNioFileChannel(FileChannelPath.newFile(file), context));
-        //CHECKSTYLE:ON
-    }
-
-    public TransactionalFileProperties(final AtomicNioFileChannel fileChannel) {
-        if (fileChannel.getFileName() == null) {
-            throw new IllegalArgumentException("The provided path must include a filename: " + fileChannel);
-        }
-        this.fileChannel = fileChannel;
+    public TransactionalFileProperties(final Supplier<AtomicNioFileChannel> fileChannelProvider) {
+        this.fileChannelProvider = fileChannelProvider;
     }
 
     private Properties getPropertiesFile() {
@@ -78,7 +61,16 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
         return result;
     }
 
+    private AtomicNioFileChannel getFileChannel() {
+        final AtomicNioFileChannel fileChannel = fileChannelProvider.get();
+        if (fileChannel.getFileName() == null) {
+            throw new IllegalArgumentException("The provided path must include a filename: " + fileChannel);
+        }
+        return fileChannel;
+    }
+
     private void loadProperties(final Properties props) {
+        final AtomicNioFileChannel fileChannel = getFileChannel();
         final byte[] bytes = fileChannel.downloadBytes();
         if (bytes != null) {
             try (InputStream in = new FastByteArrayInputStream(bytes)) {
@@ -151,6 +143,7 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
         if (!modified) {
             return;
         }
+        final AtomicNioFileChannel fileChannel = getFileChannel();
         try (PooledFastByteArrayOutputStream out = PooledFastByteArrayOutputStream.newInstance()) {
             getPropertiesFile().store(out, null);
             fileChannel.upload(out.asInputStream());
