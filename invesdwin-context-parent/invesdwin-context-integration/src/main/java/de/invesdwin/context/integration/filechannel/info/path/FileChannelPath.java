@@ -105,7 +105,7 @@ public final class FileChannelPath implements IFileChannelPath {
         }
         if (serverUri.getScheme() == null) {
             scheme = "file";
-            effectiveUri = URI.create("file:" + serverUri.toString());
+            effectiveUri = URIs.asUri("file:" + serverUri.toString());
         } else {
             scheme = serverUri.getScheme();
             effectiveUri = serverUri;
@@ -121,7 +121,7 @@ public final class FileChannelPath implements IFileChannelPath {
         }
         if (serverUri.getScheme() == null) {
             scheme = "file";
-            effectiveUri = URI.create("file:" + serverUri.toString());
+            effectiveUri = URIs.asUri("file:" + serverUri.toString());
         } else {
             scheme = serverUri.getScheme();
             effectiveUri = serverUri;
@@ -137,7 +137,7 @@ public final class FileChannelPath implements IFileChannelPath {
         }
         if (serverUri.getScheme() == null) {
             scheme = "file";
-            effectiveUri = URI.create("file:" + serverUri.toString());
+            effectiveUri = URIs.asUri("file:" + serverUri.toString());
         } else {
             scheme = serverUri.getScheme();
             effectiveUri = serverUri;
@@ -323,7 +323,7 @@ public final class FileChannelPath implements IFileChannelPath {
         } else {
             sb.append("/");
         }
-        return URI.create(sb.toString());
+        return URIs.asUri(sb.toString());
     }
 
     public static String extractAbsoluteDirectory(final URI uri) {

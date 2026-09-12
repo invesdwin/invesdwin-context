@@ -37,7 +37,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 public class NioFileChannel implements IFileChannel {
 
     public static final String DEFAULT_SERVER_URI_STR = "file:///";
-    public static final URI DEFAULT_SERVER_URI = URI.create(DEFAULT_SERVER_URI_STR);
+    public static final URI DEFAULT_SERVER_URI = URIs.asUri(DEFAULT_SERVER_URI_STR);
     public static final Supplier<URI> DEFAULT_SERVER_URI_F = () -> DEFAULT_SERVER_URI;
 
     private final URI serverUri;

@@ -128,7 +128,7 @@ public final class FileChannelPaths {
 
     public static URI newDirectoryUri(final String serverUri, final String directory) {
         final String uriStr = combinePath(serverUri, directory);
-        return URI.create(uriStr);
+        return URIs.asUri(uriStr);
     }
 
     public static URI newFileUri(final IFileChannelPath info) {
@@ -141,7 +141,7 @@ public final class FileChannelPaths {
 
     public static URI newFileUri(final String serverUri, final String directory, final String filename) {
         final String uriStr = toString(serverUri, directory, filename);
-        return URI.create(uriStr);
+        return URIs.asUri(uriStr);
     }
 
     public static URI newFileUri(final URI serverUri, final String filename) {
@@ -150,7 +150,7 @@ public final class FileChannelPaths {
 
     public static URI newFileUri(final String serverUri, final String filename) {
         final String uriStr = toString(serverUri, null, filename);
-        return URI.create(uriStr);
+        return URIs.asUri(uriStr);
     }
 
     public static String newAbsolutePath(final IFileChannelPath info) {
