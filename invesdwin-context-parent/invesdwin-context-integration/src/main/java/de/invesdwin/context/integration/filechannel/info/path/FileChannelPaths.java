@@ -180,7 +180,11 @@ public final class FileChannelPaths {
     }
 
     public static File toFile(final URI fileUri) {
-        return new File(fileUri);
+        try {
+            return new File(fileUri);
+        } catch (final Throwable t) {
+            throw new IllegalArgumentException("Cannot convert URI to File: " + fileUri, t);
+        }
     }
 
     public static Path toPath(final IFileChannelPath file) {
@@ -188,7 +192,11 @@ public final class FileChannelPaths {
     }
 
     public static Path toPath(final URI fileUri) {
-        return Path.of(fileUri);
+        try {
+            return Path.of(fileUri);
+        } catch (final Throwable t) {
+            throw new IllegalArgumentException("Cannot convert URI to Path: " + fileUri, t);
+        }
     }
 
 }
