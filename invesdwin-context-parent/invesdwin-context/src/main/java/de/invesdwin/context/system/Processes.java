@@ -57,6 +57,10 @@ public final class Processes {
         }
     }
 
+    public static String getManagementName() {
+        return DynamicInstrumentationProperties.getManagementName();
+    }
+
     public static String getProcessId() {
         return DynamicInstrumentationProperties.getProcessId();
     }
