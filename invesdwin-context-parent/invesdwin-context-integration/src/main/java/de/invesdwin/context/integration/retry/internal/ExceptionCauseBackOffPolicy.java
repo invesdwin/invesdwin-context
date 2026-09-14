@@ -8,7 +8,7 @@ import org.springframework.retry.backoff.BackOffInterruptedException;
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 
-import de.invesdwin.util.time.date.FTimeUnit;
+import de.invesdwin.context.integration.retry.task.BackOffPolicies;
 import de.invesdwin.util.time.duration.Duration;
 
 @Immutable
@@ -21,10 +21,7 @@ public final class ExceptionCauseBackOffPolicy implements BackOffPolicy {
     private final ExponentialBackOffPolicy defaultBackOffPolicy;
 
     private ExceptionCauseBackOffPolicy() {
-        defaultBackOffPolicy = new ExponentialBackOffPolicy();
-        defaultBackOffPolicy
-                .setInitialInterval(new Duration(1, FTimeUnit.MILLISECONDS).longValue(FTimeUnit.MILLISECONDS));
-        defaultBackOffPolicy.setMaxInterval(new Duration(1, FTimeUnit.MINUTES).longValue(FTimeUnit.MILLISECONDS));
+        defaultBackOffPolicy = BackOffPolicies.exponentialBackOff(Duration.ONE_MILLISECOND, Duration.ONE_MINUTE);
     }
 
     @Override
