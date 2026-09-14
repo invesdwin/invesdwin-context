@@ -14,7 +14,7 @@ import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.Executors;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.lang.uri.connect.InputStreamHttpResponseConsumer;
@@ -161,10 +161,14 @@ public final class ContextProperties {
      * 
      * this should be $HOME/.invesdwin
      */
-    public static synchronized File getHomeDirectory() {
+    public static File getHomeDirectory() {
         if (homeDirectory == null) {
-            homeDirectory = PlatformInitializerProperties.getInitializer()
-                    .initHomeDirectory(getUserHomeDirectory(), isTestEnvironmentForHomeDirectory());
+            synchronized (ContextProperties.class) {
+                if (homeDirectory == null) {
+                    homeDirectory = PlatformInitializerProperties.getInitializer()
+                            .initHomeDirectory(getUserHomeDirectory(), isTestEnvironmentForHomeDirectory());
+                }
+            }
         }
         return homeDirectory;
     }
@@ -180,18 +184,26 @@ public final class ContextProperties {
      * 
      * Though this can be redirected/overridden to a different location.
      */
-    public static synchronized File getHomeDataDirectory() {
+    public static File getHomeDataDirectory() {
         if (homeDataDirectory == null) {
-            homeDataDirectory = PlatformInitializerProperties.getInitializer()
-                    .initHomeDataDirectory(getHomeDirectory(), isTestEnvironmentForHomeDirectory());
+            synchronized (ContextProperties.class) {
+                if (homeDataDirectory == null) {
+                    homeDataDirectory = PlatformInitializerProperties.getInitializer()
+                            .initHomeDataDirectory(getHomeDirectory(), isTestEnvironmentForHomeDirectory());
+                }
+            }
         }
         return homeDataDirectory;
     }
 
-    public static synchronized File getHomeDataDirectoryPerNode() {
+    public static File getHomeDataDirectoryPerNode() {
         if (homeDataDirectoryPerNode == null) {
-            homeDataDirectory = PlatformInitializerProperties.getInitializer()
-                    .initHomeDataDirectoryPerNode(getHomeDataDirectory(), isTestEnvironmentForHomeDirectory());
+            synchronized (ContextProperties.class) {
+                if (homeDataDirectoryPerNode == null) {
+                    homeDataDirectoryPerNode = PlatformInitializerProperties.getInitializer()
+                            .initHomeDataDirectoryPerNode(getHomeDataDirectory(), isTestEnvironmentForHomeDirectory());
+                }
+            }
         }
         return homeDataDirectoryPerNode;
     }
@@ -205,10 +217,14 @@ public final class ContextProperties {
         return new SystemProperties().getString("user.home");
     }
 
-    public static synchronized File getLogDirectory() {
+    public static File getLogDirectory() {
         if (logDirectory == null) {
-            logDirectory = PlatformInitializerProperties.getInitializer()
-                    .initLogDirectory(IS_TEST_ENVIRONMENT, getFallbackWorkDirectory());
+            synchronized (ContextProperties.class) {
+                if (logDirectory == null) {
+                    logDirectory = PlatformInitializerProperties.getInitializer()
+                            .initLogDirectory(IS_TEST_ENVIRONMENT, getFallbackWorkDirectory());
+                }
+            }
         }
         return logDirectory;
     }
@@ -220,15 +236,19 @@ public final class ContextProperties {
     /**
      * Cache dir that holds information over multiple JVM instances.
      */
-    public static synchronized File getCacheDirectory() {
+    public static File getCacheDirectory() {
         if (cacheDirectory == null) {
-            cacheDirectory = PlatformInitializerProperties.getInitializer()
-                    .initCacheDirectory(getFallbackWorkDirectory());
+            synchronized (ContextProperties.class) {
+                if (cacheDirectory == null) {
+                    cacheDirectory = PlatformInitializerProperties.getInitializer()
+                            .initCacheDirectory(getFallbackWorkDirectory());
+                }
+            }
         }
         return cacheDirectory;
     }
 
-    public static synchronized Set<String> getBasePackages() {
+    public static Set<String> getBasePackages() {
         return BasePackagesConfigurer.getBasePackages();
     }
 

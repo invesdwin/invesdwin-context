@@ -13,12 +13,11 @@ import java.nio.file.StandardCopyOption;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.context.integration.filechannel.IFileChannel;
+import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
-import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.lang.Files;
-import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.streams.closeable.Closeables;
 import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
@@ -34,23 +33,19 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 @NotThreadSafe
 public class AtomicNioFileChannel extends NioFileChannel {
 
-    private final AtomicNioFileChannelPath atomicPath;
+    private final AtomicNioFileChannelContext context;
 
-    public AtomicNioFileChannel(final String serverUri) {
-        this(new AtomicNioFileChannelPath(serverUri));
+    public AtomicNioFileChannel(final IFileChannelPath path) {
+        this(path, new AtomicNioFileChannelContext());
     }
 
-    public AtomicNioFileChannel(final URI serverUri) {
-        this(new AtomicNioFileChannelPath(serverUri));
-    }
-
-    public AtomicNioFileChannel(final AtomicNioFileChannelPath path) {
+    public AtomicNioFileChannel(final IFileChannelPath path, final AtomicNioFileChannelContext context) {
         super(path);
-        this.atomicPath = path;
+        this.context = context;
     }
 
-    public AtomicNioFileChannelPath getAtomicPath() {
-        return atomicPath;
+    public AtomicNioFileChannelContext getContext() {
+        return context;
     }
 
     // --- Override Factories to preserve AtomicNioFileChannel Type ---
@@ -58,26 +53,24 @@ public class AtomicNioFileChannel extends NioFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withSubDirectory(final String subDirectory) {
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(getServerUri()));
+        final AtomicNioFileChannel instance = newDirectory(
+                FileChannelPaths.newDirectoryUri(getServerUri(), subDirectory), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
-        instance.setFilename(getFilename());
-        instance.setSubDirectory(subDirectory);
+        instance.setFileName(getFileName());
         return instance;
     }
 
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withBaseServerUri(final URI baseServerUri) {
-        //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
-        //CHECKSTYLE:OFF
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(newServerUri));
+        final AtomicNioFileChannel instance = newDirectory(
+                FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory()), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
         instance.setSubDirectory(getSubDirectory());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -92,15 +85,13 @@ public class AtomicNioFileChannel extends NioFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withBaseDirectory(final String baseDirectory) {
-        //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
-        //CHECKSTYLE:OFF
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(newServerUri));
+        final AtomicNioFileChannel instance = newDirectory(
+                FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
         instance.setSubDirectory(getSubDirectory());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -108,14 +99,12 @@ public class AtomicNioFileChannel extends NioFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withAbsoluteDirectory(final String absoluteDirectory) {
-        //CHECKSTYLE:ON
-        final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
-        //CHECKSTYLE:OFF
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(newServerUri));
+        final AtomicNioFileChannel instance = newDirectory(
+                FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -123,7 +112,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withSubPath(final String subPath) {
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(getServerUri()));
+        final AtomicNioFileChannel instance = newDirectory(getServerUri(), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
         instance.setSubPath(subPath);
@@ -133,7 +122,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withSubPath(final Path path) {
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(getServerUri()));
+        final AtomicNioFileChannel instance = newDirectory(getServerUri(), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
         instance.setSubPath(path);
@@ -143,40 +132,22 @@ public class AtomicNioFileChannel extends NioFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withFilename(final String filename) {
-        final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(getServerUri()));
+        final AtomicNioFileChannel instance = newDirectory(getServerUri(), context.clone());
         //CHECKSTYLE:ON
         instance.setEmptyFileContent(getEmptyFileContent());
         instance.setSubDirectory(getSubDirectory());
-        instance.setFilename(filename);
+        instance.setFileName(filename);
         return instance;
     }
 
     //CHECKSTYLE:OFF
     @Override
     public AtomicNioFileChannel withAbsolutePath(final String path) {
+        final AtomicNioFileChannel instance = newDirectory(FileChannelPaths.newDirectoryUri(getBaseServerUri(), path),
+                context.clone());
         //CHECKSTYLE:ON
-        if (Strings.isBlank(path)) {
-            //CHECKSTYLE:OFF
-            final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(getBaseServerUri()));
-            //CHECKSTYLE:ON
-            instance.setEmptyFileContent(getEmptyFileContent());
-            instance.setSubPath((String) null);
-            return instance;
-        }
-        if (path.contains("://")) {
-            final IFileChannel registryChannel = FileChannelRegistry.newInstance(path);
-            if (registryChannel instanceof AtomicNioFileChannel) {
-                return (AtomicNioFileChannel) registryChannel;
-            }
-            return (AtomicNioFileChannel) registryChannel;
-        } else {
-            //CHECKSTYLE:OFF
-            final AtomicNioFileChannel instance = new AtomicNioFileChannel(atomicPath.derive(getBaseServerUri()));
-            //CHECKSTYLE:ON
-            instance.setEmptyFileContent(getEmptyFileContent());
-            instance.setSubPath(path);
-            return instance;
-        }
+        instance.setEmptyFileContent(getEmptyFileContent());
+        return instance;
     }
 
     //CHECKSTYLE:OFF
@@ -191,13 +162,18 @@ public class AtomicNioFileChannel extends NioFileChannel {
     @Override
     public AtomicNioFileChannel upload(final File file) {
         connect(true);
-        atomicPath.maybeRunCleanup();
+        context.maybeRunCleanup(this);
         try {
             final Path targetPath = Paths.get(getFileUri());
-            final Path tempPath = targetPath.resolveSibling(
-                    Files.normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelPath.TMP_SUFFIX));
-            Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            final String targetFilename = targetPath.getFileName().toString();
+            if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
+                Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                final Path tempPath = targetPath.resolveSibling(
+                        Files.normalizeFilename(targetFilename + AtomicNioFileChannelContext.TMP_SUFFIX));
+                Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -212,13 +188,18 @@ public class AtomicNioFileChannel extends NioFileChannel {
     @Override
     public AtomicNioFileChannel upload(final InputStream input) {
         connect(true);
-        atomicPath.maybeRunCleanup();
+        context.maybeRunCleanup(this);
         try {
             final Path targetPath = Paths.get(getFileUri());
-            final Path tempPath = targetPath.resolveSibling(
-                    Files.normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelPath.TMP_SUFFIX));
-            Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            final String targetFilename = targetPath.getFileName().toString();
+            if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
+                Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } else {
+                final Path tempPath = targetPath.resolveSibling(
+                        Files.normalizeFilename(targetFilename + AtomicNioFileChannelContext.TMP_SUFFIX));
+                Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -230,28 +211,66 @@ public class AtomicNioFileChannel extends NioFileChannel {
     @Override
     public OutputStream newUpload() {
         connect(true);
-        atomicPath.maybeRunCleanup();
+        context.maybeRunCleanup(this);
         try {
             final Path targetPath = Paths.get(getFileUri());
-            final Path tempPath = targetPath.resolveSibling(
-                    Files.normalizeFilename(targetPath.getFileName().toString() + AtomicNioFileChannelPath.TMP_SUFFIX));
+            final String targetFilename = targetPath.getFileName().toString();
+            if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
+                return Files.newOutputStream(targetPath);
+            } else {
+                final Path tempPath = targetPath.resolveSibling(Files.normalizeFilename(
+                        targetPath.getFileName().toString() + AtomicNioFileChannelContext.TMP_SUFFIX));
 
-            final OutputStream out = Files.newOutputStream(tempPath);
-            return new FilterOutputStream(out) {
-                private boolean closed = false;
+                final OutputStream out = Files.newOutputStream(tempPath);
+                return new FilterOutputStream(out) {
+                    private boolean closed = false;
 
-                @Override
-                public void close() throws IOException {
-                    if (closed) {
-                        return;
+                    @Override
+                    public void close() throws IOException {
+                        if (closed) {
+                            return;
+                        }
+                        closed = true;
+                        super.close();
+                        Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
                     }
-                    closed = true;
-                    super.close();
-                    Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                }
-            };
+                };
+            }
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public static AtomicNioFileChannel newInstance(final URI serverUri) {
+        return new AtomicNioFileChannel(FileChannelPath.newInstance(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static AtomicNioFileChannel newFile(final URI serverUri) {
+        return new AtomicNioFileChannel(FileChannelPath.newFile(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static AtomicNioFileChannel newDirectory(final URI serverUri) {
+        return new AtomicNioFileChannel(FileChannelPath.newDirectory(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static AtomicNioFileChannel newInstance(final IFileChannelPath path) {
+        return new AtomicNioFileChannel(path);
+    }
+
+    public static AtomicNioFileChannel newInstance(final URI serverUri, final AtomicNioFileChannelContext context) {
+        return new AtomicNioFileChannel(FileChannelPath.newInstance(serverUri, DEFAULT_SERVER_URI_F), context);
+    }
+
+    public static AtomicNioFileChannel newFile(final URI serverUri, final AtomicNioFileChannelContext context) {
+        return new AtomicNioFileChannel(FileChannelPath.newFile(serverUri, DEFAULT_SERVER_URI_F), context);
+    }
+
+    public static AtomicNioFileChannel newDirectory(final URI serverUri, final AtomicNioFileChannelContext context) {
+        return new AtomicNioFileChannel(FileChannelPath.newDirectory(serverUri, DEFAULT_SERVER_URI_F), context);
+    }
+
+    public static AtomicNioFileChannel newInstance(final IFileChannelPath path,
+            final AtomicNioFileChannelContext context) {
+        return new AtomicNioFileChannel(path, context);
     }
 }

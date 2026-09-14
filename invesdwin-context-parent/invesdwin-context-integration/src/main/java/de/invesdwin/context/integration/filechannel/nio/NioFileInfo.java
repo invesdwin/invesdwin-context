@@ -23,10 +23,8 @@ public class NioFileInfo implements IFileInfo {
     private final String filename;
     private transient Path delegate;
 
-    private final boolean isDirectory;
-    private final boolean isFile;
-    private final long length;
-    private final FDate lastModified;
+    // Lazy and transient fields
+    private transient volatile BasicFileAttributes attributes;
 
     public NioFileInfo(final URI serverUri, final URI baseServerUri, final String baseDirectory,
             final String subDirectory, final Path delegate) {
@@ -36,15 +34,22 @@ public class NioFileInfo implements IFileInfo {
         this.subDirectory = subDirectory;
         this.delegate = delegate;
         this.filename = delegate.getFileName().toString();
+    }
 
+    private BasicFileAttributes getAttributes() {
+        BasicFileAttributes attributesCopy = attributes;
+        if (attributesCopy == null) {
+            attributesCopy = newAttributes();
+            attributes = attributesCopy;
+        }
+        return attributesCopy;
+    }
+
+    private BasicFileAttributes newAttributes() {
         try {
-            final BasicFileAttributes attrs = Files.readAttributes(delegate, BasicFileAttributes.class);
-            this.isDirectory = attrs.isDirectory();
-            this.isFile = attrs.isRegularFile();
-            this.length = attrs.size();
-            this.lastModified = new FDate(attrs.lastModifiedTime().toMillis());
+            return Files.readAttributes(unwrap(), BasicFileAttributes.class);
         } catch (final IOException e) {
-            throw new RuntimeException("Failed to read attributes for path: " + delegate, e);
+            return DisabledBasicFileAttributes.INSTANCE;
         }
     }
 
@@ -69,28 +74,28 @@ public class NioFileInfo implements IFileInfo {
     }
 
     @Override
-    public String getFilename() {
+    public String getFileName() {
         return filename;
     }
 
     @Override
     public boolean isFile() {
-        return isFile;
+        return getAttributes().isRegularFile();
     }
 
     @Override
     public boolean isDirectory() {
-        return isDirectory;
+        return getAttributes().isDirectory();
     }
 
     @Override
     public FDate lastModified() {
-        return lastModified;
+        return new FDate(getAttributes().lastModifiedTime().toMillis());
     }
 
     @Override
     public long length() {
-        return length;
+        return getAttributes().size();
     }
 
     @Override
@@ -99,6 +104,16 @@ public class NioFileInfo implements IFileInfo {
             delegate = Paths.get(getFileUri());
         }
         return delegate;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return FileChannelPaths.equals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return FileChannelPaths.hashCode(this);
     }
 
     @Override

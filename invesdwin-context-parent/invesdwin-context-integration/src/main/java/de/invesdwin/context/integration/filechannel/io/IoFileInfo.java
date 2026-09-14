@@ -18,10 +18,11 @@ public class IoFileInfo implements IFileInfo {
     private final String subDirectory;
     private final File delegate;
 
-    private final boolean isDirectory;
-    private final boolean isFile;
-    private final long length;
-    private final FDate lastModified;
+    // Lazy and transient fields
+    private transient volatile Boolean isDirectory;
+    private transient volatile Boolean isFile;
+    private transient volatile Long length;
+    private transient volatile FDate lastModified;
 
     public IoFileInfo(final URI serverUri, final URI baseServerUri, final String baseDirectory,
             final String subDirectory, final File delegate) {
@@ -30,11 +31,6 @@ public class IoFileInfo implements IFileInfo {
         this.baseDirectory = baseDirectory;
         this.subDirectory = subDirectory;
         this.delegate = delegate;
-
-        this.isDirectory = delegate.isDirectory();
-        this.isFile = delegate.isFile();
-        this.length = delegate.length();
-        this.lastModified = new FDate(delegate.lastModified());
     }
 
     @Override
@@ -58,33 +54,55 @@ public class IoFileInfo implements IFileInfo {
     }
 
     @Override
-    public String getFilename() {
+    public String getFileName() {
         return delegate.getName();
     }
 
     @Override
     public boolean isFile() {
+        if (isFile == null) {
+            isFile = delegate.isFile();
+        }
         return isFile;
     }
 
     @Override
     public boolean isDirectory() {
+        if (isDirectory == null) {
+            isDirectory = delegate.isDirectory();
+        }
         return isDirectory;
     }
 
     @Override
     public FDate lastModified() {
+        if (lastModified == null) {
+            lastModified = new FDate(delegate.lastModified());
+        }
         return lastModified;
     }
 
     @Override
     public long length() {
+        if (length == null) {
+            length = delegate.length();
+        }
         return length;
     }
 
     @Override
     public File unwrap() {
         return delegate;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return FileChannelPaths.equals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return FileChannelPaths.hashCode(this);
     }
 
     @Override

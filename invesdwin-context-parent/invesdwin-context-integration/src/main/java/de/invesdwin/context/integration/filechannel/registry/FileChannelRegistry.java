@@ -1,6 +1,8 @@
 package de.invesdwin.context.integration.filechannel.registry;
 
+import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,11 +13,10 @@ import java.util.ServiceLoader;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.filechannel.IFileChannel;
-import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
+import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
-import de.invesdwin.util.lang.uri.URIs;
 
 @ThreadSafe
 public final class FileChannelRegistry {
@@ -87,33 +88,61 @@ public final class FileChannelRegistry {
         }
     }
 
-    public static IFileChannel newInstance(final String serverUriStr) {
-        if (serverUriStr == null) {
+    public static IFileChannel newFile(final File path) {
+        return newInstance(FileChannelPath.newFile(path));
+    }
+
+    public static IFileChannel newDirectory(final File path) {
+        return newInstance(FileChannelPath.newDirectory(path));
+    }
+
+    public static IFileChannel newInstance(final File path) {
+        return newInstance(FileChannelPath.newInstance(path));
+    }
+
+    public static IFileChannel newFile(final Path path) {
+        return newInstance(FileChannelPath.newFile(path));
+    }
+
+    public static IFileChannel newDirectory(final Path path) {
+        return newInstance(FileChannelPath.newDirectory(path));
+    }
+
+    public static IFileChannel newInstance(final Path path) {
+        return newInstance(FileChannelPath.newInstance(path));
+    }
+
+    public static IFileChannel newInstance(final String serverUri) {
+        if (serverUri == null) {
             return newInstance((URI) null);
         }
-        return newInstance(URIs.asUri(serverUriStr));
+        return newInstance(FileChannelPath.newInstance(serverUri));
+    }
+
+    public static IFileChannel newFile(final String serverUri) {
+        if (serverUri == null) {
+            return newFile((URI) null);
+        }
+        return newInstance(FileChannelPath.newFile(serverUri));
+    }
+
+    public static IFileChannel newDirectory(final String serverUri) {
+        if (serverUri == null) {
+            return newDirectory((URI) null);
+        }
+        return newInstance(FileChannelPath.newDirectory(serverUri));
+    }
+
+    public static IFileChannel newFile(final URI serverUri) {
+        return newInstance(FileChannelPath.newFile(serverUri));
+    }
+
+    public static IFileChannel newDirectory(final URI serverUri) {
+        return newInstance(FileChannelPath.newDirectory(serverUri));
     }
 
     public static IFileChannel newInstance(final URI serverUri) {
-        final String scheme;
-        final URI effectiveUri;
-        if (serverUri == null) {
-            throw new NullPointerException("serverUri cannot be null");
-        }
-        if (serverUri.getScheme() == null) {
-            scheme = "file";
-            effectiveUri = URI.create("file:" + serverUri.toString());
-        } else {
-            scheme = serverUri.getScheme();
-            effectiveUri = serverUri;
-        }
-
-        final IFileChannelFactory factory = FACTORIES.get(scheme.toLowerCase());
-        if (factory == null) {
-            throw new IllegalArgumentException("No IFileChannelFactory registered for scheme: " + scheme
-                    + ". Available schemes: " + FACTORIES.keySet());
-        }
-        return newInstance(FileChannelPath.valueOf(effectiveUri, null));
+        return newInstance(FileChannelPath.newInstance(serverUri));
     }
 
     public static IFileChannel newInstance(final IFileChannelPath path) {

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import de.invesdwin.context.integration.marshaller.MarshallerJsonJackson;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.collections.Collections;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.time.date.millis.FDateMillis;

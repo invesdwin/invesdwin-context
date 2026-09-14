@@ -1,9 +1,12 @@
 package de.invesdwin.context.integration.filechannel.info.path;
 
+import java.io.File;
 import java.net.URI;
+import java.nio.file.Path;
 
 import javax.annotation.concurrent.Immutable;
 
+import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 
@@ -11,6 +14,33 @@ import de.invesdwin.util.lang.uri.URIs;
 public final class FileChannelPaths {
 
     private FileChannelPaths() {}
+
+    public static boolean equals(final IFileChannelPath thisObj, final Object obj) {
+        if (thisObj == obj) {
+            return true;
+        }
+        if (thisObj == null && obj == null) {
+            return true;
+        }
+        if (thisObj == null || obj == null) {
+            return false;
+        }
+        if (obj instanceof IFileChannelPath) {
+            final IFileChannelPath cObj = (IFileChannelPath) obj;
+            return Objects.equals(thisObj.getBaseServerUri(), cObj.getBaseServerUri())
+                    && Objects.equals(thisObj.getAbsoluteDirectory(), cObj.getAbsoluteDirectory())
+                    && Objects.equals(thisObj.getFileName(), cObj.getFileName());
+        } else {
+            return false;
+        }
+    }
+
+    public static int hashCode(final IFileChannelPath thisObj) {
+        if (thisObj == null) {
+            return 0;
+        }
+        return Objects.hashCode(thisObj.getBaseServerUri(), thisObj.getAbsoluteDirectory(), thisObj.getFileName());
+    }
 
     public static URI combineUri(final URI baseDirectory, final String subDirectory) {
         return URIs.asUri(combinePath(baseDirectory, subDirectory));
@@ -98,11 +128,11 @@ public final class FileChannelPaths {
 
     public static URI newDirectoryUri(final String serverUri, final String directory) {
         final String uriStr = combinePath(serverUri, directory);
-        return URI.create(uriStr);
+        return URIs.asUri(uriStr);
     }
 
     public static URI newFileUri(final IFileChannelPath info) {
-        return newFileUri(info.getBaseServerUri(), info.getAbsoluteDirectory(), info.getFilename());
+        return newFileUri(info.getBaseServerUri(), info.getAbsoluteDirectory(), info.getFileName());
     }
 
     public static URI newFileUri(final URI serverUri, final String directory, final String filename) {
@@ -111,7 +141,7 @@ public final class FileChannelPaths {
 
     public static URI newFileUri(final String serverUri, final String directory, final String filename) {
         final String uriStr = toString(serverUri, directory, filename);
-        return URI.create(uriStr);
+        return URIs.asUri(uriStr);
     }
 
     public static URI newFileUri(final URI serverUri, final String filename) {
@@ -120,12 +150,12 @@ public final class FileChannelPaths {
 
     public static URI newFileUri(final String serverUri, final String filename) {
         final String uriStr = toString(serverUri, null, filename);
-        return URI.create(uriStr);
+        return URIs.asUri(uriStr);
     }
 
     public static String newAbsolutePath(final IFileChannelPath info) {
         final String directory = info.getAbsoluteDirectory();
-        final String filename = info.getFilename();
+        final String filename = info.getFileName();
         return newAbsolutePath(directory, filename);
     }
 
@@ -134,7 +164,7 @@ public final class FileChannelPaths {
     }
 
     public static String toString(final IFileChannelPath info) {
-        return toString(info.getBaseServerUri(), info.getAbsoluteDirectory(), info.getFilename());
+        return toString(info.getBaseServerUri(), info.getAbsoluteDirectory(), info.getFileName());
     }
 
     public static String toString(final URI serverUri, final String directory, final String filename) {
@@ -143,6 +173,22 @@ public final class FileChannelPaths {
 
     public static String toString(final String serverUri, final String directory, final String filename) {
         return combinePath(serverUri, directory) + Strings.asStringEmptyText(filename);
+    }
+
+    public static File toFile(final IFileChannelPath file) {
+        return toFile(file.getFileUri());
+    }
+
+    public static File toFile(final URI fileUri) {
+        return new File(fileUri);
+    }
+
+    public static Path toPath(final IFileChannelPath file) {
+        return toPath(file.getFileUri());
+    }
+
+    public static Path toPath(final URI fileUri) {
+        return Path.of(fileUri);
     }
 
 }
