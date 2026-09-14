@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.retry.task;
 import javax.annotation.concurrent.Immutable;
 
 import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.backoff.NoBackOffPolicy;
 import org.springframework.retry.backoff.UniformRandomBackOffPolicy;
@@ -58,6 +59,17 @@ public final class BackOffPolicies {
         randomBackOff.setMinBackOffPeriod(minDuration.longValue(FTimeUnit.MILLISECONDS));
         randomBackOff.setMaxBackOffPeriod(maxDuration.longValue(FTimeUnit.MILLISECONDS));
         return randomBackOff;
+    }
+
+    public static BackOffPolicy exponentialBackOff(final Duration maxDuration) {
+        return exponentialBackOff(Duration.ONE_MILLISECOND, maxDuration);
+    }
+
+    public static ExponentialBackOffPolicy exponentialBackOff(final Duration minDuration, final Duration maxDuration) {
+        final ExponentialBackOffPolicy exponentialBackOff = new ExponentialBackOffPolicy();
+        exponentialBackOff.setInitialInterval(minDuration.longValue(FTimeUnit.MILLISECONDS));
+        exponentialBackOff.setMaxInterval(maxDuration.longValue(FTimeUnit.MILLISECONDS));
+        return exponentialBackOff;
     }
 
 }
