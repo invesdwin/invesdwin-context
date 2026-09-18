@@ -136,12 +136,20 @@ public abstract class AProperties implements IProperties {
     @Override
     public <T> T getSerde(final ISerde<T> serde, final String key) {
         final byte[] bytes = getBytes(key);
+        if (bytes == null) {
+            return null;
+        }
         return serde.fromBytes(bytes);
     }
 
     @Override
     public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
-        final byte[] bytes = serde.toBytes(value);
+        final byte[] bytes;
+        if (value == null) {
+            bytes = null;
+        } else {
+            bytes = serde.toBytes(value);
+        }
         setBytes(key, bytes);
     }
 
