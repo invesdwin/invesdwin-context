@@ -116,12 +116,20 @@ public abstract class AProperties implements IProperties {
     @Override
     public byte[] getBytes(final String key) {
         final String str = getString(key);
+        if (str == null) {
+            return null;
+        }
         return Base64.getDecoder().decode(str);
     }
 
     @Override
     public void setBytes(final String key, final byte[] value) {
-        final String str = Base64.getEncoder().encodeToString(value);
+        final String str;
+        if ((value == null)) {
+            str = null;
+        } else {
+            str = Base64.getEncoder().encodeToString(value);
+        }
         setString(key, str);
     }
 
