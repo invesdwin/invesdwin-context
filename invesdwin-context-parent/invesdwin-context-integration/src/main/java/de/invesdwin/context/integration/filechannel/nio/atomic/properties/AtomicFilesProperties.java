@@ -33,6 +33,9 @@ import de.invesdwin.util.time.date.FDate;
  * <b>Pattern used:</b> Maps individual properties to dedicated files with a specific extension ({@code .property})
  * within a shared directory. Modifications are delegated to an {@link AtomicNioFileChannel} which safely performs
  * atomic writes.
+ * 
+ * WARNING: A single property is not thread-safe, if multiple threads write the same temp file concurrently, a
+ * FileAlreadyExistsException will be thrown which can be handled by the outside code.
  */
 @ThreadSafe
 public class AtomicFilesProperties extends AProperties {
@@ -177,7 +180,7 @@ public class AtomicFilesProperties extends AProperties {
             @Override
             protected void addPropertyDirect(final String key, final Object value) {
                 final String valueStr = String.valueOf(value);
-                getChannel(key).upload(valueStr.getBytes(Charsets.defaultCharset()));
+                getChannel(key).uploadString(valueStr);
                 knownKeys.add(key);
                 valueCache.put(key, valueStr);
             }

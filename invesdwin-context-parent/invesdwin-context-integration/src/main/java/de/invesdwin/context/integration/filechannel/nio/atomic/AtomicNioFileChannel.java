@@ -29,6 +29,9 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
  * <b>Pattern used:</b> Leverages a write-to-temporary-file and atomic-rename strategy. Data is first streamed or copied
  * into a sibling temporary file. Once fully flushed, the file is moved to its final destination. This prevents
  * consumers from reading partial or corrupted data during slow uploads or system crashes.
+ * 
+ * WARNING: this implementation only handles conflicts between separate processes, within a process, this implementation
+ * is not thread-safe and can throw FileAlreadyExistsException when concurrent writes happen to the same temp file.
  */
 @NotThreadSafe
 public class AtomicNioFileChannel extends NioFileChannel {
