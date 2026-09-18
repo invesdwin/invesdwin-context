@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
@@ -17,6 +18,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.string.Strings;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -52,9 +54,13 @@ public class LoggingDelegateProperties implements IProperties {
     }
 
     private <T> void logModification(final String key, final T newValue) {
+        logModification(key, newValue, delegate::getProperty);
+    }
+
+    private <T> void logModification(final String key, final T newValue, final Function<String, T> oldValueF) {
         final String oldValueStr;
         if (delegate.containsValue(key)) {
-            oldValueStr = Strings.asString(delegate.getProperty(key));
+            oldValueStr = Strings.asString(oldValueF.apply(key));
         } else {
             oldValueStr = null;
         }
@@ -94,6 +100,28 @@ public class LoggingDelegateProperties implements IProperties {
     public void setByte(final String key, final Byte value) {
         logModification(key, value);
         delegate.setByte(key, value);
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        return delegate.getBytes(key);
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        logModification(key, value);
+        delegate.setBytes(key, value);
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        return delegate.getSerde(serde, key);
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        logModification(key, value, (k) -> delegate.getSerde(serde, k));
+        delegate.setSerde(serde, key, value);
     }
 
     @Override

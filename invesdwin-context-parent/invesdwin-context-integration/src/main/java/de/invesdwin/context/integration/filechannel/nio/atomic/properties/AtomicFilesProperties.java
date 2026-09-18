@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.filechannel.nio.atomic.properties;
 
 import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,6 +18,7 @@ import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChan
 import de.invesdwin.context.system.properties.AProperties;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
 import de.invesdwin.util.collections.iterable.ICloseableIterator;
+import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.string.Charsets;
 import de.invesdwin.util.time.date.FDate;
@@ -34,8 +36,8 @@ import de.invesdwin.util.time.date.FDate;
  * within a shared directory. Modifications are delegated to an {@link AtomicNioFileChannel} which safely performs
  * atomic writes.
  * 
- * WARNING: A single property is not thread-safe, if multiple threads write the same temp file concurrently, a
- * FileAlreadyExistsException will be thrown which can be handled by the outside code.
+ * WARNING: A single property is not thread-safe, if multiple threads write the same temp file concurrently, the first
+ * one wins.
  */
 @ThreadSafe
 public class AtomicFilesProperties extends AProperties {
@@ -179,10 +181,17 @@ public class AtomicFilesProperties extends AProperties {
 
             @Override
             protected void addPropertyDirect(final String key, final Object value) {
-                final String valueStr = String.valueOf(value);
-                getChannel(key).uploadString(valueStr);
-                knownKeys.add(key);
-                valueCache.put(key, valueStr);
+                try {
+                    final String valueStr = String.valueOf(value);
+                    getChannel(key).uploadString(valueStr);
+                    knownKeys.add(key);
+                    valueCache.put(key, valueStr);
+                } catch (final Throwable t) {
+                    //first one wins when doing concurrent writes to the process specific temp file for this property
+                    if (!Throwables.isCausedByType(t, FileAlreadyExistsException.class)) {
+                        throw t;
+                    }
+                }
             }
 
             @Override

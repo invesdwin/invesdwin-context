@@ -21,6 +21,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Objects;
 import de.invesdwin.util.lang.Optionals;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -126,7 +127,7 @@ public final class CachingDelegateProperties implements IProperties {
                 final T newValue = getter.call();
                 final Optional<T> oldValue = (Optional<T>) cache.putIfAbsent(key, Optional.ofNullable(newValue));
                 if (oldValue != null) {
-                    return (T) oldValue.orElse(null);
+                    return oldValue.orElse(null);
                 } else {
                     return newValue;
                 }
@@ -160,6 +161,46 @@ public final class CachingDelegateProperties implements IProperties {
             @Override
             public void run() {
                 delegate.setByte(key, value);
+            }
+        });
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        return getOrLoad(key, new Callable<byte[]>() {
+            @Override
+            public byte[] call() {
+                return delegate.getBytes(key);
+            }
+        });
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setBytes(key, value);
+            }
+        });
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        return getOrLoad(key, new Callable<T>() {
+            @Override
+            public T call() {
+                return delegate.getSerde(serde, key);
+            }
+        });
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        set(key, value, new Runnable() {
+            @Override
+            public void run() {
+                delegate.setSerde(serde, key, value);
             }
         });
     }

@@ -15,6 +15,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.system.properties.IProperties;
 import de.invesdwin.util.collections.fast.concurrent.SynchronizedMap;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -89,6 +90,34 @@ public class SynchronizedProperties implements IProperties {
     public void setByte(final String key, final Byte value) {
         synchronized (lock) {
             delegate.setByte(key, value);
+        }
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        synchronized (lock) {
+            return delegate.getBytes(key);
+        }
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        synchronized (lock) {
+            delegate.setBytes(key, value);
+        }
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        synchronized (lock) {
+            return delegate.getSerde(serde, key);
+        }
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        synchronized (lock) {
+            delegate.setSerde(serde, key, value);
         }
     }
 

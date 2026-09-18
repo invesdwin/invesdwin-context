@@ -15,6 +15,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -71,6 +72,26 @@ public class PrefixedDelegateProperties implements IProperties {
     @Override
     public void setByte(final String key, final Byte value) {
         delegate.setByte(prefix + key, value);
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        return delegate.getBytes(prefix + key);
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        delegate.setBytes(prefix + key, value);
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        return delegate.getSerde(serde, prefix + key);
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        delegate.setSerde(serde, prefix + key, value);
     }
 
     @Override

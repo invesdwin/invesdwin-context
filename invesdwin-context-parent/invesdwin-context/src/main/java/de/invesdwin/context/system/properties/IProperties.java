@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.streams.SocketUtils;
 import de.invesdwin.util.time.date.FDate;
@@ -59,6 +60,38 @@ public interface IProperties {
     }
 
     void setByte(String key, Byte value);
+
+    byte[] getBytes(String key);
+
+    default byte[] getBytesOptional(final String key) {
+        return getBytesOptional(key, null);
+    }
+
+    default byte[] getBytesOptional(final String key, final byte[] defaultValue) {
+        if (containsValue(key)) {
+            return getBytes(key);
+        } else {
+            return defaultValue;
+        }
+    }
+
+    void setBytes(String key, byte[] value);
+
+    <T> T getSerde(ISerde<T> serde, String key);
+
+    default <T> T getSerdeOptional(final ISerde<T> serde, final String key) {
+        return getSerdeOptional(serde, key, null);
+    }
+
+    default <T> T getSerdeOptional(final ISerde<T> serde, final String key, final T defaultValue) {
+        if (containsValue(key)) {
+            return getSerde(serde, key);
+        } else {
+            return defaultValue;
+        }
+    }
+
+    <T> void setSerde(ISerde<T> serde, String key, T value);
 
     Double getDouble(String key);
 
