@@ -17,6 +17,7 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
+import de.invesdwin.util.concurrent.lock.file.AtomicNioFileChannelContext;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.streams.closeable.Closeables;
@@ -165,7 +166,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
     @Override
     public AtomicNioFileChannel upload(final File file) {
         connect(true);
-        context.maybeRunCleanup(this);
+        maybeRunCleanup();
         try {
             final Path targetPath = Paths.get(getFileUri());
             final String targetFilename = targetPath.getFileName().toString();
@@ -191,7 +192,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
     @Override
     public AtomicNioFileChannel upload(final InputStream input) {
         connect(true);
-        context.maybeRunCleanup(this);
+        maybeRunCleanup();
         try {
             final Path targetPath = Paths.get(getFileUri());
             final String targetFilename = targetPath.getFileName().toString();
@@ -214,7 +215,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
     @Override
     public OutputStream newUpload() {
         connect(true);
-        context.maybeRunCleanup(this);
+        maybeRunCleanup();
         try {
             final Path targetPath = Paths.get(getFileUri());
             final String targetFilename = targetPath.getFileName().toString();
@@ -242,6 +243,11 @@ public class AtomicNioFileChannel extends NioFileChannel {
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private void maybeRunCleanup() {
+        final Path directoryPath = FileChannelPaths.toPath(getDirectoryUri());
+        context.maybeRunCleanup(directoryPath);
     }
 
     public static AtomicNioFileChannel newInstance(final URI serverUri) {
