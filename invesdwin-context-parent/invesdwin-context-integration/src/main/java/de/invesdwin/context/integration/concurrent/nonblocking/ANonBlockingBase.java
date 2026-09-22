@@ -58,8 +58,8 @@ public abstract class ANonBlockingBase {
         return IntegrationProperties.NON_BLOCKING_ASYNC_WAIT_TIMEOUT;
     }
 
-    protected RuntimeException newRetryException() {
-        return new FastNonBlockingRetryLaterRuntimeException(retryMessage);
+    protected RuntimeException newRetryException(final Throwable cause) {
+        return new FastNonBlockingRetryLaterRuntimeException(retryMessage, cause);
     }
 
     protected WrappedExecutorService getExecutor() {

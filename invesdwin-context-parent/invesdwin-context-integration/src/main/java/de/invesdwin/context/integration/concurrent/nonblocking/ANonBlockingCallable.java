@@ -74,7 +74,7 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
         try {
             return Futures.getNoInterrupt(future, timeout);
         } catch (final TimeoutException e) {
-            throw newRetryException();
+            throw newRetryException(e);
         } catch (final Throwable t) {
             synchronized (this) {
                 if (callFuture == future) {

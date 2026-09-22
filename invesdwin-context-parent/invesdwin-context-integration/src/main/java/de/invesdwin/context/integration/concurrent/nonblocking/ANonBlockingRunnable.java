@@ -74,7 +74,7 @@ public abstract class ANonBlockingRunnable extends ANonBlockingBase implements I
         try {
             Futures.getNoInterrupt(future, timeout);
         } catch (final TimeoutException e) {
-            throw newRetryException();
+            throw newRetryException(e);
         } catch (final Throwable t) {
             synchronized (this) {
                 if (runFuture == future) {

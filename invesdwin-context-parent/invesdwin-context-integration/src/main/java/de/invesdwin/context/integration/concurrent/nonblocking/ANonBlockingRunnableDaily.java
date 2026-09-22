@@ -83,11 +83,7 @@ public abstract class ANonBlockingRunnableDaily extends ANonBlockingRunnable imp
     @Override
     public void maybeRunAndRetry(final boolean force) {
         final Future<?> future = maybeRun(force);
-        if (future.isDone()) {
-            getRunFuture(future);
-        } else {
-            throw newRetryException();
-        }
+        getRunFutureOrRetry(future, getNonBlockingAsyncWaitTimeout());
     }
 
     @Override
