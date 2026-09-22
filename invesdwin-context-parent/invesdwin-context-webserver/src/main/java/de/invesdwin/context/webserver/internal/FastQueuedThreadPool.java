@@ -4,8 +4,8 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import de.invesdwin.context.integration.DatabaseThreads;
 import de.invesdwin.context.integration.IntegrationProperties;
+import de.invesdwin.context.integration.concurrent.DatabaseThreads;
 import de.invesdwin.context.webserver.WebserverProperties;
 import de.invesdwin.util.concurrent.RetryThreads;
 import io.netty.util.concurrent.FastThreadLocal;

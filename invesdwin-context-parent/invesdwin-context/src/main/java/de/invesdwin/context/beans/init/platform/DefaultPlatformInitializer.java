@@ -43,6 +43,7 @@ import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.factory.FactoryBeanPathCollectionProvider;
 import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.concurrent.lock.file.HeartbeatFileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.HeartbeatFileChannelLockRegistry;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
@@ -293,6 +294,10 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
             }
         }
         if (!createDirectoryIfAllowed(baseDir)) {
+            new Log(this).warn(
+                    "Heartbeat owner [%s] could not create node slot for process [%s], using base directory directly: %s",
+                    HeartbeatFileChannelLockRegistry.HEARTBEAT_OWNER,
+                    DynamicInstrumentationProperties.getManagementName(), baseDir);
             return baseDir;
         }
 
@@ -306,6 +311,9 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
                 Runtime.getRuntime().addShutdownHook(new CloseableShutdownHookThread(slotLock));
                 final File dataDir = new File(slotDir, "data");
                 createDirectoryIfAllowed(dataDir);
+                new Log(this).info("Heartbeat owner [%s] using node slot [%s] for process [%s] in base directory: %s",
+                        HeartbeatFileChannelLockRegistry.HEARTBEAT_OWNER, node,
+                        DynamicInstrumentationProperties.getManagementName(), baseDir);
                 return dataDir;
             }
 
