@@ -41,7 +41,7 @@ public class PrefixedPrimitiveArrayAllocator implements IPrimitiveArrayAllocator
         if (directory == null) {
             return null;
         }
-        return new File(directory, Files.normalizeFilename(prefix));
+        return new File(directory, Files.normalizeFileName(prefix));
     }
 
     @Override

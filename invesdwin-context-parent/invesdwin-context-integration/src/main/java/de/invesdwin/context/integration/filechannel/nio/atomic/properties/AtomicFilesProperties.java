@@ -121,7 +121,7 @@ public class AtomicFilesProperties extends AProperties {
         return new AbstractConfiguration() {
 
             private AtomicNioFileChannel getChannel(final String key) {
-                return fileChannel.withFilename(Files.normalizeFilename(key + PROPERTY_FILE_EXTENSION));
+                return fileChannel.withFilename(Files.normalizeFileName(key + PROPERTY_FILE_EXTENSION));
             }
 
             private String readProperty(final AtomicNioFileChannel channel) {
