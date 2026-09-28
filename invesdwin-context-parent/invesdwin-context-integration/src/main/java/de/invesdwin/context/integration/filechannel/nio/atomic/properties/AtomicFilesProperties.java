@@ -2,6 +2,7 @@ package de.invesdwin.context.integration.filechannel.nio.atomic.properties;
 
 import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -188,7 +189,7 @@ public class AtomicFilesProperties extends AProperties {
                     valueCache.put(key, valueStr);
                 } catch (final Throwable t) {
                     //first one wins when doing concurrent writes to the process specific temp file for this property
-                    if (!Throwables.isCausedByType(t, FileAlreadyExistsException.class)) {
+                    if (!Throwables.isCausedByAnyType(t, FileAlreadyExistsException.class, NoSuchFileException.class)) {
                         throw t;
                     }
                 }

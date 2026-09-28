@@ -36,19 +36,17 @@ public abstract class ANonBlockingRunnableDaily extends ANonBlockingRunnable imp
             }
         }
         Future<?> runFutureCopy = runFuture;
-        if (runFutureCopy != null && !runFutureCopy.isDone()) {
+        if (runFutureCopy != null) {
             return runFutureCopy;
         }
         synchronized (this) {
             runFutureCopy = runFuture;
-            if (runFutureCopy != null && !runFutureCopy.isDone()) {
+            if (runFutureCopy != null) {
                 return runFutureCopy;
             }
             if (!force && FDates.isSameJulianDay(runFutureFinished, now)) {
                 if (runFutureCopy == null) {
                     return NullFuture.getInstance();
-                } else {
-                    return runFutureCopy;
                 }
             }
             final ListenableFuture<?> future = getExecutor().submit(() -> callBlockingAll(() -> {

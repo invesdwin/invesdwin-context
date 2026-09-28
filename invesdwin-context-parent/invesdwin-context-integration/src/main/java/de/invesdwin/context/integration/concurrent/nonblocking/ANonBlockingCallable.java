@@ -24,12 +24,12 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
     @Override
     public Future<V> maybeCall() {
         Future<V> runFutureCopy = callFuture;
-        if (runFutureCopy != null && !runFutureCopy.isDone()) {
+        if (runFutureCopy != null) {
             return runFutureCopy;
         }
         synchronized (this) {
             runFutureCopy = callFuture;
-            if (runFutureCopy != null && !runFutureCopy.isDone()) {
+            if (runFutureCopy != null) {
                 return runFutureCopy;
             }
             final ListenableFuture<V> future = getExecutor().submit(() -> callBlockingAll(() -> {
