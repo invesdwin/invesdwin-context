@@ -42,7 +42,7 @@ import de.invesdwin.util.time.date.FDate;
 @ThreadSafe
 public class AtomicFilesProperties extends AProperties {
 
-    private static final String PROPERTY_FILE_EXTENSION = ".property";
+    public static final String PROPERTY_FILE_EXTENSION = ".property";
 
     private final AtomicNioFileChannel fileChannel;
 

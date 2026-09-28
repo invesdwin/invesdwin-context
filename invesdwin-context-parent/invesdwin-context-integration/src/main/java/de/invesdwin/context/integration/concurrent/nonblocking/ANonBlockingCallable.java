@@ -8,6 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import de.invesdwin.util.concurrent.future.Futures;
+import de.invesdwin.util.concurrent.lambda.IBooleanFunction;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.time.duration.Duration;
 
@@ -16,8 +17,8 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
 
     protected volatile Future<V> callFuture;
 
-    public ANonBlockingCallable(final Class<?> parentClass, final String taskName) {
-        super(parentClass, taskName);
+    public ANonBlockingCallable(final Class<?> parentClass, final String parentInfo) {
+        super(parentClass, parentInfo);
     }
 
     @Override
@@ -91,15 +92,24 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
     }
 
     @Override
-    public void resetIfDone() {
-        Future<?> callFutureCopy = callFuture;
-        if (callFutureCopy != null && callFutureCopy.isDone()) {
+    public void resetIfDone(final IBooleanFunction<V> shouldReset) {
+        Future<V> callFutureCopy = callFuture;
+        if (callFutureCopy != null && callFutureCopy.isDone() && applyShouldReset(shouldReset, callFutureCopy)) {
             synchronized (this) {
                 callFutureCopy = callFuture;
-                if (callFutureCopy != null && callFutureCopy.isDone()) {
+                if (callFutureCopy != null && callFutureCopy.isDone()
+                        && applyShouldReset(shouldReset, callFutureCopy)) {
                     reset();
                 }
             }
+        }
+    }
+
+    private boolean applyShouldReset(final IBooleanFunction<V> shouldReset, final Future<V> callFutureCopy) {
+        try {
+            return shouldReset.apply(Futures.getNoInterrupt(callFutureCopy));
+        } catch (final Throwable t) {
+            return true;
         }
     }
 

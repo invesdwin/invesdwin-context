@@ -26,20 +26,35 @@ public abstract class ANonBlockingBase {
         }
     };
 
-    protected String executorName;
+    protected final String parentName;
     protected final String retryMessage;
 
-    public ANonBlockingBase(final Class<?> parentClass, final String taskName) {
-        this.executorName = getClass().getSimpleName();
-        if (Strings.isBlank(executorName)) {
+    public ANonBlockingBase(final Class<?> parentClass, final String parentInfo) {
+        this.parentName = getClass().getSimpleName();
+        if (Strings.isBlank(parentName)) {
             throw new NullPointerException(
-                    "this.getClass().getSimpleName() should not be blank or null (no anonymous nested classes): "
-                            + executorName);
+                    "parentClass.getSimpleName() should not be blank or null (no anonymous nested classes): "
+                            + parentClass);
         }
+        this.retryMessage = newRetryMessage(parentName, parentInfo);
+    }
+
+    private String newRetryMessage(final String parentName, final String taskNamePrefix) {
+        final String taskName = getClass().getSimpleName();
         if (Strings.isBlank(taskName)) {
-            throw new NullPointerException("taskName should not be blank or null: " + taskName);
+            throw new NullPointerException(
+                    "getClass().getSimpleName() should not be blank or null (no anonymous nested classes): "
+                            + getClass());
         }
-        this.retryMessage = parentClass.getSimpleName() + ": " + taskName + " is running";
+        final StringBuilder sb = new StringBuilder(parentName);
+        sb.append(": ");
+        if (Strings.isNotBlank(taskNamePrefix)) {
+            sb.append(taskNamePrefix);
+            sb.append(": ");
+        }
+        sb.append(taskName);
+        sb.append(" is running");
+        return sb.toString();
     }
 
     protected <T> T callBlockingAll(final Supplier<T> supplier) {
@@ -63,7 +78,7 @@ public abstract class ANonBlockingBase {
     }
 
     protected WrappedExecutorService getExecutor() {
-        return UPDATE_EXECUTOR.getNestedExecutor(executorName);
+        return UPDATE_EXECUTOR.getNestedExecutor(parentName);
     }
 
 }

@@ -16,8 +16,8 @@ public abstract class ANonBlockingRunnable extends ANonBlockingBase implements I
 
     protected volatile Future<?> runFuture;
 
-    public ANonBlockingRunnable(final Class<?> parentClass, final String taskName) {
-        super(parentClass, taskName);
+    public ANonBlockingRunnable(final Class<?> parentClass, final String parentInfo) {
+        super(parentClass, parentInfo);
     }
 
     @Override

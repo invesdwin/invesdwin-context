@@ -4,6 +4,4 @@ public interface INonBlockingBase {
 
     void reset();
 
-    void resetIfDone();
-
 }

@@ -173,8 +173,9 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
-                final Path tempPath = targetPath.resolveSibling(
-                        Files.normalizeFileName(targetFilename + AtomicNioFileChannelContext.TMP_SUFFIX));
+                final Path tempPath = targetPath.resolveSibling(Files
+                        .normalizeFileName(Files.setExtension(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX)));
+                Files.createDirectories(tempPath.getParent());
                 Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
                 Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
@@ -199,8 +200,9 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
-                final Path tempPath = targetPath.resolveSibling(
-                        Files.normalizeFileName(targetFilename + AtomicNioFileChannelContext.TMP_SUFFIX));
+                final Path tempPath = targetPath.resolveSibling(Files
+                        .normalizeFileName(Files.setExtension(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX)));
+                Files.createDirectories(tempPath.getParent());
                 Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
                 Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
@@ -222,9 +224,9 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 return Files.newOutputStream(targetPath);
             } else {
-                final Path tempPath = targetPath.resolveSibling(Files.normalizeFileName(
-                        targetPath.getFileName().toString() + AtomicNioFileChannelContext.TMP_SUFFIX));
-
+                final Path tempPath = targetPath.resolveSibling(Files.normalizeFileName(Files
+                        .setExtension(targetPath.getFileName().toString(), AtomicNioFileChannelContext.TMP_SUFFIX)));
+                Files.createDirectories(tempPath.getParent());
                 final OutputStream out = Files.newOutputStream(tempPath);
                 return new FilterOutputStream(out) {
                     private boolean closed = false;

@@ -15,8 +15,8 @@ public abstract class ANonBlockingRunnableDaily extends ANonBlockingRunnable imp
 
     private volatile FDate runFutureFinished = FDates.MIN_DATE;
 
-    public ANonBlockingRunnableDaily(final Class<?> parentClass, final String taskName) {
-        super(parentClass, taskName);
+    public ANonBlockingRunnableDaily(final Class<?> parentClass, final String parentInfo) {
+        super(parentClass, parentInfo);
     }
 
     @Override

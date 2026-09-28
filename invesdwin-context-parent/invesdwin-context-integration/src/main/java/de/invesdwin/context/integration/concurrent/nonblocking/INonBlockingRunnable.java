@@ -16,4 +16,6 @@ public interface INonBlockingRunnable extends Runnable, INonBlockingBase {
 
     void getRunFutureOrRetry(Future<?> future, Duration timeout);
 
+    void resetIfDone();
+
 }

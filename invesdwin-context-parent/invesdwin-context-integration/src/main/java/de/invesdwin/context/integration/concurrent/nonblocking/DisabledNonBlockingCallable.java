@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.concurrent.future.NullFuture;
+import de.invesdwin.util.concurrent.lambda.IBooleanFunction;
 import de.invesdwin.util.time.duration.Duration;
 
 @Immutable
@@ -54,6 +55,5 @@ public class DisabledNonBlockingCallable<V> implements INonBlockingCallable<V> {
     public void reset() {}
 
     @Override
-    public void resetIfDone() {}
-
+    public void resetIfDone(final IBooleanFunction<V> shouldReset) {}
 }
