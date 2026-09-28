@@ -41,8 +41,7 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
     }
 
     protected boolean shouldCallAgain(final Future<V> future) {
-        //        return future.isDone();
-        //keep value until reset
+        //keep future until reset
         return false;
     }
 
