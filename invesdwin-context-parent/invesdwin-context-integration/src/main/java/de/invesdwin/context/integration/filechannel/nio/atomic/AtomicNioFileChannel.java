@@ -200,7 +200,6 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
-                System.out.println("ensure properties prefix path does not get / removed");
                 final Path tempPath = targetPath.resolveSibling(
                         Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
                 Files.createDirectories(tempPath.getParent());
