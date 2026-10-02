@@ -63,6 +63,9 @@ public class ReusableLZ4BlockInputStream extends APooledInputStream {
         if (!isClosed()) {
             throw new IllegalStateException("not closed");
         }
+        if (in == null) {
+            throw new NullPointerException("in");
+        }
         this.in = in;
         o = 0;
         originalLen = 0;

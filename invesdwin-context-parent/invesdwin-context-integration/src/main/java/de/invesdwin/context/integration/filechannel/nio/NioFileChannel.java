@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.DirectoryStream;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,11 +22,11 @@ import de.invesdwin.context.integration.filechannel.IFileChannel;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
-import de.invesdwin.context.integration.filechannel.registry.FileChannelRegistry;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.iterable.ICloseableIterator;
+import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.UUIDs;
-import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.URIs;
 import de.invesdwin.util.math.Bytes;
 import de.invesdwin.util.streams.closeable.Closeables;
@@ -36,7 +37,7 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
 public class NioFileChannel implements IFileChannel {
 
     public static final String DEFAULT_SERVER_URI_STR = "file:///";
-    public static final URI DEFAULT_SERVER_URI = URI.create(DEFAULT_SERVER_URI_STR);
+    public static final URI DEFAULT_SERVER_URI = URIs.asUri(DEFAULT_SERVER_URI_STR);
     public static final Supplier<URI> DEFAULT_SERVER_URI_F = () -> DEFAULT_SERVER_URI;
 
     private final URI serverUri;
@@ -48,29 +49,17 @@ public class NioFileChannel implements IFileChannel {
     private boolean connected = false;
     private boolean directoryCreated = false;
 
-    public NioFileChannel() {
-        this(DEFAULT_SERVER_URI);
-    }
-
-    public NioFileChannel(final String serverUri) {
-        this(serverUri == null ? null : URIs.asUri(serverUri));
-    }
-
-    public NioFileChannel(final URI serverUri) {
-        this(FileChannelPath.valueOf(serverUri, DEFAULT_SERVER_URI_F));
-    }
-
-    public NioFileChannel(final IFileChannelPath path) {
+    protected NioFileChannel(final IFileChannelPath path) {
         this.serverUri = path.getServerUri();
         this.baseServerUri = path.getBaseServerUri();
         this.baseDirectory = path.getAbsoluteDirectory();
-        this.filename = path.getFilename();
+        this.filename = path.getFileName();
     }
 
     //CHECKSTYLE:OFF
     @Override
     public NioFileChannel withSubDirectory(final String subDirectory) {
-        final NioFileChannel instance = new NioFileChannel(serverUri);
+        final NioFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.filename = filename;
@@ -84,12 +73,12 @@ public class NioFileChannel implements IFileChannel {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelPaths.newDirectoryUri(baseServerUri, getBaseDirectory());
         //CHECKSTYLE:OFF
-        final NioFileChannel instance = new NioFileChannel(newServerUri);
+        final NioFileChannel instance = newDirectory(newServerUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -107,12 +96,12 @@ public class NioFileChannel implements IFileChannel {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), baseDirectory);
         //CHECKSTYLE:OFF
-        final NioFileChannel instance = new NioFileChannel(newServerUri);
+        final NioFileChannel instance = newDirectory(newServerUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -123,11 +112,11 @@ public class NioFileChannel implements IFileChannel {
         //CHECKSTYLE:ON
         final URI newServerUri = FileChannelPaths.newDirectoryUri(getBaseServerUri(), absoluteDirectory);
         //CHECKSTYLE:OFF
-        final NioFileChannel instance = new NioFileChannel(newServerUri);
+        final NioFileChannel instance = newDirectory(newServerUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
-        if (getFilename() != null) {
-            instance.setFilename(getFilename());
+        if (getFileName() != null) {
+            instance.setFileName(getFileName());
         }
         return instance;
     }
@@ -135,7 +124,7 @@ public class NioFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public NioFileChannel withSubPath(final String subPath) {
-        final NioFileChannel instance = new NioFileChannel(serverUri);
+        final NioFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubPath(subPath);
@@ -145,7 +134,7 @@ public class NioFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public NioFileChannel withSubPath(final Path path) {
-        final NioFileChannel instance = new NioFileChannel(serverUri);
+        final NioFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubPath(path);
@@ -155,36 +144,22 @@ public class NioFileChannel implements IFileChannel {
     //CHECKSTYLE:OFF
     @Override
     public NioFileChannel withFilename(final String filename) {
-        final NioFileChannel instance = new NioFileChannel(serverUri);
+        final NioFileChannel instance = newDirectory(serverUri);
         //CHECKSTYLE:ON
         instance.emptyFileContent = emptyFileContent;
         instance.setSubDirectory(getSubDirectory());
-        instance.setFilename(filename);
+        instance.setFileName(filename);
         return instance;
     }
 
     //CHECKSTYLE:OFF
     @Override
     public NioFileChannel withAbsolutePath(final String path) {
+        final NioFileChannel instance = newDirectory(getBaseServerUri());
         //CHECKSTYLE:ON
-        if (Strings.isBlank(path)) {
-            //CHECKSTYLE:OFF
-            final NioFileChannel instance = new NioFileChannel(getBaseServerUri());
-            //CHECKSTYLE:ON
-            instance.emptyFileContent = emptyFileContent;
-            instance.setSubPath((String) null);
-            return instance;
-        }
-        if (path.contains("://")) {
-            return (NioFileChannel) FileChannelRegistry.newInstance(path);
-        } else {
-            //CHECKSTYLE:OFF
-            final NioFileChannel instance = new NioFileChannel(getBaseServerUri());
-            //CHECKSTYLE:ON
-            instance.emptyFileContent = emptyFileContent;
-            instance.setSubPath(path);
-            return instance;
-        }
+        instance.emptyFileContent = emptyFileContent;
+        instance.setSubPath(path);
+        return instance;
     }
 
     //CHECKSTYLE:OFF
@@ -225,13 +200,13 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
-    public NioFileChannel setFilename(final String filename) {
+    public NioFileChannel setFileName(final String filename) {
         this.filename = filename;
         return this;
     }
 
     @Override
-    public String getFilename() {
+    public String getFileName() {
         return filename;
     }
 
@@ -257,7 +232,7 @@ public class NioFileChannel implements IFileChannel {
         ensureDirectoryCreated();
         while (true) {
             final String filename = filenamePrefix + UUIDs.newPseudoRandomUUID() + filenameSuffix;
-            setFilename(filename);
+            setFileName(filename);
             if (!exists()) {
                 upload(new FastByteArrayInputStream(getEmptyFileContent()));
                 Assertions.checkTrue(exists());
@@ -357,6 +332,59 @@ public class NioFileChannel implements IFileChannel {
         return (List<NioFileInfo>) IFileChannel.super.listDirectories();
     }
 
+    @Override
+    public ICloseableIterator<NioFileInfo> listIterator() {
+        return createFilteredIterator(path -> true);
+    }
+
+    @Override
+    public ICloseableIterator<NioFileInfo> listFilesIterator() {
+        return createFilteredIterator(Files::isRegularFile);
+    }
+
+    @Override
+    public ICloseableIterator<NioFileInfo> listDirectoriesIterator() {
+        return createFilteredIterator(Files::isDirectory);
+    }
+
+    /**
+     * Creates a lazy, memory-efficient iterator wrapping Java NIO's DirectoryStream.
+     */
+    private ICloseableIterator<NioFileInfo> createFilteredIterator(final DirectoryStream.Filter<Path> filter) {
+        connect(false);
+        final Path dirPath = resolveDirectoryPath();
+
+        if (!Files.exists(dirPath)) {
+            return WrapperCloseableIterable.maybeWrap(java.util.Collections.<NioFileInfo> emptyList()).iterator();
+        }
+
+        try {
+            final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dirPath, filter);
+            final java.util.Iterator<Path> pathIterator = directoryStream.iterator();
+
+            return new ICloseableIterator<NioFileInfo>() {
+                @Override
+                public boolean hasNext() {
+                    return pathIterator.hasNext();
+                }
+
+                @Override
+                public NioFileInfo next() {
+                    return NioFileInfo.valueOf(serverUri, baseServerUri, baseDirectory, subDirectory,
+                            pathIterator.next());
+                }
+
+                @Override
+                public void close() {
+                    // Ensures the underlying OS file handle is closed cleanly
+                    Closeables.close(directoryStream);
+                }
+            };
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Failed to iterate directory at " + dirPath, e);
+        }
+    }
+
     private void ensureDirectoryCreated() {
         connect(false);
         if (!directoryCreated) {
@@ -391,7 +419,7 @@ public class NioFileChannel implements IFileChannel {
             final Path source = resolveFilePath();
             final Path target = Paths.get(FileChannelPaths.newFileUri(baseServerUri, getAbsoluteDirectory(), filename));
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
-            setFilename(filename);
+            setFileName(filename);
             return this;
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
@@ -408,7 +436,7 @@ public class NioFileChannel implements IFileChannel {
             final Path target = targetNio.resolveFilePath();
             Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
             setSubDirectory(targetNio.getSubDirectory());
-            setFilename(targetNio.getFilename());
+            setFileName(targetNio.getFileName());
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -516,7 +544,33 @@ public class NioFileChannel implements IFileChannel {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        return FileChannelPaths.equals(this, obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return FileChannelPaths.hashCode(this);
+    }
+
+    @Override
     public String toString() {
         return FileChannelPaths.toString(this);
+    }
+
+    public static NioFileChannel newInstance(final URI serverUri) {
+        return new NioFileChannel(FileChannelPath.newInstance(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static NioFileChannel newFile(final URI serverUri) {
+        return new NioFileChannel(FileChannelPath.newFile(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static NioFileChannel newDirectory(final URI serverUri) {
+        return new NioFileChannel(FileChannelPath.newDirectory(serverUri, DEFAULT_SERVER_URI_F));
+    }
+
+    public static NioFileChannel newInstance(final IFileChannelPath path) {
+        return new NioFileChannel(path);
     }
 }

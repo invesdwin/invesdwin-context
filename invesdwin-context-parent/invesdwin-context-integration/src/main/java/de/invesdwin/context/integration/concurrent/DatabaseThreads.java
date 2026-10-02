@@ -1,4 +1,4 @@
-package de.invesdwin.context.integration;
+package de.invesdwin.context.integration.concurrent;
 
 import java.util.function.Supplier;
 
@@ -47,7 +47,7 @@ public final class DatabaseThreads {
         }
     }
 
-    public static void unregisterThreadBlockingUpdateDisabled(
+    public static void unregisterThreadBlockingUpdateDatabaseDisabled(
             final Boolean registerThreadBlockingUpdateDatabaseDisabled) {
         if (registerThreadBlockingUpdateDatabaseDisabled == null) {
             //nothing to do since we did not change anything
@@ -69,7 +69,8 @@ public final class DatabaseThreads {
             return supplier.get();
         } finally {
             RetryThreads.unregisterThreadRetryDisabled(registerThreadRetryDisabled);
-            DatabaseThreads.unregisterThreadBlockingUpdateDisabled(registerThreadBlockingUpdateDatabaseDisabled);
+            DatabaseThreads
+                    .unregisterThreadBlockingUpdateDatabaseDisabled(registerThreadBlockingUpdateDatabaseDisabled);
         }
     }
 

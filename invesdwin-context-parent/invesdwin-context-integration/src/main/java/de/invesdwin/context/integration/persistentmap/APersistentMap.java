@@ -157,7 +157,7 @@ public abstract class APersistentMap<K, V> extends APersistentMapConfig<K, V> im
 
     public File getTimestampFile() {
         if (timestampFile == null) {
-            timestampFile = new File(getDirectory(), Files.normalizeFilename(getName() + "_createdTimestamp"));
+            timestampFile = new File(getDirectory(), Files.normalizeFileName(getName() + "_createdTimestamp"));
         }
         return timestampFile;
     }

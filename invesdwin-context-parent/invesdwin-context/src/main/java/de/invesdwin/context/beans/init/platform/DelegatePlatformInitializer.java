@@ -6,7 +6,7 @@ import java.net.URI;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
 
 @NotThreadSafe
@@ -119,8 +119,8 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void createDirectoryIfAllowed(final File dir) {
-        delegate.createDirectoryIfAllowed(dir);
+    public boolean createDirectoryIfAllowed(final File dir) {
+        return delegate.createDirectoryIfAllowed(dir);
     }
 
     @Override
@@ -136,6 +136,11 @@ public class DelegatePlatformInitializer implements IPlatformInitializer {
     @Override
     public File initHomeDataDirectory(final File homeDirectory, final boolean isTestEnvironment) {
         return delegate.initHomeDataDirectory(homeDirectory, isTestEnvironment);
+    }
+
+    @Override
+    public File initHomeDataDirectoryPerNode(final File homeDataDirectory, final boolean isTestEnvironment) {
+        return delegate.initHomeDataDirectoryPerNode(homeDataDirectory, isTestEnvironment);
     }
 
     @Override

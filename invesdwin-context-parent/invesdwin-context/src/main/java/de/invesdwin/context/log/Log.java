@@ -2,6 +2,8 @@ package de.invesdwin.context.log;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import org.apache.logging.log4j.Level;
+
 import de.invesdwin.context.ContextProperties;
 import de.invesdwin.context.PlatformInitializerProperties;
 import de.invesdwin.util.assertions.Assertions;
@@ -27,6 +29,8 @@ import de.invesdwin.util.log.LogLevel;
 @ThreadSafe
 public final class Log implements ILog {
 
+    private static final String FQCN = Log.class.getName();
+
     static {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
@@ -37,10 +41,10 @@ public final class Log implements ILog {
         }
     }
 
-    private final org.apache.logging.log4j.Logger logger;
+    private final org.apache.logging.log4j.spi.ExtendedLogger logger;
 
     public Log(final String name) {
-        this.logger = org.apache.logging.log4j.LogManager.getLogger(name);
+        this.logger = (org.apache.logging.log4j.spi.ExtendedLogger) org.apache.logging.log4j.LogManager.getLogger(name);
     }
 
     public Log(final Class<?> clazz) {
@@ -63,34 +67,39 @@ public final class Log implements ILog {
 
     @Override
     public void trace(final String msg) {
-        logger.trace(msg);
+        logger.logIfEnabled(FQCN, Level.TRACE, null, msg, (Throwable) null);
+    }
+
+    @Override
+    public void trace(final TextDescription msg) {
+        logger.logIfEnabled(FQCN, Level.TRACE, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
     public void trace(final String format, final Object p0) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0));
+            trace(new TextDescription(format, p0));
         }
     }
 
     @Override
     public void trace(final String format, final Object p0, final Object p1) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1));
+            trace(new TextDescription(format, p0, p1));
         }
     }
 
     @Override
     public void trace(final String format, final Object p0, final Object p1, final Object p2) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2));
+            trace(new TextDescription(format, p0, p1, p2));
         }
     }
 
     @Override
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3));
+            trace(new TextDescription(format, p0, p1, p2, p3));
         }
     }
 
@@ -98,7 +107,7 @@ public final class Log implements ILog {
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4));
+            trace(new TextDescription(format, p0, p1, p2, p3, p4));
         }
     }
 
@@ -106,7 +115,7 @@ public final class Log implements ILog {
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+            trace(new TextDescription(format, p0, p1, p2, p3, p4, p5));
         }
     }
 
@@ -114,7 +123,7 @@ public final class Log implements ILog {
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+            trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
@@ -122,7 +131,7 @@ public final class Log implements ILog {
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+            trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
@@ -130,7 +139,7 @@ public final class Log implements ILog {
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+            trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
@@ -138,14 +147,14 @@ public final class Log implements ILog {
     public void trace(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+            trace(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void trace(final String format, final Object... params) {
         if (logger.isTraceEnabled()) {
-            logger.trace(new TextDescription(format, params));
+            trace(new TextDescription(format, params));
         }
     }
 
@@ -156,34 +165,39 @@ public final class Log implements ILog {
 
     @Override
     public void debug(final String msg) {
-        logger.debug(msg);
+        logger.logIfEnabled(FQCN, Level.DEBUG, null, msg, (Throwable) null);
+    }
+
+    @Override
+    public void debug(final TextDescription msg) {
+        logger.logIfEnabled(FQCN, Level.DEBUG, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
     public void debug(final String format, final Object p0) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0));
+            debug(new TextDescription(format, p0));
         }
     }
 
     @Override
     public void debug(final String format, final Object p0, final Object p1) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1));
+            debug(new TextDescription(format, p0, p1));
         }
     }
 
     @Override
     public void debug(final String format, final Object p0, final Object p1, final Object p2) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2));
+            debug(new TextDescription(format, p0, p1, p2));
         }
     }
 
     @Override
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3));
+            debug(new TextDescription(format, p0, p1, p2, p3));
         }
     }
 
@@ -191,7 +205,7 @@ public final class Log implements ILog {
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4));
+            debug(new TextDescription(format, p0, p1, p2, p3, p4));
         }
     }
 
@@ -199,7 +213,7 @@ public final class Log implements ILog {
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+            debug(new TextDescription(format, p0, p1, p2, p3, p4, p5));
         }
     }
 
@@ -207,7 +221,7 @@ public final class Log implements ILog {
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+            debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
@@ -215,7 +229,7 @@ public final class Log implements ILog {
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+            debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
@@ -223,7 +237,7 @@ public final class Log implements ILog {
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+            debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
@@ -231,14 +245,14 @@ public final class Log implements ILog {
     public void debug(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+            debug(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void debug(final String format, final Object... params) {
         if (logger.isDebugEnabled()) {
-            logger.debug(new TextDescription(format, params));
+            debug(new TextDescription(format, params));
         }
     }
 
@@ -249,34 +263,39 @@ public final class Log implements ILog {
 
     @Override
     public void info(final String msg) {
-        logger.info(msg);
+        logger.logIfEnabled(FQCN, Level.INFO, null, msg, (Throwable) null);
+    }
+
+    @Override
+    public void info(final TextDescription msg) {
+        logger.logIfEnabled(FQCN, Level.INFO, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
     public void info(final String format, final Object p0) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0));
+            info(new TextDescription(format, p0));
         }
     }
 
     @Override
     public void info(final String format, final Object p0, final Object p1) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1));
+            info(new TextDescription(format, p0, p1));
         }
     }
 
     @Override
     public void info(final String format, final Object p0, final Object p1, final Object p2) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2));
+            info(new TextDescription(format, p0, p1, p2));
         }
     }
 
     @Override
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3));
+            info(new TextDescription(format, p0, p1, p2, p3));
         }
     }
 
@@ -284,7 +303,7 @@ public final class Log implements ILog {
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3, p4));
+            info(new TextDescription(format, p0, p1, p2, p3, p4));
         }
     }
 
@@ -292,7 +311,7 @@ public final class Log implements ILog {
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+            info(new TextDescription(format, p0, p1, p2, p3, p4, p5));
         }
     }
 
@@ -300,7 +319,7 @@ public final class Log implements ILog {
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+            info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
@@ -308,7 +327,7 @@ public final class Log implements ILog {
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+            info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
@@ -316,7 +335,7 @@ public final class Log implements ILog {
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+            info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
@@ -324,14 +343,14 @@ public final class Log implements ILog {
     public void info(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+            info(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void info(final String format, final Object... params) {
         if (logger.isInfoEnabled()) {
-            logger.info(new TextDescription(format, params));
+            info(new TextDescription(format, params));
         }
     }
 
@@ -342,34 +361,39 @@ public final class Log implements ILog {
 
     @Override
     public void warn(final String msg) {
-        logger.warn(msg);
+        logger.logIfEnabled(FQCN, Level.WARN, null, msg, (Throwable) null);
+    }
+
+    @Override
+    public void warn(final TextDescription msg) {
+        logger.logIfEnabled(FQCN, Level.WARN, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
     public void warn(final String format, final Object p0) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0));
+            warn(new TextDescription(format, p0));
         }
     }
 
     @Override
     public void warn(final String format, final Object p0, final Object p1) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1));
+            warn(new TextDescription(format, p0, p1));
         }
     }
 
     @Override
     public void warn(final String format, final Object p0, final Object p1, final Object p2) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2));
+            warn(new TextDescription(format, p0, p1, p2));
         }
     }
 
     @Override
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3));
+            warn(new TextDescription(format, p0, p1, p2, p3));
         }
     }
 
@@ -377,7 +401,7 @@ public final class Log implements ILog {
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4));
+            warn(new TextDescription(format, p0, p1, p2, p3, p4));
         }
     }
 
@@ -385,7 +409,7 @@ public final class Log implements ILog {
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+            warn(new TextDescription(format, p0, p1, p2, p3, p4, p5));
         }
     }
 
@@ -393,7 +417,7 @@ public final class Log implements ILog {
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+            warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
@@ -401,7 +425,7 @@ public final class Log implements ILog {
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+            warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
@@ -409,7 +433,7 @@ public final class Log implements ILog {
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+            warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
@@ -417,14 +441,14 @@ public final class Log implements ILog {
     public void warn(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+            warn(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void warn(final String format, final Object... params) {
         if (logger.isWarnEnabled()) {
-            logger.warn(new TextDescription(format, params));
+            warn(new TextDescription(format, params));
         }
     }
 
@@ -435,34 +459,39 @@ public final class Log implements ILog {
 
     @Override
     public void error(final String msg) {
-        logger.error(msg);
+        logger.logIfEnabled(FQCN, Level.ERROR, null, msg, (Throwable) null);
+    }
+
+    @Override
+    public void error(final TextDescription msg) {
+        logger.logIfEnabled(FQCN, Level.ERROR, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
     public void error(final String format, final Object p0) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0));
+            error(new TextDescription(format, p0));
         }
     }
 
     @Override
     public void error(final String format, final Object p0, final Object p1) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1));
+            error(new TextDescription(format, p0, p1));
         }
     }
 
     @Override
     public void error(final String format, final Object p0, final Object p1, final Object p2) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2));
+            error(new TextDescription(format, p0, p1, p2));
         }
     }
 
     @Override
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3));
+            error(new TextDescription(format, p0, p1, p2, p3));
         }
     }
 
@@ -470,7 +499,7 @@ public final class Log implements ILog {
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3, p4));
+            error(new TextDescription(format, p0, p1, p2, p3, p4));
         }
     }
 
@@ -478,7 +507,7 @@ public final class Log implements ILog {
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+            error(new TextDescription(format, p0, p1, p2, p3, p4, p5));
         }
     }
 
@@ -486,7 +515,7 @@ public final class Log implements ILog {
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+            error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
@@ -494,7 +523,7 @@ public final class Log implements ILog {
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+            error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
@@ -502,7 +531,7 @@ public final class Log implements ILog {
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+            error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
@@ -510,14 +539,14 @@ public final class Log implements ILog {
     public void error(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+            error(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void error(final String format, final Object... params) {
         if (logger.isErrorEnabled()) {
-            logger.error(new TextDescription(format, params));
+            error(new TextDescription(format, params));
         }
     }
 
@@ -528,34 +557,39 @@ public final class Log implements ILog {
 
     @Override
     public void fatal(final String msg) {
-        logger.fatal(msg);
+        logger.logIfEnabled(FQCN, Level.FATAL, null, msg, (Throwable) null);
+    }
+
+    @Override
+    public void fatal(final TextDescription msg) {
+        logger.logIfEnabled(FQCN, Level.FATAL, null, msg, msg != null ? msg.getThrowable() : null);
     }
 
     @Override
     public void fatal(final String format, final Object p0) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0));
+            fatal(new TextDescription(format, p0));
         }
     }
 
     @Override
     public void fatal(final String format, final Object p0, final Object p1) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1));
+            fatal(new TextDescription(format, p0, p1));
         }
     }
 
     @Override
     public void fatal(final String format, final Object p0, final Object p1, final Object p2) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2));
+            fatal(new TextDescription(format, p0, p1, p2));
         }
     }
 
     @Override
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3));
+            fatal(new TextDescription(format, p0, p1, p2, p3));
         }
     }
 
@@ -563,7 +597,7 @@ public final class Log implements ILog {
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4));
+            fatal(new TextDescription(format, p0, p1, p2, p3, p4));
         }
     }
 
@@ -571,7 +605,7 @@ public final class Log implements ILog {
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5));
+            fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5));
         }
     }
 
@@ -579,7 +613,7 @@ public final class Log implements ILog {
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
+            fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6));
         }
     }
 
@@ -587,7 +621,7 @@ public final class Log implements ILog {
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
+            fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7));
         }
     }
 
@@ -595,7 +629,7 @@ public final class Log implements ILog {
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
+            fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8));
         }
     }
 
@@ -603,14 +637,14 @@ public final class Log implements ILog {
     public void fatal(final String format, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
+            fatal(new TextDescription(format, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9));
         }
     }
 
     @Override
     public void fatal(final String format, final Object... params) {
         if (logger.isFatalEnabled()) {
-            logger.fatal(new TextDescription(format, params));
+            fatal(new TextDescription(format, params));
         }
     }
 

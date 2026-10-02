@@ -23,7 +23,7 @@ public interface IFileChannelPath extends ISerializableValueObject {
      */
     String getAbsoluteDirectory();
 
-    String getFilename();
+    String getFileName();
 
     default String getDirectoryName() {
         final String absDir = getAbsoluteDirectory();
@@ -53,7 +53,7 @@ public interface IFileChannelPath extends ISerializableValueObject {
 
     default String getParentPath() {
         try {
-            final String filename = getFilename();
+            final String filename = getFileName();
             if (Strings.isNotBlank(filename)) {
                 return getAbsoluteDirectory();
             }
@@ -84,11 +84,19 @@ public interface IFileChannelPath extends ISerializableValueObject {
     }
 
     default URI getFileUri() {
-        return FileChannelPaths.newFileUri(getBaseServerUri(), getAbsoluteDirectory(), getFilename());
+        return FileChannelPaths.newFileUri(getBaseServerUri(), getAbsoluteDirectory(), getFileName());
     }
 
     default String getAbsolutePath() {
-        return FileChannelPaths.newAbsolutePath(getAbsoluteDirectory(), getFilename());
+        return FileChannelPaths.newAbsolutePath(getAbsoluteDirectory(), getFileName());
+    }
+
+    default boolean isFile() {
+        return getFileName() == null;
+    }
+
+    default boolean isDirectory() {
+        return getFileName() != null;
     }
 
 }

@@ -4,7 +4,7 @@ import java.io.File;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
 
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.time.duration.Duration;
 
 public interface IPlatformInitializer {
@@ -49,13 +49,15 @@ public interface IPlatformInitializer {
 
     File initTempClasspathDirectory(File tempDirectory);
 
-    void createDirectoryIfAllowed(File dir);
+    boolean createDirectoryIfAllowed(File dir);
 
     void addDirectoryToSystemClassLoaderIfAllowed(File dir);
 
     File initHomeDirectory(String systemHomeDirectory, boolean isTestEnvironment);
 
     File initHomeDataDirectory(File homeDirectory, boolean isTestEnvironment);
+
+    File initHomeDataDirectoryPerNode(File homeDataDirectory, boolean isTestEnvironment);
 
     File initLogDirectory(boolean isTestEnvironment, File fallbackWorkDirectory);
 

@@ -15,6 +15,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.bean.APropertyChangeSupportedBase;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -77,6 +78,30 @@ public class PropertyChangeDelegateProperties extends APropertyChangeSupportedBa
     public void setByte(final String key, final Byte value) {
         final Object oldValue = getOldValue(key);
         delegate.setByte(key, value);
+        firePropertyChange(key, oldValue, value);
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        return delegate.getBytes(key);
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        final Object oldValue = getOldValue(key);
+        delegate.setBytes(key, value);
+        firePropertyChange(key, oldValue, value);
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        return delegate.getSerde(serde, key);
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        final Object oldValue = getOldValue(key);
+        delegate.setSerde(serde, key, value);
         firePropertyChange(key, oldValue, value);
     }
 

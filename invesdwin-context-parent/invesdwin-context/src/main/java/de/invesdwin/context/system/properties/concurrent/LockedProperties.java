@@ -18,6 +18,7 @@ import de.invesdwin.util.collections.fast.concurrent.locked.LockedMap;
 import de.invesdwin.util.concurrent.lock.ICloseableLock;
 import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.Locks;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -92,6 +93,34 @@ public class LockedProperties implements IProperties {
     public void setByte(final String key, final Byte value) {
         try (ICloseableLock locked = lock.locked()) {
             delegate.setByte(key, value);
+        }
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        try (ICloseableLock locked = lock.locked()) {
+            return delegate.getBytes(key);
+        }
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        try (ICloseableLock locked = lock.locked()) {
+            delegate.setBytes(key, value);
+        }
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        try (ICloseableLock locked = lock.locked()) {
+            return delegate.getSerde(serde, key);
+        }
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        try (ICloseableLock locked = lock.locked()) {
+            delegate.setSerde(serde, key, value);
         }
     }
 

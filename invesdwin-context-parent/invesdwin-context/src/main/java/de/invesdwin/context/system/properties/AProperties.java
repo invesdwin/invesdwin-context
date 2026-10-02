@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -26,6 +27,7 @@ import de.invesdwin.util.collections.list.Lists;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.Doubles;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
@@ -109,6 +111,46 @@ public abstract class AProperties implements IProperties {
     @Override
     public void setByte(final String key, final Byte value) {
         setProperty(key, Strings.asString(value));
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        final String str = getString(key);
+        if (str == null) {
+            return null;
+        }
+        return Base64.getDecoder().decode(str);
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        final String str;
+        if ((value == null)) {
+            str = null;
+        } else {
+            str = Base64.getEncoder().encodeToString(value);
+        }
+        setString(key, str);
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        final byte[] bytes = getBytes(key);
+        if (bytes == null) {
+            return null;
+        }
+        return serde.fromBytes(bytes);
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        final byte[] bytes;
+        if (value == null) {
+            bytes = null;
+        } else {
+            bytes = serde.toBytes(value);
+        }
+        setBytes(key, bytes);
     }
 
     @Override

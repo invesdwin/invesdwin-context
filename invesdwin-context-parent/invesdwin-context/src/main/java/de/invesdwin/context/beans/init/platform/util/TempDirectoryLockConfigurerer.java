@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 import de.invesdwin.instrument.DynamicInstrumentationProperties;
 import de.invesdwin.util.concurrent.Executors;
 import de.invesdwin.util.concurrent.WrappedExecutorService;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
 import de.invesdwin.util.lang.Files;
 
 @Immutable

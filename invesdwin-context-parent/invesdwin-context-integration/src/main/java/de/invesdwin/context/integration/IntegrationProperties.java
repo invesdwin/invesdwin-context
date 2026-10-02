@@ -12,10 +12,12 @@ import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.lang.uri.Addresses;
 import de.invesdwin.util.lang.uri.URIs;
+import de.invesdwin.util.time.duration.Duration;
 
 @ThreadSafe
 public final class IntegrationProperties {
 
+    public static final Duration NON_BLOCKING_ASYNC_WAIT_TIMEOUT;
     public static final List<URI> INTERNET_CHECK_URIS;
     public static final URI WEBSERVER_BIND_URI;
     public static final String HOSTNAME;
@@ -30,6 +32,8 @@ public final class IntegrationProperties {
         SYSTEM_PROPERTIES = new SystemProperties(IntegrationProperties.class);
         HOSTNAME = determineHostname();
 
+        NON_BLOCKING_ASYNC_WAIT_TIMEOUT = SYSTEM_PROPERTIES.getDurationOptional("NON_BLOCKING_ASYNC_WAIT_TIMEOUT",
+                Duration.ONE_HUNDRED_MILLISECONDS);
         INTERNET_CHECK_URIS = readInternetCheckUris();
         WEBSERVER_BIND_URI = readWebserverBindUri();
         JNI_COMPRESSION_ALLOWED = readJniCompressionAllowed();

@@ -3,7 +3,6 @@ package de.invesdwin.context.beans.init.platform;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.lang.management.ManagementFactory;
 import java.net.URI;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -31,6 +30,7 @@ import de.invesdwin.context.beans.init.platform.util.internal.SystemPropertiesLo
 import de.invesdwin.context.beans.init.platform.util.internal.XmlTransformerConfigurer;
 import de.invesdwin.context.beans.init.platform.util.internal.protocols.ProtocolRegistration;
 import de.invesdwin.context.jcache.CacheBuilder;
+import de.invesdwin.context.log.Log;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.context.log.error.handler.ErrUncaughtExecutorExceptionHandler;
 import de.invesdwin.context.system.properties.SystemProperties;
@@ -41,11 +41,14 @@ import de.invesdwin.norva.beanpath.BeanPathObjects;
 import de.invesdwin.norva.beanpath.collection.BeanPathCollections;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.collections.factory.FactoryBeanPathCollectionProvider;
-import de.invesdwin.util.concurrent.lock.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.FileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.HeartbeatFileChannelLock;
+import de.invesdwin.util.concurrent.lock.file.HeartbeatFileChannelLockRegistry;
 import de.invesdwin.util.error.Throwables;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.reflection.Reflections;
 import de.invesdwin.util.marshallers.serde.RemoteFastSerializingSerde;
+import de.invesdwin.util.shutdown.CloseableShutdownHookThread;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.date.FDates;
 import de.invesdwin.util.time.date.FTimeUnit;
@@ -211,14 +214,16 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     }
 
     @Override
-    public void createDirectoryIfAllowed(final File dir) {
+    public boolean createDirectoryIfAllowed(final File dir) {
         if (PlatformInitializerProperties.isAllowed()) {
             try {
                 Files.forceMkdir(dir);
+                return true;
             } catch (final IOException e) {
                 throw Err.process(e);
             }
         }
+        return false;
     }
 
     @Override
@@ -244,21 +249,79 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     @Override
     public File initHomeDataDirectory(final File homeDirectory, final boolean isTestEnvironment) {
-        final File homeDataDir;
+        final File homeDataDirectory;
         if (isTestEnvironment) {
             //stick to project root
-            homeDataDir = homeDirectory;
+            homeDataDirectory = homeDirectory;
         } else {
             final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
-            final String key = "HOME_DATA_DIR_OVERRIDE";
+            final String key = "HOME_DATA_DIRECTORY_OVERRIDE";
             if (systemProperties.containsValue(key)) {
-                homeDataDir = systemProperties.getFile(key);
+                homeDataDirectory = systemProperties.getFile(key);
             } else {
-                homeDataDir = homeDirectory;
+                final String keyFallback = "HOME_DATA_DIR_OVERRIDE";
+                if (systemProperties.containsValue(keyFallback)) {
+                    new Log(this).warn("System property %s is deprecated, use %s instead", keyFallback, key);
+                    homeDataDirectory = systemProperties.getFile(keyFallback);
+                } else {
+                    homeDataDirectory = homeDirectory;
+                }
             }
         }
-        createDirectoryIfAllowed(homeDataDir);
-        return homeDataDir;
+        createDirectoryIfAllowed(homeDataDirectory);
+        return homeDataDirectory;
+    }
+
+    @Override
+    public File initHomeDataDirectoryPerNode(final File homeDataDirectory, final boolean isTestEnvironment) {
+        final File baseDir;
+        if (isTestEnvironment) {
+            baseDir = homeDataDirectory;
+        } else {
+            final SystemProperties systemProperties = new SystemProperties(ContextProperties.class);
+            final String forcedKey = "HOME_DATA_DIRECTORY_PER_NODE_OVERRIDE_FORCED";
+            if (systemProperties.containsValue(forcedKey)) {
+                //don't use slots for a forced directory override
+                return systemProperties.getFile(forcedKey);
+            }
+
+            final String key = "HOME_DATA_DIRECTORY_PER_NODE_OVERRIDE";
+            if (systemProperties.containsValue(key)) {
+                baseDir = systemProperties.getFile(key);
+            } else {
+                baseDir = new File(new File(homeDataDirectory, "nodes"),
+                        ContextProperties.USER_NAME + "@" + DynamicInstrumentationProperties.getProcessName());
+            }
+        }
+        if (!createDirectoryIfAllowed(baseDir)) {
+            new Log(this).warn(
+                    "Heartbeat owner [%s] could not create node slot for process [%s], using base directory directly: %s",
+                    HeartbeatFileChannelLockRegistry.HEARTBEAT_OWNER,
+                    DynamicInstrumentationProperties.getManagementName(), baseDir);
+            return baseDir;
+        }
+
+        int node = 0;
+        while (true) {
+            final File slotDir = new File(baseDir, "node_" + String.valueOf(node));
+            final File lockFile = new File(slotDir, "process.lock");
+            //retain reference so that finalizer does not clean it during
+            final HeartbeatFileChannelLock slotLock = new HeartbeatFileChannelLock(lockFile);
+            if (slotLock.tryLock()) {
+                Runtime.getRuntime().addShutdownHook(new CloseableShutdownHookThread(slotLock));
+                final File dataDir = new File(slotDir, "data");
+                createDirectoryIfAllowed(dataDir);
+                new Log(this).info("Heartbeat owner [%s] using node slot [%s] for process [%s] in base directory: %s",
+                        HeartbeatFileChannelLockRegistry.HEARTBEAT_OWNER, node,
+                        DynamicInstrumentationProperties.getManagementName(), baseDir);
+                return dataDir;
+            }
+
+            node++;
+            if (node > 1000) {
+                throw new IllegalStateException("Exhausted all process slots up to index 1000 in: " + baseDir);
+            }
+        }
     }
 
     @Override
@@ -270,7 +333,7 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
             logDirSr += new FDate(PlatformInitializerProperties.START_OF_APPLICATION_CLOCK_TIME_MILLIS)
                     .toString("yyyyMMddHHmmss");
             logDirSr += "_";
-            logDirSr += ManagementFactory.getRuntimeMXBean().getName();
+            logDirSr += DynamicInstrumentationProperties.getManagementName();
         }
         return createDirectoryWithFallback(logDirSr, fallbackWorkDirectory);
     }

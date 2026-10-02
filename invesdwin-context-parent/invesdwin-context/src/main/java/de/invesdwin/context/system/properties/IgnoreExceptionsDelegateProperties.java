@@ -15,6 +15,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -98,6 +99,42 @@ public final class IgnoreExceptionsDelegateProperties implements IProperties {
     public void setByte(final String key, final Byte value) {
         try {
             delegate.setByte(key, value);
+        } catch (final Throwable t) {
+            //noop
+        }
+    }
+
+    @Override
+    public byte[] getBytes(final String key) {
+        try {
+            return delegate.getBytes(key);
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {
+        try {
+            delegate.setBytes(key, value);
+        } catch (final Throwable t) {
+            //noop
+        }
+    }
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        try {
+            return delegate.getSerde(serde, key);
+        } catch (final Throwable t) {
+            return null;
+        }
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {
+        try {
+            delegate.setSerde(serde, key, value);
         } catch (final Throwable t) {
             //noop
         }

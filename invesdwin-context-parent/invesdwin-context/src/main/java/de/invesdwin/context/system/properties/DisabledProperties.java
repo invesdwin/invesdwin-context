@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.annotation.concurrent.Immutable;
 
 import de.invesdwin.util.collections.Collections;
+import de.invesdwin.util.marshallers.serde.ISerde;
 import de.invesdwin.util.math.decimal.Decimal;
 import de.invesdwin.util.time.date.FDate;
 import de.invesdwin.util.time.duration.Duration;
@@ -58,6 +59,22 @@ public final class DisabledProperties implements IProperties {
 
     @Override
     public void setByte(final String key, final Byte value) {}
+
+    @Override
+    public byte[] getBytes(final String key) {
+        return null;
+    }
+
+    @Override
+    public void setBytes(final String key, final byte[] value) {}
+
+    @Override
+    public <T> T getSerde(final ISerde<T> serde, final String key) {
+        return null;
+    }
+
+    @Override
+    public <T> void setSerde(final ISerde<T> serde, final String key, final T value) {}
 
     @Override
     public Double getDouble(final String key) {
