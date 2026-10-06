@@ -29,7 +29,6 @@ public final class JavaIoTmpdirConfigurer {
             final File tmpFile = Files.createTempFile("test", "test").toFile();
             Files.deleteQuietly(tmpFile);
             if (!tmpFile.getParentFile().equals(javaIoTmpdir)) {
-                Files.deleteQuietly(javaIoTmpdir);
                 final Log log = new Log(JavaIoTmpdirConfigurer.class);
                 log.warn("Unable to change java.io.tmpdir in %s from %s to %s", java.nio.file.Files.class.getName(),
                         tmpFile.getParentFile(), javaIoTmpdir);
