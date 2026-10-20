@@ -80,12 +80,12 @@ public final class OnHeapLargeArrayAllocator implements ILargeArrayAllocator {
 
     @Override
     public IBooleanLargeArray newBooleanArray(final String id, final long size) {
-        return IBooleanLargeArray.newInstance(ILockCollectionFactory.getInstance(false).newLargeBitSet(size));
+        return IBooleanLargeArray.newInstance(ILockCollectionFactory.getInstance(false).large().newBitSet(size));
     }
 
     @Override
     public ILargeBitSet newBitSet(final String id, final long size) {
-        return ILockCollectionFactory.getInstance(false).newLargeBitSet(size);
+        return ILockCollectionFactory.getInstance(false).large().newBitSet(size);
     }
 
     @Override

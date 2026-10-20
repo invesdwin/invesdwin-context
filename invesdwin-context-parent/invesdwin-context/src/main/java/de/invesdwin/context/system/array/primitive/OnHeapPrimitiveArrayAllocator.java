@@ -80,12 +80,12 @@ public final class OnHeapPrimitiveArrayAllocator implements IPrimitiveArrayAlloc
 
     @Override
     public IBooleanPrimitiveArray newBooleanArray(final String id, final int size) {
-        return IBooleanPrimitiveArray.newInstance(ILockCollectionFactory.getInstance(false).newPrimitiveBitSet(size));
+        return IBooleanPrimitiveArray.newInstance(ILockCollectionFactory.getInstance(false).primitive().newBitSet(size));
     }
 
     @Override
     public IPrimitiveBitSet newBitSet(final String id, final int size) {
-        return ILockCollectionFactory.getInstance(false).newPrimitiveBitSet(size);
+        return ILockCollectionFactory.getInstance(false).primitive().newBitSet(size);
     }
 
     @Override
