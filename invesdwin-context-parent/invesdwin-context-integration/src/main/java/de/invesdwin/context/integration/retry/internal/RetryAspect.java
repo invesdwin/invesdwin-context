@@ -16,7 +16,7 @@ import de.invesdwin.context.beans.init.MergedContext;
 import de.invesdwin.context.integration.retry.Retry;
 import de.invesdwin.context.integration.retry.RetryDisabled;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
-import de.invesdwin.context.integration.retry.hook.MaxRetriesHook;
+import de.invesdwin.context.integration.retry.hook.MaxCountRetriesHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.context.integration.retry.task.BackOffPolicies;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
@@ -68,7 +68,7 @@ public class RetryAspect implements InitializingBean {
                 } catch (final Throwable t) {
                     throw Throwables.propagate(t);
                 }
-            }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation), MaxRetriesHook.of(annotation));
+            }, new RetryOriginator(pjp), BackOffPolicies.fixedBackOff(annotation), MaxCountRetriesHook.of(annotation));
             try {
                 return retryTemplate.execute(retryCallback);
             } catch (final Throwable e) {

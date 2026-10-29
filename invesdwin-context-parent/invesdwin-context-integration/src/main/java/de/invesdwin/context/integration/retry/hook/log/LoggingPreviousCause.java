@@ -2,6 +2,7 @@ package de.invesdwin.context.integration.retry.hook.log;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.integration.retry.RetryLaterPendingRuntimeException;
 import de.invesdwin.context.log.error.Err;
 import de.invesdwin.util.time.Instant;
 import de.invesdwin.util.time.date.millis.FDateNanos;
@@ -14,6 +15,8 @@ public final class LoggingPreviousCause {
     private final Instant start;
     private long lastLogNanos;
     private int currentRetryCount;
+    private int pendingAttempts;
+    private int nonPendingRetryCount;
 
     @SuppressWarnings("deprecation")
     public LoggingPreviousCause(final Throwable previousCause, final int retryCount) {
@@ -21,6 +24,8 @@ public final class LoggingPreviousCause {
         this.start = new Instant();
         this.previousCauseRetryCount = retryCount;
         this.currentRetryCount = retryCount;
+        this.pendingAttempts = RetryLaterPendingRuntimeException.isPending(previousCause) ? 1 : 0;
+        this.nonPendingRetryCount = retryCount - pendingAttempts;
         this.lastLogNanos = start.nanosValue();
     }
 
@@ -40,8 +45,21 @@ public final class LoggingPreviousCause {
         return currentRetryCount;
     }
 
+    /**
+     * Failed attempts whose cause did not prove pending work in flight (see
+     * RetryLaterPendingRuntimeException.isPending) - budgets exhaust on this so that productive waits (initial
+     * downloads, strategy startup, running updaters) are never punished by a raw attempt count.
+     */
+    public int getNonPendingRetryCount() {
+        return nonPendingRetryCount;
+    }
+
     public synchronized LoggingReason shouldLog(final Throwable newCause, final int retryCount) {
         currentRetryCount = retryCount;
+        if (RetryLaterPendingRuntimeException.isPending(newCause)) {
+            pendingAttempts++;
+        }
+        nonPendingRetryCount = currentRetryCount - pendingAttempts;
         if (!Err.isSameMeaning(newCause, previousCause)) {
             previousCause = newCause;
             previousCauseRetryCount = retryCount;

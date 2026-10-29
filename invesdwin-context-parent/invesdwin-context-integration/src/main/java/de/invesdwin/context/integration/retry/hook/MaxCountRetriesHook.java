@@ -7,11 +7,11 @@ import de.invesdwin.context.integration.retry.RetryDisabledRuntimeException;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 
 @NotThreadSafe
-public class MaxRetriesHook implements IRetryHook {
+public class MaxCountRetriesHook implements IRetryHook {
 
     private final int maxRetries;
 
-    public MaxRetriesHook(final int maxRetries) {
+    public MaxCountRetriesHook(final int maxRetries) {
         this.maxRetries = maxRetries;
     }
 
@@ -30,9 +30,9 @@ public class MaxRetriesHook implements IRetryHook {
     public void onRetrySucceeded(final RetryOriginator originator, final int retryCount) {
     }
 
-    public static MaxRetriesHook of(final int maxRetries) {
+    public static MaxCountRetriesHook of(final int maxRetries) {
         if (maxRetries > 0) {
-            return new MaxRetriesHook(maxRetries);
+            return new MaxCountRetriesHook(maxRetries);
         } else {
             return null;
         }

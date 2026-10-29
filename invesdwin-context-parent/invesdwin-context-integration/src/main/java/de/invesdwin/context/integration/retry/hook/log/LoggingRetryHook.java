@@ -66,6 +66,32 @@ public class LoggingRetryHook implements IRetryHook {
         }
     }
 
+    /**
+     * WARNING: use Retries.getCurrentRetryStart() instead
+     */
+    @Deprecated
+    public static Instant getCurrentRetryStart() {
+        final LoggingPreviousCause previousCause = PREVIOUS_CAUSE_HOLDER.get();
+        if (previousCause == null) {
+            return null;
+        } else {
+            return previousCause.getStart();
+        }
+    }
+
+    /**
+     * WARNING: use Retries.getNonPendingRetryCount() instead
+     */
+    @Deprecated
+    public static int getNonPendingRetryCount() {
+        final LoggingPreviousCause previousCause = PREVIOUS_CAUSE_HOLDER.get();
+        if (previousCause == null) {
+            return -1;
+        } else {
+            return previousCause.getNonPendingRetryCount();
+        }
+    }
+
     public static boolean isSkipRetryLog() {
         return Booleans.isTrue(SKIP_RETRY_LOG.get());
     }
