@@ -18,6 +18,7 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
 import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.lock.file.NameKeyedLocks;
 import de.invesdwin.util.concurrent.lock.file.AtomicNioFileChannelContext;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.uri.URIs;
@@ -37,9 +38,6 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
  */
 @NotThreadSafe
 public class AtomicNioFileChannel extends NioFileChannel {
-
-    private static final Map<URI, IReentrantLock> UPLOAD_LOCKS = ILockCollectionFactory.getInstance(true)
-            .newConcurrentMap();
 
     private final AtomicNioFileChannelContext context;
 
@@ -167,9 +165,8 @@ public class AtomicNioFileChannel extends NioFileChannel {
 
     // --- Override Upload Operations for Atomic Writes ---
 
-    private IReentrantLock uploadLock() {
-        return UPLOAD_LOCKS.computeIfAbsent(getFileUri(),
-                k -> ILockCollectionFactory.getInstance(false).newLock("AtomicNioFileChannel_upload"));
+    private ILock uploadLock() {
+        return NameKeyedLocks.get("AtomicNioFileChannel_upload@" + getFileUri());
     }
 
     @Override
