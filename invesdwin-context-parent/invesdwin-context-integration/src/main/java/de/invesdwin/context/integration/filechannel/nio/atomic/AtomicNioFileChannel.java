@@ -10,7 +10,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Map;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -18,8 +17,7 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
-import de.invesdwin.util.collections.factory.ILockCollectionFactory;
-import de.invesdwin.util.concurrent.lock.IReentrantLock;
+import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.concurrent.lock.file.AtomicNioFileChannelContext;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.uri.URIs;
@@ -206,7 +204,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
         connect(true);
         maybeRunCleanup();
         //serialises this JVM's writers on the exact same target (two concurrent copies of the shared '<name>.tmp' would otherwise interleave their delete/create steps and throw FileAlreadyExistsException despite REPLACE_EXISTING)
-        final IReentrantLock uploadLock = uploadLock();
+        final ILock uploadLock = uploadLock();
         uploadLock.lock();
         try {
             final Path targetPath = Paths.get(getFileUri());
@@ -253,7 +251,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         }
                         closed = true;
                         super.close();
-                        final IReentrantLock uploadLock = uploadLock();
+                        final ILock uploadLock = uploadLock();
                         uploadLock.lock();
                         try {
                             Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
