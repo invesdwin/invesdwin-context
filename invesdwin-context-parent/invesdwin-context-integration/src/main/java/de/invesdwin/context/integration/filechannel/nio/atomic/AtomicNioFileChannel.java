@@ -17,6 +17,8 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
+import de.invesdwin.util.concurrent.lock.ILock;
+import de.invesdwin.util.concurrent.lock.file.NameKeyedLocks;
 import de.invesdwin.util.concurrent.lock.file.AtomicNioFileChannelContext;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.uri.URIs;
@@ -163,6 +165,10 @@ public class AtomicNioFileChannel extends NioFileChannel {
 
     // --- Override Upload Operations for Atomic Writes ---
 
+    private ILock uploadLock() {
+        return NameKeyedLocks.get("AtomicNioFileChannel_upload@" + getFileUri());
+    }
+
     @Override
     public AtomicNioFileChannel upload(final File file) {
         connect(true);
@@ -194,6 +200,9 @@ public class AtomicNioFileChannel extends NioFileChannel {
     public AtomicNioFileChannel upload(final InputStream input) {
         connect(true);
         maybeRunCleanup();
+        //serialises this JVM's writers on the exact same target (two concurrent copies of the shared '<name>.tmp' would otherwise interleave their delete/create steps and throw FileAlreadyExistsException despite REPLACE_EXISTING)
+        final ILock uploadLock = uploadLock();
+        uploadLock.lock();
         try {
             final Path targetPath = Paths.get(getFileUri());
             final String targetFilename = targetPath.getFileName().toString();
@@ -210,6 +219,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         } finally {
+            uploadLock.unlock();
             Closeables.close(input);
         }
     }
@@ -238,7 +248,13 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         }
                         closed = true;
                         super.close();
-                        Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        final ILock uploadLock = uploadLock();
+                        uploadLock.lock();
+                        try {
+                            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        } finally {
+                            uploadLock.unlock();
+                        }
                     }
                 };
             }

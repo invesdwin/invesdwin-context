@@ -6,6 +6,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import org.springframework.retry.backoff.BackOffPolicy;
 
+import de.invesdwin.context.integration.retry.RetryScopes;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
 import de.invesdwin.util.error.Throwables;
@@ -31,7 +32,8 @@ public abstract class ARetryRunnable implements Runnable {
         final IRetryHook retryListener = getRetryListener();
         final de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<Void> retryCallback = new de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryCallback<Void>(
                 callable, originator, getBackOffPolicyOverride(), retryListener);
-        try {
+        retryCallback.setFallthrough(isFallthrough());
+        try (RetryScopes.Registration scope = RetryScopes.register()) {
             de.invesdwin.context.integration.retry.internal.ExceptionCauseRetryTemplate.INSTANCE.execute(retryCallback);
         } catch (final Throwable e) {
             final Throwable cause = Throwables.ignoreType(e,
@@ -47,6 +49,14 @@ public abstract class ARetryRunnable implements Runnable {
 
     protected IRetryHook getRetryListener() {
         return null;
+    }
+
+    /**
+     * Opt-in: propagate retryable failures to an enclosing outer retry instead of retrying in place when one is
+     * active on the current call scope (see the Retry.fallthrough javadoc).
+     */
+    protected boolean isFallthrough() {
+        return false;
     }
 
     protected BackOffPolicy getBackOffPolicyOverride() {
