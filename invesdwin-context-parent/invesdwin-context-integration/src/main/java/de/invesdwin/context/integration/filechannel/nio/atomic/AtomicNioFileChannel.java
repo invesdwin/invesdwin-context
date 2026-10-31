@@ -10,6 +10,7 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -17,6 +18,8 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.context.integration.filechannel.nio.NioFileChannel;
+import de.invesdwin.util.collections.factory.ILockCollectionFactory;
+import de.invesdwin.util.concurrent.lock.IReentrantLock;
 import de.invesdwin.util.concurrent.lock.file.AtomicNioFileChannelContext;
 import de.invesdwin.util.lang.Files;
 import de.invesdwin.util.lang.uri.URIs;
@@ -36,6 +39,9 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
  */
 @NotThreadSafe
 public class AtomicNioFileChannel extends NioFileChannel {
+
+    private static final Map<URI, IReentrantLock> UPLOAD_LOCKS = ILockCollectionFactory.getInstance(true)
+            .newConcurrentMap();
 
     private final AtomicNioFileChannelContext context;
 
@@ -163,6 +169,11 @@ public class AtomicNioFileChannel extends NioFileChannel {
 
     // --- Override Upload Operations for Atomic Writes ---
 
+    private IReentrantLock uploadLock() {
+        return UPLOAD_LOCKS.computeIfAbsent(getFileUri(),
+                k -> ILockCollectionFactory.getInstance(false).newLock("AtomicNioFileChannel_upload"));
+    }
+
     @Override
     public AtomicNioFileChannel upload(final File file) {
         connect(true);
@@ -194,6 +205,9 @@ public class AtomicNioFileChannel extends NioFileChannel {
     public AtomicNioFileChannel upload(final InputStream input) {
         connect(true);
         maybeRunCleanup();
+        //serialises this JVM's writers on the exact same target (two concurrent copies of the shared '<name>.tmp' would otherwise interleave their delete/create steps and throw FileAlreadyExistsException despite REPLACE_EXISTING)
+        final IReentrantLock uploadLock = uploadLock();
+        uploadLock.lock();
         try {
             final Path targetPath = Paths.get(getFileUri());
             final String targetFilename = targetPath.getFileName().toString();
@@ -210,6 +224,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         } finally {
+            uploadLock.unlock();
             Closeables.close(input);
         }
     }
@@ -238,7 +253,13 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         }
                         closed = true;
                         super.close();
-                        Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        final IReentrantLock uploadLock = uploadLock();
+                        uploadLock.lock();
+                        try {
+                            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                        } finally {
+                            uploadLock.unlock();
+                        }
                     }
                 };
             }

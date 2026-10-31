@@ -139,7 +139,7 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         if (!modified) {
             return;
         }
@@ -147,6 +147,8 @@ public class TransactionalFileProperties extends AProperties implements ICloseab
         try (PooledFastByteArrayOutputStream out = PooledFastByteArrayOutputStream.newInstance()) {
             getPropertiesFile().store(out, null);
             fileChannel.upload(out.asInputStream());
+            //idempotent: only re-upload when something changes again (a repeated close must not race its own tmp file)
+            modified = false;
         } catch (final IOException e) {
             throw new RuntimeException("Failed to save properties to channel: " + fileChannel, e);
         }
