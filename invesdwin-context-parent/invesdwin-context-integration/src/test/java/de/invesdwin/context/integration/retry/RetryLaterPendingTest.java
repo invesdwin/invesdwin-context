@@ -12,8 +12,10 @@ public class RetryLaterPendingTest {
     @Test
     public void testRenderedMessageSeparatesTagFromText() {
         //the staging log shape was '[PENDING]Strategy is currently initializing...' - the separating space belongs to
-        //the tag, so every producer that concatenates PENDING_TAG with its message renders it readably
-        final String rendered = RetryLaterPendingRuntimeException.PENDING_TAG
+        //the rendering prefix, so every producer concatenates PENDING_PREFIX (not the bare tag) with its message
+        Assertions.checkEquals("[PENDING]", RetryLaterPendingRuntimeException.PENDING_TAG);
+        Assertions.checkEquals("[PENDING] ", RetryLaterPendingRuntimeException.PENDING_PREFIX);
+        final String rendered = RetryLaterPendingRuntimeException.PENDING_PREFIX
                 + "Strategy is currently initializing: true";
         Assertions.checkEquals("[PENDING] Strategy is currently initializing: true", rendered);
         Assertions.checkTrue(RetryLaterPendingRuntimeException.isPending(new RuntimeException(rendered)));
