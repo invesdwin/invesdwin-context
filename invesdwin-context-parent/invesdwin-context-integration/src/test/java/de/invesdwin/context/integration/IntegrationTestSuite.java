@@ -16,12 +16,13 @@ import de.invesdwin.context.integration.network.NetworkUtilTest;
 import de.invesdwin.context.integration.retry.ExponentialBackoffTest;
 import de.invesdwin.context.integration.retry.RestartCausesTest;
 import de.invesdwin.context.integration.retry.RetryLaterPendingTest;
+import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHookTest;
 
 @Suite
 @SelectClasses({ CsvVerificationTest.class, CsvItemReaderBuilderTest.class, CommonsDecompressingInputStreamTest.class,
         MarshallersTest.class, IntegrationTest.class, NetworkUtilTest.class, AsciiTableWriterTest.class,
         CsvTableWriterTest.class, HtmlTableWriterTest.class, RetryLaterPendingTest.class,
-        ExponentialBackoffTest.class, RestartCausesTest.class })
+        ExponentialBackoffTest.class, RestartCausesTest.class, LoggingRetryHookTest.class })
 @Immutable
 public class IntegrationTestSuite {
 

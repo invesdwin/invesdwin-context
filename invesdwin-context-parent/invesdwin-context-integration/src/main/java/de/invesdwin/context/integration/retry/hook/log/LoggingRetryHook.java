@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.retry.hook.log;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.integration.retry.IRetryLaterException;
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
@@ -108,8 +109,28 @@ public class LoggingRetryHook implements IRetryHook {
 
     public static void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
             final LoggingReason reason, final Instant waitingSince) {
-        LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(
-                createFailureMessage(originator, retryCount, reason, waitingSince), cause));
+        final String message = createFailureMessage(originator, retryCount, reason, waitingSince);
+        if (isRetryVerdict(cause)) {
+            //a retry-later verdict is a skip decision, not a fault: it gets one line, and the stack only with
+            //Throwables.DEBUG_STACK_TRACE_ENABLED - the same rule the sources already apply through
+            //FallbackLiveExceptionLog and SubscriptionFailedLog. Before this every refused attempt wrote an ERROR
+            //record with a ~40-line stack: with the 19:09 build the ptstaging iqfeed run logged 137 of them
+            //against 137 RetrySucceeded lines (all of them resolved), and those records were 5,383 of the 5,591
+            //error.log lines. onRetryAborted and onRetrySucceeded still report the outcome.
+            LOG.warn(message + ", " + Throwables.getMessagesAndStackTraceIfDebugEnabled(cause));
+            return;
+        }
+        LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(message, cause));
+    }
+
+    /**
+     * Whether the retried call failed with the retry-later family rather than with a genuine fault. The cause chain
+     * is searched and not the top type, because the retried call often re-wraps the verdict (a joined async update
+     * rethrows it as a plain RuntimeException via Futures.get); the wrapper this hook builds for a non-verdict
+     * failure is part of that family as well.
+     */
+    public static boolean isRetryVerdict(final Throwable cause) {
+        return cause != null && Throwables.getCauseByType(cause, IRetryLaterException.class) != null;
     }
 
     @Override
