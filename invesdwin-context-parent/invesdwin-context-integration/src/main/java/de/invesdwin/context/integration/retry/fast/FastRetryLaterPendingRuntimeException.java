@@ -10,9 +10,9 @@ import de.invesdwin.util.error.Throwables;
  * Stack-trace-free variant of RetryLaterPendingRuntimeException: it keeps the pending subtype, so
  * RetryLaterPendingRuntimeException.isPending(Throwable) still recognises the wait by type and not only by the
  * PENDING_TAG in the message, while fillInStackTrace() captures nothing unless
- * Throwables.DEBUG_STACK_TRACE_ENABLED is on. IHiddenException says the producer considers this a skip verdict and
- * not a fault, which is what LoggingRetryHook, ThrowableConverter and GuiExceptionHandler honour - so a Fast* form
- * must never be used to wrap a genuine fault.
+ * Throwables.DEBUG_STACK_TRACE_ENABLED is on. IHiddenException marks it as a skip verdict: on the Err/ThrowableConverter lane that
+ * marker suppresses the whole chain's frames, so a Fast form must not wrap a genuine fault there;
+ * logback's own rendering prints every cause's stack regardless of the wrapper's own frames.
  */
 @NotThreadSafe
 public class FastRetryLaterPendingRuntimeException extends RetryLaterPendingRuntimeException implements IHiddenException {

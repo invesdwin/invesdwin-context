@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.retry.hook.log;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.Log;
@@ -121,10 +122,10 @@ public class LoggingRetryHook implements IRetryHook {
             LOG.warn(message + ", " + Throwables.getMessagesAndStackTraceIfDebugEnabled(cause));
             return;
         }
-        //a plain wrapper on purpose: every Fast* retry type carries IHiddenException, and this branch reports a
-        //genuine fault, so wrapping it in a Fast form would make the record claim to be a skip verdict and hide the
-        //fault's own frames from everything that honours the marker
-        LOG.catching(LogLevel.ERROR, new RuntimeException(message, cause));
+        //Fast wrapper, and it is only ever logged, never thrown: fillInStackTrace() skips this wrapper's own frames
+        //while logback still prints every cause's stack (proven by the ptstaging records, where the Fast top layer
+        //had no frames at all and the two causes below it printed 27 and 8)
+        LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(message, cause));
     }
 
     /**
