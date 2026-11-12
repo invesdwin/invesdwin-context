@@ -17,6 +17,7 @@ public final class LoggingPreviousCause {
     private int currentRetryCount;
     private int pendingAttempts;
     private int nonPendingRetryCount;
+    private int reportedAttempts;
 
     @SuppressWarnings("deprecation")
     public LoggingPreviousCause(final Throwable previousCause, final int retryCount) {
@@ -52,6 +53,19 @@ public final class LoggingPreviousCause {
      */
     public int getNonPendingRetryCount() {
         return nonPendingRetryCount;
+    }
+
+    /**
+     * Whether an attempt of this retry chain was ever written out. A chain that stayed silent to the end must not
+     * finish with a terminal line ('aborted after N retries' with no opening 'will be retried' is a half-sentence),
+     * and one that reported must not finish silent.
+     */
+    public boolean hasReported() {
+        return reportedAttempts > 0;
+    }
+
+    synchronized void markReported() {
+        reportedAttempts++;
     }
 
     public synchronized LoggingReason shouldLog(final Throwable newCause, final int retryCount) {

@@ -7,6 +7,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.junit.jupiter.api.Test;
 
 import de.invesdwin.context.integration.retry.NonBlockingRetryLaterRuntimeException;
+import de.invesdwin.context.integration.retry.RestartCauses;
 import de.invesdwin.context.integration.retry.RetryLaterPendingRuntimeException;
 import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.fast.FastNonBlockingRetryLaterRuntimeException;
@@ -14,6 +15,8 @@ import de.invesdwin.context.integration.retry.fast.FastRetryLaterPendingRuntimeE
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.concurrent.reference.IMutableReference;
+import de.invesdwin.util.concurrent.reference.ThreadLocalReference;
 import de.invesdwin.util.time.Instant;
 
 /**
@@ -80,6 +83,75 @@ public class LoggingRetryHookTest {
         LoggingRetryHook.logRetry(new RetryOriginator(LoggingRetryHookTest.class, "someMethod", null), 1,
                 new FastNonBlockingRetryLaterRuntimeException("update lock held by another context"),
                 LoggingReason.INITIAL, new Instant());
+    }
+
+    /**
+     * A productive wait that is also declared not a fault is silent until the chain says otherwise. The classification
+     * needs BOTH markers: a hidden verdict that is not pending (the non-blocking refusal) and a pending wait that no
+     * producer declared harmless (the plain pending type) are still reported.
+     */
+    @Test
+    public void testProductiveWaitSkipNeedsBothMarkers() {
+        final FastRetryLaterPendingRuntimeException pending = new FastRetryLaterPendingRuntimeException(
+                RetryLaterPendingRuntimeException.PENDING_PREFIX + "update of X._updateLock is held by another context");
+        Assertions.assertThat(LoggingRetryHook.isProductiveWaitSkip(pending)).isTrue();
+        Assertions.assertThat(LoggingRetryHook.isProductiveWaitSkip(new RuntimeException(pending))).isTrue();
+        Assertions.assertThat(LoggingRetryHook
+                .isProductiveWaitSkip(new FastNonBlockingRetryLaterRuntimeException("update lock held, retry later")))
+                        .isFalse();
+        Assertions.assertThat(LoggingRetryHook
+                .isProductiveWaitSkip(new RetryLaterPendingRuntimeException("[PENDING] hidden is missing"))).isFalse();
+        Assertions.assertThat(LoggingRetryHook.isProductiveWaitSkip(null)).isFalse();
+    }
+
+    /**
+     * The silent shape of a routine skip, end to end: no report below the stall threshold, and because nothing was
+     * reported the chain also gets no terminal line. Above the threshold the skip is a stall and must be named, and
+     * then the terminal bracket comes back. The report state is observable through the chain's own counter, which is
+     * what the terminal reports read.
+     */
+    @Test
+    public void testRoutineSkipStaysSilentToItsEndAndAStallDoesNot() {
+        final RetryOriginator originator = new RetryOriginator(LoggingRetryHookTest.class, "determineLastTickTimeTry",
+                null);
+        final IMutableReference<LoggingPreviousCause> holder = new ThreadLocalReference<>();
+        final FastRetryLaterPendingRuntimeException pending = new FastRetryLaterPendingRuntimeException(
+                RetryLaterPendingRuntimeException.PENDING_PREFIX + "update of X._updateLock is held by another context");
+
+        LoggingRetryHook.onBeforeRetry(holder, originator, 0, pending);
+        Assertions.checkFalse(holder.get().hasReported(),
+                "the first attempt of a productive wait must not be reported");
+        LoggingRetryHook.onRetrySucceeded(holder, originator, 3);
+        Assertions.checkNull(holder.get(), "a chain that reported nothing must also stay silent at its end");
+
+        //same seam, but this time the wait has become a stall: reported, and the terminal line follows the report
+        LoggingRetryHook.onBeforeRetry(holder, originator, LoggingRetryHook.ROUTINE_SKIP_REPORT_RETRIES, pending);
+        LoggingRetryHook.onBeforeRetry(holder, originator, LoggingRetryHook.ROUTINE_SKIP_REPORT_RETRIES + 1,
+                new FastRetryLaterPendingRuntimeException(RetryLaterPendingRuntimeException.PENDING_PREFIX
+                        + "update of Y._updateLock is held by another context"));
+        Assertions.checkTrue(holder.get().hasReported(),
+                "at the stall threshold the skip must be named even though it stays a one-liner");
+        LoggingRetryHook.onRetrySucceeded(holder, originator, LoggingRetryHook.ROUTINE_SKIP_REPORT_RETRIES + 1);
+    }
+
+    /**
+     * The live source services' skipped-cycle report obeys the same rule, so one hot key stops producing five records
+     * per demand cycle (the retry hook plus the four live source services on ptstaging).
+     */
+    @Test
+    public void testSkippedCycleReportFollowsTheSameRule() {
+        final RetryOriginator originator = new RetryOriginator(LoggingRetryHookTest.class, "determineLastTickTimeTry",
+                null);
+        final FastRetryLaterPendingRuntimeException pending = new FastRetryLaterPendingRuntimeException(
+                RetryLaterPendingRuntimeException.PENDING_PREFIX + "update of X._updateLock is held by another context");
+        final RuntimeException chain = new RuntimeException("At: FinancialdataLiveTickCache[X]", pending);
+
+        Assertions.checkFalse(RestartCauses.logSkippedCycle("testSeamRoutineSkip", originator, 0, chain),
+                "a routine productive wait must not write a skipped-cycle WARN per seam and minute");
+        Assertions.checkTrue(
+                RestartCauses.logSkippedCycle("testSeamStallSkip", originator,
+                        LoggingRetryHook.ROUTINE_SKIP_REPORT_RETRIES, chain),
+                "a productive wait at the stall threshold still gets its one line");
     }
 
 }

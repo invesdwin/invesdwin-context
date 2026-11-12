@@ -3,6 +3,7 @@ package de.invesdwin.context.integration.retry.hook.log;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
+import de.invesdwin.context.integration.retry.RetryLaterPendingRuntimeException;
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
@@ -20,6 +21,14 @@ import de.invesdwin.util.time.duration.Duration;
 @ThreadSafe
 public class LoggingRetryHook implements IRetryHook {
 
+    /**
+     * Attempts of a routine productive wait that pass before the chain gets a line at all (see
+     * {@link #isProductiveWaitSkip(Throwable)}): below this the skip is what the machinery is for, at and above it the
+     * same skip is a stall worth naming. Every later attempt of that chain reports at most once per minute through
+     * LoggingPreviousCause, and the terminal line only appears for a chain that was reported (see hasReported).
+     */
+    public static final int ROUTINE_SKIP_REPORT_RETRIES = 5;
+
     private static final IMutableReference<LoggingPreviousCause> PREVIOUS_CAUSE_HOLDER = new ThreadLocalReference<LoggingPreviousCause>();
     private static final IMutableReference<Boolean> SKIP_RETRY_LOG = new ThreadLocalReference<Boolean>();
     private static final Log LOG = new Log(LoggingRetryHook.class);
@@ -36,12 +45,13 @@ public class LoggingRetryHook implements IRetryHook {
             final RetryOriginator originator, final int retryCount, final Throwable cause) {
         final LoggingPreviousCause previousCause = previousCauseHolder.get();
         if (previousCause == null) {
-            logRetry(originator, retryCount, cause, LoggingReason.INITIAL, null);
+            //the holder exists before the report so that a written line can be counted for the terminal report
             previousCauseHolder.set(new LoggingPreviousCause(cause, retryCount));
+            logRetry(previousCauseHolder, originator, retryCount, cause, LoggingReason.INITIAL, null);
         } else {
             final LoggingReason reason = previousCause.shouldLog(cause, retryCount);
             if (reason != null) {
-                logRetry(originator, retryCount, cause, reason, previousCause.getStart());
+                logRetry(previousCauseHolder, originator, retryCount, cause, reason, previousCause.getStart());
             }
         }
     }
@@ -109,6 +119,19 @@ public class LoggingRetryHook implements IRetryHook {
 
     public static void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
             final LoggingReason reason, final Instant waitingSince) {
+        logRetry(null, originator, retryCount, cause, reason, waitingSince);
+    }
+
+    private static void logRetry(final IMutableReference<LoggingPreviousCause> previousCauseHolder,
+            final RetryOriginator originator, final int retryCount, final Throwable cause,
+            final LoggingReason reason, final Instant waitingSince) {
+        if (isProductiveWaitSkip(cause) && retryCount < ROUTINE_SKIP_REPORT_RETRIES) {
+            //a live-cache update lock that is held by the very updater this caller waits behind is routine: on the
+            //ptstaging iqfeed service one hot key wrote five such records per demand cycle (the retry hook plus the
+            //four live source services' skipped-cycle reports), each carrying the four-level cause chain of the demand
+            //path. A chain that never reports also never gets a terminal line, so the skip is silent end to end.
+            return;
+        }
         final String message = createFailureMessage(originator, retryCount, reason, waitingSince);
         if (isHiddenVerdict(cause)) {
             //the producer declared this failure not a fault: it gets one line, and the stack only with
@@ -120,12 +143,37 @@ public class LoggingRetryHook implements IRetryHook {
             //is not marked hidden keeps its record: "retry me" is not a claim of "not a fault". onRetryAborted and
             //onRetrySucceeded still report the outcome.
             LOG.warn(message + ", " + Throwables.getMessagesAndStackTraceIfDebugEnabled(cause));
+            markReported(previousCauseHolder);
             return;
         }
         //Fast wrapper, and it is only ever logged, never thrown: fillInStackTrace() skips this wrapper's own frames
         //while logback still prints every cause's stack (proven by the ptstaging records, where the Fast top layer
         //had no frames at all and the two causes below it printed 27 and 8)
         LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(message, cause));
+        markReported(previousCauseHolder);
+    }
+
+    /**
+     * A skip that is routine rather than a fault: the verdict's producer declared it not a fault (IHiddenException)
+     * AND the wait behind it is provably productive (RetryLaterPendingRuntimeException.isPending - the holder of the
+     * lock or resource is running the very work the waiter wants). Both markers are required: 'retry me' alone is not
+     * a claim of 'not a fault', and a hidden verdict that is not pending is a skip someone else decided to make.
+     */
+    public static boolean isProductiveWaitSkip(final Throwable cause) {
+        return isHiddenVerdict(cause) && RetryLaterPendingRuntimeException.isPending(cause);
+    }
+
+    private static void markReported(final IMutableReference<LoggingPreviousCause> previousCauseHolder) {
+        if (previousCauseHolder != null) {
+            final LoggingPreviousCause previousCause = previousCauseHolder.get();
+            if (previousCause != null) {
+                previousCause.markReported();
+            }
+        }
+    }
+
+    private static boolean isReported(final LoggingPreviousCause previousCause) {
+        return previousCause != null && previousCause.hasReported();
     }
 
     /**
@@ -147,7 +195,7 @@ public class LoggingRetryHook implements IRetryHook {
 
     public static void onRetryAborted(final IMutableReference<LoggingPreviousCause> previousCauseHolder,
             final RetryOriginator originator, final int retryCount, final Throwable cause) {
-        if (retryCount > 0) {
+        if (retryCount > 0 && isReported(previousCauseHolder.get())) {
             LOG.warn(createAbortedMessage(originator, retryCount, cause));
         }
         previousCauseHolder.set(null);
@@ -163,7 +211,10 @@ public class LoggingRetryHook implements IRetryHook {
 
     public static void onRetrySucceeded(final IMutableReference<LoggingPreviousCause> previousCauseHolder,
             final RetryOriginator originator, final int retryCount) {
-        LOG.warn(createSuccessMessage(originator, retryCount));
+        if (isReported(previousCauseHolder.get())) {
+            //only a chain that opened with a report gets the closing one
+            LOG.warn(createSuccessMessage(originator, retryCount));
+        }
         previousCauseHolder.set(null);
     }
 
