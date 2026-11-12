@@ -2,10 +2,14 @@ package de.invesdwin.context.integration.retry;
 
 import javax.annotation.concurrent.Immutable;
 
-import de.invesdwin.context.log.error.IHiddenException;
 
+/**
+ * A RetryLater that must not queue request threads behind the work that holds the resource. The hidden marker is not
+ * on this type: quietness is declared by the stack-trace-free variant fast.FastNonBlockingRetryLaterRuntimeException,
+ * which producers on a hot path throw.
+ */
 @Immutable
-public class NonBlockingRetryLaterRuntimeException extends RetryLaterRuntimeException implements IHiddenException {
+public class NonBlockingRetryLaterRuntimeException extends RetryLaterRuntimeException {
 
     public NonBlockingRetryLaterRuntimeException() {
         super();

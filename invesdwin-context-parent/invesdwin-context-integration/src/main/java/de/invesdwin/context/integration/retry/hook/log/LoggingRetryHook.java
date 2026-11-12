@@ -3,11 +3,10 @@ package de.invesdwin.context.integration.retry.hook.log;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.integration.retry.IRetryLaterException;
-import de.invesdwin.context.integration.retry.fast.FastRetryLaterRuntimeException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.Log;
+import de.invesdwin.context.log.error.IHiddenException;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.concurrent.reference.IMutableReference;
 import de.invesdwin.util.concurrent.reference.ThreadLocalReference;
@@ -110,27 +109,31 @@ public class LoggingRetryHook implements IRetryHook {
     public static void logRetry(final RetryOriginator originator, final int retryCount, final Throwable cause,
             final LoggingReason reason, final Instant waitingSince) {
         final String message = createFailureMessage(originator, retryCount, reason, waitingSince);
-        if (isRetryVerdict(cause)) {
-            //a retry-later verdict is a skip decision, not a fault: it gets one line, and the stack only with
+        if (isHiddenVerdict(cause)) {
+            //the producer declared this failure not a fault: it gets one line, and the stack only with
             //Throwables.DEBUG_STACK_TRACE_ENABLED - the same rule the sources already apply through
-            //FallbackLiveExceptionLog and SubscriptionFailedLog. Before this every refused attempt wrote an ERROR
-            //record with a ~40-line stack: with the 19:09 build the ptstaging iqfeed run logged 137 of them
-            //against 137 RetrySucceeded lines (all of them resolved), and those records were 5,383 of the 5,591
-            //error.log lines. onRetryAborted and onRetrySucceeded still report the outcome.
+            //FallbackLiveExceptionLog and SubscriptionFailedLog, and the same marker ThrowableConverter honours for
+            //the Err lane. Before this every logged attempt wrote an ERROR record with a ~40-line stack: the
+            //ptstaging iqfeed run on the 19:09 build wrote 547 such chains (546 resolved after exactly one retry),
+            //which filled 18,496 of error.log's 21,903 lines and 23,392 of common.log's 44,356. A retry-later that
+            //is not marked hidden keeps its record: "retry me" is not a claim of "not a fault". onRetryAborted and
+            //onRetrySucceeded still report the outcome.
             LOG.warn(message + ", " + Throwables.getMessagesAndStackTraceIfDebugEnabled(cause));
             return;
         }
-        LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(message, cause));
+        //a plain wrapper on purpose: every Fast* retry type carries IHiddenException, and this branch reports a
+        //genuine fault, so wrapping it in a Fast form would make the record claim to be a skip verdict and hide the
+        //fault's own frames from everything that honours the marker
+        LOG.catching(LogLevel.ERROR, new RuntimeException(message, cause));
     }
 
     /**
-     * Whether the retried call failed with the retry-later family rather than with a genuine fault. The cause chain
-     * is searched and not the top type, because the retried call often re-wraps the verdict (a joined async update
-     * rethrows it as a plain RuntimeException via Futures.get); the wrapper this hook builds for a non-verdict
-     * failure is part of that family as well.
+     * Whether the failed call carries a verdict whose producer declared it not a fault (IHiddenException). The cause
+     * chain is searched and not the top type, because the retried call often re-wraps the verdict - a joined async
+     * update rethrows it as a plain RuntimeException via Futures.get.
      */
-    public static boolean isRetryVerdict(final Throwable cause) {
-        return cause != null && Throwables.getCauseByType(cause, IRetryLaterException.class) != null;
+    public static boolean isHiddenVerdict(final Throwable cause) {
+        return cause != null && Throwables.getCauseByType(cause, IHiddenException.class) != null;
     }
 
     @Override
