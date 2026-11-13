@@ -183,7 +183,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
                 Files.createDirectories(tempPath.getParent());
                 Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.moveAtomic(tempPath, targetPath);
             }
             return this;
         } catch (final IOException e) {
@@ -213,7 +213,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
                 Files.createDirectories(tempPath.getParent());
                 Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
-                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                Files.moveAtomic(tempPath, targetPath);
             }
             return this;
         } catch (final IOException e) {
@@ -251,7 +251,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         final ILock uploadLock = uploadLock();
                         uploadLock.lock();
                         try {
-                            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                            Files.moveAtomic(tempPath, targetPath);
                         } finally {
                             uploadLock.unlock();
                         }
