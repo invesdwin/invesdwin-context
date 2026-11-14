@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -169,6 +170,21 @@ public class AtomicNioFileChannel extends NioFileChannel {
         return NameKeyedLocks.get("AtomicNioFileChannel_upload@" + getFileUri());
     }
 
+    /**
+     * Moves the staged temp file onto the final name. Two modes, decided by the context: replace (the default - an
+     * upload onto the same name overwrites it, which is what a cache entry, a properties file or a redirect file
+     * wants) or claim (the target must not exist yet, so a second publisher of the same name is refused with
+     * {@link FileAlreadyExistsException} instead of silently replacing what the first one published). Claim mode exists
+     * because a rename is never exclusive - see the measurement in {@link Files#moveClaim(Path, Path)}.
+     */
+    private void publish(final Path tempPath, final Path targetPath) throws IOException {
+        if (context.isClaimPublish()) {
+            Files.moveClaim(tempPath, targetPath);
+        } else {
+            Files.moveAtomic(tempPath, targetPath);
+        }
+    }
+
     @Override
     public AtomicNioFileChannel upload(final File file) {
         connect(true);
@@ -183,7 +199,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
                 Files.createDirectories(tempPath.getParent());
                 Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
-                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                publish(tempPath, targetPath);
             }
             return this;
         } catch (final IOException e) {
@@ -213,7 +229,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
                 Files.createDirectories(tempPath.getParent());
                 Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
-                Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                publish(tempPath, targetPath);
             }
             return this;
         } catch (final IOException e) {
@@ -251,7 +267,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
                         final ILock uploadLock = uploadLock();
                         uploadLock.lock();
                         try {
-                            Files.move(tempPath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                            publish(tempPath, targetPath);
                         } finally {
                             uploadLock.unlock();
                         }
