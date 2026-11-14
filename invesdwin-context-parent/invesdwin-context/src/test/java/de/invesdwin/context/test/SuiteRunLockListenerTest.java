@@ -14,8 +14,8 @@ import de.invesdwin.context.ContextProperties;
 import de.invesdwin.util.assertions.Assertions;
 
 /**
- * The listener is what turns "the suites of a module run serially" into something a second run can observe, so it has to
- * really hold a cross-process guard for the session and give it up again - a guard that silently always succeeds is
+ * The listener is what turns "the suites of a module run serially" into something a second run can observe, so it has
+ * to really hold a cross-process guard for the session and give it up again - a guard that silently always succeeds is
  * worse than no guard, because the next reader of a red suite run will trust it.
  * <p>
  * The reader/writer split is the point of these tests: a reference-CREATING run must be alone, while comparison-only
@@ -40,18 +40,22 @@ public class SuiteRunLockListenerTest {
         final RoleTestListener holder = newWriter();
         holder.launcherSessionOpened(null);
         Assertions.assertThat(holder.isSessionLockHeld()).isTrue();
-        Assertions.assertThat(writerFile).as("a writer session takes the writer guard, creating the folder it sits in")
+        Assertions.assertThat(writerFile)
+                .as("a writer session takes the writer guard, creating the folder it sits in")
                 .isFile();
-        Assertions.assertThat(lockDir.getName()).as("each suite family gets a folder of its own")
+        Assertions.assertThat(lockDir.getName())
+                .as("each suite family gets a folder of its own")
                 .isEqualTo(RoleTestListener.class.getSimpleName());
 
         //what a second suite process would hit; inside one jvm the same mechanism reports an overlapping lock instead of
         //returning null, which is what FileChannelLock turns into OVERLAPPING_FILE_LOCK_BY_OTHER_THREAD.
-        Assertions.assertThat(isOuterAttemptRefused(writerFile)).as("the live session holds an os level lock on that file")
+        Assertions.assertThat(isOuterAttemptRefused(writerFile))
+                .as("the live session holds an os level lock on that file")
                 .isTrue();
 
         holder.launcherSessionClosed(null);
-        Assertions.assertThat(writerFile).as("the closing session frees it, and FileChannelLock unlinks the file")
+        Assertions.assertThat(writerFile)
+                .as("the closing session frees it, and FileChannelLock unlinks the file")
                 .doesNotExist();
 
         final RoleTestListener next = newWriter();
@@ -62,8 +66,8 @@ public class SuiteRunLockListenerTest {
     }
 
     /**
-     * The default a listener gets when it does not say which role it runs: the destructive one. Too strict is survivable
-     * here, too lenient silently corrupts reference files.
+     * The default a listener gets when it does not say which role it runs: the destructive one. Too strict is
+     * survivable here, too lenient silently corrupts reference files.
      */
     @Test
     public void testAListenerThatDoesNotSayItsRoleGuardsAsAWriter() {
@@ -93,16 +97,22 @@ public class SuiteRunLockListenerTest {
 
         final RoleTestListener writer = newWriter();
         writer.launcherSessionOpened(null);
-        Assertions.assertThat(writer.getLastRefusalReason()).as("the writer sees the live reader marker and says which")
-                .contains("live reader sessions").contains("reader_one");
+        Assertions.assertThat(writer.getLastRefusalReason())
+                .as("the writer sees the live reader marker and says which")
+                .contains("live reader sessions")
+                .contains("reader_one");
         //the warn posture: it proceeds, and it keeps marking itself so later readers see it
         Assertions.assertThat(writer.isSessionLockHeld()).isTrue();
 
         writer.launcherSessionClosed(null);
         Assertions.assertThat(new File(lockDir, "writer")).doesNotExist();
-        Assertions.assertThat(reader.isSessionLockHeld()).as("the reader's own marker is untouched by the writer").isTrue();
+        Assertions.assertThat(reader.isSessionLockHeld())
+                .as("the reader's own marker is untouched by the writer")
+                .isTrue();
         reader.launcherSessionClosed(null);
-        Assertions.assertThat(new File(lockDir, "reader_one")).as("and the reader unlinks its own on close").doesNotExist();
+        Assertions.assertThat(new File(lockDir, "reader_one"))
+                .as("and the reader unlinks its own on close")
+                .doesNotExist();
     }
 
     @Test
@@ -116,13 +126,17 @@ public class SuiteRunLockListenerTest {
 
         final RoleTestListener reader = newReader("one");
         reader.launcherSessionOpened(null);
-        Assertions.assertThat(reader.getLastRefusalReason()).as("the reader probes the writer guard and names it")
+        Assertions.assertThat(reader.getLastRefusalReason())
+                .as("the reader probes the writer guard and names it")
                 .contains("the writer guard");
         Assertions.assertThat(reader.isSessionLockHeld())
-                .as("it still marks itself, since the posture is to proceed and be visible").isTrue();
+                .as("it still marks itself, since the posture is to proceed and be visible")
+                .isTrue();
 
         reader.launcherSessionClosed(null);
-        Assertions.assertThat(new File(lockDir, "writer")).as("the reader's close removes nothing of the writer's").isFile();
+        Assertions.assertThat(new File(lockDir, "writer"))
+                .as("the reader's close removes nothing of the writer's")
+                .isFile();
         writer.launcherSessionClosed(null);
         deleteDir(lockDir);
     }
@@ -139,21 +153,24 @@ public class SuiteRunLockListenerTest {
 
         Assertions.assertThat(first.getLastRefusalReason()).isNull();
         Assertions.assertThat(second.getLastRefusalReason())
-                .as("a reader of another process holds a marker of its own, so it is not contended").isNull();
+                .as("a reader of another process holds a marker of its own, so it is not contended")
+                .isNull();
         Assertions.assertThat(new File(lockDir, "reader_one")).isFile();
         Assertions.assertThat(new File(lockDir, "reader_two")).isFile();
 
         final RoleTestListener writer = newWriter();
         writer.launcherSessionOpened(null);
         Assertions.assertThat(writer.getLastRefusalReason())
-                .as("the writer lists every live reader, so the log names all of them").contains("reader_one")
+                .as("the writer lists every live reader, so the log names all of them")
+                .contains("reader_one")
                 .contains("reader_two");
         Assertions.assertThat(new File(lockDir, "reader_one")).as("listing readers locks nothing away").isFile();
 
         writer.launcherSessionClosed(null);
         first.launcherSessionClosed(null);
         Assertions.assertThat(new File(lockDir, "reader_two"))
-                .as("one reader's close removes only its own marker").isFile();
+                .as("one reader's close removes only its own marker")
+                .isFile();
         second.launcherSessionClosed(null);
         deleteDir(lockDir);
     }
@@ -173,7 +190,8 @@ public class SuiteRunLockListenerTest {
         final RoleTestListener writer = newWriter();
         writer.launcherSessionOpened(null);
         Assertions.assertThat(writer.getLastRefusalReason())
-                .as("a marker nobody can lock any more belongs to a dead process").isNull();
+                .as("a marker nobody can lock any more belongs to a dead process")
+                .isNull();
         Assertions.assertThat(deadMarker).as("and the probe that could lock it removes the residue").doesNotExist();
         writer.launcherSessionClosed(null);
         deleteDir(lockDir);
@@ -214,7 +232,8 @@ public class SuiteRunLockListenerTest {
         second.launcherSessionOpened(null);
         Assertions.assertThat(writerFile).as("the guard is named for the listener class").isFile();
         Assertions.assertThat(new File(secondDir, "writer"))
-                .as("another listener has a folder of its own and takes its guard").isFile();
+                .as("another listener has a folder of its own and takes its guard")
+                .isFile();
         Assertions.assertThat(second.getLastRefusalReason()).as("so it is not refused by the first").isNull();
         first.launcherSessionClosed(null);
         second.launcherSessionClosed(null);
@@ -227,8 +246,7 @@ public class SuiteRunLockListenerTest {
      * process would be refused.
      */
     private static boolean isOuterAttemptRefused(final File file) throws IOException {
-        try (FileChannel other = FileChannel.open(file.toPath(), StandardOpenOption.CREATE,
-                StandardOpenOption.WRITE)) {
+        try (FileChannel other = FileChannel.open(file.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
             return other.tryLock() == null;
         } catch (final OverlappingFileLockException e) {
             return true;
@@ -277,12 +295,12 @@ public class SuiteRunLockListenerTest {
     }
 
     @NotThreadSafe
-    private static class SecondTestListener extends ASuiteRunLockListener {
+    private static final class SecondTestListener extends ASuiteRunLockListener {
         //no-arg, so also a writer - in a folder of its own
     }
 
     @NotThreadSafe
-    private static class DefaultRoleTestListener extends ASuiteRunLockListener {
+    private static final class DefaultRoleTestListener extends ASuiteRunLockListener {
         //no-arg, so also a writer - the point of this test
     }
 
