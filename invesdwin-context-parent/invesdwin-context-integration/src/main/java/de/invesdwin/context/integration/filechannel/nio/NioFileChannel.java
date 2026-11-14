@@ -11,6 +11,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPaths;
 import de.invesdwin.context.integration.filechannel.info.path.IFileChannelPath;
 import de.invesdwin.util.assertions.Assertions;
+import de.invesdwin.util.collections.Collections;
 import de.invesdwin.util.collections.iterable.ICloseableIterator;
 import de.invesdwin.util.collections.iterable.WrapperCloseableIterable;
 import de.invesdwin.util.lang.Files;
@@ -309,7 +311,7 @@ public class NioFileChannel implements IFileChannel {
         connect(false);
         final Path dirPath = resolveDirectoryPath();
         if (!Files.exists(dirPath)) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
 
         try (Stream<Path> stream = Files.list(dirPath)) {
@@ -355,12 +357,12 @@ public class NioFileChannel implements IFileChannel {
         final Path dirPath = resolveDirectoryPath();
 
         if (!Files.exists(dirPath)) {
-            return WrapperCloseableIterable.maybeWrap(java.util.Collections.<NioFileInfo> emptyList()).iterator();
+            return WrapperCloseableIterable.maybeWrap(Collections.<NioFileInfo> emptyList()).iterator();
         }
 
         try {
             final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dirPath, filter);
-            final java.util.Iterator<Path> pathIterator = directoryStream.iterator();
+            final Iterator<Path> pathIterator = directoryStream.iterator();
 
             return new ICloseableIterator<NioFileInfo>() {
                 @Override
@@ -418,7 +420,7 @@ public class NioFileChannel implements IFileChannel {
         try {
             final Path source = resolveFilePath();
             final Path target = Paths.get(FileChannelPaths.newFileUri(baseServerUri, getAbsoluteDirectory(), filename));
-            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+            Files.moveAtomic(source, target);
             setFileName(filename);
             return this;
         } catch (final IOException e) {
@@ -434,7 +436,7 @@ public class NioFileChannel implements IFileChannel {
             targetNio.ensureDirectoryCreated();
             final Path source = resolveFilePath();
             final Path target = targetNio.resolveFilePath();
-            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+            Files.moveAtomic(source, target);
             setSubDirectory(targetNio.getSubDirectory());
             setFileName(targetNio.getFileName());
         } catch (final IOException e) {
@@ -475,7 +477,7 @@ public class NioFileChannel implements IFileChannel {
     public NioFileChannel download(final File destination) {
         connect(false);
         try (InputStream in = Files.newInputStream(resolveFilePath())) {
-            de.invesdwin.util.lang.Files.forceMkdirParent(destination);
+            Files.forceMkdirParent(destination);
             Files.copy(in, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (final NoSuchFileException e) {
             // Do nothing if source does not exist
