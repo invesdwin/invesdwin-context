@@ -3,10 +3,11 @@ package de.invesdwin.context.integration.retry.fast;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryLaterException;
+import de.invesdwin.context.log.error.IHiddenException;
 import de.invesdwin.util.error.Throwables;
 
 @NotThreadSafe
-public class FastRetryLaterException extends RetryLaterException {
+public class FastRetryLaterException extends RetryLaterException implements IHiddenException {
 
     private static final long serialVersionUID = 1L;
 

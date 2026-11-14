@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.annotation.concurrent.ThreadSafe;
 
+import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHook;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.context.log.Log;
 import de.invesdwin.util.collections.factory.ILockCollectionFactory;
@@ -72,6 +73,14 @@ public final class RestartCauses {
             final Throwable cause) {
         final Instant lastWarn = LAST_WARN_BY_SEAM.get(seamId);
         if (lastWarn != null && !lastWarn.isGreaterThan(WARN_INTERVAL)) {
+            return false;
+        }
+        if (LoggingRetryHook.isProductiveWaitSkip(cause)
+                && retryCount < LoggingRetryHook.ROUTINE_SKIP_REPORT_RETRIES) {
+            //a wait on a lock whose holder is running the very update the seam wants is a routine skip, not a cycle
+            //worth a WARN per seam per minute: on the ptstaging iqfeed service one hot key produced five such records
+            //per demand cycle (four live source services plus the retry hook itself). The retry hook reports the chain
+            //once it turns into a stall (same threshold), so nothing disappears unaccounted for.
             return false;
         }
         LOG.warn("Skipping cycle of [%s] on retry %s of %s due to retryable %s: %s", seamId, retryCount, originator,
