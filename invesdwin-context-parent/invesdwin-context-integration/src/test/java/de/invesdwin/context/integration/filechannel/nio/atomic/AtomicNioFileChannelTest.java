@@ -3,6 +3,8 @@ package de.invesdwin.context.integration.filechannel.nio.atomic;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,8 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import de.invesdwin.context.integration.filechannel.info.path.FileChannelPath;
+import de.invesdwin.util.concurrent.lock.file.AtomicNioFileChannelContext;
 import de.invesdwin.util.assertions.Assertions;
 import de.invesdwin.util.lang.Files;
+import de.invesdwin.util.lang.string.Charsets;
 
 /**
  * Pins that the atomic channel really publishes by a single rename, through every one of its upload paths. The
@@ -104,5 +108,75 @@ public class AtomicNioFileChannelTest {
         Assertions.assertThat(wholeReads.get()).as("the pollers must have been watching the uploads")
                 .isGreaterThan(1000);
         Assertions.assertThat(Files.readAllBytes(target)).isEqualTo(payload);
+    }
+
+    /**
+     * Claim mode: a name may be published by one writer only, through each of the three upload paths. The default mode
+     * is pinned in the test above (it re-publishes the same name 100 times); this is the other half of the switch in
+     * {@code publish(Path, Path)}, and the negative control for anyone who thinks a claim is just a rename.
+     */
+    @Test
+    public void testClaimModeRefusesASecondPublishOfTheSameNameOnEveryUploadPath() throws Exception {
+        final File directory = new File(tempDir, "claim");
+        Files.forceMkdir(directory);
+        final File targetFile = new File(directory, "7_memory.index");
+        final AtomicNioFileChannelContext claimContext = new AtomicNioFileChannelContext(true);
+        final byte[] first = "FIRST".getBytes(Charsets.UTF_8);
+        final byte[] second = "SECOND".getBytes(Charsets.UTF_8);
+
+        new AtomicNioFileChannel(FileChannelPath.newFile(targetFile), claimContext).upload(first);
+        Assertions.assertThat(Files.readAllBytes(targetFile.toPath()))
+                .as("the first publisher's claim wins")
+                .isEqualTo(first);
+
+        assertRefused(() -> new AtomicNioFileChannel(FileChannelPath.newFile(targetFile), claimContext)
+                .upload(second), "upload(byte[])");
+        final AtomicNioFileChannel filePublisher = new AtomicNioFileChannel(FileChannelPath.newFile(targetFile),
+                claimContext);
+        final File sourceFile = new File(directory, "source.index");
+        Files.write(sourceFile.toPath(), second);
+        assertRefused(() -> filePublisher.upload(sourceFile), "upload(File)");
+        assertRefused(() -> {
+            try (OutputStream out = new AtomicNioFileChannel(FileChannelPath.newFile(targetFile), claimContext)
+                    .newUpload()) {
+                out.write(second);
+            }
+        }, "newUpload()");
+
+        Assertions.assertThat(Files.readAllBytes(targetFile.toPath()))
+                .as("a refused claim must leave what the winner published exactly as it was")
+                .isEqualTo(first);
+    }
+
+    /**
+     * The mode lives on the context, not the channel, because every with* factory clones the context into the derived
+     * channel. If it were a channel field these factories would silently hand back a replace-mode channel.
+     */
+    @Test
+    public void testClaimModeSurvivesTheDerivedChannelFactories() throws Exception {
+        final File directory = new File(tempDir, "claimDerived");
+        Files.forceMkdir(directory);
+        final AtomicNioFileChannel base = new AtomicNioFileChannel(FileChannelPath.newDirectory(directory),
+                new AtomicNioFileChannelContext(true));
+        final AtomicNioFileChannel derived = base.withFilename("8_memory.index");
+        derived.upload("FIRST".getBytes(Charsets.UTF_8));
+        assertRefused(() -> derived.upload("SECOND".getBytes(Charsets.UTF_8)), "withFilename(...) derived channel");
+    }
+
+    private interface IThrowingRun {
+        void run() throws Exception;
+    }
+
+    private void assertRefused(final IThrowingRun run, final String path) throws Exception {
+        try {
+            run.run();
+            Assertions.fail("claim mode must refuse a second publish of one name via " + path);
+        } catch (final FileAlreadyExistsException e) {
+            //newUpload() surfaces it straight from close()
+        } catch (final UncheckedIOException e) {
+            Assertions.assertThat(e.getCause())
+                    .as("upload must report the refusal as the file system's own verdict on " + path)
+                    .isInstanceOf(FileAlreadyExistsException.class);
+        }
     }
 }
