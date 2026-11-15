@@ -127,7 +127,7 @@ public class LoggingRetryHook implements IRetryHook {
             final LoggingReason reason, final Instant waitingSince) {
         if (isProductiveWaitSkip(cause) && retryCount < ROUTINE_SKIP_REPORT_RETRIES) {
             //a live-cache update lock that is held by the very updater this caller waits behind is routine: on the
-            //ptstaging iqfeed service one hot key wrote five such records per demand cycle (the retry hook plus the
+            //production iqfeed service one hot key wrote five such records per demand cycle (the retry hook plus the
             //four live source services' skipped-cycle reports), each carrying the four-level cause chain of the demand
             //path. A chain that never reports also never gets a terminal line, so the skip is silent end to end.
             return;
@@ -138,7 +138,7 @@ public class LoggingRetryHook implements IRetryHook {
             //Throwables.DEBUG_STACK_TRACE_ENABLED - the same rule the sources already apply through
             //FallbackLiveExceptionLog and SubscriptionFailedLog, and the same marker ThrowableConverter honours for
             //the Err lane. Before this every logged attempt wrote an ERROR record with a ~40-line stack: the
-            //ptstaging iqfeed run on the 19:09 build wrote 547 such chains (546 resolved after exactly one retry),
+            //production iqfeed run on the 19:09 build wrote 547 such chains (546 resolved after exactly one retry),
             //which filled 18,496 of error.log's 21,903 lines and 23,392 of common.log's 44,356. A retry-later that
             //is not marked hidden keeps its record: "retry me" is not a claim of "not a fault". onRetryAborted and
             //onRetrySucceeded still report the outcome.
@@ -147,7 +147,7 @@ public class LoggingRetryHook implements IRetryHook {
             return;
         }
         //Fast wrapper, and it is only ever logged, never thrown: fillInStackTrace() skips this wrapper's own frames
-        //while logback still prints every cause's stack (proven by the ptstaging records, where the Fast top layer
+        //while logback still prints every cause's stack (proven by the production records, where the Fast top layer
         //had no frames at all and the two causes below it printed 27 and 8)
         LOG.catching(LogLevel.ERROR, new FastRetryLaterRuntimeException(message, cause));
         markReported(previousCauseHolder);

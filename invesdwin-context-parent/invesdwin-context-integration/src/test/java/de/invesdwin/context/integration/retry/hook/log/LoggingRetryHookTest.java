@@ -23,8 +23,8 @@ import de.invesdwin.util.time.Instant;
  * Pins the marker that decides the report shape of a logged retry attempt: the stack-trace-free Fast* variants carry
  * IHiddenException, which is the producer's declaration that this failure is a skip verdict and not a fault, so it
  * gets one line. A plain RetryLater makes no such claim and keeps its ERROR record with the stack. Measured on
- * ptstaging with the 19:09 build: 547 retry chains (546 of them resolved after exactly one retry) filled 18,496 of
- * error.log's 21,903 lines and 23,392 of common.log's 44,356 with stack frames.
+ * the production iqfeed service with the 19:09 build: 547 retry chains (546 resolved after exactly one
+ * retry) filled 18,496 of error.log's 21,903 lines and 23,392 of common.log's 44,356 with stack frames.
  */
 @NotThreadSafe
 public class LoggingRetryHookTest {
@@ -136,7 +136,7 @@ public class LoggingRetryHookTest {
 
     /**
      * The live source services' skipped-cycle report obeys the same rule, so one hot key stops producing five records
-     * per demand cycle (the retry hook plus the four live source services on ptstaging).
+     * per demand cycle (the retry hook plus the four live source services on the production box).
      */
     @Test
     public void testSkippedCycleReportFollowsTheSameRule() {
