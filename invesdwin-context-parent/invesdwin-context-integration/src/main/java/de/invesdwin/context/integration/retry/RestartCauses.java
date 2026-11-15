@@ -78,7 +78,7 @@ public final class RestartCauses {
         if (LoggingRetryHook.isProductiveWaitSkip(cause)
                 && retryCount < LoggingRetryHook.ROUTINE_SKIP_REPORT_RETRIES) {
             //a wait on a lock whose holder is running the very update the seam wants is a routine skip, not a cycle
-            //worth a WARN per seam per minute: on the ptstaging iqfeed service one hot key produced five such records
+            //worth a WARN per seam per minute: on the production iqfeed service one hot key produced five such records
             //per demand cycle (four live source services plus the retry hook itself). The retry hook reports the chain
             //once it turns into a stall (same threshold), so nothing disappears unaccounted for.
             return false;
