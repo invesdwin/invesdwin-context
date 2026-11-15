@@ -9,6 +9,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -161,6 +163,92 @@ public class AtomicNioFileChannelTest {
         final AtomicNioFileChannel derived = base.withFilename("8_memory.index");
         derived.upload("FIRST".getBytes(Charsets.UTF_8));
         assertRefused(() -> derived.upload("SECOND".getBytes(Charsets.UTF_8)), "withFilename(...) derived channel");
+    }
+
+    /**
+     * The test above publishes the same name a hundred times but always from one thread, which is why the shared
+     * staging name stayed invisible for so long: with a temp file named only after the JVM's heartbeat owner, two
+     * threads of ONE JVM writing the same target both open the same file, and the publisher that closes first renames
+     * it away, so the other one's close throws NoSuchFileException on a name that is no longer there. Measured
+     * 2026-11-15 in the umbrella suite, where parallel reference runs write the same shared live-calculated segment
+     * key; the failure then escalated into a permanent instrument verdict in the trading layer.
+     */
+    @Test
+    public void testConcurrentStreamingWritersOfOneTargetNeverShareATempFile() throws Exception {
+        final File directory = new File(tempDir, "concurrent");
+        Files.forceMkdir(directory);
+        final File targetFile = new File(directory, "9_memory.index");
+        final String payloadA = repeat('A', 64 * 1024);
+        final String payloadB = repeat('B', 64 * 1024);
+
+        final CountDownLatch ready = new CountDownLatch(2);
+        final CountDownLatch go = new CountDownLatch(1);
+        final Queue<Throwable> failures = new ConcurrentLinkedQueue<>();
+        final List<Thread> writers = new ArrayList<>();
+        writers.add(newWriter(targetFile, payloadA, ready, go, failures));
+        writers.add(newWriter(targetFile, payloadB, ready, go, failures));
+        for (final Thread writer : writers) {
+            writer.start();
+        }
+        ready.await();
+        go.countDown();
+        for (final Thread writer : writers) {
+            writer.join(30000);
+        }
+
+        Assertions.assertThat(failures).as("neither writer may fail on a shared staging file").isEmpty();
+        final String written = new String(Files.readAllBytes(targetFile.toPath()), Charsets.UTF_8);
+        Assertions.assertThat(written.length()).as("the target must hold exactly one payload, not an interleave")
+                .isEqualTo(payloadA.length());
+        Assertions.assertThat(written).as("the target must hold one writer's bytes end to end")
+                .isIn(payloadA, payloadB);
+    }
+
+    /**
+     * The staging name is what the stale-temp sweep matches, so a per-writer name must keep the extension and must
+     * stay a sibling of the target - otherwise a killed writer's leftover stops being reaped.
+     */
+    @Test
+    public void testStagingNamesAreUniquePerOpenAndStillSweepable() throws Exception {
+        final File directory = new File(tempDir, "staging");
+        Files.forceMkdir(directory);
+        final Path target = new File(directory, "11_memory.index").toPath();
+        final AtomicNioFileChannelContext context = new AtomicNioFileChannelContext();
+
+        final Path first = context.newTempPath(target);
+        final Path second = context.newTempPath(target);
+        Assertions.assertThat(first).as("two opens of one target must not stage into one file").isNotEqualTo(second);
+        for (final Path temp : List.of(first, second)) {
+            Assertions.assertThat(temp.getParent()).as("staging must stay inside the target directory")
+                    .isEqualTo(target.getParent());
+            Assertions.assertThat(temp.getFileName().toString())
+                    .as("staging must stay matchable by the stale-temp sweep")
+                    .endsWith(AtomicNioFileChannelContext.TMP_EXTENSION);
+        }
+    }
+
+    private Thread newWriter(final File targetFile, final String payload, final CountDownLatch ready,
+            final CountDownLatch go, final Queue<Throwable> failures) {
+        return new Thread(() -> {
+            ready.countDown();
+            try {
+                go.await();
+                final AtomicNioFileChannel channel = new AtomicNioFileChannel(FileChannelPath.newFile(targetFile));
+                try (OutputStream out = channel.newUpload()) {
+                    out.write(payload.getBytes(Charsets.UTF_8));
+                }
+            } catch (final Throwable t) {
+                failures.add(t);
+            }
+        }, "atomic-channel-concurrent-writer");
+    }
+
+    private String repeat(final char c, final int count) {
+        final StringBuilder sb = new StringBuilder(count);
+        for (int i = 0; i < count; i++) {
+            sb.append(c);
+        }
+        return sb.toString();
     }
 
     private interface IThrowingRun {

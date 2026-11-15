@@ -34,8 +34,11 @@ import it.unimi.dsi.fastutil.io.FastByteArrayInputStream;
  * into a sibling temporary file. Once fully flushed, the file is moved to its final destination. This prevents
  * consumers from reading partial or corrupted data during slow uploads or system crashes.
  * 
- * WARNING: this implementation only handles conflicts between separate processes, within a process, this implementation
- * is not thread-safe and can throw FileAlreadyExistsException when concurrent writes happen to the same temp file.
+ * <p>
+ * <b>Concurrency:</b> every upload stages into its own temp file (see {@link AtomicNioFileChannelContext#newTempPath}),
+ * so writers of the same target never share a staging file - neither across processes nor inside one JVM. What that
+ * does not change is the publish itself: in replace mode the last complete write wins, in claim mode every publisher
+ * after the first is refused with {@link FileAlreadyExistsException}.
  */
 @NotThreadSafe
 public class AtomicNioFileChannel extends NioFileChannel {
@@ -195,8 +198,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
-                final Path tempPath = targetPath.resolveSibling(
-                        Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
+                final Path tempPath = context.newTempPath(targetPath);
                 Files.createDirectories(tempPath.getParent());
                 Files.copy(file.toPath(), tempPath, StandardCopyOption.REPLACE_EXISTING);
                 publish(tempPath, targetPath);
@@ -225,8 +227,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
             } else {
-                final Path tempPath = targetPath.resolveSibling(
-                        Files.setExtensionNormalizePath(targetFilename, AtomicNioFileChannelContext.TMP_SUFFIX));
+                final Path tempPath = context.newTempPath(targetPath);
                 Files.createDirectories(tempPath.getParent());
                 Files.copy(input, tempPath, StandardCopyOption.REPLACE_EXISTING);
                 publish(tempPath, targetPath);
@@ -250,8 +251,7 @@ public class AtomicNioFileChannel extends NioFileChannel {
             if (targetFilename.endsWith(AtomicNioFileChannelContext.TMP_SUFFIX)) {
                 return Files.newOutputStream(targetPath);
             } else {
-                final Path tempPath = targetPath.resolveSibling(Files.setExtensionNormalizePath(
-                        targetPath.getFileName().toString(), AtomicNioFileChannelContext.TMP_SUFFIX));
+                final Path tempPath = context.newTempPath(targetPath);
                 Files.createDirectories(tempPath.getParent());
                 final OutputStream out = Files.newOutputStream(tempPath);
                 return new FilterOutputStream(out) {
