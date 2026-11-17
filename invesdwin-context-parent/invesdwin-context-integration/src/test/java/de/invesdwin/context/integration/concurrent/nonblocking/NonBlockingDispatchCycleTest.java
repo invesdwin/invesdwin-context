@@ -1,6 +1,7 @@
 package de.invesdwin.context.integration.concurrent.nonblocking;
 
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.concurrent.Immutable;
@@ -91,6 +92,45 @@ public class NonBlockingDispatchCycleTest {
                         .isNotEqualTo(callerThread);
     }
 
+    @Test
+    public void aFinishedCallRecordedByAnEarlierDispatchIsReusedInsideADispatchedCall() throws Exception {
+        final CountingReader reader = new CountingReader();
+        final WrappedExecutorService probe = newProbe();
+        try {
+            Futures.getNoInterrupt(probe.submit(() -> {
+                //an ordinary caller dispatches first, so a finished result is on record before the inline branch asks
+                Futures.getNoInterrupt(reader.maybeCall());
+                new Asker(reader).maybeCallAndGet();
+                return null;
+            }), WAIT_BOUND);
+            Assertions.assertThat(reader.calls.get())
+                    .as("the recorded result is taken instead of the demand being run again - the memo keeps its "
+                            + "purpose inside the inline branch")
+                    .isEqualTo(1);
+        } finally {
+            probe.shutdownNow();
+        }
+    }
+
+    @Test
+    public void theDailyThrottleStillHoldsOnTheInlineBranch() throws Exception {
+        final CountingDaily daily = new CountingDaily();
+        final WrappedExecutorService probe = newProbe();
+        try {
+            Futures.getNoInterrupt(probe.submit(() -> {
+                new DailyAsker(daily).maybeRunAndWait();
+                return null;
+            }), WAIT_BOUND);
+            Assertions.assertThat(daily.runs.get())
+                    .as("asking twice from inside a dispatched call must not run a once-a-day job twice: the "
+                            + "dispatch path answers the second ask with a finished future, the inline branch answers "
+                            + "it with its day check")
+                    .isEqualTo(1);
+        } finally {
+            probe.shutdownNow();
+        }
+    }
+
     private static WrappedExecutorService newProbe() {
         return Executors.newFixedThreadPool(NonBlockingDispatchCycleTest.class.getSimpleName() + "_probe", 1);
     }
@@ -173,6 +213,70 @@ public class NonBlockingDispatchCycleTest {
             } finally {
                 keyLock.readLock().unlock();
             }
+        }
+
+    }
+
+
+    private static class CountingReader extends ANonBlockingCallable<String> {
+
+        private final AtomicInteger calls = new AtomicInteger();
+
+        CountingReader() {
+            super(CountingReader.class, "countsTheAsks");
+        }
+
+        @Override
+        public String call() {
+            return "value-" + calls.incrementAndGet();
+        }
+
+    }
+
+    private static class Asker extends ANonBlockingCallable<String> {
+
+        private final CountingReader reader;
+
+        Asker(final CountingReader reader) {
+            super(Asker.class, "asksOnTheSameHolder");
+            this.reader = reader;
+        }
+
+        @Override
+        public String call() {
+            return reader.maybeCallAndGet();
+        }
+
+    }
+
+    private static class CountingDaily extends ANonBlockingRunnableDaily {
+
+        private final AtomicInteger runs = new AtomicInteger();
+
+        CountingDaily() {
+            super(CountingDaily.class, "countsTheRuns");
+        }
+
+        @Override
+        public void run() {
+            runs.incrementAndGet();
+        }
+
+    }
+
+    private static class DailyAsker extends ANonBlockingRunnable {
+
+        private final CountingDaily daily;
+
+        DailyAsker(final CountingDaily daily) {
+            super(DailyAsker.class, "asksTwice");
+            this.daily = daily;
+        }
+
+        @Override
+        public void run() {
+            daily.maybeRunAndWait();
+            daily.maybeRunAndWait();
         }
 
     }

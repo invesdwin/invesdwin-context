@@ -51,6 +51,11 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
             //this thread is itself running a call this tier dispatched: it is already dedicated to the work and may
             //hold the very store lock that a further dispatch would wait behind, so the demand runs here. The other
             //branch has no timeout, so a dispatch that lands behind such a lock waits forever.
+            final Future<V> finished = callFuture;
+            if (finished != null && finished.isDone()) {
+                //a recorded result costs nothing to take and keeps the memo's purpose
+                return getCallFuture(finished);
+            }
             return callDispatched(this::call);
         } else {
             final Future<V> future = maybeCall();

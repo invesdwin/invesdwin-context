@@ -52,6 +52,13 @@ public abstract class ANonBlockingRunnable extends ANonBlockingBase implements I
             //this thread is itself running a call this tier dispatched: it is already dedicated to the work and may
             //hold the very store lock that a further dispatch would wait behind, so the run happens here. The other
             //branch has no timeout, so a dispatch that lands behind such a lock waits forever.
+            final Future<?> finished = runFuture;
+            if (finished != null && finished.isDone()) {
+                getRunFuture(finished);
+                return;
+            }
+            //an in-flight run on another thread is deliberately not joined: that wait is the cycle this branch exists
+            //to remove, and the store's per-key claim turns the second run into a refusal rather than a double write
             runDispatched(this::run);
         } else {
             final Future<?> future = maybeRun();
