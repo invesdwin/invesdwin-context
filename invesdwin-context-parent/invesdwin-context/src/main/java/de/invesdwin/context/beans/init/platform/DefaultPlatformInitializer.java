@@ -65,6 +65,21 @@ import de.invesdwin.util.time.duration.Duration;
 @NotThreadSafe
 public class DefaultPlatformInitializer implements IPlatformInitializer {
 
+    /**
+     * How many entries one shutdown delete of the process temp tree may visit. Measured on the production feed box
+     * during the 2026-11-17 roll: a 4 h 22 m derived-store session left a scratch tree of roughly a million entries, and
+     * deleting it inside the shutdown hook held the JVM for 203 s - the SIGHUP-driven hook chain owns the
+     * {@code java.lang.Shutdown} monitor and the SIGTERM handler blocks behind it, so during all of that the process
+     * looks deaf to termination while its application stop finished in about one second. At the measured unlink rate
+     * (~5,000 entries/s on that ext4) this cap bounds the hook at ~10 s.
+     * <p>
+     * Leaving the rest is not a leak: the sweep this same initializer starts on the next launch
+     * (`TempDirectoryLockConfigurerer.deleteObsoleteTempDirectories`) treats a sibling temp directory whose lock file is
+     * missing or unheld as an incomplete delete on shutdown and removes it on its own thread, which is the path a killed
+     * JVM already relied on.
+     */
+    private static final int TEMP_DIRECTORY_DELETE_MAX_ENTRIES = 50000;
+
     @Override
     public void initInstrumentation() {
         AspectJWeaverIncludesConfigurer.configure();
@@ -187,9 +202,42 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     public void initDeleteTempDirectoryRunner(final File tempDirectory, final FileChannelLock tempDirectoryLock) {
         DynamicInstrumentationProperties.setDeleteTempDirectoryRunner(() -> {
             tempDirectoryLock.unlock();
-            Files.deleteNative(tempDirectory);
+            if (deleteTempDirectoryWithinBudget(tempDirectory, TEMP_DIRECTORY_DELETE_MAX_ENTRIES)
+                    > TEMP_DIRECTORY_DELETE_MAX_ENTRIES) {
+                //bigger than a shutdown may spend on it: the residue is left for the next start's sweep, which treats
+                //a temp directory whose lock is not held as an incomplete delete on shutdown and reaps it on its own
+                new Log(DefaultPlatformInitializer.class).info("Temp directory delete of [%s] stopped at the budget of "
+                        + "%s entries", tempDirectory, TEMP_DIRECTORY_DELETE_MAX_ENTRIES);
+            }
         });
         TempDirectoryLockConfigurerer.deleteObsoleteTempDirectories(tempDirectory);
+    }
+
+    /**
+     * Deletes as much of the process temp tree as fits in {@code budget} entries and returns the number consumed; once
+     * the budget is spent it stops descending and leaves the rest, without deleting the directories on the way back up.
+     */
+    static int deleteTempDirectoryWithinBudget(final File file, final int budget) {
+        int consumed = 1;
+        final File[] children = file.listFiles();
+        if (children != null) {
+            for (final File child : children) {
+                if (child.isDirectory()) {
+                    consumed += deleteTempDirectoryWithinBudget(child, budget);
+                    if (consumed > budget) {
+                        return consumed;
+                    }
+                } else {
+                    child.delete();
+                    consumed++;
+                    if (consumed > budget) {
+                        return consumed;
+                    }
+                }
+            }
+        }
+        file.delete();
+        return consumed;
     }
 
     @Override
