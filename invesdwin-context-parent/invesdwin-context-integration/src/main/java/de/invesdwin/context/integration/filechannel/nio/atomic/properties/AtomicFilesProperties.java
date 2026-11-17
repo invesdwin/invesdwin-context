@@ -46,12 +46,6 @@ public class AtomicFilesProperties extends AProperties {
     public static final String PROPERTY_FILE_EXTENSION = ".property";
 
     /**
-     * Bound for {@link #collectDiskKeys}: a subdirectory of the properties folder may be a symlink back to an
-     * ancestor, and the scan must not turn that into an endless descent.
-     */
-    private static final int MAX_DIRECTORY_DEPTH = 16;
-
-    /**
      * Separator inside a property key, matching what {@link Files#normalizePath(String)} leaves as a path separator -
      * the key of a nested property file has to be spelled exactly as the caller spells it.
      */
@@ -105,7 +99,7 @@ public class AtomicFilesProperties extends AProperties {
             }
 
             final Set<String> currentDiskKeys = new java.util.HashSet<>();
-            collectDiskKeys(fileChannel, "", currentDiskKeys, 0);
+            collectDiskKeys(fileChannel, "", currentDiskKeys);
 
             // Sync known keys
             knownKeys.retainAll(currentDiskKeys);
@@ -128,12 +122,16 @@ public class AtomicFilesProperties extends AProperties {
      * key written by one process was absent from the next one and its value answered as null although the file was on
      * disk.
      * <p>
+     * The descent is unbounded, so a key may nest arbitrarily deep. The properties folder is therefore required to be
+     * acyclic - a symlink pointing back at an ancestor would turn the scan into an endless descent, which is a
+     * placement decision for whoever puts the folder somewhere, not something a key can cause.
+     * <p>
      * The rescan is triggered by the modification time of the properties folder, which a write into an existing
      * subdirectory does not change; an instance thus sees the nested keys it wrote and those already present when it
      * first scanned, and picks up another process's nested writes as a new instance.
      */
     private static void collectDiskKeys(final AtomicNioFileChannel directory, final String keyPrefix,
-            final Set<String> diskKeys, final int depth) {
+            final Set<String> diskKeys) {
         try (ICloseableIterator<NioFileInfo> iterator = directory.listIterator()) {
             while (iterator.hasNext()) {
                 final NioFileInfo info = iterator.next();
@@ -142,12 +140,10 @@ public class AtomicFilesProperties extends AProperties {
                     continue;
                 }
                 if (info.isDirectory()) {
-                    if (depth < MAX_DIRECTORY_DEPTH) {
-                        collectDiskKeys(
-                                directory.withAbsoluteDirectory(
-                                        directory.getAbsoluteDirectory() + KEY_PATH_SEPARATOR + fileName),
-                                keyPrefix + fileName + KEY_PATH_SEPARATOR, diskKeys, depth + 1);
-                    }
+                    collectDiskKeys(
+                            directory.withAbsoluteDirectory(
+                                    directory.getAbsoluteDirectory() + KEY_PATH_SEPARATOR + fileName),
+                            keyPrefix + fileName + KEY_PATH_SEPARATOR, diskKeys);
                 } else if (info.isFile() && fileName.endsWith(PROPERTY_FILE_EXTENSION)) {
                     diskKeys.add(keyPrefix
                             + fileName.substring(0, fileName.length() - PROPERTY_FILE_EXTENSION.length()));

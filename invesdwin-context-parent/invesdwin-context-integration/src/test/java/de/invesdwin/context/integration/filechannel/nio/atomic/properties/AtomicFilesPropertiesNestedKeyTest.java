@@ -75,6 +75,34 @@ public class AtomicFilesPropertiesNestedKeyTest {
         }
     }
 
+    /**
+     * The nesting limit is not the folder layout's - a caller may keep appending levels to a key forever, so the scan
+     * has to follow them. 24 levels is well past any depth a store uses today, which is what makes this cell the
+     * regression guard for the descent being unbounded.
+     */
+    @Test
+    public void anArbitrarilyDeepKeyRoundTrips() {
+        final StringBuilder key = new StringBuilder();
+        for (int i = 0; i < 24; i++) {
+            key.append("level").append(i).append('/');
+        }
+        key.append("leafKey");
+        final String deepKey = key.toString();
+
+        final File folder = newTempFolder("deep-key");
+        try {
+            new AtomicFilesProperties(folder).setString(deepKey, "value");
+
+            final IProperties reader = new AtomicFilesProperties(folder);
+            Assertions.assertThat(reader.getString(deepKey))
+                    .as("a key nested 24 levels deep is found by a fresh instance")
+                    .isEqualTo("value");
+            Assertions.assertThat(reader.getKeys()).containsExactly(deepKey);
+        } finally {
+            deleteRecursively(folder);
+        }
+    }
+
     @Test
     public void aFlatKeyStillRoundTrips() {
         final File folder = newTempFolder("flat-key");
