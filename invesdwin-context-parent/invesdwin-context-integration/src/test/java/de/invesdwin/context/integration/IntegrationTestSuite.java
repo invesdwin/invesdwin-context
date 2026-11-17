@@ -6,6 +6,7 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 import de.invesdwin.context.integration.compression.CommonsDecompressingInputStreamTest;
+import de.invesdwin.context.integration.concurrent.nonblocking.NonBlockingDispatchCycleTest;
 import de.invesdwin.context.integration.csv.CsvItemReaderBuilderTest;
 import de.invesdwin.context.integration.csv.CsvVerificationTest;
 import de.invesdwin.context.integration.csv.writer.AsciiTableWriterTest;
@@ -25,7 +26,8 @@ import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHookTest;
         MarshallersTest.class, IntegrationTest.class, NetworkUtilTest.class, AsciiTableWriterTest.class,
         CsvTableWriterTest.class, HtmlTableWriterTest.class, AtomicNioFileChannelTest.class,
         RetryLaterPendingTest.class, ExponentialBackoffTest.class, RestartCausesTest.class,
-        LoggingRetryHookTest.class, AtomicFilesPropertiesNestedKeyTest.class })
+        LoggingRetryHookTest.class, AtomicFilesPropertiesNestedKeyTest.class,
+        NonBlockingDispatchCycleTest.class })
 @Immutable
 public class IntegrationTestSuite {
 
