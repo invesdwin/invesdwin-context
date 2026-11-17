@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -66,19 +67,25 @@ import de.invesdwin.util.time.duration.Duration;
 public class DefaultPlatformInitializer implements IPlatformInitializer {
 
     /**
-     * How many entries one shutdown delete of the process temp tree may visit. Measured on the production feed box
-     * during the 2026-11-17 roll: a 4 h 22 m derived-store session left a scratch tree of roughly a million entries, and
-     * deleting it inside the shutdown hook held the JVM for 203 s - the SIGHUP-driven hook chain owns the
-     * {@code java.lang.Shutdown} monitor and the SIGTERM handler blocks behind it, so during all of that the process
-     * looks deaf to termination while its application stop finished in about one second. At the measured unlink rate
-     * (~5,000 entries/s on that ext4) this cap bounds the hook at ~10 s.
+     * How long the shutdown hook may wait for the delete of the process temp tree. Measured on the production feed box
+     * during the 2026-11-17 roll: a 4 h 22 m derived-store session left a scratch tree of roughly a million entries and
+     * the hook spent 203 s deleting it, while the application stop itself had finished in about one second. The
+     * SIGHUP-driven hook chain owns the {@code java.lang.Shutdown} monitor and the SIGTERM handler blocks behind it, so
+     * for all of that the process looks deaf to termination.
      * <p>
-     * Leaving the rest is not a leak: the sweep this same initializer starts on the next launch
-     * (`TempDirectoryLockConfigurerer.deleteObsoleteTempDirectories`) treats a sibling temp directory whose lock file is
-     * missing or unheld as an incomplete delete on shutdown and removes it on its own thread, which is the path a killed
-     * JVM already relied on.
+     * The wait is bounded, not the delete: the delete runs as its own process and is not destroyed when this JVM exits,
+     * so a tree that does not fit the budget is still removed - just not by the shutdown. Anything a killed process
+     * leaves behind is reaped by the sweep this same initializer starts on the next launch
+     * (`TempDirectoryLockConfigurerer.deleteObsoleteTempDirectories`), which treats a sibling temp directory whose lock
+     * file is missing or unheld as an incomplete delete on shutdown.
+     * <p>
+     * Two seconds is the measured normal case with an order of magnitude of headroom, not a round number: on the running
+     * production box the four services' trees held 17,744 / 15,549 / 14 / 8 entries (2026-11-17 11:1x), and the native
+     * delete command removes about 100,000 entries per second (measured on the same class of ext4 with 100,000 planted
+     * files), so a normal shutdown never reaches the budget and only a pathological tree does - where the cap then turns
+     * a 203 s stop into a 2 s one.
      */
-    private static final int TEMP_DIRECTORY_DELETE_MAX_ENTRIES = 50000;
+    private static final Duration TEMP_DIRECTORY_DELETE_MAX_TIME = new Duration(2, FTimeUnit.SECONDS);
 
     @Override
     public void initInstrumentation() {
@@ -202,42 +209,39 @@ public class DefaultPlatformInitializer implements IPlatformInitializer {
     public void initDeleteTempDirectoryRunner(final File tempDirectory, final FileChannelLock tempDirectoryLock) {
         DynamicInstrumentationProperties.setDeleteTempDirectoryRunner(() -> {
             tempDirectoryLock.unlock();
-            if (deleteTempDirectoryWithinBudget(tempDirectory, TEMP_DIRECTORY_DELETE_MAX_ENTRIES)
-                    > TEMP_DIRECTORY_DELETE_MAX_ENTRIES) {
-                //bigger than a shutdown may spend on it: the residue is left for the next start's sweep, which treats
-                //a temp directory whose lock is not held as an incomplete delete on shutdown and reaps it on its own
-                new Log(DefaultPlatformInitializer.class).info("Temp directory delete of [%s] stopped at the budget of "
-                        + "%s entries", tempDirectory, TEMP_DIRECTORY_DELETE_MAX_ENTRIES);
-            }
+            deleteTempDirectoryBounded(tempDirectory, TEMP_DIRECTORY_DELETE_MAX_TIME);
         });
         TempDirectoryLockConfigurerer.deleteObsoleteTempDirectories(tempDirectory);
     }
 
     /**
-     * Deletes as much of the process temp tree as fits in {@code budget} entries and returns the number consumed; once
-     * the budget is spent it stops descending and leaves the rest, without deleting the directories on the way back up.
+     * Starts the native recursive delete of the process temp tree on its own process and waits at most
+     * {@code maxTime} for it, returning whether it finished in time. The command is not routed through the deleting
+     * helper that registers itself for destruction at JVM exit, so a tree too large for the budget is still deleted -
+     * by a process this JVM walks away from. Where no native command can be started the synchronous path is the only
+     * one there is, and it is used unchanged.
      */
-    static int deleteTempDirectoryWithinBudget(final File file, final int budget) {
-        int consumed = 1;
-        final File[] children = file.listFiles();
-        if (children != null) {
-            for (final File child : children) {
-                if (child.isDirectory()) {
-                    consumed += deleteTempDirectoryWithinBudget(child, budget);
-                    if (consumed > budget) {
-                        return consumed;
-                    }
-                } else {
-                    child.delete();
-                    consumed++;
-                    if (consumed > budget) {
-                        return consumed;
-                    }
-                }
-            }
+    static boolean deleteTempDirectoryBounded(final File tempDirectory, final Duration maxTime) {
+        final Process delete = Files.deleteNativeDetached(tempDirectory);
+        if (delete == null) {
+            Files.deleteNative(tempDirectory);
+            return !tempDirectory.exists();
         }
-        file.delete();
-        return consumed;
+        boolean finished = false;
+        try {
+            finished = delete.waitFor(maxTime.intValue(FTimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException e) {
+            //an interrupt here says stop waiting, not stop deleting - the process carries on regardless, and the
+            //flag goes back so the caller's own shutdown path still sees it
+            Thread.currentThread().interrupt();
+        }
+        if (!finished) {
+            new Log(DefaultPlatformInitializer.class).info(
+                    "Temp directory [%s] is still being deleted by pid [%s] after %s - the JVM exits with the delete "
+                            + "running, and the next start's sweep reaps whatever is left", tempDirectory,
+                    delete.pid(), maxTime);
+        }
+        return finished;
     }
 
     @Override
