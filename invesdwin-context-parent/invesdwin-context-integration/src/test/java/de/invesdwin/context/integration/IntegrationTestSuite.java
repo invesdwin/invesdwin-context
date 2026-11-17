@@ -12,6 +12,7 @@ import de.invesdwin.context.integration.csv.writer.AsciiTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.CsvTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.HtmlTableWriterTest;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelTest;
+import de.invesdwin.context.integration.filechannel.nio.atomic.properties.AtomicFilesPropertiesNestedKeyTest;
 import de.invesdwin.context.integration.marshaller.MarshallersTest;
 import de.invesdwin.context.integration.network.NetworkUtilTest;
 import de.invesdwin.context.integration.retry.ExponentialBackoffTest;
@@ -24,7 +25,7 @@ import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHookTest;
         MarshallersTest.class, IntegrationTest.class, NetworkUtilTest.class, AsciiTableWriterTest.class,
         CsvTableWriterTest.class, HtmlTableWriterTest.class, AtomicNioFileChannelTest.class,
         RetryLaterPendingTest.class, ExponentialBackoffTest.class, RestartCausesTest.class,
-        LoggingRetryHookTest.class })
+        LoggingRetryHookTest.class, AtomicFilesPropertiesNestedKeyTest.class })
 @Immutable
 public class IntegrationTestSuite {
 
