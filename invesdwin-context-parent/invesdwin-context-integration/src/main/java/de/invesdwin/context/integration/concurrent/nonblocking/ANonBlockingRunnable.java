@@ -31,9 +31,9 @@ public abstract class ANonBlockingRunnable extends ANonBlockingBase implements I
             if (runFutureCopy != null && !shouldRunAgain(runFutureCopy)) {
                 return runFutureCopy;
             }
-            final ListenableFuture<?> future = getExecutor().submit(() -> callBlockingAll(() -> {
-                run();
-            }));
+            final ListenableFuture<?> future = getExecutor().submit(() -> {
+                runDispatched(this::run);
+            });
             runFuture = future;
             return future;
         }
@@ -48,6 +48,11 @@ public abstract class ANonBlockingRunnable extends ANonBlockingBase implements I
     public void maybeRunAndWait() {
         if (isThreadNonBlocking()) {
             maybeRunAndRetry();
+        } else if (isThreadInDispatchedCall()) {
+            //this thread is itself running a call this tier dispatched: it is already dedicated to the work and may
+            //hold the very store lock that a further dispatch would wait behind, so the run happens here. The other
+            //branch has no timeout, so a dispatch that lands behind such a lock waits forever.
+            runDispatched(this::run);
         } else {
             final Future<?> future = maybeRun();
             getRunFuture(future);

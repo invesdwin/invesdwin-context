@@ -13,6 +13,7 @@ import de.invesdwin.util.concurrent.WrappedExecutorService;
 import de.invesdwin.util.concurrent.nested.ANestedExecutor;
 import de.invesdwin.util.lang.string.Strings;
 import de.invesdwin.util.time.duration.Duration;
+import io.netty.util.concurrent.FastThreadLocal;
 
 @ThreadSafe
 public abstract class ANonBlockingBase {
@@ -25,6 +26,14 @@ public abstract class ANonBlockingBase {
                     .setExecutorExceptionHandler(AlwaysErrExecutorExceptionHandler.INSTANCE);
         }
     };
+
+    /**
+     * True on a thread that is itself running a call this tier dispatched to {@link #UPDATE_EXECUTOR}. Such a thread is
+     * already dedicated to the caller's work, so a further demand raised from it has to run on it rather than take
+     * another slot in the same pool: the caller may hold a store lock that the dispatched worker would wait behind,
+     * and a thread parked on a pool future while holding a lock is a cycle that no thread dump reports as one.
+     */
+    private static final FastThreadLocal<Boolean> THREAD_IN_DISPATCHED_CALL = new FastThreadLocal<>();
 
     protected final String parentName;
     protected final String retryMessage;
@@ -79,6 +88,36 @@ public abstract class ANonBlockingBase {
 
     protected WrappedExecutorService getExecutor() {
         return UPDATE_EXECUTOR.getNestedExecutor(parentName);
+    }
+
+    protected static boolean isThreadInDispatchedCall() {
+        return Boolean.TRUE.equals(THREAD_IN_DISPATCHED_CALL.get());
+    }
+
+    /**
+     * Runs {@code supplier} the way a dispatched call runs it: blocking allowed, and marked as a dispatched call so
+     * that a demand raised inside it does not dispatch either. Both the pool task and the inline branch use this, so
+     * the two paths differ only in which thread runs the body.
+     */
+    protected <V> V callDispatched(final Supplier<V> supplier) {
+        final Boolean before = THREAD_IN_DISPATCHED_CALL.get();
+        THREAD_IN_DISPATCHED_CALL.set(Boolean.TRUE);
+        try {
+            return callBlockingAll(supplier);
+        } finally {
+            if (before == null) {
+                THREAD_IN_DISPATCHED_CALL.remove();
+            } else {
+                THREAD_IN_DISPATCHED_CALL.set(before);
+            }
+        }
+    }
+
+    protected void runDispatched(final Runnable runnable) {
+        callDispatched(() -> {
+            runnable.run();
+            return null;
+        });
     }
 
 }

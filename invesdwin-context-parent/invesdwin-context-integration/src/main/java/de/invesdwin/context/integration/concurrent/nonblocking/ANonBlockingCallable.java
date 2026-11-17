@@ -32,9 +32,7 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
             if (callFutureCopy != null && !shouldCallAgain(callFutureCopy)) {
                 return callFutureCopy;
             }
-            final ListenableFuture<V> future = getExecutor().submit(() -> callBlockingAll(() -> {
-                return call();
-            }));
+            final ListenableFuture<V> future = getExecutor().submit(() -> callDispatched(this::call));
             callFuture = future;
             return future;
         }
@@ -49,6 +47,11 @@ public abstract class ANonBlockingCallable<V> extends ANonBlockingBase implement
     public V maybeCallAndGet() {
         if (isThreadNonBlocking()) {
             return maybeCallAndRetry();
+        } else if (isThreadInDispatchedCall()) {
+            //this thread is itself running a call this tier dispatched: it is already dedicated to the work and may
+            //hold the very store lock that a further dispatch would wait behind, so the demand runs here. The other
+            //branch has no timeout, so a dispatch that lands behind such a lock waits forever.
+            return callDispatched(this::call);
         } else {
             final Future<V> future = maybeCall();
             return getCallFuture(future);

@@ -51,10 +51,12 @@ public abstract class ANonBlockingRunnableDaily extends ANonBlockingRunnable imp
                     return runFutureCopy;
                 }
             }
-            final ListenableFuture<?> future = getExecutor().submit(() -> callBlockingAll(() -> {
-                run();
-                runFutureFinished = now;
-            }));
+            final ListenableFuture<?> future = getExecutor().submit(() -> {
+                runDispatched(() -> {
+                    run();
+                    runFutureFinished = now;
+                });
+            });
             runFuture = future;
             return future;
         }
@@ -69,6 +71,15 @@ public abstract class ANonBlockingRunnableDaily extends ANonBlockingRunnable imp
     public void maybeRunAndWait(final boolean force) {
         if (isThreadNonBlocking()) {
             maybeRunAndRetry(force);
+        } else if (isThreadInDispatchedCall()) {
+            //this thread is itself running a call this tier dispatched: it is already dedicated to the work and may
+            //hold the very store lock that a further dispatch would wait behind, so the run happens here. The other
+            //branch has no timeout, so a dispatch that lands behind such a lock waits forever.
+            final FDate now = FDate.now();
+            runDispatched(() -> {
+                run();
+                runFutureFinished = now;
+            });
         } else {
             final Future<?> future = maybeRun(force);
             getRunFuture(future);
