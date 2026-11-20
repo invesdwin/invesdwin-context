@@ -12,6 +12,7 @@ import de.invesdwin.context.integration.csv.CsvVerificationTest;
 import de.invesdwin.context.integration.csv.writer.AsciiTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.CsvTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.HtmlTableWriterTest;
+import de.invesdwin.context.integration.network.request.DelegateDailyRefreshingRequestVerdictTest;
 import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelTest;
 import de.invesdwin.context.integration.filechannel.nio.atomic.properties.AtomicFilesPropertiesNestedKeyTest;
 import de.invesdwin.context.integration.marshaller.MarshallersTest;
@@ -23,6 +24,7 @@ import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHookTest;
 
 @Suite
 @SelectClasses({ CsvVerificationTest.class, CsvItemReaderBuilderTest.class, CommonsDecompressingInputStreamTest.class,
+        DelegateDailyRefreshingRequestVerdictTest.class,
         MarshallersTest.class, IntegrationTest.class, NetworkUtilTest.class, AsciiTableWriterTest.class,
         CsvTableWriterTest.class, HtmlTableWriterTest.class, AtomicNioFileChannelTest.class,
         RetryLaterPendingTest.class, ExponentialBackoffTest.class, RestartCausesTest.class,
