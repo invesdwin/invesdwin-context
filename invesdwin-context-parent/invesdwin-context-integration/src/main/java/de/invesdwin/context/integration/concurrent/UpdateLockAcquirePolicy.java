@@ -3,13 +3,14 @@ package de.invesdwin.context.integration.concurrent;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.integration.retry.RetryLaterPendingRuntimeException;
+import de.invesdwin.context.system.properties.SystemProperties;
 import de.invesdwin.context.integration.retry.fast.FastRetryLaterPendingRuntimeException;
 import de.invesdwin.util.concurrent.RetryThreads;
-import de.invesdwin.util.concurrent.lock.IQueuedLock;
+import de.invesdwin.util.concurrent.lock.ILock;
 import de.invesdwin.util.time.duration.Duration;
 
 /**
- * The shared acquire ladder for an {@link IQueuedLock update lock}: take it, or answer a pending RetryLater - never
+ * The shared acquire ladder for an {@link ILock update lock}: take it, or answer a pending RetryLater - never
  * park a caller on it without a ceiling.
  * <p>
  * Three layers of this fleet own an update lock and each used to fall through to an unbounded {@code lock()} after a
@@ -38,12 +39,39 @@ import de.invesdwin.util.time.duration.Duration;
 @ThreadSafe
 public final class UpdateLockAcquirePolicy {
 
+    /**
+     * The two tier ceilings, as one pair of properties of this class. Every layer that owns an update lock used to
+     * declare its own copy of the same two numbers - the live caches, the subscription storages, the incomplete-bar
+     * providers and the precalculated resolver each had a literal, and three more lived in the tests that fed them.
+     * The tier decision belongs to this class, so the ceilings do too: one definition, one properties file, and a box
+     * that wants a different wait has one key per tier to pin.
+     */
+    public static final Duration REQUEST_TIER;
+
+    public static final Duration UPDATE_TIER;
+
+    static {
+        final SystemProperties systemProperties = new SystemProperties(UpdateLockAcquirePolicy.class);
+        //kept far below a client round trip and above the cost of a re-ask, so a bounded sub-RTT wait beats burning a
+        //whole refused round
+        REQUEST_TIER = systemProperties.getDurationOptional("REQUEST_TIER", Duration.ONE_HUNDRED_MILLISECONDS);
+        //a caller that entered in blocking mode and may wait for work that is provably in flight
+        UPDATE_TIER = systemProperties.getDurationOptional("UPDATE_TIER", Duration.FIVE_SECONDS);
+    }
+
     private UpdateLockAcquirePolicy() {}
 
     /**
      * True on a thread that must not queue behind an update: it entered the demand path in non-blocking mode, so it
      * serves a finite pool that also answers requests.
      */
+    /**
+     * The ceiling for the calling thread's tier, from {@link #REQUEST_TIER} / {@link #UPDATE_TIER}.
+     */
+    public static Duration getAcquireTimeout() {
+        return isRequestTier() ? REQUEST_TIER : UPDATE_TIER;
+    }
+
     public static boolean isRequestTier() {
         return FinancialdataThreads.isThreadBlockingUpdateCacheDisabled();
     }
@@ -77,9 +105,18 @@ public final class UpdateLockAcquirePolicy {
      * @return false when the caller must skip this round (no lock taken, no verdict raised)
      * @throws RetryLaterPendingRuntimeException when the lock is not free within the tier's wait
      */
-    public static boolean tryLockForUpdate(final IQueuedLock lock, final Duration requestWait,
+    public static boolean tryLockForUpdate(final ILock lock, final Duration requestWait,
             final Duration patientWait, final boolean idle, final boolean warmStateReadable, final String ownerName) {
         return tryLockForUpdate(lock, requestWait, patientWait, idle, warmStateReadable, isRequestTier(), ownerName);
+    }
+
+    /**
+     * The ladder on the standard ceilings: a layer with no special reason to wait differently takes this one, so the
+     * two tier numbers stay in exactly one place.
+     */
+    public static boolean tryLockForUpdate(final ILock lock, final boolean idle, final boolean warmStateReadable,
+            final String ownerName) {
+        return tryLockForUpdate(lock, REQUEST_TIER, UPDATE_TIER, idle, warmStateReadable, ownerName);
     }
 
     /**
@@ -90,7 +127,7 @@ public final class UpdateLockAcquirePolicy {
      * {@link FinancialdataThreads#isThreadBlockingUpdateDatabaseDisabled()}. Without this seam each layer would
      * re-implement the ladder - three identical copies of it already exist in the subscription tier.
      */
-    public static boolean tryLockForUpdate(final IQueuedLock lock, final Duration requestWait,
+    public static boolean tryLockForUpdate(final ILock lock, final Duration requestWait,
             final Duration patientWait, final boolean idle, final boolean warmStateReadable,
             final boolean shortWaitCaller, final String ownerName) {
         if (RetryThreads.isThreadRetryDisabledDefault()) {
@@ -113,7 +150,7 @@ public final class UpdateLockAcquirePolicy {
         return true;
     }
 
-    private static RetryLaterPendingRuntimeException newPendingVerdict(final IQueuedLock lock, final String ownerName,
+    private static RetryLaterPendingRuntimeException newPendingVerdict(final ILock lock, final String ownerName,
             final Duration acquireTimeout) {
         return new FastRetryLaterPendingRuntimeException(RetryLaterPendingRuntimeException.PENDING_PREFIX + ownerName
                 + ".lockForUpdate: update of [" + lock.getName() + "] is held by another context past the "

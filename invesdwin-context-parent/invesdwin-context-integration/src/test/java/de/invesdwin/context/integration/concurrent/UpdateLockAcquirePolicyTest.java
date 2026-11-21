@@ -33,6 +33,24 @@ public class UpdateLockAcquirePolicyTest extends ATest {
     private static final Duration PATIENT_WAIT = Duration.FIVE_SECONDS;
 
     @Test
+    public void testTheTwoTierCeilingsAreOwnedHere() {
+        //the layers owning an update lock each declared their own copy of these two numbers before, and their tests a
+        //third copy of the same literals; this class decides which tier a caller is in, so it also owns the ceilings
+        Assertions.assertThat(UpdateLockAcquirePolicy.UPDATE_TIER)
+                .as("the update tier must stay the patient one - a request caller never waits this long")
+                .isGreaterThan(UpdateLockAcquirePolicy.REQUEST_TIER);
+        Assertions.assertThat(UpdateLockAcquirePolicy.REQUEST_TIER)
+                .as("shipped request tier")
+                .isEqualTo(Duration.ONE_HUNDRED_MILLISECONDS);
+        Assertions.assertThat(UpdateLockAcquirePolicy.UPDATE_TIER)
+                .as("shipped update tier")
+                .isEqualTo(Duration.FIVE_SECONDS);
+        Assertions.assertThat(UpdateLockAcquirePolicy.getAcquireTimeout())
+                .as("an unmarked test caller gets the patient ceiling")
+                .isEqualTo(UpdateLockAcquirePolicy.UPDATE_TIER);
+    }
+
+    @Test
     public void testAnUncontendedLockIsTakenExactlyAsBefore() {
         final IQueuedLock lock = newLock("uncontended");
         Assertions.checkTrue(UpdateLockAcquirePolicy.tryLockForUpdate(lock, REQUEST_WAIT, PATIENT_WAIT, false, false,
