@@ -79,6 +79,20 @@ public final class UpdateLockAcquirePolicy {
      */
     public static boolean tryLockForUpdate(final IQueuedLock lock, final Duration requestWait,
             final Duration patientWait, final boolean idle, final boolean warmStateReadable, final String ownerName) {
+        return tryLockForUpdate(lock, requestWait, patientWait, idle, warmStateReadable, isRequestTier(), ownerName);
+    }
+
+    /**
+     * The same ladder with the short-wait tier supplied by the caller, because which threads must not queue is a
+     * property of the layer, not of the ladder: the live caches use
+     * {@link FinancialdataThreads#isThreadBlockingUpdateCacheDisabled()}, the subscription storages use
+     * {@link FinancialdataThreads#isThreadBlockingUpdateSubscriptionDisabled()} and the store uses
+     * {@link FinancialdataThreads#isThreadBlockingUpdateDatabaseDisabled()}. Without this seam each layer would
+     * re-implement the ladder - three identical copies of it already exist in the subscription tier.
+     */
+    public static boolean tryLockForUpdate(final IQueuedLock lock, final Duration requestWait,
+            final Duration patientWait, final boolean idle, final boolean warmStateReadable,
+            final boolean shortWaitCaller, final String ownerName) {
         if (RetryThreads.isThreadRetryDisabledDefault()) {
             //do not update from a UI thread, a finalizer or an interrupted thread
             return false;
@@ -86,10 +100,10 @@ public final class UpdateLockAcquirePolicy {
             return true;
         } else if (idle) {
             return false;
-        } else if (warmStateReadable && isRequestTier()) {
+        } else if (warmStateReadable && shortWaitCaller) {
             return false;
         }
-        final Duration acquireTimeout = getAcquireTimeout(requestWait, patientWait);
+        final Duration acquireTimeout = shortWaitCaller ? requestWait : patientWait;
         if (acquireTimeout == null || acquireTimeout.longValue() <= 0L) {
             throw newPendingVerdict(lock, ownerName, acquireTimeout);
         }

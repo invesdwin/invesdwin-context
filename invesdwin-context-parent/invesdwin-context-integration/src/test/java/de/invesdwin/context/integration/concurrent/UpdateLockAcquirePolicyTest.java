@@ -178,6 +178,51 @@ public class UpdateLockAcquirePolicyTest extends ATest {
         Assertions.checkTrue(!lock.isHeldByCurrentThread(), "the lock must be untouched");
     }
 
+    @Test
+    public void testTheShortWaitTierIsTheCallersChoiceNotTheThreadsMarker() throws InterruptedException {
+        //the subscription and store layers decide "who must not queue" with their own markers, so the ladder must obey
+        //the caller's answer even where it disagrees with the cache marker on this thread
+        final IQueuedLock lock = newLock("tier-by-caller-refused");
+        final Holder holder = new Holder(lock, 400);
+        holder.start();
+        try {
+            final long startMillis = FDateMillis.nowMillis();
+            Throwable thrown = null;
+            try {
+                UpdateLockAcquirePolicy.tryLockForUpdate(lock, REQUEST_WAIT, PATIENT_WAIT, Boolean.FALSE, false,
+                        Boolean.TRUE, "tierByCaller");
+            } catch (final Throwable t) {
+                thrown = t;
+            }
+            Assertions.checkNotNull(thrown, "a caller that declares itself short-wait must be refused at its ceiling,"
+                    + " even on a thread the cache marker would call patient: " + thrown);
+            Assertions.checkTrue(FDateMillis.nowMillis() - startMillis < 400L,
+                    "and the refusal must come at the caller's ceiling, not the holder's");
+        } finally {
+            holder.finish();
+        }
+    }
+
+    @Test
+    public void testACallerDeclaringItselfPatientWaitsEvenOnARequestThread() throws InterruptedException {
+        final IQueuedLock lock = newLock("tier-by-caller-patient");
+        final Holder holder = new Holder(lock, 250);
+        holder.start();
+        final Boolean tierToken = FinancialdataThreads.registerThreadBlockingUpdateCacheDisabled(true);
+        try {
+            final long startMillis = FDateMillis.nowMillis();
+            Assertions.checkTrue(UpdateLockAcquirePolicy.tryLockForUpdate(lock, REQUEST_WAIT, PATIENT_WAIT,
+                    Boolean.FALSE, false, Boolean.FALSE, "test"), "a caller that opts into the patient wait must not be"
+                            + " refused at the request ceiling just because its thread carries the cache marker");
+            Assertions.checkTrue(FDateMillis.nowMillis() - startMillis >= 150L,
+                    "it must have waited past the request tier's 100 ms ceiling");
+            lock.unlock();
+        } finally {
+            FinancialdataThreads.unregisterThreadBlockingUpdateCacheDisabled(tierToken);
+            holder.finish();
+        }
+    }
+
     private static IQueuedLock newLock(final String name) {
         return Locks.newReentrantReadWriteLock("UpdateLockAcquirePolicyTest_" + name).writeLock();
     }
