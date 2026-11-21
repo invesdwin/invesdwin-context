@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import de.invesdwin.context.integration.concurrent.UpdateLockAcquirePolicyTest;
 import de.invesdwin.context.integration.compression.CommonsDecompressingInputStreamTest;
 import de.invesdwin.context.integration.concurrent.nonblocking.NonBlockingDispatchCycleTest;
 import de.invesdwin.context.integration.csv.CsvItemReaderBuilderTest;
@@ -29,7 +30,8 @@ import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHookTest;
         CsvTableWriterTest.class, HtmlTableWriterTest.class, AtomicNioFileChannelTest.class,
         RetryLaterPendingTest.class, ExponentialBackoffTest.class, RestartCausesTest.class,
         LoggingRetryHookTest.class, AtomicFilesPropertiesNestedKeyTest.class,
-        NonBlockingDispatchCycleTest.class })
+        NonBlockingDispatchCycleTest.class,
+        UpdateLockAcquirePolicyTest.class })
 @Immutable
 public class IntegrationTestSuite {
 
