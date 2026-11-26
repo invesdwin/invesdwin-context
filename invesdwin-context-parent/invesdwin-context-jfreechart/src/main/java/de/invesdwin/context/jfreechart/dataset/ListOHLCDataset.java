@@ -340,9 +340,16 @@ public class ListOHLCDataset extends AbstractXYDataset implements OHLCDataset, P
         return true;
     }
 
+    /**
+     * Returns the hash code of the series key: equals declares equality through the key content alone
+     * (the data items are deliberately not part of it, they are mutable and may be a lazy view), so the
+     * hash has to be derived from that same single field. The key is final, which keeps the hash of an
+     * instance stable; the inherited AbstractDataset hash is derived from the dataset group and from the
+     * mutable notify flag instead, so it neither follows equals nor survives setNotify/setGroup.
+     */
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return this.key.hashCode();
     }
 
     @Override

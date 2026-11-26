@@ -20,6 +20,7 @@ public class ExceptionCauseRetryCallback<E> implements RetryCallback<E, Exceptio
     private final BackOffPolicy backOffPolicyOverride;
     private int retryCount;
     private final IRetryHook retryListener;
+    private boolean fallthrough;
 
     public ExceptionCauseRetryCallback(final Callable<E> callable, final RetryOriginator originator,
             final BackOffPolicy backOffPolicyOverride, final IRetryHook retryListener) {
@@ -29,8 +30,15 @@ public class ExceptionCauseRetryCallback<E> implements RetryCallback<E, Exceptio
         this.retryListener = retryListener;
     }
 
+    public void setFallthrough(final boolean fallthrough) {
+        this.fallthrough = fallthrough;
+    }
+
     public void open(final RetryContext retryContext) {
         retryContext.setAttribute(RetryOriginator.ATTRIBUTE_RETRY_ORIGINATOR, originator);
+        if (fallthrough) {
+            retryContext.setAttribute(ExceptionCauseRetryPolicy.ATTRIBUTE_FALLTHROUGH, Boolean.TRUE);
+        }
         if (backOffPolicyOverride != null) {
             retryContext.setAttribute(ExceptionCauseBackOffPolicy.ATTRIBUTE_BACK_OFF_POLICY_OVERRIDE,
                     backOffPolicyOverride);

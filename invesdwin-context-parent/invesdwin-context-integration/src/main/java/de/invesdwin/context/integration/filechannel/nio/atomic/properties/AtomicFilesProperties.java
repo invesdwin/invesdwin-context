@@ -45,6 +45,12 @@ public class AtomicFilesProperties extends AProperties {
 
     public static final String PROPERTY_FILE_EXTENSION = ".property";
 
+    /**
+     * Separator inside a property key, matching what {@link Files#normalizePath(String)} leaves as a path separator -
+     * the key of a nested property file has to be spelled exactly as the caller spells it.
+     */
+    private static final String KEY_PATH_SEPARATOR = "/";
+
     private final AtomicNioFileChannel fileChannel;
 
     // Cache structures
@@ -93,17 +99,7 @@ public class AtomicFilesProperties extends AProperties {
             }
 
             final Set<String> currentDiskKeys = new java.util.HashSet<>();
-
-            try (ICloseableIterator<NioFileInfo> iterator = fileChannel.listIterator()) {
-                while (iterator.hasNext()) {
-                    final NioFileInfo info = iterator.next();
-                    final String fileName = info.getFileName();
-                    if (info.isFile() && fileName != null && fileName.endsWith(PROPERTY_FILE_EXTENSION)) {
-                        final String key = fileName.substring(0, fileName.length() - PROPERTY_FILE_EXTENSION.length());
-                        currentDiskKeys.add(key);
-                    }
-                }
-            }
+            collectDiskKeys(fileChannel, "", currentDiskKeys);
 
             // Sync known keys
             knownKeys.retainAll(currentDiskKeys);
@@ -114,6 +110,45 @@ public class AtomicFilesProperties extends AProperties {
             valueCache.clear();
 
             lastDirectoryScan = currentModTime;
+        }
+    }
+
+    /**
+     * Collects every property file below the properties folder, naming each key by its path relative to that folder.
+     * <p>
+     * Descending is what makes a nested key readable at all: a key is written through
+     * {@link Files#normalizePath(String)}, which leaves slashes alone, so a key containing one lands in a subdirectory,
+     * while every read is gated on {@link #knownKeys} and a flat listing yields only leaf names. Before this, a nested
+     * key written by one process was absent from the next one and its value answered as null although the file was on
+     * disk.
+     * <p>
+     * The descent is unbounded, so a key may nest arbitrarily deep. The properties folder is therefore required to be
+     * acyclic - a symlink pointing back at an ancestor would turn the scan into an endless descent, which is a
+     * placement decision for whoever puts the folder somewhere, not something a key can cause.
+     * <p>
+     * The rescan is triggered by the modification time of the properties folder, which a write into an existing
+     * subdirectory does not change; an instance thus sees the nested keys it wrote and those already present when it
+     * first scanned, and picks up another process's nested writes as a new instance.
+     */
+    private static void collectDiskKeys(final AtomicNioFileChannel directory, final String keyPrefix,
+            final Set<String> diskKeys) {
+        try (ICloseableIterator<NioFileInfo> iterator = directory.listIterator()) {
+            while (iterator.hasNext()) {
+                final NioFileInfo info = iterator.next();
+                final String fileName = info.getFileName();
+                if (fileName == null) {
+                    continue;
+                }
+                if (info.isDirectory()) {
+                    collectDiskKeys(
+                            directory.withAbsoluteDirectory(
+                                    directory.getAbsoluteDirectory() + KEY_PATH_SEPARATOR + fileName),
+                            keyPrefix + fileName + KEY_PATH_SEPARATOR, diskKeys);
+                } else if (info.isFile() && fileName.endsWith(PROPERTY_FILE_EXTENSION)) {
+                    diskKeys.add(keyPrefix
+                            + fileName.substring(0, fileName.length() - PROPERTY_FILE_EXTENSION.length()));
+                }
+            }
         }
     }
 

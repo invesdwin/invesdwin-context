@@ -5,19 +5,33 @@ import javax.annotation.concurrent.Immutable;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import de.invesdwin.context.integration.concurrent.UpdateLockAcquirePolicyTest;
 import de.invesdwin.context.integration.compression.CommonsDecompressingInputStreamTest;
+import de.invesdwin.context.integration.concurrent.nonblocking.NonBlockingDispatchCycleTest;
 import de.invesdwin.context.integration.csv.CsvItemReaderBuilderTest;
 import de.invesdwin.context.integration.csv.CsvVerificationTest;
 import de.invesdwin.context.integration.csv.writer.AsciiTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.CsvTableWriterTest;
 import de.invesdwin.context.integration.csv.writer.HtmlTableWriterTest;
+import de.invesdwin.context.integration.network.request.DelegateDailyRefreshingRequestVerdictTest;
+import de.invesdwin.context.integration.filechannel.nio.atomic.AtomicNioFileChannelTest;
+import de.invesdwin.context.integration.filechannel.nio.atomic.properties.AtomicFilesPropertiesNestedKeyTest;
 import de.invesdwin.context.integration.marshaller.MarshallersTest;
 import de.invesdwin.context.integration.network.NetworkUtilTest;
+import de.invesdwin.context.integration.retry.ExponentialBackoffTest;
+import de.invesdwin.context.integration.retry.RestartCausesTest;
+import de.invesdwin.context.integration.retry.RetryLaterPendingTest;
+import de.invesdwin.context.integration.retry.hook.log.LoggingRetryHookTest;
 
 @Suite
 @SelectClasses({ CsvVerificationTest.class, CsvItemReaderBuilderTest.class, CommonsDecompressingInputStreamTest.class,
+        DelegateDailyRefreshingRequestVerdictTest.class,
         MarshallersTest.class, IntegrationTest.class, NetworkUtilTest.class, AsciiTableWriterTest.class,
-        CsvTableWriterTest.class, HtmlTableWriterTest.class })
+        CsvTableWriterTest.class, HtmlTableWriterTest.class, AtomicNioFileChannelTest.class,
+        RetryLaterPendingTest.class, ExponentialBackoffTest.class, RestartCausesTest.class,
+        LoggingRetryHookTest.class, AtomicFilesPropertiesNestedKeyTest.class,
+        NonBlockingDispatchCycleTest.class,
+        UpdateLockAcquirePolicyTest.class })
 @Immutable
 public class IntegrationTestSuite {
 

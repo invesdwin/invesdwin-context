@@ -19,6 +19,7 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.TransactionSystemException;
 
 import de.invesdwin.context.integration.retry.IRetryDisabledException;
+import de.invesdwin.context.integration.retry.RetryScopes;
 import de.invesdwin.context.integration.retry.IRetryLaterException;
 import de.invesdwin.context.integration.retry.hook.IRetryHook;
 import de.invesdwin.context.integration.retry.hook.RetryHookManager;
@@ -39,6 +40,7 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
 
     public static final ExceptionCauseRetryPolicy INSTANCE = new ExceptionCauseRetryPolicy();
     public static final String ATTRIBUTE_RETRY_LISTENER = "ATTRIBUTE_RETRY_HOOK";
+    public static final String ATTRIBUTE_FALLTHROUGH = "ATTRIBUTE_FALLTHROUGH";
 
     private static final String ATTRIBUTE_LAST_LOGGED_RETRY_COUNT = "ATTRIBUTE_LAST_LOGGED_RETRY_COUNT";
 
@@ -79,6 +81,13 @@ public class ExceptionCauseRetryPolicy extends NeverRetryPolicy implements Facto
             return true;
         }
         if (RetryThreads.isThreadRetryDisabled()) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(context.getAttribute(ATTRIBUTE_FALLTHROUGH))
+                && RetryScopes.hasOuterRetry()) {
+            //this site declared fallthrough and an outer retry already covers the current call scope: do not retry in
+            //place - propagate so this body's locks unwind and the outer retry re-attempts the whole operation
+            //(see Retry.java#fallthrough)
             return false;
         }
         //After we check for exception we want to decide on

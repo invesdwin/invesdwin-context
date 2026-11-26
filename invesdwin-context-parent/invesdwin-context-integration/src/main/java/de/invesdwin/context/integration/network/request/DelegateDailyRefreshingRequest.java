@@ -6,7 +6,7 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
 import de.invesdwin.context.ContextProperties;
-import de.invesdwin.context.integration.retry.RetryLaterRuntimeException;
+import de.invesdwin.context.integration.retry.Retries;
 import de.invesdwin.context.integration.retry.task.ARetryCallable;
 import de.invesdwin.context.integration.retry.task.RetryOriginator;
 import de.invesdwin.util.assertions.Assertions;
@@ -72,7 +72,9 @@ public class DelegateDailyRefreshingRequest<E> implements Callable<E> {
                     try {
                         return delegate.call();
                     } catch (final Throwable t) {
-                        throw new RetryLaterRuntimeException(t);
+                        //not everything that fails is a destination being down: a schema mismatch, a missing local
+                        //file or a programming error will fail identically on every attempt
+                        throw Retries.toRetryVerdict(t);
                     }
                 }
             }.call();

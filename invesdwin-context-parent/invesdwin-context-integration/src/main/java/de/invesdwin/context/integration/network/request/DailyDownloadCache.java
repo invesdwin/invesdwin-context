@@ -43,7 +43,7 @@ public class DailyDownloadCache {
             final File file = newFile(name);
             if (shouldUpdate(file, now)) {
                 final String content = request.call();
-                Files.writeStringToFile(file, content, Charset.defaultCharset());
+                writeAtomic(file, content);
                 return content;
             } else {
                 return Files.readFileToString(file, Charset.defaultCharset());
@@ -63,11 +63,11 @@ public class DailyDownloadCache {
             final File file = newFile(name);
             if (shouldUpdate(file, now)) {
                 Files.forceMkdirParent(file);
-                final File tmpFile = new File(file.getAbsolutePath() + ".tmp");
+                final File tmpFile = newStagingFile(file);
                 try (APooledOutputStream fos = LZ4Streams.newLargeHighLZ4OutputStream(new FileOutputStream(tmpFile))) {
                     request.accept(fos.asNonClosing());
                 }
-                Files.moveFile(tmpFile, file);
+                Files.moveAtomic(tmpFile.toPath(), file.toPath());
             }
             return LZ4Streams.newDefaultLZ4InputStream(new FileInputStream(file));
         } catch (final IOException e) {
@@ -84,6 +84,22 @@ public class DailyDownloadCache {
             return true;
         }
         return !ContextProperties.IS_TEST_ENVIRONMENT && shouldUpdate(FDate.valueOf(file.lastModified()), now);
+    }
+
+    /**
+     * The staging sibling of a cache entry. Its name is deliberately not unique per attempt: a crash leaves one file
+     * that the next update of the same entry overwrites, and this folder has no sweep of its own.
+     */
+    private static File newStagingFile(final File file) {
+        return new File(file.getAbsolutePath() + ".tmp");
+    }
+
+    private static void writeAtomic(final File file, final String content) throws IOException {
+        //commons-io's writeStringToFile used to create the parent directory itself; the staging write does not
+        Files.forceMkdirParent(file);
+        final File staging = newStagingFile(file);
+        Files.writeStringToFile(staging, content, Charset.defaultCharset());
+        Files.moveAtomic(staging.toPath(), file.toPath());
     }
 
     public static File newFile(final String name) {
